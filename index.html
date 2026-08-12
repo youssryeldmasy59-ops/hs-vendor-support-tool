@@ -2551,7 +2551,77 @@ Order Issues: 920033935`;
             const _has = (word) => fuzzyIncludes(fullSearchText, normalizeArabic(word));
 
 
-                        // DEDICATED MATCHER: Multi-Intent Combined Request (Layout Change + Add Items)
+                        // ── DEDICATED MATCHERS ────────────────────────────────────────
+
+            // 1. Remove / Delete Items Matcher (حذف أصناف)
+            if (fullSearchText.includes('حذف') || fullSearchText.includes('ازالة') || fullSearchText.includes('إزالة') || fullSearchText.includes('مسح') || fullSearchText.includes('شطب') || fullSearchText.includes('delete item') || fullSearchText.includes('remove item')) {
+                const arKbBody = `نفيدكم بأنه تم استلام طلبكم وإزالة الأصناف/المنتجات المحددة من قائمة الطعام الخاصة بفرعكم بنجاح.`;
+                const enKbBody = `Please be informed that your request has been processed and the specified items have been successfully removed from your menu.`;
+                const fullArMacro = buildArabicMacro(greetings.arGreeting, arKbBody);
+                const fullEnMacro = buildEnglishMacro(greetings.enGreeting, enKbBody);
+                displayDualMacro({
+                    title: "Remove Items | حذف وإزالة الأصناف والمنتجات من القائمة",
+                    ccr: "Content Update ➔ Menu update ➔ Remove items",
+                    arMacro: fullArMacro, enMacro: fullEnMacro,
+                    sop: "إجراء الدعم الداخلي (Internal SOP):\nالتحقق من الأصناف المطلوب حذفها وحذفها من بوابة الشركاء وتأكيد التنفيذ للشريك.",
+                    url: "https://hungerstation.knowledgeowl.com/home/menu-update"
+                }, isEn);
+                autoRecordInteraction(fullSearchText, "حذف أصناف من القائمة", fullArMacro);
+                return;
+            }
+
+            // 2. Add Items & Options Matcher (إضافة أصناف ومنتجات وإضافات - مثل "اضيف صنف")
+            if (fullSearchText.includes('اضيف') || fullSearchText.includes('أضيف') || fullSearchText.includes('اضف') || fullSearchText.includes('أضف') || fullSearchText.includes('إضافة') || fullSearchText.includes('اضافة') || fullSearchText.includes('صنف') || fullSearchText.includes('أصناف') || fullSearchText.includes('اصناف') || fullSearchText.includes('منتجات جديدة') || fullSearchText.includes('اضافة منتج') || fullSearchText.includes('add item') || fullSearchText.includes('add items')) {
+                const arKbBody = `نفيدكم بأنه تم استلام طلبكم وتحديث قائمة الطعام لفرعكم، وقد تم إضافة واعتماد الأصناف والمنتجات والخيارات الجديدة المرفقة بالأسعار المحددة على التطبيق بنجاح.`;
+                const enKbBody = `Please be informed that your request regarding menu update has been processed, and the requested new items, products, and options have been approved and added on the app.`;
+                const fullArMacro = buildArabicMacro(greetings.arGreeting, arKbBody);
+                const fullEnMacro = buildEnglishMacro(greetings.enGreeting, enKbBody);
+                displayDualMacro({
+                    title: "Add Items & Options | إضافة الأصناف والمنتجات والخيارات الجديدة",
+                    ccr: "Content Update ➔ Menu update ➔ Add items",
+                    arMacro: fullArMacro, enMacro: fullEnMacro,
+                    sop: "إجراء الدعم الداخلي (Internal SOP):\n1. التحقق من أصناف وفئات المنيو المرفقة (اسم الصنف، السعر، الفئة ورابط الصور).\n2. إدخال وتفعيل الأصناف عبر بوابة الشركاء ثم تحديث التذكرة بـ CCR: Content Update ➔ Menu update ➔ Add items.",
+                    url: "https://hungerstation.knowledgeowl.com/home/menu-update"
+                }, isEn);
+                autoRecordInteraction(fullSearchText, "إضافة أصناف ومنتجات جديدة", fullArMacro);
+                return;
+            }
+
+            // 3. Price Change Matcher (تعديل أسعار)
+            if (fullSearchText.includes('تعديل سعر') || fullSearchText.includes('تعديل اسعار') || fullSearchText.includes('تعديل الاسعار') || fullSearchText.includes('تحديث سعر') || fullSearchText.includes('تحديث اسعار') || fullSearchText.includes('اسعار جديدة') || fullSearchText.includes('price update') || fullSearchText.includes('change price')) {
+                const arKbBody = `نفيدكم بأنه تم تحديث واعتماد قائمة الأسعار الجديدة الخاصة بفرعكم على التطبيق بنجاح حسب القائمة المرفقة.`;
+                const enKbBody = `Please be informed that your updated menu prices have been approved and updated on the app.`;
+                const fullArMacro = buildArabicMacro(greetings.arGreeting, arKbBody);
+                const fullEnMacro = buildEnglishMacro(greetings.enGreeting, enKbBody);
+                displayDualMacro({
+                    title: "Price Update | تحديث واعتماد أسعار الأصناف",
+                    ccr: "Content Update ➔ Menu update ➔ Update prices",
+                    arMacro: fullArMacro, enMacro: fullEnMacro,
+                    sop: "إجراء الدعم الداخلي (Internal SOP):\nتحديث أسعار الأصناف المطلوبة في بوابة الشركاء وتأكيد الحفظ والتفعيل.",
+                    url: "https://hungerstation.knowledgeowl.com/home/menu-update"
+                }, isEn);
+                autoRecordInteraction(fullSearchText, "تحديث أسعار الأصناف", fullArMacro);
+                return;
+            }
+
+            // 4. IBAN & Bank Details Update Matcher (تحديث الحساب البنكي / الآيبان)
+            if (fullSearchText.includes('ايبان') || fullSearchText.includes('آيبان') || fullSearchText.includes('iban') || fullSearchText.includes('بنكي') || fullSearchText.includes('الحساب البنكي')) {
+                const arKbBody = `نفيدكم بأنه تم استلام طلب تحديث البيانات البنكية، ويتم حالياً التحقق من نموذج الآيبان المرفق وصور المستندات لتحديث الحساب البنكي لدى قسم المالية.`;
+                const enKbBody = `We have received your bank account update request and it is currently being processed with our finance team.`;
+                const fullArMacro = buildArabicMacro(greetings.arGreeting, arKbBody);
+                const fullEnMacro = buildEnglishMacro(greetings.enGreeting, enKbBody);
+                displayDualMacro({
+                    title: "IBAN Update | تحديث رقم الحساب البنكي (الآيبان)",
+                    ccr: "Account Management ➔ Bank Details Update ➔ IBAN Change",
+                    arMacro: fullArMacro, enMacro: fullEnMacro,
+                    sop: "إجراء الدعم الداخلي (Internal SOP):\nمراجعة الخطاب البنكي ورقم الآيبان (IBAN) وتصعيد التذكرة لفريق المالية.",
+                    url: "https://hungerstation.knowledgeowl.com/home/bank-details-update"
+                }, isEn);
+                autoRecordInteraction(fullSearchText, "تحديث رقم الآيبان البنكي", fullArMacro);
+                return;
+            }
+
+            // DEDICATED MATCHER: Multi-Intent Combined Request (Layout Change + Add Items)
             const hasLayout = fullSearchText.includes('ترتيب') || fullSearchText.includes('تسلسل') || fullSearchText.includes('layout') || fullSearchText.includes('فئات المنيو') || fullSearchText.includes('ترتيب الفئات');
             const hasAdditions = fullSearchText.includes('إضافات') || fullSearchText.includes('اضافات') || fullSearchText.includes('إضافة أصناف') || fullSearchText.includes('اضافة اصناف') || fullSearchText.includes('أصناف جديدة') || fullSearchText.includes('add items');
 
