@@ -1606,9 +1606,61 @@
         let currentActiveQuery = "";
 
         // ============================================================
-        // 🧠 AI SELF-LEARNING ENGINE
+        // 🧠 AI SELF-LEARNING ENGINE v2 — Arabic Normalization + Fuzzy + Gemini
         // ============================================================
         let caseUsageData = JSON.parse(localStorage.getItem('hs_case_usage') || '{}');
+
+        // ── 1. ARABIC TEXT NORMALIZER ──────────────────────────────────────
+        function normalizeArabic(text) {
+            if (!text) return '';
+            return text
+                .replace(/[أإآا]/g, 'ا')
+                .replace(/ة/g, 'ه')
+                .replace(/ى/g, 'ي')
+                .replace(/[\u064B-\u065F]/g, '')
+                .replace(/ؤ/g, 'و')
+                .replace(/ئ/g, 'ي')
+                .replace(/[\u0640]/g, '')
+                .replace(/\s+/g, ' ').trim();
+        }
+
+        // ── 2. LEVENSHTEIN FUZZY MATCH ────────────────────────────────────
+        function levenshtein(a, b) {
+            const m = a.length, n = b.length;
+            const dp = Array.from({length: m+1}, (_, i) => Array.from({length: n+1}, (_, j) => i===0?j:j===0?i:0));
+            for (let i=1;i<=m;i++) for (let j=1;j<=n;j++)
+                dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+            return dp[m][n];
+        }
+        function fuzzyIncludes(haystack, needle) {
+            if (needle.length < 3) return haystack.includes(needle);
+            if (haystack.includes(needle)) return true;
+            const words = haystack.split(/\s+/);
+            const maxDist = needle.length <= 5 ? 1 : 2;
+            return words.some(w => levenshtein(normalizeArabic(w), normalizeArabic(needle)) <= maxDist);
+        }
+
+        // ── 3. GEMINI AI INTENT CLASSIFIER ───────────────────────────────
+        const GEMINI_KEY = 'AIzaSyBZpCmup29_jAio77MJ2FtbI_5UwwHZll4';
+        let _geminiCache = {};
+        async function classifyWithGemini(userMsg, topCases) {
+            const cacheKey = normalizeArabic(userMsg).slice(0, 80);
+            if (_geminiCache[cacheKey] !== undefined) return _geminiCache[cacheKey];
+            try {
+                const titles = topCases.map((c,i) => `${i+1}. ${c.case_title}`).join('\n');
+                const prompt = `أنت مساعد دعم شركاء هنقرستيشن. قرأ رسالة الشريك واختر أنسب حالة.\n\nرسالة الشريك:\n"${userMsg}"\n\nالحالات المتاحة:\n${titles}\n\nأجب برقم الحالة الأنسب فقط (مثال: 2) أو 0 إذا لا توجد.`;
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`, {
+                    method:'POST', headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({contents:[{parts:[{text:prompt}]}], generationConfig:{temperature:0,maxOutputTokens:8}})
+                });
+                const data = await res.json();
+                const txt = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+                const idx = parseInt(txt) - 1;
+                const result = (idx >= 0 && idx < topCases.length) ? idx : -1;
+                _geminiCache[cacheKey] = result;
+                return result;
+            } catch(e) { return -1; }
+        }
 
         // Arabic synonym map for smart search
         const arabicSynonyms = {
@@ -1668,31 +1720,37 @@
 
         function smartScore(c, query) {
             if (!query) return getUsageScore(c.id);
-            const q = query.toLowerCase();
-            const searchText = (c.case_title + ' ' + c.category + ' ' + c.sub_category + ' ' + (c.procedure_arabic || '')).toLowerCase();
+            const qNorm = normalizeArabic(query.toLowerCase());
+            const titleNorm  = normalizeArabic((c.case_title || '').toLowerCase());
+            const catNorm    = normalizeArabic((c.category || '').toLowerCase());
+            const subCatNorm = normalizeArabic((c.sub_category || '').toLowerCase());
+            const procNorm   = normalizeArabic((c.procedure_arabic || '').toLowerCase());
 
-            // Expand query with synonyms
-            let expandedTerms = q.split(/\s+/).filter(t => t.length > 1);
+            // Expand query with synonyms (all normalized)
+            let expandedTerms = qNorm.split(/\s+/).filter(t => t.length > 1);
             expandedTerms.forEach(term => {
-                if (arabicSynonyms[term]) expandedTerms = expandedTerms.concat(arabicSynonyms[term]);
-                // reverse lookup
                 Object.entries(arabicSynonyms).forEach(([ar, syns]) => {
-                    if (syns.includes(term)) expandedTerms.push(ar);
+                    const arNorm = normalizeArabic(ar);
+                    if (arNorm === term || syns.some(s => normalizeArabic(s) === term)) {
+                        expandedTerms = expandedTerms.concat([arNorm, ...syns.map(normalizeArabic)]);
+                    }
                 });
             });
+            expandedTerms = [...new Set(expandedTerms)];
 
             let score = 0;
             expandedTerms.forEach(term => {
-                if (searchText.includes(term)) {
-                    // Higher weight for title match
-                    score += c.case_title.toLowerCase().includes(term) ? 3 : 1;
-                }
+                if (term.length < 2) return;
+                if (fuzzyIncludes(titleNorm, term))  score += 4;
+                if (fuzzyIncludes(catNorm, term))    score += 2;
+                if (fuzzyIncludes(subCatNorm, term)) score += 2;
+                if (fuzzyIncludes(procNorm, term))   score += 1;
             });
 
-            // Boost by usage
             score += getUsageScore(c.id) * 0.5;
             return score;
         }
+
 
         function getTopUsedCases(n = 3) {
             const shared = getSharedUsage();
@@ -2415,12 +2473,13 @@ Order Issues: 920033935`;
             displayCaseDualMacro(c, { arGreeting: "", enGreeting: "" }, false);
         }
 
-        function generateResponse() {
+        async function generateResponse() {
             let rawMsg = document.getElementById('partnerMessage').value;
             let greetings = detectGreetings(rawMsg);
             let msg = cleanInputText(rawMsg).toLowerCase();
+            let msgNorm = normalizeArabic(msg);
             let fileTextCombined = extractedFileTexts.map(f => f.name + " " + f.text).join(" ").toLowerCase();
-            let fullSearchText = msg + " " + fileTextCombined;
+            let fullSearchText = msgNorm + " " + normalizeArabic(fileTextCombined);
             currentActiveQuery = msg || extractedFileTexts.map(f=>f.name).join(' ');
 
             let isEn = isEnglishInput(rawMsg || fileTextCombined);
@@ -2430,6 +2489,10 @@ Order Issues: 920033935`;
                 alert("يرجى إدخال استفسار الشريك أو إرفاق الملف المرجعي.");
                 return;
             }
+
+            // Normalized matchers (handles hamza/tashkeel variants automatically)
+            const _has = (word) => fuzzyIncludes(fullSearchText, normalizeArabic(word));
+
 
                         // DEDICATED MATCHER: Multi-Intent Combined Request (Layout Change + Add Items)
             const hasLayout = fullSearchText.includes('ترتيب') || fullSearchText.includes('تسلسل') || fullSearchText.includes('layout') || fullSearchText.includes('فئات المنيو') || fullSearchText.includes('ترتيب الفئات');
@@ -2579,35 +2642,35 @@ Should you have any inquiry regarding any item on the invoice, we are happy to a
                 return;
             }
 
-            let bestMatch = null;
-            let highestScore = 0;
+            // Use smartScore (normalized + fuzzy) for best match
+            let scoredCases = allCases.map(c => ({ c, score: smartScore(c, currentActiveQuery) }))
+                .filter(x => x.score > 0)
+                .sort((a, b) => b.score - a.score);
 
-            allCases.forEach(c => {
-                let score = 0;
-                const titleLower = (c.case_title || '').toLowerCase();
-                const textArLower = (c.procedure_arabic || '').toLowerCase();
-                const textEnLower = (c.procedure_english || '').toLowerCase();
+            if (scoredCases.length > 0 && scoredCases[0].score >= 2) {
+                // Good local match found
+                displayCaseDualMacro(scoredCases[0].c, greetings, isEn);
+                autoRecordInteraction(fullSearchText, scoredCases[0].c.case_title, '');
+            } else {
+                // 🤖 Low confidence — ask Gemini AI
+                const btn = document.getElementById('generateBtn') || document.querySelector('.btn-generate');
+                const originalText = btn ? btn.innerHTML : '';
+                if (btn) btn.innerHTML = '<i class="fa-solid fa-brain"></i> Gemini يحلل... ⏳';
 
-                const words = fullSearchText.split(/\s+/);
-                words.forEach(w => {
-                    if (w.length > 2) {
-                        if (titleLower.includes(w)) score += 5;
-                        if (textArLower.includes(w) || textEnLower.includes(w)) score += 2;
-                    }
-                });
+                const topCandidates = allCases.slice(0, 20); // send top 20 to Gemini
+                const geminiIdx = await classifyWithGemini(rawMsg || currentActiveQuery, topCandidates);
 
-                if (score > highestScore) {
-                    highestScore = score;
-                    bestMatch = c;
+                if (btn) btn.innerHTML = originalText;
+
+                if (geminiIdx >= 0) {
+                    displayCaseDualMacro(topCandidates[geminiIdx], greetings, isEn);
+                    autoRecordInteraction(fullSearchText, topCandidates[geminiIdx].case_title, '');
+                } else if (allCases.length > 0) {
+                    displayCaseDualMacro(allCases[0], greetings, isEn);
                 }
-            });
-
-            if (bestMatch) {
-                displayCaseDualMacro(bestMatch, greetings, isEn);
-            } else if (allCases.length > 0) {
-                displayCaseDualMacro(allCases[0], greetings, isEn);
             }
         }
+
 
         function switchLangTab(lang) {
             activeLangTab = lang;
