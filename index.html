@@ -846,7 +846,7 @@
                 </div>
             </div>
 
-            <button class="btn-generate" onclick="generateResponse()">
+            <button class="btn-generate" id="mainGenerateBtn" onclick="generateResponse()">
                 <i class="fa-solid fa-wand-magic-sparkles"></i> توليد الماكرو المعتمد المكتمل باسم الموظف
             </button>
         </div>
@@ -1660,10 +1660,14 @@
 ${titles}
 
 أجب بأرقام الحالات المناسبة مفصولة بفاصلة فقط (مثال: 2,5,8) أو 0 إذا لا توجد حالة مناسبة.`;
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`, {
+
+                // 5-second timeout so Gemini never hangs the UI
+                const fetchPromise = fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`, {
                     method:'POST', headers:{'Content-Type':'application/json'},
                     body: JSON.stringify({contents:[{parts:[{text:prompt}]}], generationConfig:{temperature:0, maxOutputTokens:20}})
                 });
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000));
+                const res = await Promise.race([fetchPromise, timeoutPromise]);
                 const data = await res.json();
                 const txt = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '0';
                 const indices = txt.split(',')
@@ -2677,25 +2681,29 @@ Should you have any inquiry regarding any item on the invoice, we are happy to a
                 .filter(x => x.score > 0)
                 .sort((a, b) => b.score - a.score);
 
-            // Check if message has MULTIPLE distinct issues (long message or multiple sentences)
-            const isMultiIntent = (rawMsg || '').split(/[.،\n]/).filter(s => s.trim().length > 5).length >= 2;
+            // Only send to Gemini if: local score is very low AND message is genuinely long/complex
+            // NOT triggered by simple punctuation like ،
+            const distinctSentences = (rawMsg || '').split(/[.\n]/).map(s => s.trim()).filter(s => s.length > 15);
+            const topLocalScore = scoredCases.length > 0 ? scoredCases[0].score : 0;
+            const isMultiIntent = distinctSentences.length >= 3 && topLocalScore < 3;
+            const needsGemini = topLocalScore < 3 || isMultiIntent;
 
-            if (!isMultiIntent && scoredCases.length > 0 && scoredCases[0].score >= 3) {
-                // Single clear match — show immediately
+            if (!needsGemini && scoredCases.length > 0) {
+                // Fast local match — instant, no API call
                 displayCaseDualMacro(scoredCases[0].c, greetings, isEn);
                 autoRecordInteraction(fullSearchText, scoredCases[0].c.case_title, '');
             } else {
-                // 🤖 Multi-intent OR low confidence — use Gemini AI
-                const btn = document.getElementById('generateBtn') || document.querySelector('.btn-generate');
+                // 🤖 Gemini AI — only when needed, with 5s timeout protection
+                const btn = document.getElementById('mainGenerateBtn');
                 const originalHTML = btn ? btn.innerHTML : '';
-                if (btn) btn.innerHTML = '<i class="fa-solid fa-brain"></i> Gemini يحلل الرسالة... ⏳';
+                if (btn) { btn.innerHTML = '<i class="fa-solid fa-brain"></i> Gemini يحلل... ⏳'; btn.disabled = true; }
 
                 const topCandidates = scoredCases.length > 0
                     ? scoredCases.slice(0, 25).map(x => x.c)
                     : allCases.slice(0, 25);
 
                 const geminiIndices = await classifyWithGemini(rawMsg || currentActiveQuery, topCandidates);
-                if (btn) btn.innerHTML = originalHTML;
+                if (btn) { btn.innerHTML = originalHTML; btn.disabled = false; }
 
                 const matchedCases = geminiIndices.filter(i => i >= 0).map(i => topCandidates[i]).filter(Boolean);
 
