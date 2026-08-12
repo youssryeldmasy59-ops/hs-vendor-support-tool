@@ -12,7 +12,7 @@ jobs:
       - name: Install surge
         run: npm install -g surge
       - name: Deploy
-        run: surge ./app https://hs-vendor-support-suite.surge.sh
+        run: surge . https://hs-vendor-support-suite.surge.sh
         env:
           SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
           SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
