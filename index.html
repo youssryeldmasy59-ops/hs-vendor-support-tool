@@ -1610,6 +1610,105 @@
         // ============================================================
         let caseUsageData = JSON.parse(localStorage.getItem('hs_case_usage') || '{}');
 
+        // Arabic synonym map for smart search (Dialect + KB terms)
+        const arabicSynonyms = {
+            'طابلت': ['tablet','جهاز','لوحي','device','طابعة'],
+            'طابعة': ['printer','جهاز طباعة','طابلت','دستگاه'],
+            'مفقود': ['lost','ضايع','مش موجود','غير موجود','اختفى'],
+            'مسروق': ['stolen','سرقة','اتسرق'],
+            'تالف': ['damaged','باظ','خربان','عطلان','كسر','معطل'],
+            'شاحن': ['charger','كابل','cable'],
+            'اتصال': ['connection','نت','انترنت','شبكة','wifi','نتورك'],
+            'سيم': ['sim','شريحة','شريحه'],
+            'تعويض': ['compensation','تعويضات','refund','استرداد','راجع','خصم'],
+            'فاتورة': ['invoice','فاتوره','فاتورا','حساب','كشف','مبيعات','حوالة'],
+            'قائمة': ['menu','منيو','قائمه','كارت'],
+            'اضافة': ['add','اضف','إضافة','اضافه','زيادة','اضيف','اصناف','أصناف','صنف','منتج','منتجات','وجبة','وجبات'],
+            'حذف': ['delete','remove','ازالة','مسح','شطب','الغي'],
+            'تسعير': ['price','سعر','تسعيره','pricing','اسعار','أسعار','تعديل السعر'],
+            'غلط': ['خطأ','خطا','تعديل','تحديث','غير صحيح'],
+            'اغلاق': ['close','closure','غلق','إغلاق','سكر','قفل','مغلق'],
+            'تفعيل': ['activate','تشغيل','enable','بدء','فتح'],
+            'عمولة': ['commission','كوميشن','نسبة','خصم'],
+            'ايقاف': ['pause','stop','إيقاف','وقف','ابدأ'],
+            'ترتيب': ['layout','order','تسلسل','تنظيم'],
+            'فطور': ['breakfast','فطار','صباح','morning'],
+            'تقييم': ['rating','review','تقيم','نجوم','stars'],
+            'مسابقة': ['campaign','deal','promotion','صفقة','عرض','offer'],
+            'عقد': ['contract','اتفاقية','partnership','شراكه'],
+            'مندوب': ['rider','delivery','توصيل','مناديب','سائق'],
+            'طلب': ['order','اوردر','طلبيه','طلبية'],
+            'صورة': ['photo','image','picture','صوره','img'],
+            'تحديث': ['update','تحديت','تعديل','تغيير','change'],
+            'بنك': ['bank','حساب بنكي','ايبان','iban','آيبان'],
+            'جوال': ['mobile','هاتف','phone','رقم'],
+            'بريد': ['email','ايميل','mail','الكتروني']
+        };
+
+        function trackCaseUsage(caseId) {
+            const key = String(caseId);
+            const c = allCases.find(x => x.id === caseId);
+            const title = c ? c.case_title : '';
+
+            if (!caseUsageData[key]) caseUsageData[key] = { count: 0, lastUsed: 0, title: '' };
+            caseUsageData[key].count++;
+            caseUsageData[key].lastUsed = Date.now();
+            caseUsageData[key].title = title;
+            localStorage.setItem('hs_case_usage', JSON.stringify(caseUsageData));
+
+            if (window._hsTrackFirebase) {
+                window._hsTrackFirebase(caseId, title);
+            }
+            updateAIBadge();
+        }
+
+        function getUsageScore(caseId) {
+            const shared = getSharedUsage();
+            const d = shared[String(caseId)];
+            if (!d) return 0;
+            const recency = Math.max(0, 1 - (Date.now() - (d.lastUsed || 0)) / (7 * 24 * 3600 * 1000));
+            return d.count * (1 + recency);
+        }
+
+        function smartScore(c, query) {
+            if (!query) return getUsageScore(c.id);
+            const qNorm = normalizeArabic(query.toLowerCase());
+            const titleNorm  = normalizeArabic((c.case_title || '').toLowerCase());
+            const catNorm    = normalizeArabic((c.category || '').toLowerCase());
+            const subCatNorm = normalizeArabic((c.sub_category || '').toLowerCase());
+            const procArNorm = normalizeArabic((c.procedure_arabic || '').toLowerCase());
+            const procEnNorm = normalizeArabic((c.procedure_english || '').toLowerCase());
+            const fullNorm   = normalizeArabic((c.full_content || '').toLowerCase());
+
+            let expandedTerms = [];
+            qNorm.split(/\s+/).forEach(term => {
+                if (term.length > 1) {
+                    expandedTerms.push(term);
+                    Object.entries(arabicSynonyms).forEach(([ar, syns]) => {
+                        const arNorm = normalizeArabic(ar);
+                        if (arNorm === term || syns.some(s => normalizeArabic(s) === term)) {
+                            expandedTerms.push(arNorm, ...syns.map(normalizeArabic));
+                        }
+                    });
+                }
+            });
+            expandedTerms = [...new Set(expandedTerms)];
+
+            let score = 0;
+            expandedTerms.forEach(term => {
+                if (term.length < 2) return;
+                if (titleNorm.includes(term))  score += 6;
+                if (catNorm.includes(term))    score += 4;
+                if (subCatNorm.includes(term)) score += 4;
+                if (procArNorm.includes(term) || procEnNorm.includes(term)) score += 3;
+                if (fullNorm.includes(term))   score += 2;
+            });
+
+            score += getUsageScore(c.id) * 0.5;
+            score += getFeedbackBoost(query, c.id);
+            return score;
+        }
+
         // ── 1. ARABIC TEXT NORMALIZER ──────────────────────────────────────
         function normalizeArabic(text) {
             if (!text) return '';
@@ -1713,95 +1812,7 @@ ${titles}
         }
 
 
-        // Arabic synonym map for smart search
-        const arabicSynonyms = {
-            'طابلت': ['tablet','طابعة','جهاز','لوحي'],
-            'طابعة': ['tablet','printer','جهاز'],
-            'مفقود': ['lost','ضايع','مش موجود'],
-            'مسروق': ['stolen','سرقة'],
-            'تالف': ['damaged','باظ','خربان','عطلان'],
-            'شاحن': ['charger','كابل'],
-            'اتصال': ['connection','نت','انترنت','شبكة','wifi'],
-            'سيم': ['sim','شريحة'],
-            'تعويض': ['compensation','تعويضات','refund','استرداد'],
-            'فاتورة': ['invoice','فاتوره','حساب'],
-            'قائمة': ['menu','منيو','قائمه'],
-            'اضافة': ['add','اضف','إضافة'],
-            'حذف': ['delete','remove','ازالة','مسح'],
-            'تسعير': ['price','سعر','تسعيره','pricing'],
-            'اغلاق': ['close','closure','اغلق','إغلاق'],
-            'تفعيل': ['activate','تشغيل','enable'],
-            'عمولة': ['commission','كوميشن'],
-            'ايقاف': ['pause','stop','إيقاف','وقف'],
-            'ترتيب': ['layout','order','تسلسل'],
-            'فطور': ['breakfast','فطار','صباح'],
-            'تقييم': ['rating','review','تقيم'],
-            'مسابقة': ['campaign','deal','promotion','صفقة','عرض'],
-            'عقد': ['contract','اتفاقية','partnership'],
-            'مندوب': ['rider','delivery','توصيل']
-        };
 
-        function trackCaseUsage(caseId) {
-            const key = String(caseId);
-            const c = allCases.find(x => x.id === caseId);
-            const title = c ? c.case_title : '';
-
-            // Update local
-            if (!caseUsageData[key]) caseUsageData[key] = { count: 0, lastUsed: 0, title: '' };
-            caseUsageData[key].count++;
-            caseUsageData[key].lastUsed = Date.now();
-            caseUsageData[key].title = title;
-            localStorage.setItem('hs_case_usage', JSON.stringify(caseUsageData));
-
-            // Update Firebase shared (if connected)
-            if (window._hsTrackFirebase) {
-                window._hsTrackFirebase(caseId, title);
-            }
-
-            updateAIBadge();
-        }
-
-        function getUsageScore(caseId) {
-            const shared = getSharedUsage();
-            const d = shared[String(caseId)];
-            if (!d) return 0;
-            const recency = Math.max(0, 1 - (Date.now() - (d.lastUsed || 0)) / (7 * 24 * 3600 * 1000));
-            return d.count * (1 + recency);
-        }
-
-        function smartScore(c, query) {
-            if (!query) return getUsageScore(c.id);
-            const qNorm = normalizeArabic(query.toLowerCase());
-            const titleNorm  = normalizeArabic((c.case_title || '').toLowerCase());
-            const catNorm    = normalizeArabic((c.category || '').toLowerCase());
-            const subCatNorm = normalizeArabic((c.sub_category || '').toLowerCase());
-            const procNorm   = normalizeArabic((c.procedure_arabic || '').toLowerCase());
-
-            // Expand query with synonyms (all normalized)
-            let expandedTerms = qNorm.split(/\s+/).filter(t => t.length > 1);
-            expandedTerms.forEach(term => {
-                Object.entries(arabicSynonyms).forEach(([ar, syns]) => {
-                    const arNorm = normalizeArabic(ar);
-                    if (arNorm === term || syns.some(s => normalizeArabic(s) === term)) {
-                        expandedTerms = expandedTerms.concat([arNorm, ...syns.map(normalizeArabic)]);
-                    }
-                });
-            });
-            expandedTerms = [...new Set(expandedTerms)];
-
-            let score = 0;
-            expandedTerms.forEach(term => {
-                if (term.length < 2) return;
-                if (fuzzyIncludes(titleNorm, term))  score += 4;
-                if (fuzzyIncludes(catNorm, term))    score += 2;
-                if (fuzzyIncludes(subCatNorm, term)) score += 2;
-                if (fuzzyIncludes(procNorm, term))   score += 1;
-            });
-
-            score += getUsageScore(c.id) * 0.5;
-            score += getFeedbackBoost(query, c.id); // +3 positive, -5 negative
-            return score;
-        }
 
 
         function getTopUsedCases(n = 3) {
