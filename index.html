@@ -2507,6 +2507,10 @@ Order Issues: 920033935`;
         }
 
         async function generateResponse() {
+            const btn = document.getElementById('mainGenerateBtn');
+            const btnOrigHTML = btn ? btn.innerHTML : '';
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التوليد...'; }
+            try {
             let rawMsg = document.getElementById('partnerMessage').value;
             let greetings = detectGreetings(rawMsg);
             let msg = cleanInputText(rawMsg).toLowerCase();
@@ -2520,6 +2524,7 @@ Order Issues: 920033935`;
             
             if (!msg && extractedFileTexts.length === 0) {
                 alert("يرجى إدخال استفسار الشريك أو إرفاق الملف المرجعي.");
+                if (btn) { btn.disabled = false; btn.innerHTML = btnOrigHTML; }
                 return;
             }
 
@@ -2694,16 +2699,13 @@ Should you have any inquiry regarding any item on the invoice, we are happy to a
                 autoRecordInteraction(fullSearchText, scoredCases[0].c.case_title, '');
             } else {
                 // 🤖 Gemini AI — only when needed, with 5s timeout protection
-                const btn = document.getElementById('mainGenerateBtn');
-                const originalHTML = btn ? btn.innerHTML : '';
-                if (btn) { btn.innerHTML = '<i class="fa-solid fa-brain"></i> Gemini يحلل... ⏳'; btn.disabled = true; }
+                if (btn) { btn.innerHTML = '<i class="fa-solid fa-brain"></i> Gemini يحلل... ⏳'; }
 
                 const topCandidates = scoredCases.length > 0
                     ? scoredCases.slice(0, 25).map(x => x.c)
                     : allCases.slice(0, 25);
 
                 const geminiIndices = await classifyWithGemini(rawMsg || currentActiveQuery, topCandidates);
-                if (btn) { btn.innerHTML = originalHTML; btn.disabled = false; }
 
                 const matchedCases = geminiIndices.filter(i => i >= 0).map(i => topCandidates[i]).filter(Boolean);
 
@@ -2756,7 +2758,14 @@ Should you have any inquiry regarding any item on the invoice, we are happy to a
                     displayCaseDualMacro(allCases[0], greetings, isEn);
                 }
             }
+            } catch(err) {
+                console.error('generateResponse error:', err);
+                showToast('حدث خطأ — حاول مرة أخرى');
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerHTML = btnOrigHTML; }
+            }
         }
+
 
 
 
