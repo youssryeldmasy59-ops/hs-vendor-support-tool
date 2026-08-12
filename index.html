@@ -1640,27 +1640,55 @@
             return words.some(w => levenshtein(normalizeArabic(w), normalizeArabic(needle)) <= maxDist);
         }
 
-        // ── 3. GEMINI AI INTENT CLASSIFIER ───────────────────────────────
+        // ── 3. GEMINI AI MULTI-INTENT CLASSIFIER ──────────────────────────
         const GEMINI_KEY = 'AIzaSyBZpCmup29_jAio77MJ2FtbI_5UwwHZll4';
         let _geminiCache = {};
+        // Returns ARRAY of matched case indices — handles multiple problems in one email
         async function classifyWithGemini(userMsg, topCases) {
-            const cacheKey = normalizeArabic(userMsg).slice(0, 80);
+            const cacheKey = normalizeArabic(userMsg).slice(0, 100);
             if (_geminiCache[cacheKey] !== undefined) return _geminiCache[cacheKey];
             try {
                 const titles = topCases.map((c,i) => `${i+1}. ${c.case_title}`).join('\n');
-                const prompt = `أنت مساعد دعم شركاء هنقرستيشن. قرأ رسالة الشريك واختر أنسب حالة.\n\nرسالة الشريك:\n"${userMsg}"\n\nالحالات المتاحة:\n${titles}\n\nأجب برقم الحالة الأنسب فقط (مثال: 2) أو 0 إذا لا توجد.`;
+                const prompt = `أنت مساعد دعم شركاء هنقرستيشن. قرأ رسالة الشريك جيداً.
+قد تحتوي الرسالة على مشكلة واحدة أو أكثر في نفس الرسالة.
+استخرج جميع المشاكل من الرسالة واختر الحالة الأنسب لكل مشكلة.
+
+رسالة الشريك:
+"${userMsg}"
+
+الحالات المتاحة:
+${titles}
+
+أجب بأرقام الحالات المناسبة مفصولة بفاصلة فقط (مثال: 2,5,8) أو 0 إذا لا توجد حالة مناسبة.`;
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`, {
                     method:'POST', headers:{'Content-Type':'application/json'},
-                    body: JSON.stringify({contents:[{parts:[{text:prompt}]}], generationConfig:{temperature:0,maxOutputTokens:8}})
+                    body: JSON.stringify({contents:[{parts:[{text:prompt}]}], generationConfig:{temperature:0, maxOutputTokens:20}})
                 });
                 const data = await res.json();
-                const txt = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-                const idx = parseInt(txt) - 1;
-                const result = (idx >= 0 && idx < topCases.length) ? idx : -1;
+                const txt = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '0';
+                const indices = txt.split(',')
+                    .map(s => parseInt(s.trim()) - 1)
+                    .filter(i => i >= 0 && i < topCases.length);
+                const result = indices.length > 0 ? indices : [-1];
                 _geminiCache[cacheKey] = result;
                 return result;
-            } catch(e) { return -1; }
+            } catch(e) { return [-1]; }
         }
+
+        // ── 4. FEEDBACK ENGINE — learn from mistakes automatically ────────
+        let _feedbackStore = JSON.parse(localStorage.getItem('hs_feedback') || '{}');
+        function recordFeedback(query, caseId, isPositive) {
+            const key = normalizeArabic(query).slice(0, 80);
+            if (!_feedbackStore[key]) _feedbackStore[key] = {};
+            _feedbackStore[key][String(caseId)] = isPositive ? 3 : -5;
+            localStorage.setItem('hs_feedback', JSON.stringify(_feedbackStore));
+            showToast(isPositive ? '✅ تم تسجيل الرد الصحيح — النظام تعلّم 🧠' : '❌ تم تسجيل الخطأ — النظام سيتجنبه');
+        }
+        function getFeedbackBoost(query, caseId) {
+            const key = normalizeArabic(query).slice(0, 80);
+            return (_feedbackStore[key] || {})[String(caseId)] || 0;
+        }
+
 
         // Arabic synonym map for smart search
         const arabicSynonyms = {
@@ -1748,6 +1776,7 @@
             });
 
             score += getUsageScore(c.id) * 0.5;
+            score += getFeedbackBoost(query, c.id); // +3 positive, -5 negative
             return score;
         }
 
@@ -2642,34 +2671,86 @@ Should you have any inquiry regarding any item on the invoice, we are happy to a
                 return;
             }
 
-            // Use smartScore (normalized + fuzzy) for best match
+            // ── Smart Multi-Intent Detection ─────────────────────────────
+            // Use smartScore (normalized + fuzzy + feedback) for all candidates
             let scoredCases = allCases.map(c => ({ c, score: smartScore(c, currentActiveQuery) }))
                 .filter(x => x.score > 0)
                 .sort((a, b) => b.score - a.score);
 
-            if (scoredCases.length > 0 && scoredCases[0].score >= 2) {
-                // Good local match found
+            // Check if message has MULTIPLE distinct issues (long message or multiple sentences)
+            const isMultiIntent = (rawMsg || '').split(/[.،\n]/).filter(s => s.trim().length > 5).length >= 2;
+
+            if (!isMultiIntent && scoredCases.length > 0 && scoredCases[0].score >= 3) {
+                // Single clear match — show immediately
                 displayCaseDualMacro(scoredCases[0].c, greetings, isEn);
                 autoRecordInteraction(fullSearchText, scoredCases[0].c.case_title, '');
             } else {
-                // 🤖 Low confidence — ask Gemini AI
+                // 🤖 Multi-intent OR low confidence — use Gemini AI
                 const btn = document.getElementById('generateBtn') || document.querySelector('.btn-generate');
-                const originalText = btn ? btn.innerHTML : '';
-                if (btn) btn.innerHTML = '<i class="fa-solid fa-brain"></i> Gemini يحلل... ⏳';
+                const originalHTML = btn ? btn.innerHTML : '';
+                if (btn) btn.innerHTML = '<i class="fa-solid fa-brain"></i> Gemini يحلل الرسالة... ⏳';
 
-                const topCandidates = allCases.slice(0, 20); // send top 20 to Gemini
-                const geminiIdx = await classifyWithGemini(rawMsg || currentActiveQuery, topCandidates);
+                const topCandidates = scoredCases.length > 0
+                    ? scoredCases.slice(0, 25).map(x => x.c)
+                    : allCases.slice(0, 25);
 
-                if (btn) btn.innerHTML = originalText;
+                const geminiIndices = await classifyWithGemini(rawMsg || currentActiveQuery, topCandidates);
+                if (btn) btn.innerHTML = originalHTML;
 
-                if (geminiIdx >= 0) {
-                    displayCaseDualMacro(topCandidates[geminiIdx], greetings, isEn);
-                    autoRecordInteraction(fullSearchText, topCandidates[geminiIdx].case_title, '');
+                const matchedCases = geminiIndices.filter(i => i >= 0).map(i => topCandidates[i]).filter(Boolean);
+
+                if (matchedCases.length === 0 && scoredCases.length > 0) {
+                    // Gemini found nothing, fall back to best local match
+                    displayCaseDualMacro(scoredCases[0].c, greetings, isEn);
+                    autoRecordInteraction(fullSearchText, scoredCases[0].c.case_title, '');
+                } else if (matchedCases.length === 1) {
+                    // Single Gemini match
+                    displayCaseDualMacro(matchedCases[0], greetings, isEn);
+                    autoRecordInteraction(fullSearchText, matchedCases[0].case_title, '');
+                } else if (matchedCases.length > 1) {
+                    // 🎯 MULTI-INTENT: display ALL matched issues as stacked cards
+                    const output = document.getElementById('outputContent');
+                    const arAgentName = getAgentArabicName();
+                    const enAgentName = getAgentEnglishName();
+                    let html = `<div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.85rem;color:#A78BFA;">
+                        <i class="fa-solid fa-layer-group"></i> تم الكشف عن <strong>${matchedCases.length} مشاكل</strong> في رسالة الشريك — يتم عرض رد مستقل لكل مشكلة
+                    </div>`;
+                    matchedCases.forEach((c, idx) => {
+                        const arProcText = c.procedure_arabic || 'نحيطكم علماً بأنه تم استلام طلبكم وجاري متابعته.';
+                        const enProcText = c.procedure_english || 'Your request has been received and is being followed up.';
+                        const arMacro = buildArabicMacro(idx === 0 ? greetings.arGreeting : '', arProcText);
+                        const enMacro = buildEnglishMacro(idx === 0 ? greetings.enGreeting : '', enProcText);
+                        saveToHistory(c.case_title, c.ccr);
+                        autoRecordInteraction(fullSearchText, c.case_title, '');
+                        html += `
+                        <div class="result-card" style="margin-bottom:12px;border-color:rgba(139,92,246,0.25);">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                                <span style="background:#8B5CF6;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">${idx+1}</span>
+                                <h3 style="font-size:1rem;font-weight:700;color:var(--primary);margin:0;"><i class="fa-solid fa-file-contract"></i> ${c.case_title}</h3>
+                            </div>
+                            <div class="ccr-badge"><i class="fa-solid fa-sitemap"></i> ${c.ccr}</div>
+                            <div class="response-box" contenteditable="true" style="border-color:rgba(255,196,0,0.3);background:rgba(255,196,0,0.05);color:#FFF;font-weight:600;margin:8px 0;">${arMacro}</div>
+                            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+                                <button class="btn-copy" onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText||'');showToast('تم النسخ! 🚀')"><i class="fa-solid fa-copy"></i> نسخ الماكرو ${idx+1}</button>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border-color);padding-top:8px;flex-wrap:wrap;gap:6px;">
+                                <a href="${c.url||'#'}" target="_blank" style="color:var(--primary);font-size:0.8rem;"><i class="fa-solid fa-arrow-up-right-from-square"></i> KnowledgeOwl</a>
+                                <div style="display:flex;gap:5px;">
+                                    <span style="font-size:0.7rem;color:var(--text-muted);">هل صح؟</span>
+                                    <button onclick="recordFeedback('${currentActiveQuery}',${c.id},true)" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.4);color:#10B981;border-radius:15px;padding:2px 8px;font-size:0.75rem;cursor:pointer;">👍</button>
+                                    <button onclick="recordFeedback('${currentActiveQuery}',${c.id},false)" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);color:#EF4444;border-radius:15px;padding:2px 8px;font-size:0.75rem;cursor:pointer;">👎</button>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                    output.innerHTML = html;
                 } else if (allCases.length > 0) {
                     displayCaseDualMacro(allCases[0], greetings, isEn);
                 }
             }
         }
+
+
 
 
         function switchLangTab(lang) {
@@ -2815,12 +2896,18 @@ Should you have any inquiry regarding any item on the invoice, we are happy to a
                         <div class="response-box">${sopText}</div>
                     </div>
 
-                    <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                    <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                         <a href="${caseUrl}" target="_blank" style="color: var(--primary); text-decoration: underline; font-size: 0.85rem;"><i class="fa-solid fa-arrow-up-right-from-square"></i> فتح المقال الأصلي في KnowledgeOwl</a>
+                        <div style="display:flex;gap:6px;align-items:center;">
+                            <span style="font-size:0.72rem;color:var(--text-muted);">هل الرد صحيح؟</span>
+                            <button onclick="recordFeedback('${currentActiveQuery}', ${c.id}, true)" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.4);color:#10B981;border-radius:20px;padding:3px 10px;font-size:0.8rem;cursor:pointer;" title="الرد صحيح">👍 صح</button>
+                            <button onclick="recordFeedback('${currentActiveQuery}', ${c.id}, false)" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);color:#EF4444;border-radius:20px;padding:3px 10px;font-size:0.8rem;cursor:pointer;" title="الرد خاطئ">👎 غلط</button>
+                        </div>
                     </div>
                 </div>
             `;
         }
+
 
         function copyText(id) {
             const text = document.getElementById(id).innerText;
@@ -2890,6 +2977,44 @@ Should you have any inquiry regarding any item on the invoice, we are happy to a
         }
 
         window.onload = initApp;
+
+        // ── REAL-TIME TYPING SUGGESTIONS ─────────────────────────────────
+        // Shown while typing — frequency-based shortcuts for repeated issues
+        document.addEventListener('DOMContentLoaded', () => {
+            const ta = document.getElementById('partnerMessage');
+            if (!ta) return;
+            let _debounce = null;
+            ta.addEventListener('input', function() {
+                clearTimeout(_debounce);
+                _debounce = setTimeout(() => {
+                    const q = normalizeArabic(cleanInputText(this.value || '').toLowerCase());
+                    if (q.length < 3) { renderSmartSuggestions(); return; }
+                    // Show frequent matches for this query pattern
+                    const freqMatches = learnedRules
+                        .filter(r => r.count >= 2 && fuzzyIncludes(normalizeArabic(r.keywords || ''), q.split(/\s+/)[0]))
+                        .slice(0, 3)
+                        .map(r => allCases.find(c => normalizeArabic(c.case_title).includes(normalizeArabic(r.title || ''))))
+                        .filter(Boolean);
+                    const container = document.getElementById('smartSuggestionsBar');
+                    if (!container) return;
+                    if (freqMatches.length === 0) { renderSmartSuggestions(); return; }
+                    container.style.display = 'block';
+                    container.innerHTML = `
+                        <div style="font-size:0.75rem;color:#F59E0B;margin-bottom:6px;"><i class="fa-solid fa-rotate"></i> مشاكل متكررة مشابهة لاستفسارك</div>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                            ${freqMatches.map(c => `
+                                <button onclick="selectCase(${c.id})" style="
+                                    background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);
+                                    color:#F59E0B;border-radius:20px;padding:4px 12px;font-size:0.72rem;
+                                    cursor:pointer;font-family:Cairo,sans-serif;
+                                " onmouseover="this.style.background='rgba(245,158,11,0.25)'" onmouseout="this.style.background='rgba(245,158,11,0.12)'">
+                                    🔁 ${c.case_title.split('|')[0].trim()}
+                                </button>`).join('')}
+                        </div>`;
+                }, 350);
+            });
+        });
+
     
         function downloadStandaloneFile() {
             const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
