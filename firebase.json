@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "site": "cloude-497902",
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
