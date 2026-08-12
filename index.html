@@ -1624,20 +1624,39 @@
                 .replace(/\s+/g, ' ').trim();
         }
 
-        // ── 2. LEVENSHTEIN FUZZY MATCH ────────────────────────────────────
+        // ── 2. HIGH-PERFORMANCE LEVENSHTEIN FUZZY MATCH ──────────────────
         function levenshtein(a, b) {
-            const m = a.length, n = b.length;
-            const dp = Array.from({length: m+1}, (_, i) => Array.from({length: n+1}, (_, j) => i===0?j:j===0?i:0));
-            for (let i=1;i<=m;i++) for (let j=1;j<=n;j++)
-                dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
-            return dp[m][n];
+            if (a === b) return 0;
+            if (!a) return b.length;
+            if (!b) return a.length;
+            let v0 = new Int32Array(b.length + 1);
+            let v1 = new Int32Array(b.length + 1);
+            for (let i = 0; i <= b.length; i++) v0[i] = i;
+            for (let i = 0; i < a.length; i++) {
+                v1[0] = i + 1;
+                for (let j = 0; j < b.length; j++) {
+                    const cost = a[i] === b[j] ? 0 : 1;
+                    v1[j + 1] = Math.min(v1[j] + 1, v0[j + 1] + 1, v0[j] + cost);
+                }
+                for (let j = 0; j <= b.length; j++) v0[j] = v1[j];
+            }
+            return v1[b.length];
         }
         function fuzzyIncludes(haystack, needle) {
-            if (needle.length < 3) return haystack.includes(needle);
+            if (!haystack || !needle) return false;
             if (haystack.includes(needle)) return true;
+            if (needle.length < 3) return false;
+            if (haystack.length > 300) return false; // bypass massive text blobs
             const words = haystack.split(/\s+/);
             const maxDist = needle.length <= 5 ? 1 : 2;
-            return words.some(w => levenshtein(normalizeArabic(w), normalizeArabic(needle)) <= maxDist);
+            return words.some(w => Math.abs(w.length - needle.length) <= maxDist && levenshtein(normalizeArabic(w), normalizeArabic(needle)) <= maxDist);
+        }
+
+        function scrollToOutput() {
+            setTimeout(() => {
+                const el = document.getElementById('outputContent');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 80);
         }
 
         // ── 3. GEMINI AI MULTI-INTENT CLASSIFIER ──────────────────────────
@@ -2754,6 +2773,7 @@ Should you have any inquiry regarding any item on the invoice, we are happy to a
                         </div>`;
                     });
                     output.innerHTML = html;
+                    scrollToOutput();
                 } else if (allCases.length > 0) {
                     displayCaseDualMacro(allCases[0], greetings, isEn);
                 }
@@ -2848,6 +2868,7 @@ Should you have any inquiry regarding any item on the invoice, we are happy to a
                     </div>
                 </div>
             `;
+            scrollToOutput();
         }
 
         function displayCaseDualMacro(c, greetings, isEn) {
@@ -2923,6 +2944,7 @@ Should you have any inquiry regarding any item on the invoice, we are happy to a
                     </div>
                 </div>
             `;
+            scrollToOutput();
         }
 
 
