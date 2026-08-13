@@ -775,6 +775,10 @@
         </div>
         <div class="header-controls">
 
+            <div class="agent-pill" onclick="toggleVoiceAiDrawer()" id="voiceAiTriggerBtn" style="background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%); color: #FFF; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);">
+                <i class="fa-solid fa-microphone"></i> <span id="voiceBadgeText">🎙️ المساعد الصوتي والذكاء التفاعلي</span>
+            </div>
+
             <div class="agent-pill" onclick="openAiSettingsModal()" id="aiStatusBadge" style="background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%); color: #FFF; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);">
                 <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="aiBadgeText">⚡ ربط الذكاء الاصطناعي المجاني</span>
             </div>
@@ -3682,6 +3686,176 @@ ${invoiceGuideHtml || ""}
             }
         });
 
+
+
+        let isRecordingVoice = false;
+        let speechRecognizer = null;
+        let lastAiGeneratedText = '';
+
+        function toggleVoiceAiDrawer() {
+            const drawer = document.getElementById('voiceAiDrawer');
+            if (drawer.style.display === 'flex') {
+                drawer.style.display = 'none';
+            } else {
+                drawer.style.display = 'flex';
+                initSpeechRecognition();
+            }
+        }
+
+        function initSpeechRecognition() {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRec && !speechRecognizer) {
+                speechRecognizer = new SpeechRec();
+                speechRecognizer.lang = 'ar-SA';
+                speechRecognizer.continuous = false;
+                speechRecognizer.interimResults = false;
+
+                speechRecognizer.onstart = () => {
+                    isRecordingVoice = true;
+                    const btn = document.getElementById('micBtn');
+                    const status = document.getElementById('micListeningStatus');
+                    if (btn) { btn.style.background = '#EF4444'; btn.style.boxShadow = '0 0 15px #EF4444'; }
+                    if (status) status.innerHTML = '<span style="color:#EF4444; font-weight:700;"><i class="fa-solid fa-spinner fa-spin"></i> جاري الاستماع بصوتك الآن... اتكلم بحرية</span>';
+                };
+
+                speechRecognizer.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('voiceChatInput').value = transcript;
+                    sendVoiceChatMessage();
+                };
+
+                speechRecognizer.onerror = (event) => {
+                    console.error("Speech Rec Error:", event.error);
+                    stopVoiceRecording();
+                };
+
+                speechRecognizer.onend = () => {
+                    stopVoiceRecording();
+                };
+            }
+        }
+
+        function toggleVoiceRecording() {
+            initSpeechRecognition();
+            if (!speechRecognizer) {
+                alert("متصفحك لا يدعم التعرف الصوتي المباشر. يمكنك الكتابة في الخانة مباشرة!");
+                return;
+            }
+            if (isRecordingVoice) {
+                speechRecognizer.stop();
+                stopVoiceRecording();
+            } else {
+                try { speechRecognizer.start(); } catch(e) {}
+            }
+        }
+
+        function stopVoiceRecording() {
+            isRecordingVoice = false;
+            const btn = document.getElementById('micBtn');
+            const status = document.getElementById('micListeningStatus');
+            if (btn) { btn.style.background = 'linear-gradient(135deg, #EC4899, #8B5CF6)'; btn.style.boxShadow = 'none'; }
+            if (status) status.innerHTML = '<i class="fa-solid fa-circle-info"></i> اضغط الميكروفون والتحدث بالعامية/الفصحى';
+        }
+
+        async function sendVoiceChatMessage() {
+            const input = document.getElementById('voiceChatInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatBody = document.getElementById('voiceChatBody');
+            
+            // Render User Bubble
+            const userMsgHtml = `
+                <div style="align-self: flex-end; background: #2563EB; color: #FFF; padding: 10px 14px; border-radius: 12px 12px 0 12px; max-width: 85%; font-size: 0.88rem; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                    <i class="fa-solid fa-user"></i> <strong>أنت:</strong> ${text}
+                </div>
+            `;
+            chatBody.insertAdjacentHTML('beforeend', userMsgHtml);
+            input.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // Process with Knowledge Base & AI Engine
+            let lowerText = text.toLowerCase();
+            let arAgentName = getAgentArabicName();
+
+            // Command checks (conversational instruction handling)
+            if (lastAiGeneratedText && (lowerText.includes("اعتذار") || lowerText.includes("اعتذاري") || lowerText.includes("نعتذر"))) {
+                lastAiGeneratedText = lastAiGeneratedText.replace("شريكنا العزيز", "شريكنا العزيز\n\nنعتذر لكم وبشدة عن أي إزعاج أو تأخير قد تسبب لكم، ونؤكد حرصنا الدائم على خدمتكم.");
+                renderAiChatReply("تم إضافة الاعتذار الرسمي المعتمد وتحديث الماكرو فوراً!", lastAiGeneratedText);
+                return;
+            }
+
+            if (lastAiGeneratedText && (lowerText.includes("موجز") || lowerText.includes("اختصر") || lowerText.includes("بدون نجوم"))) {
+                lastAiGeneratedText = lastAiGeneratedText.replace(/نود إفادتكم بأنه سيتم إرسال استبيان[\s\S]*?920033935/g, 'شكراً لتواصلكم معنا.');
+                renderAiChatReply("تم اختصار الإيميل وتنسيقه بشكل موجز جداً!", lastAiGeneratedText);
+                return;
+            }
+
+            // Normal Case Search in KB
+            const qNormSearch = normalizeArabic(text);
+            let matchedCase = null;
+
+            for (const item of inboundIntentMap) {
+                if (item.keys.some(k => qNormSearch.includes(normalizeArabic(k)))) {
+                    matchedCase = allCases.find(c => c.id === item.id);
+                    if (matchedCase) break;
+                }
+            }
+
+            if (!matchedCase) {
+                let scoredCases = allCases.map(c => ({ c, score: smartScore(c, text) }))
+                    .filter(x => x.score > 0)
+                    .sort((a, b) => b.score - a.score);
+                if (scoredCases.length > 0) matchedCase = scoredCases[0].c;
+            }
+
+            if (!matchedCase) {
+                matchedCase = allCases.find(c => c.id === 58) || allCases[0];
+            }
+
+            const greetings = detectGreetings(text);
+            const macroOutput = buildArabicMacro(greetings.arGreeting, matchedCase.procedure_arabic);
+            lastAiGeneratedText = macroOutput;
+
+            // Also update main app output panel
+            displayCaseDualMacro(matchedCase, greetings, false);
+
+            const aiReplyText = `تم البث والمطابقة الذكية للحالة: <strong>#${matchedCase.id} - ${matchedCase.case_title}</strong>.<br>إليك الصياغة المعتمدة وجاهزة للتنسيق والتعديل الصوتي المباشر:`;
+            renderAiChatReply(aiReplyText, macroOutput);
+        }
+
+        function renderAiChatReply(introText, macroBody) {
+            const chatBody = document.getElementById('voiceChatBody');
+            const aiMsgHtml = `
+                <div style="align-self: flex-start; background: #1E293B; border: 1px solid var(--border-color); color: #FFF; padding: 14px; border-radius: 12px 12px 12px 0; max-width: 90%; font-size: 0.88rem; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+                    <div style="color: #A78BFA; font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-robot"></i> المساعد الذكي:</div>
+                    <div style="margin-bottom: 10px; color: #CBD5E1;">${introText}</div>
+                    <div id="latestVoiceMacroBox" style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; border-right: 3px solid #8B5CF6; white-space: pre-wrap; font-family: monospace; font-size: 0.83rem; color: #E2E8F0; max-height: 200px; overflow-y: auto;">${macroBody}</div>
+                    <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button onclick="navigator.clipboard.writeText(document.getElementById('latestVoiceMacroBox').innerText); showToast('📋 تم نسخ الماكرو بنجاح!');" style="background: #2563EB; color: #FFF; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;"><i class="fa-solid fa-copy"></i> نسخ الماكرو</button>
+                        <button onclick="speakText(document.getElementById('latestVoiceMacroBox').innerText)" style="background: #7C3AED; color: #FFF; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;"><i class="fa-solid fa-volume-high"></i> نطق الرد</button>
+                    </div>
+                </div>
+            `;
+            chatBody.insertAdjacentHTML('beforeend', aiMsgHtml);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const clean = text.replace(/[^؀-ۿ\s]/g, '');
+                const utterance = new SpeechSynthesisUtterance(clean);
+                utterance.lang = 'ar-SA';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function speakLastAiResponse() {
+            if (lastAiGeneratedText) speakText(lastAiGeneratedText);
+        }
+
 </script>
 <!-- AI Settings Modal -->
     <div id="aiSettingsModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 99999; align-items: center; justify-content: center; padding: 15px;">
@@ -3717,5 +3891,50 @@ ${invoiceGuideHtml || ""}
             </div>
         </div>
     </div>
+
+    <!-- Voice AI Assistant Drawer -->
+    <div id="voiceAiDrawer" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); z-index: 999999; align-items: center; justify-content: center; padding: 15px;">
+        <div style="background: #1E293B; border: 1px solid var(--border-color); width: 100%; max-width: 650px; height: 85vh; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);">
+            <!-- Header -->
+            <div style="background: #0F172A; padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #EC4899, #8B5CF6); display: flex; align-items: center; justify-content: center; color: #FFF; font-size: 1.1rem; box-shadow: 0 0 12px rgba(236,72,153,0.5);">
+                        <i class="fa-solid fa-microphone"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.05rem; color: #FFF; font-weight: 700;">المساعد الصوتي والذكاء التفاعلي المباشر</h3>
+                        <span style="font-size: 0.75rem; color: #10B981;">● متصل ومستعد للتحدث والتعديل الفوري</span>
+                    </div>
+                </div>
+                <button onclick="toggleVoiceAiDrawer()" style="background: transparent; border: none; color: #94A3B8; font-size: 1.3rem; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Chat History Body -->
+            <div id="voiceChatBody" style="flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; background: #0F172A;">
+                <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); padding: 12px 16px; border-radius: 12px; font-size: 0.88rem; color: #DDD6FE; line-height: 1.6;">
+                    👋 <strong>أهلاً بك! أنا مساعدك الصوتي والذكائي المباشر.</strong><br>
+                    يمكنك التحدث معي بالصوت أو الكتابة، وسأقوم بالبحث في قاعدة بيانات الـ KB ومطابقة الكيس وتعديل الصياغة فوراً بناءً على توجيهاتك (مثل: <em>"اعمل الرد اعتذاري"</em> أو <em>"ضف رقم الطلب 302292856"</em>)!
+                </div>
+            </div>
+
+            <!-- Controls Footer -->
+            <div style="background: #1E293B; padding: 16px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <button id="micBtn" onclick="toggleVoiceRecording()" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFF; border: none; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; transition: all 0.2s; flex-shrink: 0;" title="اضغط للتحدث بالصوت">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                    <input type="text" id="voiceChatInput" placeholder="تحدث بالصوت أو اكتب توجيهك للمساعد الذكي..." onkeydown="if(event.key==='Enter') sendVoiceChatMessage()" style="flex: 1; padding: 12px 16px; background: #0F172A; border: 1px solid var(--border-color); border-radius: 10px; color: #FFF; font-size: 0.9rem;">
+                    <button onclick="sendVoiceChatMessage()" style="background: #2563EB; color: #FFF; border: none; padding: 0 18px; height: 44px; border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-paper-plane"></i> إرسال
+                    </button>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: #94A3B8;">
+                    <span id="micListeningStatus"><i class="fa-solid fa-circle-info"></i> اضغط الميكروفون والتحدث بالعامية/الفصحى</span>
+                    <button onclick="speakLastAiResponse()" style="background: transparent; border: none; color: #A78BFA; cursor: pointer; font-weight: 700;"><i class="fa-solid fa-volume-high"></i> قراءة الرد بصوت عالي</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
