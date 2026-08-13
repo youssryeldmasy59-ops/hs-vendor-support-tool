@@ -2867,22 +2867,9 @@ ${titles}
 ];
         async function loadKBData() {
             try {
-                allCases = embeddedKB;
+                allCases = typeof embeddedKB !== 'undefined' ? embeddedKB : [];
                 searchCases();
                 renderSmartSuggestions();
-                
-                // Silent Cloud Auto-Sync on Launch
-                fetch('https://hs-vendor-support-suite.surge.sh/kb_data.json?t=' + Date.now())
-                    .then(res => res.json())
-                    .then(remoteKB => {
-                        if (remoteKB && remoteKB.length > 0) {
-                            allCases = remoteKB;
-                            searchCases();
-                            renderSmartSuggestions();
-                            showSyncStatusBadge(remoteKB.length);
-                        }
-                    })
-                    .catch(err => console.log('Offline mode active:', err));
             } catch(e) {
                 console.error("Error loading KB:", e);
             }
@@ -3480,7 +3467,7 @@ Order Issues: 920033935`;
         }
 
         function selectCase(id) {
-            const c = allCases.find(item => item.id === id);
+            const c = allCases.find(item => item && item.id == id);
             if (!c) return;
             trackCaseUsage(id);
             displayCaseDualMacro(c, { arGreeting: "", enGreeting: "" }, false);
