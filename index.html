@@ -44,9 +44,8 @@
                     if (snap.exists()) {
                         window._hsSharedUsage = snap.data();
                         if (typeof renderSmartSuggestions === 'function') renderSmartSuggestions();
-                        if (typeof searchCases === 'function') searchCases();
                     }
-                });
+                }, (err) => console.warn('Firebase sync note:', err));
 
                 window._hsTrackFirebase = async (caseId, caseTitle) => {
                     const usageRef = doc(db, 'shared', 'case_usage');
@@ -2489,8 +2488,17 @@ Contact Details:
 Order Issues: 920033935`;
         }
 
-        function searchCases() {
-            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        let _macroActive = false;
+
+        function searchCases(isUserSearch = false) {
+            // If user explicitly typed in search bar or clicked category, allow search
+            if (!isUserSearch && _macroActive) return;
+
+            const queryInput = document.getElementById('searchInput');
+            const query = (queryInput ? queryInput.value : '').toLowerCase().trim();
+            
+            if (isUserSearch) { _macroActive = false; }
+
             let filtered = allCases.filter(c => {
                 const matchCat = (currentFilter === 'ALL' || c.category.includes(currentFilter) || c.sub_category.includes(currentFilter));
                 if (!query) return matchCat;
@@ -2819,6 +2827,7 @@ Should you have any inquiry regarding any item on the invoice, we are happy to a
                     autoRecordInteraction(fullSearchText, matchedCases[0].case_title, '');
                 } else if (matchedCases.length > 1) {
                     // 🎯 MULTI-INTENT: display ALL matched issues as stacked cards
+                    _macroActive = true;
                     const output = document.getElementById('outputContent');
                     const arAgentName = getAgentArabicName();
                     const enAgentName = getAgentEnglishName();
@@ -2892,6 +2901,7 @@ Should you have any inquiry regarding any item on the invoice, we are happy to a
         }
 
         function displayDualMacro(scen, isEn) {
+            _macroActive = true;
             saveToHistory(scen.title, scen.ccr);
             const arAgentName = getAgentArabicName();
             const enAgentName = getAgentEnglishName();
@@ -2953,6 +2963,7 @@ Should you have any inquiry regarding any item on the invoice, we are happy to a
         }
 
         function displayCaseDualMacro(c, greetings, isEn) {
+            _macroActive = true;
             const arProcText = c.procedure_arabic || "نحيطكم علماً بأنه تم استلام طلبكم وجاري متابعة التفاصيل مع القسم المختص وموافاتكم بالتحديث المعتمد فوراً.";
             const enProcText = c.procedure_english || "We would like to inform you that your request has been received and is being followed up with the concerned department. We will update you shortly.";
             
