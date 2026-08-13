@@ -939,7 +939,7 @@
             }
         } catch(e) { console.warn('PDF.js worker setup skipped:', e); }
 
-        let allCases = [];
+        var allCases = window.allCases = [];
         let currentFilter = 'ALL';
         let currentAgentName = localStorage.getItem('hs_agent_name') || 'أحمد';
         let historyLog = JSON.parse(localStorage.getItem('hs_history_log') || '[]');
@@ -1109,7 +1109,13 @@
         function scrollToOutput() {
             setTimeout(() => {
                 const el = document.getElementById('outputContent');
-                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (el && typeof el.scrollIntoView === 'function') {
+                    try {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } catch(e) {
+                        el.scrollIntoView(true);
+                    }
+                }
             }, 80);
         }
 
@@ -1318,7 +1324,7 @@ ${titles}
             if (e.key === 'Enter') saveAgentName();
         }
 
-        const embeddedKB = [
+        var embeddedKB = window.embeddedKB = [
     {
         "id": 1,
         "category": "Technical Inquiry",
@@ -2394,7 +2400,7 @@ ${titles}
 ];
 async function loadKBData() {
             try {
-                allCases = typeof embeddedKB !== 'undefined' ? embeddedKB : [];
+                allCases = window.allCases = (typeof window !== 'undefined' && window.embeddedKB) || (typeof embeddedKB !== 'undefined' ? embeddedKB : []);
                 searchCases();
                 renderSmartSuggestions();
             } catch(e) {
@@ -3048,7 +3054,7 @@ function cleanArabicProcedure(text) {
         }
 
         function initDynamicKB() {
-            allCases = typeof embeddedKB !== 'undefined' ? embeddedKB : [];
+            allCases = window.allCases = (typeof window !== 'undefined' && window.embeddedKB) || (typeof embeddedKB !== 'undefined' ? embeddedKB : []);
             renderCaseSidebarList(allCases);
         }
 
@@ -3237,7 +3243,7 @@ async function generateResponse() {
                     id: 79
                 },
                 {
-                    keys: ['إلغاء وإنهاء عرض التوصيل المجاني', 'إيقاف حملة التوصيل المخفض Deal', 'عايز أنهي صفقة التوصيل الموقعة', 'إلغاء خصم التوصيل للعملاء', 'إنهاء صفقة التوصيل', 'انهاء الصفقة', 'الغاء الصفقه', 'ايقاف عرض التوصيل المجاني', 'الغاء صفقة التوصيل', 'فسخ الصفقة', 'termination of a deal', 'cancel delivery deal', 'end free delivery promo', 'terminate delivery deal', 'cancel 3pl deal'],
+                    keys: ['طلب الغاء عرض التوصيل المجاني', 'الغاء التوصيل المجاني', 'إلغاء وإنهاء عرض التوصيل المجاني', 'إيقاف حملة التوصيل المخفض Deal', 'عايز أنهي صفقة التوصيل الموقعة', 'إلغاء خصم التوصيل للعملاء', 'إنهاء صفقة التوصيل', 'انهاء الصفقة', 'الغاء الصفقه', 'ايقاف عرض التوصيل المجاني', 'الغاء صفقة التوصيل', 'فسخ الصفقة', 'termination of a deal', 'cancel delivery deal', 'end free delivery promo', 'terminate delivery deal', 'cancel 3pl deal'],
                     id: 80
                 },
                 {
@@ -3247,11 +3253,11 @@ async function generateResponse() {
 
 
                 {
-                    keys: ['أريد رقم مدير حسابي', 'طلب اجتماع مع مدير الحساب Account Manager', 'كيف أتواصل مع المسؤول عن متجرنا', 'طلب زيارة من مسؤول هنقرستيشن للمحل', 'بيانات تواصل مدير الحساب', 'مدير الحساب', 'اجتماع مدير الحساب', 'رقم مدير حسابي', 'التواصل مع مدير الحساب', 'مسؤول الحساب', 'account manager meeting', 'contact account manager', 'request meeting with AM', 'account manager phone number', 'who is my account manager'],
+                    keys: ['طلب اجتماع مع مدير الحساب Account Manager', 'أريد رقم وتواصل مدير الحساب', 'كيف أتواصل مع المسؤول عن متجرنا لاجتماع', 'طلب زيارة من مسؤول هنقرستيشن للمحل', 'بيانات تواصل مدير الحساب', 'اجتماع مدير الحساب', 'رقم مدير حسابي', 'التواصل مع مدير الحساب للاجتماع', 'تنسيق موعد مع مسؤول الحساب', 'account manager meeting', 'contact account manager for meeting', 'request meeting with AM', 'account manager phone number', 'who is my account manager'],
                     id: 72
                 },
                 {
-                    keys: ['مدير الحساب ما يرد على اتصالاتي', 'شكوى على مدير الحساب يتجاهلنا', 'تصعيد لمدير المنطقة Area Manager', 'المسؤول عن الفرع ما يجاوب', 'شكوى إهمال وتأخير من مدير الحساب', 'أريد التحدث مع مدير مدير الحساب', 'مدير الحساب لا يرد', 'شكوى مدير الحساب', 'مدير المنطقة', 'مدير الحساب ما يجاوب', 'شكوي علي مدير الحساب', 'account manager no response', 'complaint against account manager', 'escalate to area manager', 'AM ignoring calls', 'account manager poor support'],
+                    keys: ['مدير الحساب ما بيردش عليا', 'مدير الحساب ما يرد على اتصالاتي', 'شكوى على مدير الحساب يتجاهلنا', 'تصعيد لمدير المنطقة Area Manager', 'المسؤول عن الفرع ما يجاوب', 'شكوى إهمال وتأخير من مدير الحساب', 'أريد التحدث مع مدير مدير الحساب', 'مدير الحساب لا يرد', 'شكوى مدير الحساب', 'مدير المنطقة', 'مدير الحساب ما يجاوب', 'شكوي علي مدير الحساب', 'ما بيردش', 'لا يرد على المكالمات', 'account manager no response', 'complaint against account manager', 'escalate to area manager', 'AM ignoring calls', 'account manager poor support'],
                     id: 73
                 },
                 {
@@ -3631,15 +3637,31 @@ async function generateResponse() {
             // Sort by score descending
             scoredMapResults.sort((a, b) => b.score - a.score);
 
-            // Extract distinct top cases
-            const seenIds = new Set();
-            for (const res of scoredMapResults) {
-                if (!seenIds.has(res.id)) {
-                    seenIds.add(res.id);
-                    // If it is a top-tier match
-                    if (res.score >= 50 || detectedCases.length === 0) {
-                        detectedCases.push(res.caseObj);
+            if (scoredMapResults.length > 0) {
+                const topScore = scoredMapResults[0].score;
+                // If top score is dominant, prioritize top 1 directly
+                const highScoreMatches = scoredMapResults.filter(r => r.score >= Math.max(80, topScore - 15));
+                const uniqueHighCases = [];
+                const seenIds = new Set();
+                for (const r of highScoreMatches) {
+                    if (!seenIds.has(r.id)) {
+                        seenIds.add(r.id);
+                        uniqueHighCases.push(r.caseObj);
                     }
+                }
+
+                if (uniqueHighCases.length === 1) {
+                    matchedIntentCase = uniqueHighCases[0];
+                } else if (uniqueHighCases.length > 1 && topScore >= 120) {
+                    // Check if genuinely different categories
+                    const distinctCats = new Set(uniqueHighCases.map(c => c.category));
+                    if (distinctCats.size > 1) {
+                        detectedCases = uniqueHighCases.slice(0, 2);
+                    } else {
+                        matchedIntentCase = uniqueHighCases[0];
+                    }
+                } else {
+                    matchedIntentCase = scoredMapResults[0].caseObj;
                 }
             }
 
@@ -3820,7 +3842,8 @@ ${invoiceGuideHtml || ""}
                 finalArMacro = aiOverrideText;
                 aiBadgeNotice = `<div style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10B981; color: #34D399; padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-wand-magic-sparkles"></i> تم التوليد الفائق بذكاء الاصطناعي المجاني (Gemini 1.5 Flash)</div>`;
             } else if (localStorage.getItem('gemini_api_key')) {
-                const aiGen = await callGeminiFreeAi(document.getElementById('inputQuery').value, c, greetings);
+                const currentQueryText = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '') || (document.getElementById('searchInput') ? document.getElementById('searchInput').value : '');
+                const aiGen = await callGeminiFreeAi(currentQueryText, c, greetings);
                 if (aiGen) {
                     finalArMacro = aiGen;
                     aiBadgeNotice = `<div style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10B981; color: #34D399; padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-wand-magic-sparkles"></i> تم التوليد الفائق بذكاء الاصطناعي المجاني (Gemini 1.5 Flash)</div>`;
