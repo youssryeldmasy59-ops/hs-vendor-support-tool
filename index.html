@@ -2802,15 +2802,14 @@ ${titles}
 وتفضلوا بقبول فائق الاحترام.`;
         }
 function cleanArabicProcedure(text) {
-            if (!text || text.includes("نحيطكم علماً بأنه تم استلام طلبكم") || text.includes("وجاري متابعة التفاصيل")) {
-                return "يمكنك تقديم طلب تعويض عبر بوابة الشركاء من خلال:\nمساعدة (Help) ← استفسار جديد ← استفسارات تتعلق بالفواتير والمدفوعات ← اعتراض على طلب (Order Dispute).\n\nيرجى إدخال رقم الطلب وتوفير التفاصيل المطلوبة وإرفاق المستندات الداعمة، وسيتم مراجعة الطلب وحلّه خلال 3 أيام عمل.";
-            }
+            if (!text) return "";
             let lines = text.split('\n');
             let cleaned = [];
             for (let line of lines) {
                 let l = line.trim();
                 if (!l) continue;
-                if (/ملاحظة|ملاحظه|تصعيد التذكرة|كان الشريك جديد|لم يمض|التفعيل 30 يوم|الاتصال بالشريك|طلب المتطلبات|تنفيذ الطلب بشكل مباشر|يتم استخدام هذا الرد|إعادة فتح التذكرة|بوابة الشركاء|أصر على القيام به|تنفيذ الطلب وعدم رفضه|★|راش|راض|محايد|غير راض|Macro|\[English\]|\[Arabic\]|Dear|HungerStation|We would like to|upon reviewing|e-sales|commission|outstanding balance|Apologies|I was honored|notification|rate it|satisfied|Employee Name|Contact Details|Issues with Orders|Sincerely|Valued Partner|شريكنا|شكراً لتواصلكم|اسم الموظف|تفاصيل التواصل|مشاكل الطلبات|302270347|مع الشكر/i.test(l)) {
+                if (/^[-*•#]/.test(l)) continue;
+                if (/في حال كان|في حالة|يتم التحقق|ستكون حالة|يتم اخبار|تزويده بالمعلومات|صفحة الطلب|يتم استخدام|تعديله حسب|مقتضى الحال|ملاحظة|ملاحظه|تصعيد التذكرة|كان الشريك جديد|لم يمض|التفعيل 30 يوم|الاتصال بالشريك|طلب المتطلبات|تنفيذ الطلب بشكل مباشر|إعادة فتح التذكرة|بوابة الشركاء|أصر على القيام به|تنفيذ الطلب وعدم رفضه|★|راش|راض|محايد|غير راض|Macro|\[English\]|\[Arabic\]|Dear|HungerStation|We would like to|upon reviewing|e-sales|commission|outstanding balance|Apologies|I was honored|notification|rate it|satisfied|Employee Name|Contact Details|Issues with Orders|Sincerely|Valued Partner|شريكنا|شكراً لتواصلكم|اسم الموظف|تفاصيل التواصل|مشاكل الطلبات|302270347|مع الشكر/i.test(l)) {
                     continue;
                 }
                 cleaned.push(l);
@@ -2846,7 +2845,7 @@ function cleanArabicProcedure(text) {
             let arGreeting = "";
             let enGreeting = "";
 
-            if (lower.includes("السلام عليكم")) {
+            if (lower.includes("السلام عليكم") || lower.includes("سلام عليكم") || lower.includes("وعليكم السلام")) {
                 arGreeting = "وعليكم السلام ورحمة الله وبركاته\n\n";
                 enGreeting = "Peace be upon you,\n\n";
             } else if (lower.includes("صباح الخير") || lower.includes("صباح النور") || lower.includes("good morning")) {
@@ -2855,7 +2854,7 @@ function cleanArabicProcedure(text) {
             } else if (lower.includes("مساء الخير") || lower.includes("مساء النور") || lower.includes("good evening")) {
                 arGreeting = "مساء النور والسرور 🌸\n\n";
                 enGreeting = "Good evening,\n\n";
-            } else if (lower.includes("hello") || lower.includes("hi")) {
+            } else if (lower.includes("hello") || lower.includes("hi") || lower.includes("هلا") || lower.includes("مرحبا")) {
                 arGreeting = "أهلاً وسهلاً بك،\n\n";
                 enGreeting = "Hello,\n\n";
             }
