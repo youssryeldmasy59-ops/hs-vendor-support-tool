@@ -1675,38 +1675,41 @@
             return d.count * (1 + recency);
         }
 
+        const _stopWords = new Set(['في', 'من', 'على', 'عن', 'مع', 'هذا', 'هذه', 'تم', 'كان', 'جديد', 'جديدة', 'التي', 'الذي', 'ان', 'أن', 'او', 'أو', 'لي', 'لنا', 'هو', 'هي']);
+
         function smartScore(c, query) {
             if (!query) return getUsageScore(c.id);
             const qNorm = normalizeArabic(query.toLowerCase());
             const titleNorm  = normalizeArabic((c.case_title || '').toLowerCase());
             const catNorm    = normalizeArabic((c.category || '').toLowerCase());
             const subCatNorm = normalizeArabic((c.sub_category || '').toLowerCase());
+            const ccrNorm    = normalizeArabic((c.ccr || '').toLowerCase());
             const procArNorm = normalizeArabic((c.procedure_arabic || '').toLowerCase());
             const procEnNorm = normalizeArabic((c.procedure_english || '').toLowerCase());
             const fullNorm   = normalizeArabic((c.full_content || '').toLowerCase());
 
+            let rawTerms = qNorm.split(/\s+/).filter(t => t.length > 1 && !_stopWords.has(t));
             let expandedTerms = [];
-            qNorm.split(/\s+/).forEach(term => {
-                if (term.length > 1) {
-                    expandedTerms.push(term);
-                    Object.entries(arabicSynonyms).forEach(([ar, syns]) => {
-                        const arNorm = normalizeArabic(ar);
-                        if (arNorm === term || syns.some(s => normalizeArabic(s) === term)) {
-                            expandedTerms.push(arNorm, ...syns.map(normalizeArabic));
-                        }
-                    });
-                }
+            rawTerms.forEach(term => {
+                expandedTerms.push(term);
+                Object.entries(arabicSynonyms).forEach(([ar, syns]) => {
+                    const arNorm = normalizeArabic(ar);
+                    if (arNorm === term || syns.some(s => normalizeArabic(s) === term)) {
+                        expandedTerms.push(arNorm, ...syns.map(normalizeArabic));
+                    }
+                });
             });
             expandedTerms = [...new Set(expandedTerms)];
 
             let score = 0;
             expandedTerms.forEach(term => {
                 if (term.length < 2) return;
-                if (titleNorm.includes(term))  score += 6;
-                if (catNorm.includes(term))    score += 4;
-                if (subCatNorm.includes(term)) score += 4;
-                if (procArNorm.includes(term) || procEnNorm.includes(term)) score += 3;
-                if (fullNorm.includes(term))   score += 2;
+                if (titleNorm.includes(term))  score += 25;
+                if (subCatNorm.includes(term)) score += 18;
+                if (catNorm.includes(term))    score += 12;
+                if (ccrNorm.includes(term))    score += 10;
+                if (procArNorm.includes(term) || procEnNorm.includes(term)) score += 5;
+                if (fullNorm.includes(term))   score += 1;
             });
 
             score += getUsageScore(c.id) * 0.5;
