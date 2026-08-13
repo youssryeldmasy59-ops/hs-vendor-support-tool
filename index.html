@@ -2805,6 +2805,44 @@ ${titles}
 في حال وجود أي استفسار بخصوص أي بند من بنود الفاتورة، يسعدنا خدمتكم والإجابة على جميع استفساراتكم.
 وتفضلوا بقبول فائق الاحترام.`;
         }
+
+        function extractOrderParameters(text) {
+            const params = { orderId: '', branch: '' };
+            if (!text) return params;
+            
+            const orderMatch = text.match(/(?:#|طلب\s*رقم\s*|order\s*#?\s*)?(\d{8,10})/i);
+            if (orderMatch) params.orderId = orderMatch[1];
+
+            const branchMatch = text.match(/(?:فرع|مطعم|متجر)\s+([\u0600-\u06FF\w\s]{3,20})/);
+            if (branchMatch) params.branch = branchMatch[0].trim();
+
+            return params;
+        }
+
+        function reformatTone(tone) {
+            const arBox = document.getElementById('arMacroText');
+            if (!arBox) return;
+            let currentText = arBox.innerText;
+
+            if (tone === 'SHORT') {
+                currentText = currentText.replace(/نود إفادتكم بأنه سيتم إرسال استبيان[\s\S]*?920033935/g, 'شكراً لتواصلكم معنا.');
+                arBox.innerText = currentText;
+                showToast("⚡ تم تحويل الصياغة إلى موجزة وسريعة!");
+            } else if (tone === 'APOLOGETIC') {
+                if (!currentText.includes("نعتذر لكم وبشدة")) {
+                    currentText = currentText.replace("شريكنا العزيز", "شريكنا العزيز\n\nنعتذر لكم وبشدة عن أي إزعاج أو تأخير قد تسبب لكم، ونؤكد حرصنا الدائم على خدمتكم وتوفير أفضل تجربة لكم مع هنقرستيشن.");
+                    arBox.innerText = currentText;
+                }
+                showToast("🤝 تم تطبيق الصياغة الاعتذارية والودودة!");
+            } else if (tone === 'FORMAL') {
+                if (!currentText.includes("تحية طيبة وبعد")) {
+                    currentText = currentText.replace("شريكنا العزيز", "شريكنا العزيز\n\nتحية طيبة وبعد،،");
+                    arBox.innerText = currentText;
+                }
+                showToast("🏢 تم تطبيق الصياغة الرسمية والدبلوماسية!");
+            }
+        }
+
 function cleanArabicProcedure(text) {
             if (!text) return "";
             let lines = text.split('\n');
