@@ -1490,8 +1490,9 @@
         const _stopWords = new Set(['في', 'من', 'على', 'عن', 'مع', 'هذا', 'هذه', 'تم', 'كان', 'جديد', 'جديدة', 'التي', 'الذي', 'ان', 'أن', 'او', 'أو', 'لي', 'لنا', 'هو', 'هي']);
 
         function smartScore(c, query) {
-            if (!query) return getUsageScore(c.id);
-            const qNorm = normalizeArabic(query.toLowerCase());
+            if (!c || !c.case_title || c.case_title.trim().length < 2) return 0;
+            if (!query || !query.trim()) return getUsageScore(c.id);
+            const qNorm = normalizeArabic(query.toLowerCase().trim());
             const titleNorm  = normalizeArabic((c.case_title || '').toLowerCase());
             const catNorm    = normalizeArabic((c.category || '').toLowerCase());
             const subCatNorm = normalizeArabic((c.sub_category || '').toLowerCase());
@@ -1500,7 +1501,7 @@
             const procEnNorm = normalizeArabic((c.procedure_english || '').toLowerCase());
             const fullNorm   = normalizeArabic((c.full_content || '').toLowerCase());
 
-            let rawTerms = qNorm.split(/\s+/).filter(t => t.length > 1 && !_stopWords.has(t));
+            let rawTerms = qNorm.split(/\s+/).filter(t => t && t.length > 1 && !_stopWords.has(t));
             let expandedTerms = [];
             rawTerms.forEach(term => {
                 expandedTerms.push(term);
@@ -1511,20 +1512,27 @@
                     }
                 });
             });
-            expandedTerms = [...new Set(expandedTerms)];
+            expandedTerms = [...new Set(expandedTerms.filter(t => t && t.length > 1))];
 
             let score = 0;
+
+            if (qNorm.length > 3) {
+                if (titleNorm.includes(qNorm) || qNorm.includes(titleNorm)) score += 150;
+                if (ccrNorm.includes(qNorm) || qNorm.includes(ccrNorm)) score += 100;
+                if (fullNorm.includes(qNorm) || qNorm.includes(fullNorm)) score += 80;
+            }
+
             expandedTerms.forEach(term => {
-                if (term.length < 2) return;
-                if (titleNorm.includes(term))  score += 25;
-                if (subCatNorm.includes(term)) score += 18;
-                if (catNorm.includes(term))    score += 12;
-                if (ccrNorm.includes(term))    score += 10;
-                if (procArNorm.includes(term) || procEnNorm.includes(term)) score += 5;
-                if (fullNorm.includes(term))   score += 1;
+                if (!term || term.length < 2) return;
+                if (titleNorm.includes(term))  score += 35;
+                if (subCatNorm.includes(term)) score += 20;
+                if (catNorm.includes(term))    score += 15;
+                if (ccrNorm.includes(term))    score += 25;
+                if (procArNorm.includes(term) || procEnNorm.includes(term)) score += 15;
+                if (fullNorm.includes(term))   score += 10;
             });
 
-            score += getUsageScore(c.id) * 0.5;
+            score += getUsageScore(c.id) * 0.2;
             score += getFeedbackBoost(query, c.id);
             return score;
         }
@@ -2057,7 +2065,7 @@ ${titles}
         "ccr": "Partner Data Update -> Basic profile change | تغيير الملف الشخصي  الاساسي -> Address change | تغيير العنوان",
         "procedure_arabic": "نعتذر عن التاخير في الرد ونحيطكم علمًا بانه قد تم تحديث الموقع بنجاح .",
         "procedure_english": "",
-        "full_content": "Address change | تغيير العنوان\nProcedure (English)\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\nProcedure (Arabic)\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nWe would like to inform you that your request for address change has been completed successfully.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nنعتذر عن التاخير في الرد ونحيطكم علمًا بانه قد تم تحديث الموقع بنجاح .\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample\n302289984"
+        "full_content": "Address change | تغيير العنوان\nProcedure (English)\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\nProcedure (Arabic)\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nWe would like to inform you that your request for address change has been completed successfully.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nنعتذر عن التاخير في الرد ونحيطكم علمًا بانه قد تم تحديث الموقع بنجاح .\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample\n302289984 موقع الفرع اللوكيشن احداثيات مكان الفرع تغيير الموقع تعديل الموقع address change location coordinates"
     },
     {
         "id": 26,
@@ -2427,7 +2435,7 @@ ${titles}
         "ccr": "Billing Inquiries -> Invoice inquiries | الاستعلام عن الفاتوره -> Compensation | تعويض",
         "procedure_arabic": "يمكنك تقديم طلب تعويض عبر بوابة الشركاء من خلال: مساعدة (Help) ← استفسار جديد ← استفسارات تتعلق بالفواتير والمدفوعات ← اعتراض على طلب (Order Dispute).\n\nيرجى إدخال رقم الطلب وتوفير التفاصيل المطلوبة وإرفاق المستندات الداعمة، وسيتم مراجعة الطلب وحلّه خلال 3 أيام عمل.",
         "procedure_english": "You can submit a compensation request through the Partner Portal by following these steps:\nHelp → New Inquiry → Payments / Billing / Bank details update → Order Dispute.\nPlease enter the order number, provide the required details, attach the supporting documents, and click \"Submit\".\nYour request will either e resolved automatically or forwarded to the relevant team for review.\nPlease note that the review process may take up to 3 business days . You will be notified once the review has been completed.\nThank you for your cooperation.\nProcedure\n(Arabic)\ncanned response\nYour request has been forwarded to the support team and they will respond to you within twenty four hours\nExample\n300027022",
-        "full_content": "Compensation | تعويض\nProcedure (English)\nDear Partner,\nThank you for contacting HungerStation.\nYou can submit a compensation request through the Partner Portal by following these steps:\nHelp → New Inquiry → Payments / Billing / Bank details update → Order Dispute.\nPlease enter the order number, provide the required details, attach the supporting documents, and click \"Submit\".\nYour request will either e resolved automatically or forwarded to the relevant team for review.\nPlease note that the review process may take up to 3 business days . You will be notified once the review has been completed.\nThank you for your cooperation.\nHungerStation\nProcedure\n(Arabic)\nشريكنا العزيز،\nشكراً لتواصلك مع هنقرستيشن.\nيمكنك تقديم طلب تعويض عبر بوابة الشركاء من خلال:\nمساعدة (Help) ← استفسار جديد ← استفسارات تتعلق بالفواتير و المدفوعات ← طلب تعويض.\nيرجى إدخال رقم الطلب، تفاصيل الطلب، وإرفاق المستندات المطلوبة ثم الضغط على \"إرسال\".\nسيتم إما حل الطلب تلقائياً أو إنشاء تذكرة لمراجعته من قبل الدعم الفني.\nيرجى العلم أن مراجعة الطلب قد تستغرق حتى 3 أيام عمل، وسيتم إشعاركم بالنتيجة فور الانتهاء من المراجعة.\nشكراً لتعاونكم.\nهنقرستيشن\ncanned response\nالرد الموحد\nYour request has been forwarded to the support team and they will respond to you within twenty four hours\nولا يهمك سيتم تحويل طلبك إلى فريق الدعم لدينا، وسيتم التواصل معك خلال 24 ساعة\nExample\n300027022 اعتراض على طلب يعترض على طلب تعويض العميل خصم طلب تظلم طلب تظلم تعويضات order dispute compensation refund"
+        "full_content": "Compensation | تعويض\nProcedure (English)\nDear Partner,\nThank you for contacting HungerStation.\nYou can submit a compensation request through the Partner Portal by following these steps:\nHelp → New Inquiry → Payments / Billing / Bank details update → Order Dispute.\nPlease enter the order number, provide the required details, attach the supporting documents, and click \"Submit\".\nYour request will either e resolved automatically or forwarded to the relevant team for review.\nPlease note that the review process may take up to 3 business days . You will be notified once the review has been completed.\nThank you for your cooperation.\nHungerStation\nProcedure\n(Arabic)\nشريكنا العزيز،\nشكراً لتواصلك مع هنقرستيشن.\nيمكنك تقديم طلب تعويض عبر بوابة الشركاء من خلال:\nمساعدة (Help) ← استفسار جديد ← استفسارات تتعلق بالفواتير و المدفوعات ← طلب تعويض.\nيرجى إدخال رقم الطلب، تفاصيل الطلب، وإرفاق المستندات المطلوبة ثم الضغط على \"إرسال\".\nسيتم إما حل الطلب تلقائياً أو إنشاء تذكرة لمراجعته من قبل الدعم الفني.\nيرجى العلم أن مراجعة الطلب قد تستغرق حتى 3 أيام عمل، وسيتم إشعاركم بالنتيجة فور الانتهاء من المراجعة.\nشكراً لتعاونكم.\nهنقرستيشن\ncanned response\nالرد الموحد\nYour request has been forwarded to the support team and they will respond to you within twenty four hours\nولا يهمك سيتم تحويل طلبك إلى فريق الدعم لدينا، وسيتم التواصل معك خلال 24 ساعة\nExample\n300027022 اعتراض على طلب يعترض على طلب تعويض العميل خصم طلب تظلم طلب تظلم تعويضات order dispute compensation refund اعتراض على طلب يعترض على طلب تعويض العميل خصم طلب تظلم طلب تظلم تعويضات order dispute compensation refund"
     },
     {
         "id": 59,
@@ -2672,17 +2680,6 @@ ${titles}
         "full_content": "Termination of a deal | إنهاء الصفقة\nProcedure (English)\nProcedure (Arabic)\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nلقد تم تحويل طلبكم إلى مدير الحساب حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاثة أيام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample\n302265857"
     },
     {
-        "id": 81,
-        "category": "Contract and Sales Inquiries",
-        "sub_category": "Premium features and Promotional  |  الميزات الخاصة والصفقات الترويجية",
-        "case_title": "",
-        "url": "https://hungerstation.knowledgeowl.com/home/premium-features-and-promotional-",
-        "ccr": "Contract and Sales Inquiries -> Premium features and Promotional  |  الميزات الخاصة والصفقات الترويجية -> ",
-        "procedure_arabic": "نظرة عامة على خدمة \"استلم بنفسك\" :\nطلبات خدمة \"استلم بنفسك\" هي التي يقوم بها العملاء بالطلب من المطاعم واستلام الطلب بأنفسهم. لا يوجد مندوب توصيل في هذه العملية، وبالتالي، لا يدفع العملاء أي رسوم توصيل.\nهناك طلب كبير من عملاء المملكة العربية السعودية لاستلام الطلب بأنفسهم من المتاجر والعديد منهم إما يتصلون بالمتجر مباشرة أو يطلبون الطعام من تطبيقات المطاعم.\nيساعدهم الاستلام في توفير المال والوقت من خلال استلام الطلب من المطاعم في طريقهم.\nالإضافة للمتجر:\nزيادة الإيرادات:\nاجذب قاعدة عملاء أوسع وزد من الأرباح عن طريق تقديم خدمة \"استلم بنفسك\"، لتلبية الطلب على استلام الطلب بشكل مريح.\nثبات التشغيل:\nتجنب التشويشات خلال نقص مندوبي التوصيل، مما يضمن استقرار التدفق الدائم  للإيرادات ورضا العملاء.\nتحسين تجربة العملاء:\nقدم للعملاء طعامًا طازجًا وساخنًا مباشرة من المطعم، لكسب ثقتهم وولائهم مع الحفاظ على جودة الطعام.\nفرص ترويجية:\nزيادة حركة المبيعات من خلال تقديم خصومات حصرية وحوافز لطلبات الاستلام، مستفيدًا من هذه الخدمة لزيادة التفاعل مع العملاء والإيرادات.\n-\n-\n-\nفي حال تواصل معنا الشريك لمعرفة الشروط الخاصة بخاصية \"استلم بنفسك\":\n-\nالنسبة المحتسبة.\n-\nوقت التحضير.\n-\nالاشتراك و الغاء الاشتراك.\nلقد تم تحويل طلبكم إلى مدير الحساب . حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاث ايام عمل في حال وجود أي استفسارات.\nنحيطكم علماً بأنه سوف يصلكم إستبيان تلقائي لهذه التذكرة.\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكراً",
-        "procedure_english": "Overview of “Self Pick-up” Feature:\nSelf pick-up orders are where customers order food from vendors and collect it themselves.\nThere is no delivery rider involved in this process and hence, customers don’t pay any delivery fee for the same.\nThere is high willingness and demand amongst KSA customers to pick-up food from vendors.\nA lot of them either call the vendor directly or order food from vendor apps. This service helps them save money and time by picking up fresh food from vendors on their way.\nWhat are the benefits for the vendor?\nIncreased Revenue: Capture a wider customer base and boost profits by offering pickup services, catering to the demand for convenient self-collection.\nOperational Stability:\nAvoid disruptions during rider shortages, ensuring consistent revenue flow and customer satisfaction.\nEnhanced Customer Experience:\nProvide customers with fresh, hot food directly from the vendor, earning their trust and loyalty while maintaining food quality.\nPromotional Opportunities:\nDrive traffic and sales by offering exclusive discounts and incentives for Pick-up orders, leveraging this service to increase customer engagement and revenue.",
-        "full_content": "Procedure (English)\nOverview of “Self Pick-up” Feature:\nSelf pick-up orders are where customers order food from vendors and collect it themselves.\nThere is no delivery rider involved in this process and hence, customers don’t pay any delivery fee for the same.\nThere is high willingness and demand amongst KSA customers to pick-up food from vendors.\nA lot of them either call the vendor directly or order food from vendor apps. This service helps them save money and time by picking up fresh food from vendors on their way.\nWhat are the benefits for the vendor?\nIncreased Revenue: Capture a wider customer base and boost profits by offering pickup services, catering to the demand for convenient self-collection.\nOperational Stability:\nAvoid disruptions during rider shortages, ensuring consistent revenue flow and customer satisfaction.\nEnhanced Customer Experience:\nProvide customers with fresh, hot food directly from the vendor, earning their trust and loyalty while maintaining food quality.\nPromotional Opportunities:\nDrive traffic and sales by offering exclusive discounts and incentives for Pick-up orders, leveraging this service to increase customer engagement and revenue.\nProcedure (Arabic)\nنظرة عامة على خدمة \"استلم بنفسك\" :\nطلبات خدمة \"استلم بنفسك\" هي التي يقوم بها العملاء بالطلب من المطاعم واستلام الطلب بأنفسهم. لا يوجد مندوب توصيل في هذه العملية، وبالتالي، لا يدفع العملاء أي رسوم توصيل.\nهناك طلب كبير من عملاء المملكة العربية السعودية لاستلام الطلب بأنفسهم من المتاجر والعديد منهم إما يتصلون بالمتجر مباشرة أو يطلبون الطعام من تطبيقات المطاعم.\nيساعدهم الاستلام في توفير المال والوقت من خلال استلام الطلب من المطاعم في طريقهم.\nالإضافة للمتجر:\nزيادة الإيرادات:\nاجذب قاعدة عملاء أوسع وزد من الأرباح عن طريق تقديم خدمة \"استلم بنفسك\"، لتلبية الطلب على استلام الطلب بشكل مريح.\nثبات التشغيل:\nتجنب التشويشات خلال نقص مندوبي التوصيل، مما يضمن استقرار التدفق الدائم  للإيرادات ورضا العملاء.\nتحسين تجربة العملاء:\nقدم للعملاء طعامًا طازجًا وساخنًا مباشرة من المطعم، لكسب ثقتهم وولائهم مع الحفاظ على جودة الطعام.\nفرص ترويجية:\nزيادة حركة المبيعات من خلال تقديم خصومات حصرية وحوافز لطلبات الاستلام، مستفيدًا من هذه الخدمة لزيادة التفاعل مع العملاء والإيرادات.\nMacro\n(English)\nMacro\n(Arabic)\nf the partner contacts us to find out the conditions for the “Pick up by yourself” feature:\n-\nApplied commission.\n-\nPreparation time.\n-\nSubscribe and unsubscribe to the service.\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nWe would like to inform you that you will receive an automated survey for this ticket.\n⭐⭐⭐⭐⭐ Very satisfied\n⭐⭐⭐⭐ Satisfied\n⭐⭐⭐ Neutral\n⭐⭐ Not satisfied\n⭐ Not completely satisfied\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nHelp Center Guide:\nClick Here\nIf the partner contacted us to ask about the feature:\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nKindly find the attached file to get the \"Self Pick-up\" guide.\nClick Here\nWe would like to inform you that you will receive an automated survey for this ticket.\n⭐⭐⭐⭐⭐ Very satisfied\n⭐⭐⭐⭐ Satisfied\n⭐⭐⭐ Neutral\n⭐⭐ Not satisfied\n⭐ Not completely satisfied\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nفي حال تواصل معنا الشريك لمعرفة الشروط الخاصة بخاصية \"استلم بنفسك\":\n-\nالنسبة المحتسبة.\n-\nوقت التحضير.\n-\nالاشتراك و الغاء الاشتراك.\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nلقد تم تحويل طلبكم إلى مدير الحساب . حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاث ايام عمل في حال وجود أي استفسارات.\nنحيطكم علماً بأنه سوف يصلكم إستبيان تلقائي لهذه التذكرة.\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nفي حال تواصل معنا الشريك للاستفسار عن الخاصية :\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nنرجو منكم الاطلاع على الدليل المرفق للحصول على كافة المعلومات عن خاصية استلم بنفسك.\nإضغط هنا\nنحيطكم علماً بأنه سوف يصلكم إستبيان تلقائي لهذه التذكرة.\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935"
-    },
-    {
         "id": 82,
         "category": "Partner Feedback",
         "sub_category": "Negative Positive partner feedback | تعليقات الشريك السلبية والايجابية",
@@ -2768,7 +2765,7 @@ ${titles}
         "procedure_arabic": "نفيدكم بأنه تم استلام طلبكم وتحديث ساعات وأوقات عمل الفرع المعتمدة على التطبيق بنجاح.",
         "procedure_english": "Please be informed that your request has been processed and your store's operating working hours have been updated successfully.",
         "internal_sop": "إجراء الدعم الداخلي (Internal SOP):\n1. التحقق من ساعات العمل المطلوبة وأيام العمل.\n2. فتح بوابة الشركاء (Partner Portal) وضبط أوقات الدوام وساعات الإغلاق والعمل.\n3. إغلاق التذكرة بـ CCR: Partner Data Update -> Basic profile change -> Update working hours.",
-        "full_content": "تحديث أوقات عمل الفرع ساعات العمل الدوام وقت الفتح الإغلاق ساعات العمل الجديدة تعديل وقت الفرع Update working hours store hours schedule timing",
+        "full_content": "تحديث أوقات عمل الفرع ساعات العمل الدوام وقت الفتح الإغلاق ساعات العمل الجديدة تعديل وقت الفرع Update working hours store hours schedule timing اوقات عمل ساعات عمل دوام الفرع وقت عمل ساعات الدوام تغيير الساعات تعديل الساعات",
         "url": "https://hungerstation.knowledgeowl.com/home/cases-procedures"
     },
     {
@@ -2780,7 +2777,7 @@ ${titles}
         "procedure_arabic": "نفيدكم بأنه تم استلام طلبكم وإخفاء/إزالة الأصناف والمنتجات المحددة من قائمة الطعام الخاصة بفرعكم بنجاح.",
         "procedure_english": "Please be informed that your request has been processed and the specified items have been hidden/removed from your menu.",
         "internal_sop": "إجراء الدعم الداخلي (Internal SOP):\n1. التحقق من اسم الصنف والفئة المحددة للإخفاء أو الحذف.\n2. إخفاء أو حذف الصنف عبر بوابة الشركاء.\n3. إغلاق التذكرة بـ CCR: Content Update -> Menu update -> Hide or remove item from the menu.",
-        "full_content": "إخفاء صنف حذف صنف مسح منتج شطب صنف إزالة وجبة Hide or remove item from the menu delete item remove product disable item",
+        "full_content": "إخفاء صنف حذف صنف مسح منتج شطب صنف إزالة وجبة Hide or remove item from the menu delete item remove product disable item حذف صنف اشيل صنف مسح صنف اخفاء صنف شطب صنف ازالة صنف حذف منتج",
         "url": "https://hungerstation.knowledgeowl.com/home/cases-procedures"
     },
     {
@@ -2792,7 +2789,7 @@ ${titles}
         "procedure_arabic": "نفيدكم بأنه تم استلام طلبكم وتحديث قائمة الطعام لفرعكم، وقد تم إضافة واعتماد الأصناف والمنتجات والخيارات الجديدة المرفقة بالأسعار المحددة على التطبيق بنجاح.",
         "procedure_english": "Please be informed that your request regarding menu update has been processed, and the requested new items and products have been added on the app.",
         "internal_sop": "إجراء الدعم الداخلي (Internal SOP):\n1. التحقق من أصناف وفئات المنيو المرفقة (اسم الصنف، السعر، الفئة ورابط الصور).\n2. إدخال وتفعيل الأصناف عبر بوابة الشركاء وتحديث التذكرة بـ CCR: Content Update -> Menu update -> Add items.",
-        "full_content": "إضافة صنف اضيف صنف أصناف جديدة اضافة وجبة منتج جديد Add items menu addition add product new item option",
+        "full_content": "إضافة صنف اضيف صنف أصناف جديدة اضافة وجبة منتج جديد Add items menu addition add product new item option اضيف صنف اضافة صنف اضف صنف اضافات جديدة صنف جديد اصناف جديدة منتج جديد",
         "url": "https://hungerstation.knowledgeowl.com/home/cases-procedures"
     },
     {
@@ -2804,7 +2801,7 @@ ${titles}
         "procedure_arabic": "شكرًا لتواصلك معنا، ونقدر لك كونك جزءًا من شركائنا. لضمان سرعة معالجة الطلب ودقته، نرجو منك رفع خطابات الآيبان الرسمي المعتمد لتحديث الحساب البنكي.",
         "procedure_english": "Thank you for contacting us. To process your request quickly, please provide the official IBAN certificate letter to update your bank account details.",
         "internal_sop": "إجراء الدعم الداخلي (Internal SOP):\n1. التحقق من الخطاب البنكي ورقم الآيبان (IBAN).\n2. تصعيد التذكرة لفريق المالية وإغلاق التذكرة بـ CCR: Partner Data Update -> Basic profile change -> Update bank account details change.",
-        "full_content": "تغيير الآيبان ايبان آيبان الحساب البنكي البنك تحديث الآيبان Update bank account details change IBAN bank update",
+        "full_content": "تغيير الآيبان ايبان آيبان الحساب البنكي البنك تحديث الآيبان Update bank account details change IBAN bank update ايبان حساب بنكي البنك تغيير البنك رقم البنك تحديث الايبان تعديل الايبان الحساب البنكي iban",
         "url": "https://hungerstation.knowledgeowl.com/home/cases-procedures"
     },
     {
@@ -2816,7 +2813,7 @@ ${titles}
         "procedure_arabic": "نفيدكم بأنه تم تحديث واعتماد قائمة الأسعار الجديدة الخاصة بفرعكم على التطبيق بنجاح حسب القائمة المرفقة.",
         "procedure_english": "Please be informed that your updated menu prices have been approved and updated on the app.",
         "internal_sop": "إجراء الدعم الداخلي (Internal SOP):\nتحديث أسعار الأصناف المطلوبة في بوابة الشركاء وتأكيد الحفظ والتفعيل بـ CCR: Content Update -> Menu update -> Update prices.",
-        "full_content": "تعديل سعر تحديث الاسعار تغيير السعر اسعار جديدة قائمة الاسعار Update menu prices change price price update",
+        "full_content": "تعديل سعر تحديث الاسعار تغيير السعر اسعار جديدة قائمة الاسعار Update menu prices change price price update تعديل سعر تعديل اسعار تحديث سعر تحديث اسعار تغيير السعر اسعار جديدة قائمة الاسعار",
         "url": "https://hungerstation.knowledgeowl.com/home/cases-procedures"
     },
     {
@@ -2864,7 +2861,7 @@ ${titles}
         "procedure_arabic": "نفيدكم بأنه تم استلام طلبكم وجاري إغلاق المتجر مؤقتاً حسب الفترة والتاريخ المحددين بنجاح.",
         "procedure_english": "Please be informed that your request for temporary store closure has been received and processed.",
         "internal_sop": "إجراء الدعم الداخلي (Internal SOP):\nتحديث حالة المتجر إلى إغلاق مؤقت عبر بوابة الشركاء والـ 1VU وتحديد تاريخ إعادة التفعيل.",
-        "full_content": "إغلاق المتجر مؤقتا اقفال الفرع تسكير المتجر ايقاف مؤقت Temporary store closure pause store",
+        "full_content": "إغلاق المتجر مؤقتا اقفال الفرع تسكير المتجر ايقاف مؤقت Temporary store closure pause store قفل الفرع اقفل الفرع إغلاق الفرع اقفال الفرع اقفال المتجر إغلاق المتجر ايقاف مؤقت",
         "url": "https://hungerstation.knowledgeowl.com/home/cases-procedures"
     }
 ];
