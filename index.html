@@ -804,7 +804,220 @@
         </div>
     </header>
 
-    <div class="app-container">
+    <!-- 🧭 Main Workspace View Switcher -->
+    <div style="max-width: 1400px; margin: 12px auto 0; padding: 0 20px; display: flex; gap: 12px; align-items: center;">
+        <button id="viewBtnTickets" onclick="switchMainWorkspace('TICKETS')" style="flex: 1; padding: 12px 20px; background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); color: #F8FAFC; border: 2px solid #3B82F6; border-radius: 12px; font-weight: 800; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25); transition: all 0.2s;">
+            <i class="fa-solid fa-headset" style="color: #60A5FA; font-size: 1.2rem;"></i>
+            <span>💬 مولد ردود التذاكر وقاعدة المعرفة (96 حالة معتمدة)</span>
+        </button>
+        <button id="viewBtnMenu" onclick="switchMainWorkspace('MENU_STUDIO')" style="flex: 1; padding: 12px 20px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.25) 100%); color: #A7F3D0; border: 2px solid #10B981; border-radius: 12px; font-weight: 800; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); transition: all 0.2s;">
+            <i class="fa-solid fa-file-excel" style="color: #34D399; font-size: 1.2rem;"></i>
+            <span>🍽️ استوديو إنشاء وتجهيز المنيو الرسمي (_MenuUpload.xlsx)</span>
+            <span style="background: #10B981; color: #000; font-size: 0.72rem; padding: 2px 8px; border-radius: 12px; font-weight: 800;">أداة المنيو التلقائية</span>
+        </button>
+    </div>
+
+
+    
+    <!-- 🍽️ DEDICATED MENU BUILDER STUDIO WORKSPACE -->
+    <div id="menuStudioWorkspace" style="display: none; max-width: 1400px; margin: 16px auto; padding: 0 20px;">
+        <div style="background: #1E293B; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 24px; color: #FFF; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+            
+            <!-- Studio Hero Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 50px; height: 50px; border-radius: 12px; background: linear-gradient(135deg, #10B981, #059669); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #FFF; box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);">
+                        <i class="fa-solid fa-file-excel"></i>
+                    </div>
+                    <div>
+                        <h2 style="font-size: 1.35rem; font-weight: 800; color: #F8FAFC; margin: 0; display: flex; align-items: center; gap: 10px;">
+                            استوديو بناء وتجهيز المنيو الرسمي (Hungerstation Menu Excel Builder)
+                            <span style="font-size: 0.75rem; background: #10B981; color: #000; padding: 2px 10px; border-radius: 12px; font-weight: 800;">Template _MenuUpload.xlsx 100%</span>
+                        </h2>
+                        <p style="font-size: 0.82rem; color: #94A3B8; margin: 4px 0 0 0;">استخراج الأصناف، الأقسام، الإضافات، الأسعار، السعرات، وعزل صور Google Drive في شيت إكسيل رسمي فوري بدون أخطاء.</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="downloadOfficialMenuExcel()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+                        <i class="fa-solid fa-cloud-arrow-down"></i> تنزيل شيت الإكسيل الرسمي (_MenuUpload.xlsx)
+                    </button>
+                    <button onclick="switchMainWorkspace('TICKETS')" style="background: rgba(255,255,255,0.08); color: #CBD5E1; border: 1px solid rgba(255,255,255,0.15); padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer;">
+                        <i class="fa-solid fa-arrow-right"></i> العودة لمولد التذاكر
+                    </button>
+                </div>
+            </div>
+
+            <!-- Workflow Guidance Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 20px;">
+                <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #10B981; color: #000; font-weight: 800; display: flex; align-items: center; justify-content: center;">1</div>
+                    <div style="font-size: 0.8rem; color: #E2E8F0;"><strong>الصق بيانات المنيو أو ارفع ملف الشريك</strong> (نصوص، واتساب، كشوف، إكسيل، CSV)</div>
+                </div>
+                <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #8B5CF6; color: #FFF; font-weight: 800; display: flex; align-items: center; justify-content: center;">2</div>
+                    <div style="font-size: 0.8rem; color: #E2E8F0;"><strong>عزل روابط صور Google Drive</strong> لحماية شيت الإكسيل من أخطاء الرفع (Error 422)</div>
+                </div>
+                <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #3B82F6; color: #FFF; font-weight: 800; display: flex; align-items: center; justify-content: center;">3</div>
+                    <div style="font-size: 0.8rem; color: #E2E8F0;"><strong>قاعدة الـ 30 صنف:</strong> أقل من 30 صنف ➔ Add items (#38) | 30 فأكثر ➔ Full menu (#40)</div>
+                </div>
+            </div>
+
+            <!-- Input Section (2 Columns) -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                <!-- Left Box: Text / WhatsApp / Links Input -->
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px;">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: #F59E0B; margin-bottom: 8px; display: flex; justify-content: space-between;">
+                        <span><i class="fa-solid fa-paste"></i> 1. الصق بيانات المنيو الخام أو المحادثة أو روابط الصور:</span>
+                    </div>
+                    <textarea id="studioRawMenuInput" style="width: 100%; height: 170px; background: #0F172A; color: #F8FAFC; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px; font-family: monospace; font-size: 0.82rem; resize: vertical;" placeholder="قسم المشويات / Grills:
+- كباب لحم (Meat Kebab) - السعر: 35 ريال - السعرات: 450 kcal
+- شيش طاووق (Shish Tawook) - السعر: 30 ريال - السعرات: 380 kcal
+إضافات / Add-ons:
+- جبنة إضافية (Extra Cheese) - 4 ريال
+- ثومية (Garlic Sauce) - 2 ريال
+روابط الصور: https://drive.google.com/drive/folders/..."></textarea>
+                    
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                        <button onclick="parseStudioRawMenuInput()" style="flex: 1; background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px; border-radius: 8px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> معالجة وتوليد الشيت فوراً
+                        </button>
+                        <button onclick="loadStudioSampleMenuData()" style="background: rgba(255,255,255,0.08); color: #CBD5E1; border: 1px solid rgba(255,255,255,0.12); padding: 10px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+                            📋 تجربة بيانات نموذجية
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Box: Upload Raw Excel / CSV -->
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="font-size: 0.85rem; font-weight: 700; color: #38BDF8; margin-bottom: 8px;">
+                            <i class="fa-solid fa-upload"></i> 2. أو ارفع شيت إكسيل خام / CSV من الشريك:
+                        </div>
+                        <div onclick="document.getElementById('studioRawMenuFileInput').click()" style="border: 2px dashed rgba(56, 189, 248, 0.4); border-radius: 10px; padding: 28px 16px; text-align: center; cursor: pointer; background: rgba(56, 189, 248, 0.03); transition: all 0.2s;">
+                            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.2rem; color: #38BDF8; margin-bottom: 8px;"></i>
+                            <div style="font-size: 0.92rem; font-weight: 800; color: #F1F5F9;">انقر لاختيار أو إسقاط ملف إكسيل الشريك (.xlsx, .xls, .csv)</div>
+                            <div style="font-size: 0.75rem; color: #94A3B8; margin-top: 4px;">سيقوم النظام تلقائياً بتنظيفه، تصحيح الحروف الإنجليزية، وضبط السعرات وفقاً لدليل هنقرستيشن</div>
+                            <input type="file" id="studioRawMenuFileInput" accept=".xlsx,.xls,.csv,.txt" style="display: none;" onchange="handleStudioRawMenuFileUpload(event)">
+                        </div>
+                    </div>
+
+                    <!-- Guidelines Alert -->
+                    <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 8px; padding: 10px; margin-top: 12px; font-size: 0.78rem; color: #FDE68A;">
+                        <i class="fa-solid fa-shield-halved"></i> <strong>قواعد التنظيف الآلي:</strong> إزالة الرموز المحظورة (&, %, @, /)، تطبيق كابيتال الحرف الأول Proper Case، حذف الفواصل في السعرات، وعزل الروابط لتفادي رفض النظام.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drive Image Links Container -->
+            <div id="studioExtractedImagesContainer" style="display: none; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 14px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <div style="font-size: 0.88rem; font-weight: 700; color: #C4B5FD; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-brands fa-google-drive"></i> <span>🖼️ روابط وصور الأصناف المعزولة (Google Drive & Links):</span>
+                        <span id="studioImgCountBadge" style="background: #8B5CF6; color: #FFF; font-size: 0.72rem; padding: 2px 10px; border-radius: 12px; font-weight: 800;">0 رابط</span>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="copyStudioExtractedImages()" style="background: #8B5CF6; color: #FFF; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;">
+                            <i class="fa-solid fa-copy"></i> نسخ الروابط
+                        </button>
+                        <button onclick="downloadStudioImagesTxt()" style="background: rgba(255,255,255,0.1); color: #FFF; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; cursor: pointer;">
+                            <i class="fa-solid fa-download"></i> حفظ ملف TXT
+                        </button>
+                    </div>
+                </div>
+                <div id="studioExtractedImagesList" style="max-height: 100px; overflow-y: auto; background: #0F172A; border-radius: 6px; padding: 10px; font-size: 0.78rem; color: #93C5FD; font-family: monospace; line-height: 1.6;"></div>
+            </div>
+
+            <!-- Preview 4-Sheets Section -->
+            <div id="studioMenuPreviewSection" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                    <!-- Sheet Tabs -->
+                    <div style="display: flex; gap: 8px;">
+                        <button id="studioTabBtnGroups" onclick="showStudioMenuPreviewTab('groups')" style="background: #3B82F6; color: #FFF; border: none; padding: 8px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer;">
+                            1️⃣ أقسام المنيو menu group <span id="studioBadgeGroupsCount">(0)</span>
+                        </button>
+                        <button id="studioTabBtnItems" onclick="showStudioMenuPreviewTab('items')" style="background: rgba(255,255,255,0.1); color: #94A3B8; border: none; padding: 8px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer;">
+                            2️⃣ الأصناف والمنتجات Menu productsitems <span id="studioBadgeItemsCount">(0)</span>
+                        </button>
+                        <button id="studioTabBtnModifiers" onclick="showStudioMenuPreviewTab('modifiers')" style="background: rgba(255,255,255,0.1); color: #94A3B8; border: none; padding: 8px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer;">
+                            3️⃣ مجموعات الخيارات Modifier groupsmodifiers <span id="studioBadgeModifiersCount">(0)</span>
+                        </button>
+                    </div>
+
+                    <!-- Download & Macro Actions -->
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="downloadOfficialMenuExcel()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);">
+                            <i class="fa-solid fa-file-excel"></i> تنزيل شيت الإكسيل الرسمي (_MenuUpload.xlsx) 🚀
+                        </button>
+                        <button onclick="generateMacroFromMenuCount()" style="background: #8B5CF6; color: #FFF; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> توليد ماكرو التذكرة
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table 1: Groups -->
+                <div id="studioTableContainerGroups" style="display: block; max-height: 320px; overflow-y: auto; overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: right;">
+                        <thead>
+                            <tr style="background: #0F172A; color: #94A3B8; border-bottom: 2px solid rgba(255,255,255,0.1);">
+                                <th style="padding: 10px;">ID</th>
+                                <th style="padding: 10px;">Name (English)</th>
+                                <th style="padding: 10px;">الاسم بالعربي</th>
+                                <th style="padding: 10px;">Order</th>
+                                <th style="padding: 10px;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studioTbodyGroups">
+                            <tr><td colspan="5" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال أقسام بعد. الصق بيانات المنيو أو اضغط "تجربة بيانات نموذجية".</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Table 2: Items -->
+                <div id="studioTableContainerItems" style="display: none; max-height: 320px; overflow-y: auto; overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: right;">
+                        <thead>
+                            <tr style="background: #0F172A; color: #94A3B8; border-bottom: 2px solid rgba(255,255,255,0.1);">
+                                <th style="padding: 10px;">ID</th>
+                                <th style="padding: 10px;">القسم Group</th>
+                                <th style="padding: 10px;">Name (En)</th>
+                                <th style="padding: 10px;">الاسم (Ar)</th>
+                                <th style="padding: 10px;">السعر Price</th>
+                                <th style="padding: 10px;">السعرات Calories</th>
+                                <th style="padding: 10px;">الوصف Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studioTbodyItems">
+                            <tr><td colspan="7" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال أصناف بعد.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Table 3: Modifiers -->
+                <div id="studioTableContainerModifiers" style="display: none; max-height: 320px; overflow-y: auto; overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: right;">
+                        <thead>
+                            <tr style="background: #0F172A; color: #94A3B8; border-bottom: 2px solid rgba(255,255,255,0.1);">
+                                <th style="padding: 10px;">ID</th>
+                                <th style="padding: 10px;">Modifier Group</th>
+                                <th style="padding: 10px;">Option Name (En)</th>
+                                <th style="padding: 10px;">اسم الخيار (Ar)</th>
+                                <th style="padding: 10px;">السعر الإضافي</th>
+                                <th style="padding: 10px;">النوع Type</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studioTbodyModifiers">
+                            <tr><td colspan="6" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال إضافات بعد.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+<div class="app-container">
 
         <!-- Left Input Panel -->
         <div class="panel">
@@ -968,7 +1181,198 @@
         let extractedFileTexts = [];
         let currentActiveQuery = "";
 
-        // ============================================================
+        
+        function switchMainWorkspace(mode) {
+            const ticketCont = document.querySelector('.app-container');
+            const studioCont = document.getElementById('menuStudioWorkspace');
+            const btnTicket = document.getElementById('viewBtnTickets');
+            const btnMenu = document.getElementById('viewBtnMenu');
+
+            if (mode === 'MENU_STUDIO') {
+                if (ticketCont) ticketCont.style.display = 'none';
+                if (studioCont) studioCont.style.display = 'block';
+                if (btnTicket) {
+                    btnTicket.style.borderColor = 'transparent';
+                    btnTicket.style.background = '#1E293B';
+                    btnTicket.style.color = '#94A3B8';
+                }
+                if (btnMenu) {
+                    btnMenu.style.borderColor = '#10B981';
+                    btnMenu.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.4) 100%)';
+                    btnMenu.style.color = '#FFF';
+                }
+                renderStudioMenuPreviewTables();
+            } else {
+                if (ticketCont) ticketCont.style.display = 'grid';
+                if (studioCont) studioCont.style.display = 'none';
+                if (btnTicket) {
+                    btnTicket.style.borderColor = '#3B82F6';
+                    btnTicket.style.background = 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)';
+                    btnTicket.style.color = '#F8FAFC';
+                }
+                if (btnMenu) {
+                    btnMenu.style.borderColor = '#10B981';
+                    btnMenu.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.25) 100%)';
+                    btnMenu.style.color = '#A7F3D0';
+                }
+            }
+        }
+
+        function showStudioMenuPreviewTab(tab) {
+            const tabs = ['groups', 'items', 'modifiers'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('studioTabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+                const container = document.getElementById('studioTableContainer' + t.charAt(0).toUpperCase() + t.slice(1));
+                if (btn) {
+                    if (t === tab) {
+                        btn.style.background = '#3B82F6';
+                        btn.style.color = '#FFF';
+                    } else {
+                        btn.style.background = 'rgba(255,255,255,0.1)';
+                        btn.style.color = '#94A3B8';
+                    }
+                }
+                if (container) {
+                    container.style.display = (t === tab) ? 'block' : 'none';
+                }
+            });
+        }
+
+        function parseStudioRawMenuInput() {
+            const val = (document.getElementById('studioRawMenuInput') ? document.getElementById('studioRawMenuInput').value : '').trim();
+            if (!val) {
+                showToast("⚠️ برجاء لصق بيانات المنيو أو روابط الصور أولاً!");
+                return;
+            }
+            if (document.getElementById('rawMenuInput')) document.getElementById('rawMenuInput').value = val;
+            parseRawMenuInput();
+            renderStudioMenuPreviewTables();
+            showToast("✨ تم استخراج وتنظيم بيانات المنيو وعزل الصور بنجاح!");
+        }
+
+        function loadStudioSampleMenuData() {
+            loadSampleMenuData();
+            const sampleVal = document.getElementById('rawMenuInput') ? document.getElementById('rawMenuInput').value : '';
+            if (document.getElementById('studioRawMenuInput')) document.getElementById('studioRawMenuInput').value = sampleVal;
+            renderStudioMenuPreviewTables();
+            showToast("📋 تم تحميل بيانات منيو نموذجية بنجاح!");
+        }
+
+        function handleStudioRawMenuFileUpload(e) {
+            handleRawMenuFileUpload(e);
+            setTimeout(renderStudioMenuPreviewTables, 500);
+        }
+
+        function copyStudioExtractedImages() {
+            copyExtractedImages();
+        }
+
+        function downloadStudioImagesTxt() {
+            downloadImagesTxt();
+        }
+
+        function renderStudioMenuPreviewTables() {
+            const { groups, items, modifiers, imageLinks } = window.menuBuilderData;
+
+            // Badges
+            const bg = document.getElementById('studioBadgeGroupsCount');
+            const bi = document.getElementById('studioBadgeItemsCount');
+            const bm = document.getElementById('studioBadgeModifiersCount');
+            if (bg) bg.textContent = `(${groups.length})`;
+            if (bi) bi.textContent = `(${items.length})`;
+            if (bm) bm.textContent = `(${modifiers.length})`;
+
+            // Images Box
+            const imgBox = document.getElementById('studioExtractedImagesContainer');
+            const imgList = document.getElementById('studioExtractedImagesList');
+            const imgBadge = document.getElementById('studioImgCountBadge');
+
+            if (imageLinks && imageLinks.length > 0) {
+                if (imgBox) imgBox.style.display = 'block';
+                if (imgBadge) imgBadge.textContent = `${imageLinks.length} رابط مستخرج`;
+                if (imgList) {
+                    imgList.innerHTML = imageLinks.map((url, i) => `
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.05); padding:4px 0;">
+                            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:80%;">${i + 1}. <a href="${url}" target="_blank" style="color:#60A5FA; text-decoration:underline;">${url}</a></span>
+                            <button onclick="navigator.clipboard.writeText('${url}'); showToast('تم نسخ الرابط!');" style="background:rgba(255,255,255,0.1); border:none; color:#FFF; font-size:0.7rem; padding:2px 6px; border-radius:4px; cursor:pointer;">نسخ</button>
+                        </div>
+                    `).join('');
+                }
+            } else {
+                if (imgBox) imgBox.style.display = 'none';
+            }
+
+            // Tbody Groups
+            const tbodyG = document.getElementById('studioTbodyGroups');
+            if (tbodyG) {
+                if (groups.length === 0) {
+                    tbodyG.innerHTML = '<tr><td colspan="5" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال أقسام بعد. الصق بيانات المنيو أو اضغط "تجربة بيانات نموذجية".</td></tr>';
+                } else {
+                    tbodyG.innerHTML = groups.map((g, i) => `
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'};">
+                            <td style="padding: 8px 10px; color: #F59E0B; font-weight: 700;">#${g.id}</td>
+                            <td style="padding: 8px 10px; font-weight: 600; color: #FFF;">${g.name_en}</td>
+                            <td style="padding: 8px 10px; color: #93C5FD;">${g.name_ar}</td>
+                            <td style="padding: 8px 10px;">${g.order}</td>
+                            <td style="padding: 8px 10px;"><span style="background: rgba(16,185,129,0.2); color: #34D399; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem;">Active</span></td>
+                        </tr>
+                    `).join('');
+                }
+            }
+
+            // Tbody Items
+            const tbodyI = document.getElementById('studioTbodyItems');
+            if (tbodyI) {
+                if (items.length === 0) {
+                    tbodyI.innerHTML = '<tr><td colspan="7" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال أصناف بعد.</td></tr>';
+                } else {
+                    tbodyI.innerHTML = items.map((it, i) => `
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'};">
+                            <td style="padding: 8px 10px; color: #F59E0B; font-weight: 700;">#${it.id}</td>
+                            <td style="padding: 8px 10px; color: #A78BFA;">${it.group_name}</td>
+                            <td style="padding: 8px 10px; font-weight: 600; color: #FFF;">${it.name_en}</td>
+                            <td style="padding: 8px 10px; color: #93C5FD;">${it.name_ar}</td>
+                            <td style="padding: 8px 10px; color: #34D399; font-weight: 700;">${it.price} SAR</td>
+                            <td style="padding: 8px 10px; color: #FCD34D;">${it.calories ? it.calories + ' kcal' : '-'}</td>
+                            <td style="padding: 8px 10px; font-size: 0.75rem; color: #94A3B8;">${it.desc_ar || it.desc_en || '-'}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+
+            // Tbody Modifiers
+            const tbodyM = document.getElementById('studioTbodyModifiers');
+            if (tbodyM) {
+                if (modifiers.length === 0) {
+                    tbodyM.innerHTML = '<tr><td colspan="6" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال إضافات بعد.</td></tr>';
+                } else {
+                    tbodyM.innerHTML = modifiers.map((m, i) => `
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'};">
+                            <td style="padding: 8px 10px; color: #F59E0B; font-weight: 700;">#${m.id}</td>
+                            <td style="padding: 8px 10px; color: #EC4899; font-weight: 600;">${m.group_name}</td>
+                            <td style="padding: 8px 10px; font-weight: 600; color: #FFF;">${m.option_en}</td>
+                            <td style="padding: 8px 10px; color: #93C5FD;">${m.option_ar}</td>
+                            <td style="padding: 8px 10px; color: #34D399;">+${m.price} SAR</td>
+                            <td style="padding: 8px 10px;"><span style="background: rgba(59,130,246,0.2); color: #60A5FA; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem;">${m.type}</span></td>
+                        </tr>
+                    `).join('');
+                }
+            }
+        }
+
+        function generateMacroFromMenuCount() {
+            const count = (window.menuBuilderData && window.menuBuilderData.items) ? window.menuBuilderData.items.length : 0;
+            switchMainWorkspace('TICKETS');
+            if (count >= 30) {
+                selectCase(40); // Full menu
+                showToast(`🎯 تم اختيار Full menu (#40) لأن عدد الأصناف (${count}) صنف ➔ فوق الـ 30!`);
+            } else {
+                selectCase(38); // Add items
+                showToast(`🎯 تم اختيار Add items (#38) لأن عدد الأصناف (${count}) صنف ➔ أقل من 30!`);
+            }
+        }
+
+// ============================================================
         // 🧠 AI SELF-LEARNING ENGINE v2 — Arabic Normalization + Fuzzy + Gemini
         // ============================================================
         let caseUsageData = JSON.parse(localStorage.getItem('hs_case_usage') || '{}');
