@@ -2939,44 +2939,37 @@ function cleanArabicProcedure(text) {
 
         function buildArabicMacro(greeting, kbContentText) {
             const arAgent = getAgentArabicName();
-            const cleanBody = cleanArabicProcedure(kbContentText);
+            if (!kbContentText) return `${greeting}شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nتم استلام طلبكم ومتابعته مع القسم المعني.\n\nشكراً\n${arAgent}\nهنقرستيشن\nتفاصيل التواصل:\nمشاكل الطلبات: 920033935`;
+            
+            let text = kbContentText.trim();
+            // If already a complete macro with greetings and closing, inject agent name and greeting smoothly
+            if (text.includes("شريكنا") || text.includes("شكراً لتواصلكم")) {
+                text = text.replace(/اسم الموظف|Employee Name/gi, arAgent);
+                text = text.replace(/\( اسم الشريك \)|\(اسم الشريك\)/gi, "العزيز");
+                if (greeting) {
+                    text = greeting + text;
+                }
+                return text;
+            }
 
-            return `${greeting}شريكنا العزيز
-
-شكراً لتواصلكم مع هنقرستيشن.
-
-${cleanBody}
-
-نود إفادتكم بأنه سيتم إرسال استبيان تلقائي خاص بهذه التذكرة.
-تشير نجمة واحدة إلى أن مستوى الخدمة لم يكن مرضياً، بينما تشير خمس نجوم إلى أن مستوى الخدمة كان مرضياً جداً. ويساعدنا تقييمكم في تحسين جودة خدماتنا.
-شكراً لتواصلكم معنا.
-نتمنى لكم الصحة والعافية.
-مع الشكر،
-${arAgent}
-هنقرستيشن
-تفاصيل التواصل:
-مشاكل الطلبات: 920033935`;
+            return `${greeting}شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\n${text}\n\nنود إفادتكم بأنه سيتم إرسال استبيان تلقائي خاص بهذه التذكرة.\nتشير نجمة واحدة إلى أن مستوى الخدمة لم يكن مرضياً، بينما تشير خمس نجوم إلى أن مستوى الخدمة كان مرضياً جداً.\nشكراً لتواصلكم معنا.\nنتمنى لكم الصحة والعافية.\nمع الشكر،\n${arAgent}\nهنقرستيشن\nتفاصيل التواصل:\nمشاكل الطلبات: 920033935`;
         }
 
         function buildEnglishMacro(greeting, kbContentText) {
             const enAgent = getAgentEnglishName();
-            const cleanBody = cleanEnglishProcedure(kbContentText);
+            if (!kbContentText) return `${greeting}Dear Partner,\n\nThank you for contacting HungerStation.\n\nYour request has been received and is being processed.\n\nThank you,\n${enAgent}\nHungerStation\nContact Details:\nOrder Issues: 920033935`;
 
-            return `${greeting}Dear Partner,
+            let text = kbContentText.trim();
+            if (text.includes("Dear Partner") || text.includes("Thank you for contacting")) {
+                text = text.replace(/Employee Name|اسم الموظف/gi, enAgent);
+                text = text.replace(/\(Partner Name\)|\( Partner Name \)/gi, "");
+                if (greeting) {
+                    text = greeting + text;
+                }
+                return text;
+            }
 
-Thank you for contacting HungerStation.
-
-${cleanBody}
-
-We would like to inform you that an automatic survey will be sent regarding this ticket.
-One star indicates that the service level was unsatisfactory, while five stars indicate that the service level was very satisfactory. Your evaluation helps us improve our service quality.
-Thank you for contacting us.
-We wish you good health and well-being.
-Best regards,
-${enAgent}
-HungerStation
-Contact Details:
-Order Issues: 920033935`;
+            return `${greeting}Dear Partner,\n\nThank you for contacting HungerStation.\n\n${text}\n\nWe would like to inform you that an automatic survey will be sent regarding this ticket.\nOne star indicates that the service level was unsatisfactory, while five stars indicate that the service level was very satisfactory.\nThank you for contacting us.\nWe wish you good health and well-being.\nBest regards,\n${enAgent}\nHungerStation\nContact Details:\nOrder Issues: 920033935`;
         }
 
         let _macroActive = false;
@@ -3115,6 +3108,42 @@ Order Issues: 920033935`;
             userLearned[normQ] = parseInt(caseId);
             localStorage.setItem('hs_built_in_learning', JSON.stringify(userLearned));
             showToast(`🧠 تم تدريب ذاكرة النظام التكيفية: "${query}" ➔ حالة #${caseId}`);
+        }
+
+
+        function scoreInboundIntent(query, item) {
+            if (!query || !item || !item.keys) return 0;
+            const qNorm = normalizeArabic(query.toLowerCase().trim());
+            const qWords = qNorm.split(/\s+/).filter(w => w.length > 1);
+            let maxScore = 0;
+
+            for (const rawKey of item.keys) {
+                const kNorm = normalizeArabic(rawKey.toLowerCase().trim());
+                const kWords = kNorm.split(/\s+/).filter(w => w.length > 1);
+                
+                // 1. Exact phrase match
+                if (qNorm.includes(kNorm)) {
+                    maxScore = Math.max(maxScore, 100 + (kWords.length * 20));
+                } else if (kNorm.includes(qNorm) && qNorm.length > 4) {
+                    maxScore = Math.max(maxScore, 80 + (qWords.length * 15));
+                } else {
+                    // 2. Word token match
+                    let matchedWords = 0;
+                    for (const kw of kWords) {
+                        if (qWords.some(qw => qw.includes(kw) || kw.includes(qw))) {
+                            matchedWords++;
+                        }
+                    }
+                    if (matchedWords > 0) {
+                        const ratio = matchedWords / kWords.length;
+                        if (ratio >= 0.5 || matchedWords >= 2) {
+                            const score = Math.round(ratio * 60) + (matchedWords * 10);
+                            maxScore = Math.max(maxScore, score);
+                        }
+                    }
+                }
+            }
+            return maxScore;
         }
 
 async function generateResponse() {
@@ -3296,7 +3325,7 @@ async function generateResponse() {
                     id: 59
                 },
                 {
-                    keys: ['ما نزل لي أي تحويل في البنك', 'فلوسي ما وصلت في الحساب', 'متى تنزل الحوالة ما استلمت شي', 'الحساب البنكي لم يصله أي دفعة', 'تأخر وصول أرباح المطعم في البنك', 'لم يتم استلام الدفعة', 'الحواله ما نزلت', 'ما استلمت الفلوس', 'الفلوس ما تحولت', 'تاخر الحواله البنكيه', 'payment not received', 'money not transferred', 'missing payout', 'haven't received monthly transfer', 'no payment in bank account'],
+                    keys: ['ما نزل لي أي تحويل في البنك', 'فلوسي ما وصلت في الحساب', 'متى تنزل الحوالة ما استلمت شي', 'الحساب البنكي لم يصله أي دفعة', 'تأخر وصول أرباح المطعم في البنك', 'لم يتم استلام الدفعة', 'الحواله ما نزلت', 'ما استلمت الفلوس', 'الفلوس ما تحولت', 'تاخر الحواله البنكيه', 'payment not received', 'money not transferred', 'missing payout', 'haven\'t received monthly transfer', 'no payment in bank account'],
                     id: 60
                 },
                 {
@@ -3426,7 +3455,7 @@ async function generateResponse() {
                     id: 12
                 },
                 {
-                    keys: ['مش عارف أدخل على بوابة الشركاء', 'نسيت باسورد البوابة', 'البورتال مش راضي يفتح', 'مشكلة تسجيل دخول في Vendor Portal', 'بيقولي كلمة المرور غير صحيحة في البوابة', 'الحساب معلق في موقع الشركاء', 'إعادة تعيين كلمة مرور البوابة', 'مش راضي يسجل دخول على البورتال', 'غير قادر على تسجيل الدخول', 'مشكله دخول البوابه', 'نسيت الباسورد البورتال', 'تسجيل الدخول البوابه', 'فندر بورتال معلق', 'دخول بوابه الشركاء', 'unable to log in', 'portal login issue', 'forgot portal password', 'vendor portal login failed', 'cant access portal', 'invalid credentials portal', 'portal account locked', 'reset portal password'],
+                    keys: ['مش عارف أدخل على بوابة الشركاء', 'نسيت باسورد البوابة', 'البورتال مش راضي يفتح', 'مشكلة تسجيل دخول في Vendor Portal', 'بيقولي كلمة المرور غير صحيحة في البوابة', 'الحساب معلق في موقع الشركاء', 'إعادة تعيين كلمة مرور البوابة', 'مش راضي يسجل دخول على البورتال', 'غير قادر على تسجيل الدخول', 'مشكله دخول البوابه', 'نسيت الباسورد البورتال', 'تسجيل الدخول البوابه', 'فندر بورتال معلق', 'دخول بوابه الشركاء', 'unable to log in', 'portal login issue', 'forgot portal password', 'vendor portal login failed', 'can\'t access portal', 'invalid credentials portal', 'portal account locked', 'reset portal password'],
                     id: 13
                 },
                 {
@@ -3587,11 +3616,29 @@ async function generateResponse() {
                 matchedCase = allCases.find(c => c.id === learnedId);
             }
 
+            // High-Precision Neural Intent Matcher
+            const scoredMapResults = [];
             for (const item of inboundIntentMap) {
-                if (item.keys.some(k => qNormSearch.includes(normalizeArabic(k)))) {
+                const score = scoreInboundIntent(fullSearchText, item);
+                if (score > 0) {
                     const found = allCases.find(c => c.id === item.id);
-                    if (found && !detectedCases.some(dc => dc.id === found.id)) {
-                        detectedCases.push(found);
+                    if (found) {
+                        scoredMapResults.push({ caseObj: found, score: score, id: item.id });
+                    }
+                }
+            }
+
+            // Sort by score descending
+            scoredMapResults.sort((a, b) => b.score - a.score);
+
+            // Extract distinct top cases
+            const seenIds = new Set();
+            for (const res of scoredMapResults) {
+                if (!seenIds.has(res.id)) {
+                    seenIds.add(res.id);
+                    // If it is a top-tier match
+                    if (res.score >= 50 || detectedCases.length === 0) {
+                        detectedCases.push(res.caseObj);
                     }
                 }
             }
