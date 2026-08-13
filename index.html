@@ -2610,7 +2610,8 @@ ${titles}
         }
 
         function updateLearnedCount() {
-            document.getElementById('learnedRulesCountBadge').innerText = `ذاكرة التعلم (${learnedRules.length})`;
+            const badge = document.getElementById('learnedRulesCountBadge');
+            if (badge) badge.innerText = `ذاكرة التعلم (${learnedRules.length})`;
         }
 
         function showLearningModal() {
@@ -2935,11 +2936,9 @@ Order Issues: 920033935`;
             let html = '';
             casesList.forEach(c => {
                 html += `
-                    <div class="case-item" onclick="selectCase(${c.id})" style="border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px;">
-                            <h4 style="font-size: 0.9rem; font-weight: 700; color: #FFF; margin-bottom: 4px;">#${c.id} - ${c.case_title}</h4>
-                        </div>
-                        <span style="font-size: 0.75rem; color: #F59E0B; font-weight: 600;"><i class="fa-solid fa-sitemap"></i> ${c.ccr || 'Inbound KB Case'}</span>
+                    <div class="case-item" onclick="selectCase(${c.id})" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s; width: 100%;">
+                        <h4 style="font-size: 0.88rem; font-weight: 700; color: #FFF; margin: 0; text-align: right; line-height: 1.4;">#${c.id} - ${c.case_title}</h4>
+                        <span style="font-size: 0.73rem; color: #F59E0B; font-weight: 600; text-align: right; word-break: break-word; line-height: 1.3;"><i class="fa-solid fa-sitemap"></i> ${c.ccr || 'Inbound KB Case'}</span>
                     </div>
                 `;
             });
