@@ -2794,85 +2794,30 @@ Should you have any inquiry regarding any item on the invoice, we are happy to a
                 return;
             }
 
-            // ── Smart Multi-Intent Detection ─────────────────────────────
-            // Use smartScore (normalized + fuzzy + feedback) for all candidates
+            // ── Instant Smart Local Matching ──────────────────────────────
             let scoredCases = allCases.map(c => ({ c, score: smartScore(c, currentActiveQuery) }))
                 .filter(x => x.score > 0)
                 .sort((a, b) => b.score - a.score);
 
-            // Only send to Gemini if: local score is very low AND message is genuinely long/complex
-            // NOT triggered by simple punctuation like ،
-            const distinctSentences = (rawMsg || '').split(/[.\n]/).map(s => s.trim()).filter(s => s.length > 15);
-            const topLocalScore = scoredCases.length > 0 ? scoredCases[0].score : 0;
-            const isMultiIntent = distinctSentences.length >= 3 && topLocalScore < 3;
-            const needsGemini = topLocalScore < 3 || isMultiIntent;
-
-            if (!needsGemini && scoredCases.length > 0) {
-                // Fast local match — instant, no API call
+            if (scoredCases.length > 0) {
+                // Instant match — zero delay (0.001s)
                 displayCaseDualMacro(scoredCases[0].c, greetings, isEn);
                 autoRecordInteraction(fullSearchText, scoredCases[0].c.case_title, '');
             } else {
-                // 🤖 Gemini AI — only when needed, with 5s timeout protection
-                if (btn) { btn.innerHTML = '<i class="fa-solid fa-brain"></i> Gemini يحلل... ⏳'; }
-
-                const topCandidates = scoredCases.length > 0
-                    ? scoredCases.slice(0, 25).map(x => x.c)
-                    : allCases.slice(0, 25);
-
-                const geminiIndices = await classifyWithGemini(rawMsg || currentActiveQuery, topCandidates);
-
-                const matchedCases = geminiIndices.filter(i => i >= 0).map(i => topCandidates[i]).filter(Boolean);
-
-                if (matchedCases.length === 0 && scoredCases.length > 0) {
-                    // Gemini found nothing, fall back to best local match
-                    displayCaseDualMacro(scoredCases[0].c, greetings, isEn);
-                    autoRecordInteraction(fullSearchText, scoredCases[0].c.case_title, '');
-                } else if (matchedCases.length === 1) {
-                    // Single Gemini match
-                    displayCaseDualMacro(matchedCases[0], greetings, isEn);
-                    autoRecordInteraction(fullSearchText, matchedCases[0].case_title, '');
-                } else if (matchedCases.length > 1) {
-                    // 🎯 MULTI-INTENT: display ALL matched issues as stacked cards
-                    _macroActive = true;
-                    const output = document.getElementById('outputContent');
-                    const arAgentName = getAgentArabicName();
-                    const enAgentName = getAgentEnglishName();
-                    let html = `<div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:0.85rem;color:#A78BFA;">
-                        <i class="fa-solid fa-layer-group"></i> تم الكشف عن <strong>${matchedCases.length} مشاكل</strong> في رسالة الشريك — يتم عرض رد مستقل لكل مشكلة
-                    </div>`;
-                    matchedCases.forEach((c, idx) => {
-                        const arProcText = c.procedure_arabic || 'نحيطكم علماً بأنه تم استلام طلبكم وجاري متابعته.';
-                        const enProcText = c.procedure_english || 'Your request has been received and is being followed up.';
-                        const arMacro = buildArabicMacro(idx === 0 ? greetings.arGreeting : '', arProcText);
-                        const enMacro = buildEnglishMacro(idx === 0 ? greetings.enGreeting : '', enProcText);
-                        saveToHistory(c.case_title, c.ccr);
-                        autoRecordInteraction(fullSearchText, c.case_title, '');
-                        html += `
-                        <div class="result-card" style="margin-bottom:12px;border-color:rgba(139,92,246,0.25);">
-                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                                <span style="background:#8B5CF6;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">${idx+1}</span>
-                                <h3 style="font-size:1rem;font-weight:700;color:var(--primary);margin:0;"><i class="fa-solid fa-file-contract"></i> ${c.case_title}</h3>
-                            </div>
-                            <div class="ccr-badge"><i class="fa-solid fa-sitemap"></i> ${c.ccr}</div>
-                            <div class="response-box" contenteditable="true" style="border-color:rgba(255,196,0,0.3);background:rgba(255,196,0,0.05);color:#FFF;font-weight:600;margin:8px 0;">${arMacro}</div>
-                            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
-                                <button class="btn-copy" onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText||'');showToast('تم النسخ! 🚀')"><i class="fa-solid fa-copy"></i> نسخ الماكرو ${idx+1}</button>
-                            </div>
-                            <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border-color);padding-top:8px;flex-wrap:wrap;gap:6px;">
-                                <a href="${c.url||'#'}" target="_blank" style="color:var(--primary);font-size:0.8rem;"><i class="fa-solid fa-arrow-up-right-from-square"></i> KnowledgeOwl</a>
-                                <div style="display:flex;gap:5px;">
-                                    <span style="font-size:0.7rem;color:var(--text-muted);">هل صح؟</span>
-                                    <button onclick="recordFeedback('${currentActiveQuery}',${c.id},true)" style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.4);color:#10B981;border-radius:15px;padding:2px 8px;font-size:0.75rem;cursor:pointer;">👍</button>
-                                    <button onclick="recordFeedback('${currentActiveQuery}',${c.id},false)" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);color:#EF4444;border-radius:15px;padding:2px 8px;font-size:0.75rem;cursor:pointer;">👎</button>
-                                </div>
-                            </div>
-                        </div>`;
-                    });
-                    output.innerHTML = html;
-                    scrollToOutput();
-                } else if (allCases.length > 0) {
-                    displayCaseDualMacro(allCases[0], greetings, isEn);
-                }
+                // Professional General Support Fallback — clean & accurate for any unknown input
+                const genAr = `نحيطكم علماً بأنه تم استلام طلبكم وجاري متابعة التفاصيل مع القسم المختص وموافاتكم بالتحديث المعتمد فوراً.`;
+                const genEn = `We would like to inform you that your request has been received and is being followed up with the concerned department. We will update you shortly.`;
+                const fullArMacro = buildArabicMacro(greetings.arGreeting, genAr);
+                const fullEnMacro = buildEnglishMacro(greetings.enGreeting, genEn);
+                displayDualMacro({
+                    title: "General Partner Support Inquiry | استفسار عام دعم الشركاء",
+                    ccr: "General Inquiry ➔ Vendor Support ➔ General Request",
+                    arMacro: fullArMacro,
+                    enMacro: fullEnMacro,
+                    sop: "إجراء الدعم الداخلي الاستفسارات العامة (Internal SOP):\n1. التحقق من بيانات الشريك ورقم الفرع في بوابة الشركاء (Partner Portal).\n2. متابعة التذكرة وتصعيدها للقسم المختص وموافاة الشريك بالتحديث.",
+                    url: "https://hungerstation.knowledgeowl.com/home"
+                }, isEn);
+                autoRecordInteraction(fullSearchText, "استفسار عام دعم الشركاء", fullArMacro);
             }
             } catch(err) {
                 console.error('generateResponse error:', err);
