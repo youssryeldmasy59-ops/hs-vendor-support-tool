@@ -821,7 +821,30 @@
             </div>
 
             <!-- Search -->
-            <div class="cases-search-box">
+            
+            <!-- 3-Level KnowledgeOwl Tree Hierarchy Navigator -->
+            <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+                <div style="font-size: 0.82rem; font-weight: 700; color: #F59E0B; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                    <span><i class="fa-solid fa-sitemap"></i> شجرة تصفح الـ KB (Inbound Cases procedures):</span>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">96 حالة معتمدة (7 أقسام رئيسية)</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <div>
+                        <label style="font-size: 0.72rem; color: #94A3B8; display: block; margin-bottom: 4px;">القسم الرئيسي (Level 1):</label>
+                        <select id="level1Select" onchange="onLevel1Change()" style="width: 100%; background: #0F172A; color: #FFF; border: 1px solid var(--border-color); border-radius: 6px; padding: 6px 8px; font-size: 0.8rem;">
+                            <option value="ALL">🔍 جميع الأقسام الرئيسية (7)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.72rem; color: #94A3B8; display: block; margin-bottom: 4px;">القسم الفرعي (Level 2):</label>
+                        <select id="level2Select" onchange="onLevel2Change()" style="width: 100%; background: #0F172A; color: #FFF; border: 1px solid var(--border-color); border-radius: 6px; padding: 6px 8px; font-size: 0.8rem;">
+                            <option value="ALL">🌐 جميع الفروع الثانوية</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+<div class="cases-search-box">
                 <input type="text" id="searchInput" placeholder="ابحث باسم الحالة (مثل: تعويض، الفاتورة، الآيبان، شاشة فارغة)..." oninput="searchCases()">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </div>
@@ -4019,6 +4042,76 @@ function toggleMainVoiceRecording() {
             }
             trainBuiltInIntent(currentActiveQuery, currentActiveCaseId);
         }
+
+
+
+        /* ── 3-Level KnowledgeOwl Hierarchy Navigator Engine ── */
+        function initKBTreeNavigator() {
+            const l1Sel = document.getElementById('level1Select');
+            if (!l1Sel || typeof allCases === 'undefined') return;
+
+            const categories = [...new Set(allCases.map(c => c.category))].filter(Boolean);
+            let l1Html = '<option value="ALL">🔍 جميع الأقسام الرئيسية (7 أقسام)</option>';
+            categories.forEach(cat => {
+                l1Html += `<option value="${cat}">${cat}</option>`;
+            });
+            l1Sel.innerHTML = l1Html;
+            populateLevel2Options('ALL');
+        }
+
+        function populateLevel2Options(selectedCat) {
+            const l2Sel = document.getElementById('level2Select');
+            if (!l2Sel) return;
+
+            let filteredCases = allCases;
+            if (selectedCat !== 'ALL') {
+                filteredCases = allCases.filter(c => c.category === selectedCat);
+            }
+
+            const subCats = [...new Set(filteredCases.map(c => c.sub_category))].filter(Boolean);
+            let l2Html = '<option value="ALL">🌐 جميع الأقسام الفرعية</option>';
+            subCats.forEach(sub => {
+                l2Html += `<option value="${sub}">${sub}</option>`;
+            });
+            l2Sel.innerHTML = l2Html;
+        }
+
+        function onLevel1Change() {
+            const l1Val = document.getElementById('level1Select').value;
+            currentFilter = l1Val;
+            populateLevel2Options(l1Val);
+
+            // Update top category tabs UI match
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(t => {
+                if (t.innerText.includes(l1Val) || (l1Val === 'ALL' && t.innerText === 'الكل')) {
+                    t.classList.add('active');
+                } else {
+                    t.classList.remove('active');
+                }
+            });
+
+            searchCases(true);
+        }
+
+        function onLevel2Change() {
+            const l2Val = document.getElementById('level2Select').value;
+            const l1Val = document.getElementById('level1Select').value;
+
+            let filtered = allCases;
+            if (l1Val !== 'ALL') {
+                filtered = filtered.filter(c => c.category === l1Val);
+            }
+            if (l2Val !== 'ALL') {
+                filtered = filtered.filter(c => c.sub_category === l2Val);
+            }
+
+            renderCasesList(filtered, '');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(initKBTreeNavigator, 100);
+        });
 
 </script>
 <!-- AI Settings Modal -->
