@@ -3047,7 +3047,53 @@ Order Issues: 920033935`;
             displayCaseDualMacro(c, { arGreeting: "", enGreeting: "" }, false);
         }
 
-        async function generateResponse() {
+        
+        /* ── Autonomous Built-in Adaptive Neural Intent Engine ── */
+        const PRELOADED_SYNAPSES = {
+            "شرح الفاتورة": 54,
+            "الفاتورة": 54,
+            "فاتورة": 54,
+            "تفاصيل الفاتورة": 54,
+            "invoice": 54,
+            "rider eta": 50,
+            "المندوب متأخر": 50,
+            "تأخر المندوب": 50,
+            "مدير الحساب": 73,
+            "مدير المنطقة": 73,
+            "تعويض": 58,
+            "آيبان": 92,
+            "iban": 92,
+            "تغيير البنك": 92,
+            "تحديث السجل": 94
+        };
+
+        function getBuiltInLearnedCaseId(query) {
+            if (!query) return null;
+            const normQ = normalizeArabic(query.toLowerCase().strip ? query.toLowerCase().strip() : query.toLowerCase().trim());
+            
+            // 1. Check user local storage learned memory first
+            const userLearned = JSON.parse(localStorage.getItem('hs_built_in_learning') || '{}');
+            if (userLearned[normQ]) return userLearned[normQ];
+
+            // 2. Check preloaded synapses
+            for (let syn in PRELOADED_SYNAPSES) {
+                if (normQ.includes(normalizeArabic(syn))) {
+                    return PRELOADED_SYNAPSES[syn];
+                }
+            }
+            return null;
+        }
+
+        function trainBuiltInIntent(query, caseId) {
+            if (!query || !caseId) return;
+            const normQ = normalizeArabic(query.toLowerCase().trim());
+            const userLearned = JSON.parse(localStorage.getItem('hs_built_in_learning') || '{}');
+            userLearned[normQ] = parseInt(caseId);
+            localStorage.setItem('hs_built_in_learning', JSON.stringify(userLearned));
+            showToast(`🧠 تم تدريب ذاكرة النظام التكيفية: "${query}" ➔ حالة #${caseId}`);
+        }
+
+async function generateResponse() {
             const btn = document.getElementById('mainGenerateBtn');
             const btnOrigHTML = btn ? btn.innerHTML : '';
             if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التوليد...'; }
@@ -3081,6 +3127,10 @@ Order Issues: 920033935`;
 
             // ── Universal Inbound KnowledgeOwl Intent Map ──────────────────────────
             const inboundIntentMap = [
+                {
+                    keys: ['شرح الفاتورة', 'شرح فاتورة', 'ابعت لي الرد بتاع شرح الفاتورة', 'رد شرح الفاتورة', 'الفاتورة', 'فاتورة', 'فاتورة المبيعات', 'تفاصيل الفاتورة', 'شرح الفواتير', 'ملخص الفاتورة', 'كشف الفاتورة', 'شرح الفاتورة الشهري', 'توضيح الفاتورة', 'استفسار عن الفاتورة', 'invoice explanation', 'explain invoice', 'master invoice', 'invoice guide', 'invoice breakdown'],
+                    id: 54
+                },
                 {
                     keys: ['rider eta', 'request rider eta', 'eta', 'driver eta', 'rider location', 'delivery eta', 'اين المندوب', 'وين المندوب', 'فين المندوب', 'فين السائق', 'المندوب ما وصل', 'تاخر المندوب', 'تاخير السائق', 'السائق تاخر', 'تاخير وصول المندوب', 'تأخير وصول المندوب', 'تأخير في التوصيل', 'تاخير التوصيل', 'تاخير الطلب', 'rider late', 'delivery late', 'where is rider', 'driver delay'],
                     id: 50
@@ -3176,6 +3226,13 @@ Order Issues: 920033935`;
             // ── Ultra-Smart Multi-Intent Engine ──────────────────────────
             let matchedIntentCase = null;
             let detectedCases = [];
+            let matchedCase = null;
+            // Check Built-in Neural Adaptive Memory first!
+            const learnedId = getBuiltInLearnedCaseId(fullSearchText);
+            if (learnedId) {
+                matchedCase = allCases.find(c => c.id === learnedId);
+            }
+
             for (const item of inboundIntentMap) {
                 if (item.keys.some(k => qNormSearch.includes(normalizeArabic(k)))) {
                     const found = allCases.find(c => c.id === item.id);
@@ -3951,6 +4008,16 @@ function toggleMainVoiceRecording() {
             } catch(e) {
                 console.error("Mic start error:", e);
             }
+        }
+
+
+
+        function trainCurrentActiveCase() {
+            if (!currentActiveCaseId || !currentActiveQuery) {
+                showToast("يرجى إدخال استفسار واختيار حالة لتعديل التدريب الذاتي.");
+                return;
+            }
+            trainBuiltInIntent(currentActiveQuery, currentActiveCaseId);
         }
 
 </script>
