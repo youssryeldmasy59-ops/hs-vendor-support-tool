@@ -5484,10 +5484,15 @@ function showMenuPreviewTab(tab) {
     });
 }
 
+
+// =========================================================================
+// 🍽️ OFFICIAL HUNGERSTATION _MenuUpload.xlsx ENGINE (100% TEMPLATE ACCURACY)
+// =========================================================================
+
 function cleanProperTrim(str) {
     if (!str) return '';
     let cleaned = String(str)
-        .replace(/[&%@\/\\|~]/g, ' ')
+        .replace(/[&%@\/\|~*]/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
     return cleaned;
@@ -5499,445 +5504,213 @@ function toEnglishProper(str) {
     return cleaned.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }
 
-function extractImageUrls(text) {
-    const urls = [];
-    if (!text) return urls;
-    const urlRegex = /(https?:\/\/[^\s,;"'<>]+)/gi;
-    let match;
-    while ((match = urlRegex.exec(text)) !== null) {
-        const u = match[1];
-        if (u.includes('drive.google.com') || u.includes('dropbox.com') || u.includes('onedrive') || 
-            u.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i) || u.includes('photos.app.goo.gl')) {
-            urls.push(u);
+function parseRawLineIntoItem(line) {
+    let raw = line.trim();
+    if (!raw || raw.startsWith('#')) return null;
+
+    // 1. Extract Calories
+    let kcal = 0;
+    const kcalMatch = raw.match(/(?:السعرات|سعرات|kcal|calories|cal|كالوري)[:\s]*(\d+)/i);
+    if (kcalMatch) {
+        kcal = parseInt(kcalMatch[1], 10);
+        raw = raw.replace(kcalMatch[0], ' ');
+    }
+
+    // 2. Extract Price
+    let price = 0;
+    const priceMatch = raw.match(/(?:السعر|سعر|price|sar|ريال)[:\s]*(\d+(?:\.\d+)?)/i);
+    if (priceMatch) {
+        price = parseFloat(priceMatch[1]);
+        raw = raw.replace(priceMatch[0], ' ');
+    } else {
+        const trailingNum = raw.match(/[-–:]\s*(\d+(?:\.\d+)?)\s*(?:ريال|sar)?\s*$/i);
+        if (trailingNum) {
+            price = parseFloat(trailingNum[1]);
+            raw = raw.substring(0, trailingNum.index);
         }
     }
-    return [...new Set(urls)];
-}
 
-function renderExtractedImages() {
-    const container = document.getElementById('extractedImagesContainer');
-    const list = document.getElementById('extractedImagesList');
-    const badge = document.getElementById('imgCountBadge');
-    
-    if (!window.menuBuilderData.imageLinks.length) {
-        if (container) container.style.display = 'none';
-        return;
-    }
-    
-    if (container) container.style.display = 'block';
-    if (badge) badge.textContent = `${window.menuBuilderData.imageLinks.length} رابط مستخرج`;
-    if (list) {
-        list.innerHTML = window.menuBuilderData.imageLinks.map((url, i) => `
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.05); padding:4px 0;">
-                <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:80%;">${i + 1}. <a href="${url}" target="_blank" style="color:#60A5FA; text-decoration:underline;">${url}</a></span>
-                <button onclick="navigator.clipboard.writeText('${url}')" style="background:rgba(255,255,255,0.1); border:none; color:#FFF; font-size:0.7rem; padding:2px 6px; border-radius:4px; cursor:pointer;">نسخ</button>
-            </div>
-        `).join('');
-    }
-}
+    // 3. Clean delimiters
+    raw = raw.replace(/[-–—:–]/g, ' ')
+             .replace(/\s*(?:ريال|sar|kcal|calories|السعر|السعرات)\s*/gi, ' ')
+             .replace(/\s+/g, ' ')
+             .trim();
 
-function renderMenuPreviewTables() {
-    const { groups, items, modifiers } = window.menuBuilderData;
-    
-    const previewSection = document.getElementById('menuPreviewSection');
-    if (previewSection) previewSection.style.display = 'block';
-    
-    // Badges
-    const bg = document.getElementById('badgeGroupsCount');
-    const bi = document.getElementById('badgeItemsCount');
-    const bm = document.getElementById('badgeModifiersCount');
-    if (bg) bg.textContent = `(${groups.length})`;
-    if (bi) bi.textContent = `(${items.length})`;
-    if (bm) bm.textContent = `(${modifiers.length})`;
-    
-    // Tbody Groups
-    const tbodyGroups = document.getElementById('tbodyGroups');
-    if (tbodyGroups) {
-        tbodyGroups.innerHTML = groups.map(g => `
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                <td style="padding: 6px 8px; color: #F59E0B; font-weight: 700;">${g.id}</td>
-                <td style="padding: 6px 8px; color: #FFF;">${g.en_name}</td>
-                <td style="padding: 6px 8px; color: #E2E8F0;">${g.ar_name}</td>
-                <td style="padding: 6px 8px; color: #94A3B8;">${g.en_type || 'General'}</td>
-                <td style="padding: 6px 8px; color: #94A3B8;">${g.ar_type || 'عام'}</td>
-            </tr>
-        `).join('');
+    // 4. Extract English in Parentheses if present
+    let en_name = "";
+    let ar_name = "";
+    const parenMatch = raw.match(/\(([^)]+)\)/);
+    if (parenMatch) {
+        const en_candidate = parenMatch[1].trim();
+        const ar_candidate = (raw.substring(0, parenMatch.index) + raw.substring(parenMatch.index + parenMatch[0].length)).trim();
+        if (/[a-zA-Z]/.test(en_candidate)) {
+            en_name = en_candidate;
+            ar_name = ar_candidate;
+        } else {
+            ar_name = raw;
+        }
+    } else {
+        const ar_words = raw.match(/[\u0600-\u06FF]+/g);
+        const en_words = raw.match(/[a-zA-Z]+/g);
+        if (ar_words && en_words) {
+            ar_name = ar_words.join(' ');
+            en_name = en_words.join(' ');
+        } else if (ar_words) {
+            ar_name = ar_words.join(' ');
+            en_name = autoTranslateMenuText(ar_name, 'EN');
+        } else if (en_words) {
+            en_name = en_words.join(' ');
+            ar_name = autoTranslateMenuText(en_name, 'AR');
+        } else {
+            ar_name = raw;
+            en_name = raw;
+        }
     }
-    
-    // Tbody Items
-    const tbodyItems = document.getElementById('tbodyItems');
-    if (tbodyItems) {
-        tbodyItems.innerHTML = items.map(it => `
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                <td style="padding: 6px 8px; color: #F59E0B; font-weight: 700;">${it.id}</td>
-                <td style="padding: 6px 8px; color: #38BDF8;">${it.group_id}</td>
-                <td style="padding: 6px 8px; color: #94A3B8;">${it.prod_en || '-'}</td>
-                <td style="padding: 6px 8px; color: #94A3B8;">${it.prod_ar || '-'}</td>
-                <td style="padding: 6px 8px; color: #FFF; font-weight: 600;">${it.item_en}</td>
-                <td style="padding: 6px 8px; color: #E2E8F0;">${it.item_ar}</td>
-                <td style="padding: 6px 8px; color: #10B981; font-weight: 700;">${it.price}</td>
-                <td style="padding: 6px 8px; color: #F59E0B;">${it.kcal}</td>
-                <td style="padding: 6px 8px; color: #C084FC;">${it.modifier_groups || ''}</td>
-            </tr>
-        `).join('');
-    }
-    
-    // Tbody Modifiers
-    const tbodyModifiers = document.getElementById('tbodyModifiers');
-    if (tbodyModifiers) {
-        tbodyModifiers.innerHTML = modifiers.map(m => `
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                <td style="padding: 6px 8px; color: #F59E0B; font-weight: 700;">${m.id}</td>
-                <td style="padding: 6px 8px; color: #FFF; font-weight: 600;">${m.group_en}</td>
-                <td style="padding: 6px 8px; color: #E2E8F0;">${m.group_ar}</td>
-                <td style="padding: 6px 8px; color: #38BDF8;">${m.max_limit}</td>
-                <td style="padding: 6px 8px; color: #94A3B8;">${m.min_limit}</td>
-                <td style="padding: 6px 8px; color: #FFF;">${m.mod_en}</td>
-                <td style="padding: 6px 8px; color: #E2E8F0;">${m.mod_ar}</td>
-                <td style="padding: 6px 8px; color: #10B981; font-weight: 700;">${m.price}</td>
-                <td style="padding: 6px 8px; color: #F59E0B;">${m.kcal}</td>
-            </tr>
-        `).join('');
-    }
+
+    ar_name = cleanProperTrim(ar_name) || 'صنف جديد';
+    en_name = toEnglishProper(en_name) || autoTranslateMenuText(ar_name, 'EN') || 'New Item';
+
+    return {
+        ar_name: ar_name,
+        en_name: en_name,
+        price: isNaN(price) || price <= 0 ? 15 : price,
+        kcal: isNaN(kcal) ? 0 : kcal
+    };
 }
 
 function parseRawMenuInput() {
-    const rawText = document.getElementById('rawMenuInput')?.value || '';
-    if (!rawText.trim()) {
-        alert('الرجاء لصق نص المنيو أو روابط الصور أولاً!');
-        return;
-    }
+    const rawText = (document.getElementById('rawMenuInput') ? document.getElementById('rawMenuInput').value : '') || 
+                    (document.getElementById('studioRawMenuInput') ? document.getElementById('studioRawMenuInput').value : '');
+    
+    if (!rawText.trim()) return;
 
-    // 1. Extract Images / Drive links
+    // 1. Extract Images
     const extractedImgs = extractImageUrls(rawText);
     window.menuBuilderData.imageLinks = extractedImgs;
     renderExtractedImages();
 
-    // 2. Parse Lines
-    const lines = rawText.split(/\r?\n/);
+    const lines = rawText.split('\n');
     const groups = [];
     const items = [];
     const modifiers = [];
 
     let currentGroup = null;
-    let currentGroupId = 0;
-    let currentModifierGroup = null;
-    let currentModGroupId = 0;
-    let inModifierSection = false;
+    let isModifierSection = false;
+    let currentModGroup = 'الإضافات / Add-ons';
+    let currentModGroupEn = 'Add-ons';
+    let currentModGroupAr = 'الإضافات';
 
-    lines.forEach(line => {
+    lines.forEach((line) => {
         const trimmed = line.trim();
-        if (!trimmed) return;
-        if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return; // handled in images
+        if (!trimmed || trimmed.startsWith('http') || trimmed.startsWith('روابط')) return;
 
-        // Check if Modifier section header
-        if (trimmed.match(/(إضافات|اضافات|add-?ons|toppings|modifiers|صوصات|نكهات)/i) && (trimmed.includes(':') || trimmed.includes('/') || trimmed.length < 30)) {
-            inModifierSection = true;
-            return;
-        }
-
-        // Check if Category header (e.g. قسم المشويات / Grills: or Category: Desserts or [Burgers])
-        const catMatch = trimmed.match(/^(?:قسم|فئة|category|menu group|group)?[\s:#\[]*([\u0600-\u06FF\s]+)(?:[\/|\-\\]+([a-zA-Z\s]+))?[\s:\]]*$/i);
-        const isHeaderLine = (trimmed.startsWith('#') || trimmed.startsWith('===') || trimmed.endsWith(':') || trimmed.includes('قسم ') || trimmed.includes('Category:'));
-
-        if (!inModifierSection && isHeaderLine && !trimmed.match(/\d+\s*(?:ريال|sar|sr|\$)/i)) {
-            currentGroupId++;
-            let arName = cleanProperTrim(trimmed.replace(/^(?:قسم|فئة|category|menu group|group)?[\s:#\[]*/i, '').replace(/[:\]]/g, ''));
-            let enName = arName;
-            
-            if (trimmed.includes('/')) {
-                const parts = trimmed.split('/');
-                arName = cleanProperTrim(parts[0].replace(/^(?:قسم|فئة)?[\s:#]*/i, ''));
-                enName = toEnglishProper(parts[1].replace(/[:\]]/g, ''));
-            } else if (trimmed.match(/[a-zA-Z]/)) {
-                enName = toEnglishProper(trimmed.replace(/[^a-zA-Z\s]/g, ''));
+        // Check if Section / Category Header
+        if (trimmed.startsWith('قسم') || trimmed.startsWith('مجموعة') || trimmed.toLowerCase().startsWith('category') || trimmed.toLowerCase().startsWith('group') || (trimmed.endsWith(':') && !trimmed.includes('السعر'))) {
+            let catClean = trimmed.replace(/^قسم|^مجموعة|category|group|:$/gi, '').trim();
+            if (catClean.toLowerCase().includes('إضافات') || catClean.toLowerCase().includes('اضافات') || catClean.toLowerCase().includes('add-on') || catClean.toLowerCase().includes('modifier') || catClean.toLowerCase().includes('options') || catClean.toLowerCase().includes('نكهات') || catClean.toLowerCase().includes('مكسرات')) {
+                isModifierSection = true;
+                currentModGroupAr = cleanProperTrim(catClean.split('/')[0] || catClean);
+                currentModGroupEn = toEnglishProper(catClean.split('/')[1] || catClean);
+                return;
             }
 
+            isModifierSection = false;
+            let arCat = cleanProperTrim(catClean.split('/')[0] || catClean);
+            let enCat = toEnglishProper(catClean.split('/')[1] || autoTranslateMenuText(arCat, 'EN'));
+
             currentGroup = {
-                id: currentGroupId,
-                en_name: enName || `Category ${currentGroupId}`,
-                ar_name: arName || `قسم ${currentGroupId}`,
-                en_type: 'General',
-                ar_type: 'عام'
+                id: groups.length + 1,
+                en_name: enCat || 'Main Menu',
+                ar_name: arCat || 'القائمة الرئيسية',
+                name_en: enCat || 'Main Menu',
+                name_ar: arCat || 'القائمة الرئيسية',
+                en_type: enCat.toLowerCase().includes('drink') || enCat.toLowerCase().includes('juice') ? 'Beverages' : (enCat.toLowerCase().includes('breakfast') ? 'Breakfast' : 'General'),
+                ar_type: arCat.includes('مشروب') || arCat.includes('عصير') ? 'المشروبات' : (arCat.includes('فطور') ? 'الإفطار' : 'عام'),
+                order: groups.length + 1
             };
             groups.push(currentGroup);
             return;
         }
 
-        // Ensure default group if none created yet
-        if (!groups.length && !inModifierSection) {
-            currentGroupId = 1;
-            currentGroup = { id: 1, en_name: 'Main Menu', ar_name: 'القائمة الرئيسية', en_type: 'General', ar_type: 'عام' };
-            groups.push(currentGroup);
-        }
+        const parsed = parseRawLineIntoItem(trimmed);
+        if (!parsed) return;
 
-        // Parse Price
-        const priceMatch = trimmed.match(/(\d+(?:\.\d+)?)\s*(?:ريال|sar|sr|rs|\$|جنيه)?/i);
-        let price = priceMatch ? parseFloat(priceMatch[1]) : 10;
-
-        // Parse Calories
-        const kcalMatch = trimmed.match(/(\d+)\s*(?:kcal|سعرة|سعره|كالوري|cal)/i);
-        let kcal = kcalMatch ? parseInt(kcalMatch[1], 10) : 0;
-
-        // Remove bullet markers
-        let cleanNameLine = trimmed
-            .replace(/^[-*•\d.]+\s*/, '')
-            .replace(/(?:السعر|price)?[\s:]*\d+(?:\.\d+)?\s*(?:ريال|sar|sr|rs|\$)?/gi, '')
-            .replace(/(?:السعرات|kcal|سعرة|كالوري)?[\s:]*\d+\s*(?:kcal|سعرة|سعره|كالوري|cal)?/gi, '')
-            .trim();
-
-        let arItemName = cleanProperTrim(cleanNameLine);
-        let enItemName = arItemName;
-
-        if (cleanNameLine.includes('(') && cleanNameLine.includes(')')) {
-            const inside = cleanNameLine.match(/\(([^)]+)\)/);
-            if (inside) {
-                if (inside[1].match(/[a-zA-Z]/)) {
-                    enItemName = toEnglishProper(inside[1]);
-                    arItemName = cleanProperTrim(cleanNameLine.replace(/\([^)]+\)/, ''));
-                } else {
-                    arItemName = cleanProperTrim(inside[1]);
-                    enItemName = toEnglishProper(cleanNameLine.replace(/\([^)]+\)/, ''));
-                }
-            }
-        } else if (cleanNameLine.includes('/')) {
-            const parts = cleanNameLine.split('/');
-            arItemName = cleanProperTrim(parts[0]);
-            enItemName = toEnglishProper(parts[1]);
-        }
-
-        if (inModifierSection) {
-            currentModGroupId++;
+        if (isModifierSection) {
             modifiers.push({
                 id: modifiers.length + 1,
-                group_en: currentModifierGroup ? '' : 'Add-ons',
-                group_ar: currentModifierGroup ? '' : 'الإضافات',
-                max_limit: currentModifierGroup ? '' : 3,
-                min_limit: currentModifierGroup ? '' : 0,
-                mod_en: enItemName || `Modifier ${modifiers.length + 1}`,
-                mod_ar: arItemName || `إضافة ${modifiers.length + 1}`,
-                price: price || 2,
-                kcal: kcal || 0
-            });
-            currentModifierGroup = true;
-        } else {
-            items.push({
-                id: items.length + 1,
-                group_id: currentGroupId || 1,
-                prod_en: '-',
-                prod_ar: '-',
-                prod_en_desc: '',
-                prod_ar_desc: '',
-                item_en: enItemName || `Item ${items.length + 1}`,
-                item_ar: arItemName || `صنف ${items.length + 1}`,
-                item_en_desc: '',
-                item_ar_desc: '',
-                price: price || 15,
-                pickup_price: '',
-                kcal: kcal || 0,
-                modifier_groups: modifiers.length ? '1' : ''
-            });
-        }
-    });
-
-    window.menuBuilderData.groups = groups;
-    window.menuBuilderData.items = items;
-    window.menuBuilderData.modifiers = modifiers;
-
-    renderMenuPreviewTables();
-}
-
-
-function processVendorMenuWorkbook(workbook) {
-    let allSheetText = '';
-    const groupsMap = new Map();
-    const items = [];
-    const modifiers = [];
-    let groupIdCounter = 1;
-
-    // 1. Collect all sheets
-    workbook.SheetNames.forEach(sheetName => {
-        const sheet = workbook.Sheets[sheetName];
-        const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-        json.forEach(row => {
-            if (Array.isArray(row)) {
-                allSheetText += ' ' + row.join(' ');
-            }
-        });
-    });
-
-    // 2. Read first sheet rows
-    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rawRows = XLSX.utils.sheet_to_json(firstSheet);
-
-    rawRows.forEach((row, idx) => {
-        // Extract Category / Group
-        const rawCat = row['Category'] || row['category'] || row['القسم'] || row['الفئة'] || row['مجموعة'] || row['Group'] || row['Menu Group'] || 'Main Menu';
-        const cleanCatAr = cleanProperTrim(String(rawCat));
-        const cleanCatEn = toEnglishProper(String(rawCat));
-
-        if (!groupsMap.has(cleanCatEn)) {
-            groupsMap.set(cleanCatEn, {
-                id: groupIdCounter++,
-                en_name: cleanCatEn,
-                ar_name: cleanCatAr,
-                en_type: 'General',
-                ar_type: 'عام',
-                order: groupsMap.size + 1
-            });
-        }
-        const groupObj = groupsMap.get(cleanCatEn);
-
-        // Extract Item Name
-        const nameAr = row['Arabic Name'] || row['الاسم بالعربي'] || row['اسم الصنف'] || row['Name Ar'] || row['Name'] || row['الاسم'] || `صنف ${idx+1}`;
-        const nameEn = row['English Name'] || row['الاسم بالإنجليزي'] || row['Name En'] || row['Item Name'] || row['Name'] || row['Item'] || `Item ${idx+1}`;
-        
-        // Extract Price & Calories
-        const price = parseFloat(row['Price'] || row['price'] || row['السعر'] || row['price*'] || 15);
-        const kcal = parseInt(row['Calories'] || row['calories'] || row['Kcal'] || row['kcal'] || row['السعرات'] || 0, 10);
-        
-        // Extract Descriptions
-        const descAr = cleanProperTrim(String(row['Arabic Description'] || row['الوصف بالعربي'] || row['الوصف'] || row['Description'] || ''));
-        const descEn = cleanProperTrim(String(row['English Description'] || row['الوصف بالإنجليزي'] || row['Description En'] || row['Description'] || ''));
-
-        items.push({
-            id: idx + 1,
-            group_id: groupObj.id,
-            group_name: groupObj.ar_name + ' / ' + groupObj.en_name,
-            prod_en: '-',
-            prod_ar: '-',
-            prod_en_desc: '',
-            prod_ar_desc: '',
-            item_en: toEnglishProper(String(nameEn)),
-            item_ar: cleanProperTrim(String(nameAr)),
-            item_en_desc: descEn,
-            item_ar_desc: descAr,
-            price: isNaN(price) ? 15 : price,
-            pickup_price: '',
-            kcal: isNaN(kcal) ? 0 : kcal,
-            modifier_groups: ''
-        });
-    });
-
-    // Check if there is a second sheet for modifiers
-    if (workbook.SheetNames.length > 1) {
-        const modSheet = workbook.Sheets[workbook.SheetNames[1]];
-        const modRows = XLSX.utils.sheet_to_json(modSheet);
-        modRows.forEach((mrow, midx) => {
-            const grpName = mrow['Group'] || mrow['المجموعة'] || mrow['Modifier Group'] || 'Options';
-            const optAr = mrow['Option Arabic'] || mrow['الخيار بالعربي'] || mrow['الاسم'] || `إضافة ${midx+1}`;
-            const optEn = mrow['Option English'] || mrow['الخيار بالإنجليزي'] || mrow['Option'] || `Option ${midx+1}`;
-            const modPrice = parseFloat(mrow['Price'] || mrow['السعر'] || 0);
-
-            modifiers.push({
-                id: midx + 1,
-                group_ar: cleanProperTrim(String(grpName)),
-                group_en: toEnglishProper(String(grpName)),
-                mod_ar: cleanProperTrim(String(optAr)),
-                mod_en: toEnglishProper(String(optEn)),
-                price: isNaN(modPrice) ? 0 : modPrice,
-                kcal: 0,
-                max_limit: 1,
+                group_ar: currentModGroupAr,
+                group_en: currentModGroupEn,
+                group_name: currentModGroupAr + ' / ' + currentModGroupEn,
+                mod_ar: parsed.ar_name,
+                mod_en: parsed.en_name,
+                option_ar: parsed.ar_name,
+                option_en: parsed.en_name,
+                price: parsed.price,
+                kcal: parsed.kcal,
+                max_limit: 3,
                 min_limit: 0,
                 type: 'Optional',
-                group_name: cleanProperTrim(String(grpName))
+                vendor_id: `M${modifiers.length + 1}`
             });
-        });
-    }
+        } else {
+            if (!currentGroup) {
+                const autoCat = smartDetectCategory(parsed.ar_name);
+                currentGroup = {
+                    id: 1,
+                    en_name: autoCat.en,
+                    ar_name: autoCat.ar,
+                    name_en: autoCat.en,
+                    name_ar: autoCat.ar,
+                    en_type: 'General',
+                    ar_type: 'عام',
+                    order: 1
+                };
+                groups.push(currentGroup);
+            }
 
-    const groups = Array.from(groupsMap.values());
+            items.push({
+                id: items.length + 1,
+                group_id: currentGroup.id,
+                group_name: currentGroup.ar_name + ' / ' + currentGroup.en_name,
+                prod_en: parsed.en_name,
+                prod_ar: parsed.ar_name,
+                name_en: parsed.en_name,
+                name_ar: parsed.ar_name,
+                item_en: parsed.en_name,
+                item_ar: parsed.ar_name,
+                prod_en_desc: '',
+                prod_ar_desc: '',
+                item_en_desc: '',
+                item_ar_desc: '',
+                price: parsed.price,
+                pickup_price: parsed.price,
+                kcal: parsed.kcal,
+                calories: parsed.kcal,
+                modifier_groups: modifiers.length > 0 ? '1' : '',
+                vendor_id: `P${items.length + 1}`,
+                allergens: 'No Allergens'
+            });
+        }
+    });
+
     if (groups.length === 0) {
-        groups.push({ id: 1, en_name: 'Main Menu', ar_name: 'القائمة الرئيسية', en_type: 'General', ar_type: 'عام', order: 1 });
+        groups.push({ id: 1, en_name: 'Main Menu', ar_name: 'القائمة الرئيسية', name_en: 'Main Menu', name_ar: 'القائمة الرئيسية', en_type: 'General', ar_type: 'عام', order: 1 });
     }
 
     window.menuBuilderData = {
         groups: groups,
         items: items,
         modifiers: modifiers,
-        imageLinks: extractImageUrls(allSheetText)
+        imageLinks: extractedImgs
     };
 
     renderStudioMenuPreviewTables();
     renderMenuPreviewTables();
+    updateStudioHealthRadar();
 }
 
-function handleRawMenuFileUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    if (typeof XLSX === 'undefined') {
-        alert('مكتبة SheetJS قيد التحميل، يرجى الانتظار ثانية...');
-        return;
-    }
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: 'array' });
-            processVendorMenuWorkbook(workbook);
-            showToast(`✅ تم تحويل شيت الشريك بنجاح! جاهز للتنزيل (${window.menuBuilderData.items.length} صنف).`);
-        } catch(err) {
-            alert('حدث خطأ أثناء معالجة ملف الإكسيل: ' + err.message);
-        }
-    };
-    reader.readAsArrayBuffer(file);
-}
-
-function handleStudioRawMenuFileUpload(event) {
-    handleRawMenuFileUpload(event);
-}
-
-
-function loadSampleMenuData() {
-    const sampleText = `قسم البرجر والمشويات / Burgers & Grills:
-- برجر لحم كلاسيك (Classic Beef Burger) - السعر: 28 ريال - السعرات: 520 kcal
-- برجر دجاج مقرمش (Crispy Chicken Burger) - السعر: 24 ريال - السعرات: 480 kcal
-- كباب لحم نعيمي (Naemi Meat Kebab) - السعر: 38 ريال - السعرات: 610 kcal
-
-قسم المشروبات الباردة / Cold Drinks:
-- عصير برتقال طازج (Fresh Orange Juice) - السعر: 12 ريال - السعرات: 110 kcal
-- بيبسي دايت (Diet Pepsi) - السعر: 5 ريال - السعرات: 0 kcal
-
-إضافات / Add-ons:
-- جبنة شيدر إضافية (Extra Cheddar Cheese) - السعر: 4 ريال - السعرات: 70 kcal
-- بطاطس مقلية وسط (Medium French Fries) - السعر: 8 ريال - السعرات: 220 kcal
-- صوص سبيشال (Special Sauce) - السعر: 3 ريال - السعرات: 45 kcal
-
-روابط صور المنيو Drive:
-https://drive.google.com/drive/folders/1A2B3C4D5E6F7G8H9-hungerstation-menu-photos
-https://drive.google.com/file/d/1XyZ987654321-classic-burger.jpg/view`;
-
-    const input = document.getElementById('rawMenuInput');
-    if (input) input.value = sampleText;
-    parseRawMenuInput();
-}
-
-function copyExtractedImages() {
-    if (!window.menuBuilderData.imageLinks.length) return;
-    navigator.clipboard.writeText(window.menuBuilderData.imageLinks.join('\n'))
-        .then(() => alert('تم نسخ جميع روابط الصور إلى الحافظة بنجاح!'));
-}
-
-function downloadImagesTxt() {
-    if (!window.menuBuilderData.imageLinks.length) return;
-    const blob = new Blob([window.menuBuilderData.imageLinks.join('\n')], { type: 'text/plain;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'Menu_Image_Links.txt';
-    link.click();
-}
-
-function downloadOfficialMenuExcel() {
-    if (typeof XLSX === 'undefined') {
-        alert('مكتبة SheetJS قيد التحميل، يرجى الانتظار ثانية والمحاولة مجدداً!');
-        return;
-    }
-
+function createOfficialMenuWorkbook() {
     const { groups, items, modifiers } = window.menuBuilderData;
-    if (!items.length) {
-        alert('لا توجد أصناف لتصديرها! يرجى معالجة المنيو أولاً.');
-        return;
-    }
-
     const wb = XLSX.utils.book_new();
 
     // 1. Sheet: menu group
@@ -5947,70 +5720,79 @@ function downloadOfficialMenuExcel() {
     groups.forEach(g => {
         ws1_data.push([
             g.id,
-            toEnglishProper(g.en_name),
-            cleanProperTrim(g.ar_name),
+            toEnglishProper(g.en_name || g.name_en),
+            cleanProperTrim(g.ar_name || g.name_ar),
             toEnglishProper(g.en_type || 'General'),
             cleanProperTrim(g.ar_type || 'عام')
         ]);
     });
-    // Add empty numbered rows up to 10 for template perfection
-    for (let r = groups.length + 1; r <= 10; r++) {
+    for (let r = groups.length + 1; r <= 15; r++) {
         ws1_data.push([r, '', '', '', '']);
     }
-    const ws1 = XLSX.utils.aoa_to_sheet(ws1_data);
-    XLSX.utils.book_append_sheet(wb, ws1, 'menu group');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws1_data), 'menu group');
 
     // 2. Sheet: Modifier groupsmodifiers
     const ws2_data = [
-        ['#', 'Group. english name *', 'Group. arabic name *', 'max limit', 'min limit *', 'Modifier en name *', 'Modifier ar name *', 'price *', 'kcal', 'Vendor ID']
+        ['#', 'Group. english name *', 'Group. arabic name *', 'max limit ', 'min limit *', 'Modifier en name *', 'Modifier ar name *', 'price *', 'kcal ', 'Vendor ID']
     ];
+    let lastGroupEn = null;
     modifiers.forEach((m, idx) => {
+        const isNewGroup = m.group_en !== lastGroupEn;
         ws2_data.push([
             idx + 1,
-            m.group_en ? toEnglishProper(m.group_en) : '',
-            m.group_ar ? cleanProperTrim(m.group_ar) : '',
-            m.max_limit !== '' ? Number(m.max_limit) : '',
-            m.min_limit !== '' ? Number(m.min_limit) : '',
-            toEnglishProper(m.mod_en),
-            cleanProperTrim(m.mod_ar),
+            isNewGroup ? toEnglishProper(m.group_en || m.group_name) : '',
+            isNewGroup ? cleanProperTrim(m.group_ar || m.group_name) : '',
+            isNewGroup ? (m.max_limit !== '' ? Number(m.max_limit) : 3) : '',
+            isNewGroup ? (m.min_limit !== '' ? Number(m.min_limit) : 0) : '',
+            toEnglishProper(m.mod_en || m.option_en || m.name_en),
+            cleanProperTrim(m.mod_ar || m.option_ar || m.name_ar),
             Number(m.price) || 0,
-            parseInt(m.kcal, 10) || 0,
-            ''
+            parseInt(m.kcal || 0, 10),
+            m.vendor_id || `M${idx + 1}`
         ]);
+        if (isNewGroup) lastGroupEn = m.group_en;
     });
-    const ws2 = XLSX.utils.aoa_to_sheet(ws2_data);
-    XLSX.utils.book_append_sheet(wb, ws2, 'Modifier groupsmodifiers');
+    for (let r = modifiers.length + 1; r <= 15; r++) {
+        ws2_data.push([r, '', '', '', '', '', '', '', '', '']);
+    }
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws2_data), 'Modifier groupsmodifiers');
 
     // 3. Sheet: Menu productsitems
     const ws3_data = [
         [
-            '#', 'menu group # *', 'Product english name *', 'Product arabic name *', 'Product english desc', 'Product arabic desc',
-            'item english name *', 'item arabic name *', 'item english desc', 'item arabic desc', 'price*', 'pickup_price', 'kcal',
+            '#', 'menu group # *', 'Product english name *', 'Product arabic name *', 'Product english desc ', 'Product arabic desc ',
+            ' item english name *', ' item arabic name *', 'item english desc ', 'item arabic desc ', 'price*', 'pickup_price', 'kcal ',
             'modifier groups #', 'Vendor ID', 'Allergens', 'Protein', 'Full Fat', 'Saturated fat', 'Trans Fat', 'Cholesterol',
             'Carbohydrate', 'Fiber', 'Total Sugers', 'Added Sugars', 'Salt', 'Sodiom', 'Caffeine', 'Dietary Preferences'
         ]
     ];
     items.forEach((it, idx) => {
+        const pEn = toEnglishProper(it.prod_en || it.item_en || it.name_en);
+        const pAr = cleanProperTrim(it.prod_ar || it.item_ar || it.name_ar);
         ws3_data.push([
             idx + 1,
             Number(it.group_id) || 1,
-            it.prod_en === '-' ? '-' : toEnglishProper(it.prod_en),
-            it.prod_ar === '-' ? '-' : cleanProperTrim(it.prod_ar),
-            cleanProperTrim(it.prod_en_desc),
-            cleanProperTrim(it.prod_ar_desc),
-            toEnglishProper(it.item_en),
-            cleanProperTrim(it.item_ar),
-            cleanProperTrim(it.item_en_desc),
-            cleanProperTrim(it.item_ar_desc),
+            pEn,
+            pAr,
+            cleanProperTrim(it.prod_en_desc || ''),
+            cleanProperTrim(it.prod_ar_desc || ''),
+            toEnglishProper(it.item_en || it.name_en || pEn),
+            cleanProperTrim(it.item_ar || it.name_ar || pAr),
+            cleanProperTrim(it.item_en_desc || ''),
+            cleanProperTrim(it.item_ar_desc || ''),
             Number(it.price) || 0,
-            it.pickup_price ? Number(it.pickup_price) : '',
-            parseInt(it.kcal, 10) || 0,
+            it.pickup_price ? Number(it.pickup_price) : Number(it.price) || '',
+            parseInt(it.kcal || it.calories || 0, 10),
             String(it.modifier_groups || ''),
-            '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
+            it.vendor_id || `P${idx + 1}`,
+            it.allergens || 'No Allergens',
+            '', '', '', '', '', '', '', '', '', '', '', '', ''
         ]);
     });
-    const ws3 = XLSX.utils.aoa_to_sheet(ws3_data);
-    XLSX.utils.book_append_sheet(wb, ws3, 'Menu productsitems');
+    for (let r = items.length + 1; r <= 15; r++) {
+        ws3_data.push([r, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']);
+    }
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws3_data), 'Menu productsitems');
 
     // 4. Sheet: Valid Allergens
     const ws4_data = [
@@ -6020,23 +5802,39 @@ function downloadOfficialMenuExcel() {
         ['Peanuts and its products', 'الفول السوداني و منتجاته'],
         ['Nuts and its products', 'المكسرات و منتجاتها'],
         ['Milk and its products', 'الحليب و منتجاته'],
-        ['Eggs and its products', 'البيض ومنتجاته'],
-        ['Gluten and its products', 'الجلوتين ومنتجاته'],
-        ['Soybeans and its products', 'فول الصويا ومنتجاته'],
-        ['Crustaceans and their products', 'القشريات ومنتجاتها'],
+        ['Sulphur Dioxide (Sulfites)', 'الكبريتيت'],
+        ['Celery and its products', 'الكرفس و منتجاته'],
+        ['Crustaceans  and its products', 'القشريات و منتجاتها'],
+        ['Eggs and its products', 'البيض و منتجاته'],
         ['Mustard and its products', 'الخردل ومنتجاته'],
-        ['Sesame seeds and their products', 'بذور السمسم ومنتجاتها'],
-        ['Celery and its products', 'الكرفس ومنتجاته'],
-        ['Molluscs and their products', 'الرخويات ومنتجاتها'],
-        ['Lupin and its products', 'الترمس ومنتجاته'],
-        ['Sulphur Dioxide (Sulfites)', 'ثاني أكسيد الكبريت (الكبريتات)']
+        ['Mollusca and its products', 'الرخويات و منتجاتها'],
+        ['Lupinus and its products', 'الترمس و منتجاته'],
+        ['Soy and its products', 'الصويا و منتجاته'],
+        ['Gluten', 'جلوتين']
     ];
-    const ws4 = XLSX.utils.aoa_to_sheet(ws4_data);
-    XLSX.utils.book_append_sheet(wb, ws4, 'Valid Allergens');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws4_data), 'Valid Allergens');
 
-    // Download the final compliant XLSX file
-    XLSX.writeFile(wb, '_MenuUpload.xlsx');
+    return wb;
 }
+
+function downloadOfficialMenuExcel() {
+    if (typeof XLSX === 'undefined') {
+        alert('مكتبة SheetJS قيد التحميل، يرجى الانتظار ثانية والمحاولة مجدداً!');
+        return;
+    }
+
+    const { items } = window.menuBuilderData;
+    if (!items || !items.length) {
+        showToast('⚠️ لا توجد أصناف لتصديرها! يرجى لصق أو رفع المنيو أولاً.');
+        return;
+    }
+
+    const wb = createOfficialMenuWorkbook();
+    XLSX.writeFile(wb, '_MenuUpload.xlsx');
+    playSuccessChime();
+    showToast('✅ تم تنزيل شيت _MenuUpload.xlsx المعتمد بنجاح مطابق لتيمبلت هنقرستيشن 100%!');
+}
+
 
 </script>
 <!-- AI Settings Modal -->
