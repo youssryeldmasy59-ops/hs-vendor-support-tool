@@ -5587,6 +5587,72 @@ function autoTranslateMenuText(text, targetLang = 'EN') {
     }
 }
 
+
+// 🖼️ URL & Image Link Extraction Helpers
+function extractImageUrls(text) {
+    const urls = [];
+    if (!text) return urls;
+    const urlRegex = /https?:\/\/[^\s,;"'<>]+/gi;
+    let match;
+    const str = String(text);
+    while ((match = urlRegex.exec(str)) !== null) {
+        const u = match[1];
+        if (u.includes('drive.google.com') || u.includes('dropbox.com') || u.includes('onedrive') || 
+            u.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i) || u.includes('photos.app.goo.gl')) {
+            urls.push(u);
+        }
+    }
+    return [...new Set(urls)];
+}
+
+function renderExtractedImages() {
+    const container = document.getElementById('extractedImagesContainer') || document.getElementById('studioExtractedImagesContainer');
+    const list = document.getElementById('extractedImagesList') || document.getElementById('studioExtractedImagesList');
+    const badge = document.getElementById('imgCountBadge') || document.getElementById('studioImgCountBadge');
+    const links = (window.menuBuilderData && window.menuBuilderData.imageLinks) ? window.menuBuilderData.imageLinks : [];
+
+    if (!links.length) {
+        if (container) container.style.display = 'none';
+        return;
+    }
+
+    if (container) container.style.display = 'block';
+    if (badge) badge.textContent = `${links.length} رابط مستخرج`;
+    if (list) {
+        list.innerHTML = links.map((url, i) => `
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.05); padding:4px 0;">
+                <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:80%;">${i + 1}. <a href="${url}" target="_blank" style="color:#60A5FA; text-decoration:underline;">${url}</a></span>
+                <button onclick="navigator.clipboard.writeText('${url}'); showToast('تم نسخ الرابط!');" style="background:rgba(255,255,255,0.1); border:none; color:#FFF; font-size:0.7rem; padding:2px 6px; border-radius:4px; cursor:pointer;">نسخ</button>
+            </div>
+        `).join('');
+    }
+}
+
+function copyExtractedImages() {
+    const links = (window.menuBuilderData && window.menuBuilderData.imageLinks) ? window.menuBuilderData.imageLinks : [];
+    if (!links.length) {
+        showToast("⚠️ لا توجد روابط لنسخها!");
+        return;
+    }
+    navigator.clipboard.writeText(links.join('\n'));
+    showToast(`📋 تم نسخ (${links.length}) رابط صور بنجاح!`);
+}
+
+function downloadImagesTxt() {
+    const links = (window.menuBuilderData && window.menuBuilderData.imageLinks) ? window.menuBuilderData.imageLinks : [];
+    if (!links.length) {
+        showToast("⚠️ لا توجد روابط لتنزيلها!");
+        return;
+    }
+    const blob = new Blob([links.join('\n')], { type: 'text/plain;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'Menu_Image_Links.txt';
+    link.click();
+    showToast("💾 تم تنزيل ملف الروابط بنجاح!");
+}
+
+
 function processVendorMenuWorkbook(workbook) {
     console.log("processVendorMenuWorkbook started with sheets:", workbook.SheetNames);
     let allSheetText = '';
