@@ -5292,76 +5292,145 @@ function parseRawMenuInput() {
     renderMenuPreviewTables();
 }
 
+
+function processVendorMenuWorkbook(workbook) {
+    let allSheetText = '';
+    const groupsMap = new Map();
+    const items = [];
+    const modifiers = [];
+    let groupIdCounter = 1;
+
+    // 1. Collect all sheets
+    workbook.SheetNames.forEach(sheetName => {
+        const sheet = workbook.Sheets[sheetName];
+        const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        json.forEach(row => {
+            if (Array.isArray(row)) {
+                allSheetText += ' ' + row.join(' ');
+            }
+        });
+    });
+
+    // 2. Read first sheet rows
+    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rawRows = XLSX.utils.sheet_to_json(firstSheet);
+
+    rawRows.forEach((row, idx) => {
+        // Extract Category / Group
+        const rawCat = row['Category'] || row['category'] || row['القسم'] || row['الفئة'] || row['مجموعة'] || row['Group'] || row['Menu Group'] || 'Main Menu';
+        const cleanCatAr = cleanProperTrim(String(rawCat));
+        const cleanCatEn = toEnglishProper(String(rawCat));
+
+        if (!groupsMap.has(cleanCatEn)) {
+            groupsMap.set(cleanCatEn, {
+                id: groupIdCounter++,
+                en_name: cleanCatEn,
+                ar_name: cleanCatAr,
+                en_type: 'General',
+                ar_type: 'عام',
+                order: groupsMap.size + 1
+            });
+        }
+        const groupObj = groupsMap.get(cleanCatEn);
+
+        // Extract Item Name
+        const nameAr = row['Arabic Name'] || row['الاسم بالعربي'] || row['اسم الصنف'] || row['Name Ar'] || row['Name'] || row['الاسم'] || `صنف ${idx+1}`;
+        const nameEn = row['English Name'] || row['الاسم بالإنجليزي'] || row['Name En'] || row['Item Name'] || row['Name'] || row['Item'] || `Item ${idx+1}`;
+        
+        // Extract Price & Calories
+        const price = parseFloat(row['Price'] || row['price'] || row['السعر'] || row['price*'] || 15);
+        const kcal = parseInt(row['Calories'] || row['calories'] || row['Kcal'] || row['kcal'] || row['السعرات'] || 0, 10);
+        
+        // Extract Descriptions
+        const descAr = cleanProperTrim(String(row['Arabic Description'] || row['الوصف بالعربي'] || row['الوصف'] || row['Description'] || ''));
+        const descEn = cleanProperTrim(String(row['English Description'] || row['الوصف بالإنجليزي'] || row['Description En'] || row['Description'] || ''));
+
+        items.push({
+            id: idx + 1,
+            group_id: groupObj.id,
+            group_name: groupObj.ar_name + ' / ' + groupObj.en_name,
+            prod_en: '-',
+            prod_ar: '-',
+            prod_en_desc: '',
+            prod_ar_desc: '',
+            item_en: toEnglishProper(String(nameEn)),
+            item_ar: cleanProperTrim(String(nameAr)),
+            item_en_desc: descEn,
+            item_ar_desc: descAr,
+            price: isNaN(price) ? 15 : price,
+            pickup_price: '',
+            kcal: isNaN(kcal) ? 0 : kcal,
+            modifier_groups: ''
+        });
+    });
+
+    // Check if there is a second sheet for modifiers
+    if (workbook.SheetNames.length > 1) {
+        const modSheet = workbook.Sheets[workbook.SheetNames[1]];
+        const modRows = XLSX.utils.sheet_to_json(modSheet);
+        modRows.forEach((mrow, midx) => {
+            const grpName = mrow['Group'] || mrow['المجموعة'] || mrow['Modifier Group'] || 'Options';
+            const optAr = mrow['Option Arabic'] || mrow['الخيار بالعربي'] || mrow['الاسم'] || `إضافة ${midx+1}`;
+            const optEn = mrow['Option English'] || mrow['الخيار بالإنجليزي'] || mrow['Option'] || `Option ${midx+1}`;
+            const modPrice = parseFloat(mrow['Price'] || mrow['السعر'] || 0);
+
+            modifiers.push({
+                id: midx + 1,
+                group_ar: cleanProperTrim(String(grpName)),
+                group_en: toEnglishProper(String(grpName)),
+                mod_ar: cleanProperTrim(String(optAr)),
+                mod_en: toEnglishProper(String(optEn)),
+                price: isNaN(modPrice) ? 0 : modPrice,
+                kcal: 0,
+                max_limit: 1,
+                min_limit: 0,
+                type: 'Optional',
+                group_name: cleanProperTrim(String(grpName))
+            });
+        });
+    }
+
+    const groups = Array.from(groupsMap.values());
+    if (groups.length === 0) {
+        groups.push({ id: 1, en_name: 'Main Menu', ar_name: 'القائمة الرئيسية', en_type: 'General', ar_type: 'عام', order: 1 });
+    }
+
+    window.menuBuilderData = {
+        groups: groups,
+        items: items,
+        modifiers: modifiers,
+        imageLinks: extractImageUrls(allSheetText)
+    };
+
+    renderStudioMenuPreviewTables();
+    renderMenuPreviewTables();
+}
+
 function handleRawMenuFileUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
-
+    if (typeof XLSX === 'undefined') {
+        alert('مكتبة SheetJS قيد التحميل، يرجى الانتظار ثانية...');
+        return;
+    }
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: 'array' });
-            
-            // Collect all text from sheet to extract images
-            let allSheetText = '';
-            workbook.SheetNames.forEach(sheetName => {
-                const sheet = workbook.Sheets[sheetName];
-                const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-                json.forEach(row => {
-                    allSheetText += ' ' + row.join(' ');
-                });
-            });
-
-            // Extract Images
-            const extractedImgs = extractImageUrls(allSheetText);
-            window.menuBuilderData.imageLinks = extractedImgs;
-            renderExtractedImages();
-
-            // Check if uploaded file is already formatted or raw
-            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-            const jsonRows = XLSX.utils.sheet_to_json(firstSheet);
-
-            const groups = [{ id: 1, en_name: 'Main Menu', ar_name: 'القائمة الرئيسية', en_type: 'General', ar_type: 'عام' }];
-            const items = [];
-            
-            jsonRows.forEach((row, idx) => {
-                const name = row['Name'] || row['name'] || row['الاسم'] || row['اسم الصنف'] || row['Item'] || row['item'] || Object.values(row)[0] || `Item ${idx+1}`;
-                const price = parseFloat(row['Price'] || row['price'] || row['السعر'] || row['price*'] || 10);
-                const kcal = parseInt(row['Kcal'] || row['kcal'] || row['السعرات'] || 0, 10);
-                const desc = String(row['Description'] || row['description'] || row['الوصف'] || '');
-
-                let arName = cleanProperTrim(String(name));
-                let enName = toEnglishProper(String(name));
-
-                items.push({
-                    id: idx + 1,
-                    group_id: 1,
-                    prod_en: '-',
-                    prod_ar: '-',
-                    prod_en_desc: '',
-                    prod_ar_desc: '',
-                    item_en: enName,
-                    item_ar: arName,
-                    item_en_desc: desc,
-                    item_ar_desc: desc,
-                    price: price || 15,
-                    pickup_price: '',
-                    kcal: kcal || 0,
-                    modifier_groups: ''
-                });
-            });
-
-            window.menuBuilderData.groups = groups;
-            window.menuBuilderData.items = items;
-            window.menuBuilderData.modifiers = [];
-
-            renderMenuPreviewTables();
+            processVendorMenuWorkbook(workbook);
+            showToast(`✅ تم تحويل شيت الشريك بنجاح! جاهز للتنزيل (${window.menuBuilderData.items.length} صنف).`);
         } catch(err) {
-            alert('حدث خطأ أثناء قراءة ملف الإكسيل: ' + err.message);
+            alert('حدث خطأ أثناء معالجة ملف الإكسيل: ' + err.message);
         }
     };
     reader.readAsArrayBuffer(file);
 }
+
+function handleStudioRawMenuFileUpload(event) {
+    handleRawMenuFileUpload(event);
+}
+
 
 function loadSampleMenuData() {
     const sampleText = `قسم البرجر والمشويات / Burgers & Grills:
