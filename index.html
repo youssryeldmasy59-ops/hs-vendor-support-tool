@@ -3954,6 +3954,31 @@ ${invoiceGuideHtml || ""}
             return text.trim();
         }
 
+
+        /* ── Neural Phonetic Auto-Corrector Engine for Accented English ── */
+        const PHONETIC_AUTO_CORRECT_MAP = [
+            { pattern: /\b(?:rider\s*(?:eta|it\s*a|e\s*t\s*a|eating|at\s*a|it\s*a|8a))\b/gi, corr: "Rider ETA" },
+            { pattern: /\b(?:invois|envoice|anvoice|invos|invoce)\b/gi, corr: "Invoice" },
+            { pattern: /\b(?:bayout|pay\s*out|piout|beyout)\b/gi, corr: "Payout" },
+            { pattern: /\b(?:eyeban|i\s*ban|eban|ayban)\b/gi, corr: "IBAN" },
+            { pattern: /\b(?:compenst|compenstion|campensation|compensation)\b/gi, corr: "Compensation" },
+            { pattern: /\b(?:cancilation|canselation|cansel|cancell)\b/gi, corr: "Cancellation" },
+            { pattern: /\b(?:tablit|printe|devise|tabet)\b/gi, corr: "Tablet / Device" },
+            { pattern: /\b(?:disbut|dispiut|disput)\b/gi, corr: "Dispute" },
+            { pattern: /\b(?:akount\s*manager|areamanager|acount\s*manger)\b/gi, corr: "Account Manager" },
+            { pattern: /\b(?:working\s*hour|work\s*hours|operat\s*hours)\b/gi, corr: "Working Hours" },
+            { pattern: /\b(?:statment|state\s*ment|soa)\b/gi, corr: "Statement of Account" }
+        ];
+
+        function autoCorrectPhoneticSpeech(text) {
+            if (!text) return text;
+            let result = text;
+            PHONETIC_AUTO_CORRECT_MAP.forEach(item => {
+                result = result.replace(item.pattern, item.corr);
+            });
+            return result;
+        }
+
 function toggleMainVoiceRecording() {
             const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRec) {
@@ -4009,7 +4034,9 @@ function toggleMainVoiceRecording() {
                         accumulatedSpeechText += finalTranscript;
                     }
 
-                    partnerMsg.value = accumulatedSpeechText + interimTranscript;
+                    const rawCombined = accumulatedSpeechText + interimTranscript;
+                    const correctedCombined = autoCorrectPhoneticSpeech(rawCombined);
+                    partnerMsg.value = correctedCombined;
                     partnerMsg.scrollTop = partnerMsg.scrollHeight;
                 };
 
