@@ -827,7 +827,12 @@
             </div>
 
             <!-- Text Input -->
-            <textarea id="partnerMessage" placeholder="انقل أو الصق هنا رسالة الشريك مباشرة باللغة العربية أو الإنجليزية..."></textarea>
+            <div style="position: relative; margin-bottom: 12px;">
+                <textarea id="partnerMessage" style="min-height: 120px; padding-bottom: 48px;" placeholder="انقل أو الصق هنا رسالة الشريك مباشرة، أو اضغط الميكروفون بالأسفل للتحدث والتسجيل الصوتي المباشر بلا حدود..."></textarea>
+                <button id="mainMicBtn" onclick="toggleMainVoiceRecording()" type="button" style="position: absolute; bottom: 12px; right: 12px; background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFF; border: none; padding: 7px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4); z-index: 10; transition: all 0.2s;">
+                    <i class="fa-solid fa-microphone"></i> <span id="mainMicText">تحدث بالصوت مباشر (بدون حد)</span>
+                </button>
+            </div>
 
             <!-- Drag & Drop Attachment Upload Box -->
             <div>
@@ -3854,6 +3859,87 @@ ${invoiceGuideHtml || ""}
 
         function speakLastAiResponse() {
             if (lastAiGeneratedText) speakText(lastAiGeneratedText);
+        }
+
+
+
+        let mainSpeechRecognizer = null;
+        let isMainRecording = false;
+        let accumulatedSpeechText = '';
+
+        function toggleMainVoiceRecording() {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRec) {
+                alert("متصفحك لا يدعم التعرف الصوتي المباشر. يرجى استخدام متصفح Chrome أو Edge للحصول على أفضل تجربة صوتية!");
+                return;
+            }
+
+            const btn = document.getElementById('mainMicBtn');
+            const btnText = document.getElementById('mainMicText');
+            const partnerMsg = document.getElementById('partnerMessage');
+
+            if (isMainRecording) {
+                if (mainSpeechRecognizer) mainSpeechRecognizer.stop();
+                isMainRecording = false;
+                if (btn) { btn.style.background = 'linear-gradient(135deg, #EC4899, #8B5CF6)'; btn.style.boxShadow = '0 4px 12px rgba(236, 72, 153, 0.4)'; }
+                if (btnText) btnText.innerText = 'تحدث بالصوت مباشر (بدون حد)';
+                showToast("🔴 تم إيقاف التسجيل الصوتي وتثبيت النص.");
+                return;
+            }
+
+            try {
+                mainSpeechRecognizer = new SpeechRec();
+                mainSpeechRecognizer.lang = 'ar-SA';
+                mainSpeechRecognizer.continuous = true; // Unlimited continuous voice recording!
+                mainSpeechRecognizer.interimResults = true; // Live typing effect as you speak!
+
+                accumulatedSpeechText = partnerMsg.value ? partnerMsg.value + ' ' : '';
+
+                mainSpeechRecognizer.onstart = () => {
+                    isMainRecording = true;
+                    if (btn) { btn.style.background = '#EF4444'; btn.style.boxShadow = '0 0 18px rgba(239, 68, 68, 0.8)'; }
+                    if (btnText) btnText.innerText = 'جاري التنسيق والتسجيل... (اضغط للإيقاف)';
+                    showToast("🎙️ جاري الاستماع وإخراج الكلام كتابة فورية بلا حدود...");
+                };
+
+                mainSpeechRecognizer.onresult = (event) => {
+                    let interimTranscript = '';
+                    let finalTranscript = '';
+
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript + ' ';
+                        } else {
+                            interimTranscript += event.results[i][0].transcript;
+                        }
+                    }
+
+                    if (finalTranscript) {
+                        accumulatedSpeechText += finalTranscript;
+                    }
+
+                    partnerMsg.value = accumulatedSpeechText + interimTranscript;
+                    partnerMsg.scrollTop = partnerMsg.scrollHeight;
+                };
+
+                mainSpeechRecognizer.onerror = (event) => {
+                    console.error("Continuous Speech Error:", event.error);
+                    if (event.error !== 'no-speech') {
+                        showToast("⚠️ تنبيه صوتي: " + event.error);
+                    }
+                };
+
+                mainSpeechRecognizer.onend = () => {
+                    // Auto-restart if user did not manually stop (ensures 100% infinite continuous recording)
+                    if (isMainRecording) {
+                        try { mainSpeechRecognizer.start(); } catch(e) {}
+                    }
+                };
+
+                mainSpeechRecognizer.start();
+            } catch(e) {
+                console.error("Mic start error:", e);
+            }
         }
 
 </script>
