@@ -3005,7 +3005,9 @@ Order Issues: 920033935`;
             const btnOrigHTML = btn ? btn.innerHTML : '';
             if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التوليد...'; }
             try {
-            let rawMsg = document.getElementById('partnerMessage').value;
+            let partnerMsgVal = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '').trim();
+            let searchInputVal = (document.getElementById('searchInput') ? document.getElementById('searchInput').value : '').trim();
+            let rawMsg = partnerMsgVal || searchInputVal;
             let greetings = detectGreetings(rawMsg);
             let msg = cleanInputText(rawMsg).toLowerCase();
             let msgNorm = normalizeArabic(msg);
@@ -3017,7 +3019,11 @@ Order Issues: 920033935`;
             activeLangTab = isEn ? 'EN' : 'AR';
             
             if (!msg && extractedFileTexts.length === 0) {
-                alert("يرجى إدخال استفسار الشريك أو إرفاق الملف المرجعي.");
+                // If input is empty, fallback to Case 58 Compensation or top KB case gracefully
+                let defaultCase = (typeof allCases !== 'undefined' && allCases.length > 0 ? (allCases.find(x => x.id == 58) || allCases[0]) : null);
+                if (defaultCase) {
+                    displayCaseDualMacro(defaultCase, { arGreeting: "", enGreeting: "" }, false);
+                }
                 if (btn) { btn.disabled = false; btn.innerHTML = btnOrigHTML; }
                 return;
             }
@@ -3614,6 +3620,29 @@ ${invoiceGuideHtml || ""}
         }
 
         document.addEventListener('DOMContentLoaded', updateAiStatusBadge);
+
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const pm = document.getElementById('partnerMessage');
+            if (pm) {
+                pm.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && e.ctrlKey) {
+                        e.preventDefault();
+                        generateResponse();
+                    }
+                });
+            }
+            const si = document.getElementById('searchInput');
+            if (si) {
+                si.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        generateResponse();
+                    }
+                });
+            }
+        });
 
 </script>
 <!-- AI Settings Modal -->
