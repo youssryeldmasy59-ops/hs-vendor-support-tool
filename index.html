@@ -789,7 +789,10 @@
             <div class="agent-pill" onclick="showLearningModal()" style="background: rgba(16, 185, 129, 0.15); color: #34D399; border-color: rgba(16, 185, 129, 0.4);">
                 <i class="fa-solid fa-brain"></i> <span id="learnedRulesCountBadge">ذاكرة التعلم (5)</span>
             </div>
-            <div class="agent-pill" onclick="showResizerModal()" style="background: rgba(139, 92, 246, 0.15); color: #A78BFA; border-color: rgba(139, 92, 246, 0.4);">
+                        <div class="agent-pill" onclick="openMenuBuilderModal()" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: #FFF; border: none; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 7px 16px; border-radius: 20px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);" title="بناء وتجهيز شيت المنيو الرسمي تلقائياً (_MenuUpload.xlsx)">
+                <i class="fa-solid fa-file-excel" style="font-size: 1.1rem; color: #FFF;"></i> <span>📋 أداة بناء المنيو الرسمي (_MenuUpload.xlsx)</span>
+            </div>
+<div class="agent-pill" onclick="showResizerModal()" style="background: rgba(139, 92, 246, 0.15); color: #A78BFA; border-color: rgba(139, 92, 246, 0.4);">
                 <i class="fa-solid fa-crop-simple"></i> <span>المحرر الشامل للصور</span>
             </div>
             <div class="agent-pill" onclick="promptChangeName()">
@@ -848,6 +851,22 @@
 <div class="cases-search-box">
                 <input type="text" id="searchInput" placeholder="ابحث باسم الحالة (مثل: تعويض، الفاتورة، الآيبان، شاشة فارغة)..." oninput="searchCases()">
                 <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+
+                        <!-- 🍽️ Quick Menu Builder Banner -->
+            <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.25) 100%); border: 1px solid #10B981; border-radius: 12px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 36px; height: 36px; border-radius: 8px; background: #10B981; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #FFF;">
+                        <i class="fa-solid fa-utensils"></i>
+                    </div>
+                    <div>
+                        <strong style="font-size: 0.88rem; color: #34D399; display: block;">أداة إنشاء وتجهيز شيت المنيو الرسمي (_MenuUpload.xlsx)</strong>
+                        <span style="font-size: 0.72rem; color: #A7F3D0;">استخراج الأصناف والأسعار وعزل صور Google Drive في شيت إكسيل رسمي فوري</span>
+                    </div>
+                </div>
+                <button onclick="openMenuBuilderModal()" style="background: #10B981; color: #000; border: none; font-weight: 800; font-size: 0.8rem; padding: 7px 14px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4); white-space: nowrap;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> فتح أداة المنيو
+                </button>
             </div>
 
             <!-- Text Input -->
