@@ -3481,7 +3481,9 @@ ${titles}
         }
 
         function cleanArabicProcedure(text) {
-            if (!text) return "";
+            if (!text || text.includes("نحيطكم علماً بأنه تم استلام طلبكم") || text.includes("وجاري متابعة التفاصيل")) {
+                return "يمكنك تقديم طلب تعويض عبر بوابة الشركاء من خلال:\nمساعدة (Help) ← استفسار جديد ← استفسارات تتعلق بالفواتير والمدفوعات ← اعتراض على طلب (Order Dispute).\n\nيرجى إدخال رقم الطلب وتوفير التفاصيل المطلوبة وإرفاق المستندات الداعمة، وسيتم مراجعة الطلب وحلّه خلال 3 أيام عمل.";
+            }
             let lines = text.split('\n');
             let cleaned = [];
             for (let line of lines) {
