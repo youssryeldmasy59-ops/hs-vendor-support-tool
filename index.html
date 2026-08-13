@@ -3082,7 +3082,7 @@ Order Issues: 920033935`;
             // ── Universal Inbound KnowledgeOwl Intent Map ──────────────────────────
             const inboundIntentMap = [
                 {
-                    keys: ['اين المندوب', 'وين المندوب', 'فين المندوب', 'فين السائق', 'المندوب ما وصل', 'تاخر المندوب', 'تاخير السائق', 'السائق تاخر', 'تاخير وصول المندوب', 'تأخير وصول المندوب', 'تأخير في التوصيل', 'تاخير التوصيل', 'تاخير الطلب', 'rider late', 'delivery late', 'where is rider', 'driver delay'],
+                    keys: ['rider eta', 'request rider eta', 'eta', 'driver eta', 'rider location', 'delivery eta', 'اين المندوب', 'وين المندوب', 'فين المندوب', 'فين السائق', 'المندوب ما وصل', 'تاخر المندوب', 'تاخير السائق', 'السائق تاخر', 'تاخير وصول المندوب', 'تأخير وصول المندوب', 'تأخير في التوصيل', 'تاخير التوصيل', 'تاخير الطلب', 'rider late', 'delivery late', 'where is rider', 'driver delay'],
                     id: 50
                 },
                 {
@@ -3870,27 +3870,8 @@ ${invoiceGuideHtml || ""}
         
         function normalizeBilingualSpeechText(text) {
             if (!text) return '';
-            let t = text;
-            const map = {
-                '\binvoice\b': 'فاتورة',
-                '\bstatement of account\b': 'كشف حساب',
-                '\bsoa\b': 'كشف حساب',
-                '\brider\b': 'مندوب',
-                '\bdriver\b': 'سائق',
-                '\border\b': 'طلب',
-                '\bcompensation\b': 'تعويض',
-                '\bdispute\b': 'اعتراض',
-                '\biban\b': 'آيبان',
-                '\bbank\b': 'بنك',
-                '\bprice\b': 'سعر',
-                '\bmenu\b': 'منيو',
-                '\bworking hours\b': 'ساعات العمل',
-                '\bclose\b': 'إغلاق'
-            };
-            for (let k in map) {
-                t = t.replace(new RegExp(k, 'gi'), map[k]);
-            }
-            return t;
+            // Preserve exact English technical terms and symbols
+            return text.trim();
         }
 
 function toggleMainVoiceRecording() {
