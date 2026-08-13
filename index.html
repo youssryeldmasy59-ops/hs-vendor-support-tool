@@ -2581,6 +2581,23 @@ Order Issues: 920033935`;
 
                         // ── DEDICATED MATCHERS ────────────────────────────────────────
 
+            // 0. Address Change Matcher (تعديل الموقع / تغيير العنوان — Case ID 25)
+            if (fullSearchText.includes('عنوان') || fullSearchText.includes('موقع') || fullSearchText.includes('مكان الفرع') || fullSearchText.includes('لوكيشن') || fullSearchText.includes('احداثيات') || fullSearchText.includes('address change') || fullSearchText.includes('change location')) {
+                const arKbBody = `نعتذر عن التاخير في الرد ونحيطكم علمًا بانه قد تم تحديث الموقع بنجاح .`;
+                const enKbBody = `We apologize for the delay in response and would like to inform you that the store address/location has been updated successfully.`;
+                const fullArMacro = buildArabicMacro(greetings.arGreeting, arKbBody);
+                const fullEnMacro = buildEnglishMacro(greetings.enGreeting, enKbBody);
+                displayDualMacro({
+                    title: "Address change | تغيير العنوان",
+                    ccr: "Partner Data Update -> Basic profile change | تغيير الملف الشخصي  الاساسي -> Address change | تغيير العنوان",
+                    arMacro: fullArMacro, enMacro: fullEnMacro,
+                    sop: "إجراء الدعم الداخلي (Internal SOP):\n1. التحقق من موقع الفرع الجديد والإحداثيات المرفقة.\n2. تحديث الموقع في بوابة الشركاء والـ 1VU ثم إغلاق التذكرة بـ CCR: Partner Data Update -> Basic profile change -> Address change.",
+                    url: "https://hungerstation.knowledgeowl.com/home/cases-procedures"
+                }, isEn);
+                autoRecordInteraction(fullSearchText, "Address change | تغيير العنوان", fullArMacro);
+                return;
+            }
+
             // 1. Remove / Delete Items Matcher (حذف أصناف)
             if (fullSearchText.includes('حذف') || fullSearchText.includes('ازالة') || fullSearchText.includes('إزالة') || fullSearchText.includes('مسح') || fullSearchText.includes('شطب') || fullSearchText.includes('delete item') || fullSearchText.includes('remove item')) {
                 const arKbBody = `نفيدكم بأنه تم استلام طلبكم وإزالة الأصناف/المنتجات المحددة من قائمة الطعام الخاصة بفرعكم بنجاح.`;
