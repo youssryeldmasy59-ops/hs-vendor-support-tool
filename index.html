@@ -1171,7 +1171,15 @@
             }
         } catch(e) { console.warn('PDF.js worker setup skipped:', e); }
 
-        var allCases = window.allCases = [];
+        
+        window.menuBuilderData = {
+            groups: [],
+            items: [],
+            modifiers: [],
+            imageLinks: []
+        };
+
+var allCases = window.allCases = [];
         let currentFilter = 'ALL';
         let currentAgentName = localStorage.getItem('hs_agent_name') || 'أحمد';
         let historyLog = JSON.parse(localStorage.getItem('hs_history_log') || '[]');
@@ -1272,7 +1280,11 @@
         }
 
         function renderStudioMenuPreviewTables() {
-            const { groups, items, modifiers, imageLinks } = window.menuBuilderData;
+            const data = window.menuBuilderData || { groups: [], items: [], modifiers: [], imageLinks: [] };
+            const groups = data.groups || [];
+            const items = data.items || [];
+            const modifiers = data.modifiers || [];
+            const imageLinks = data.imageLinks || [];
 
             // Badges
             const bg = document.getElementById('studioBadgeGroupsCount');
@@ -4986,6 +4998,8 @@ window.menuBuilderData = {
 };
 
 function openMenuBuilderModal() {
+    // Open full studio view
+    switchMainWorkspace('MENU_STUDIO');
     const modal = document.getElementById('menuBuilderModal');
     if (modal) modal.style.display = 'block';
 }
