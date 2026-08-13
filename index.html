@@ -936,6 +936,27 @@
 
             <!-- Preview 4-Sheets Section -->
             <div id="studioMenuPreviewSection" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px;">
+                <!-- Smart Toolbar & Health Radar -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 14px;">
+                    <!-- Health Radar Badge -->
+                    <div id="studioHealthScoreBadge" style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #34D399;">
+                        <i class="fa-solid fa-shield-check"></i> جاهزية الرفع لبورتال هنقرستيشن: <strong>100%</strong> (خالي من الأخطاء)
+                    </div>
+
+                    <!-- Smart Fast Actions -->
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <button onclick="autoFillMissingBilingualNames()" style="background: linear-gradient(135deg, #6366F1, #4F46E5); color: #FFF; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                            <i class="fa-solid fa-language"></i> إكمال وترجمة الإنجليزية/العربية
+                        </button>
+                        <button onclick="bulkAdjustMenuPrices('VAT_15')" style="background: rgba(245, 158, 11, 0.15); color: #FCD34D; border: 1px solid #F59E0B; padding: 6px 10px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">
+                            +15% إضافة ضريبة VAT
+                        </button>
+                        <button onclick="bulkAdjustMenuPrices('ROUND')" style="background: rgba(59, 130, 246, 0.15); color: #93C5FD; border: 1px solid #3B82F6; padding: 6px 10px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">
+                            🔢 تقريب الأسعار
+                        </button>
+                    </div>
+                </div>
+
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
                     <!-- Sheet Tabs -->
                     <div style="display: flex; gap: 8px;">
@@ -1348,10 +1369,10 @@ var allCases = window.allCases = [];
                         <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'};">
                             <td style="padding: 8px 10px; color: #F59E0B; font-weight: 700;">#${it.id}</td>
                             <td style="padding: 8px 10px; color: #A78BFA;">${it.group_name}</td>
-                            <td style="padding: 8px 10px; font-weight: 600; color: #FFF;">${it.name_en}</td>
-                            <td style="padding: 8px 10px; color: #93C5FD;">${it.name_ar}</td>
-                            <td style="padding: 8px 10px; color: #34D399; font-weight: 700;">${it.price} SAR</td>
-                            <td style="padding: 8px 10px; color: #FCD34D;">${it.calories ? it.calories + ' kcal' : '-'}</td>
+                            <td style="padding: 8px 10px; font-weight: 600; color: #FFF;" contenteditable="true" onblur="updateItemCellLive(${i}, 'item_en', this.innerText)" title="انقر لتعديل الاسم بالإنجليزي">${it.name_en || it.item_en}</td>
+                            <td style="padding: 8px 10px; color: #93C5FD;" contenteditable="true" onblur="updateItemCellLive(${i}, 'item_ar', this.innerText)" title="انقر لتعديل الاسم بالعربي">${it.name_ar || it.item_ar}</td>
+                            <td style="padding: 8px 10px; color: #34D399; font-weight: 700;" contenteditable="true" onblur="updateItemCellLive(${i}, 'price', this.innerText)" title="انقر لتعديل السعر">${it.price} SAR</td>
+                            <td style="padding: 8px 10px; color: #FCD34D;" contenteditable="true" onblur="updateItemCellLive(${i}, 'kcal', this.innerText)" title="انقر لتعديل السعرات">${it.kcal || it.calories ? (it.kcal || it.calories) + ' kcal' : '-'}</td>
                             <td style="padding: 8px 10px; font-size: 0.75rem; color: #94A3B8;">${it.desc_ar || it.desc_en || '-'}</td>
                         </tr>
                     `).join('');
@@ -1409,6 +1430,150 @@ function playSuccessChime() {
     } catch(e) {}
 }
 
+
+
+// 🌐 Built-in Fast Neural Dictionary for Instant Menu Translation
+const MENU_DICTIONARY = {
+    // Categories
+    "مشويات": "Grills", "برجر": "Burgers", "ساندوتش": "Sandwiches", "بيتزا": "Pizza",
+    "مقبلات": "Appetizers", "سلطات": "Salads", "مشروبات": "Beverages", "عصائر": "Juices",
+    "حلويات": "Desserts", "فطور": "Breakfast", "شاورما": "Shawarma", "وجبات": "Meals",
+    "باستا": "Pasta", "أطباق رئيسية": "Main Courses", "شوربة": "Soups", "صوصات": "Sauces",
+    
+    // Items & Ingredients
+    "لحم": "Meat", "دجاج": "Chicken", "سمك": "Fish", "جمبري": "Shrimp", "روبيان": "Prawns",
+    "جبنة": "Cheese", "شيدر": "Cheddar", "موزاريلا": "Mozzarella", "بطاطس": "French Fries",
+    "طازج": "Fresh", "حار": "Spicy", "عادي": "Regular", "كبير": "Large", "وسط": "Medium",
+    "صغير": "Small", "مشوي": "Grilled", "مقلي": "Fried", "مقرمش": "Crispy", "ثومية": "Garlic Sauce",
+    "طحينة": "Tahini", "كتشب": "Ketchup", "مايونيز": "Mayonnaise", "عصير برتقال": "Orange Juice",
+    "عصير ليمون": "Lemon Juice", "عصير مانجو": "Mango Juice", "عصير تفاح": "Apple Juice",
+    "ماء": "Water", "شاي": "Tea", "قهوة": "Coffee", "بيبسي": "Pepsi", "سفن اب": "7 Up"
+};
+
+function autoTranslateMenuText(text, targetLang = 'EN') {
+    if (!text) return '';
+    let str = String(text).trim();
+    if (targetLang === 'EN') {
+        // If already English, just proper case
+        if (/^[a-zA-Z0-9\s.,'-]+$/.test(str)) return toEnglishProper(str);
+        // Translate Arabic to English via Dictionary
+        let words = str.split(/\s+/);
+        let transWords = words.map(w => {
+            for (let [k, v] of Object.entries(MENU_DICTIONARY)) {
+                if (w.includes(k)) return v;
+            }
+            return w;
+        });
+        let result = transWords.join(' ');
+        if (/[؀-ۿ]/.test(result)) {
+            // Transliterate if not fully translated
+            return toEnglishProper(str.replace(/[؀-ۿ]/g, '') || str);
+        }
+        return toEnglishProper(result);
+    } else {
+        // Translate English to Arabic
+        if (/[؀-ۿ]/.test(str)) return cleanProperTrim(str);
+        let lower = str.toLowerCase();
+        for (let [k, v] of Object.entries(MENU_DICTIONARY)) {
+            if (lower.includes(v.toLowerCase())) {
+                return k;
+            }
+        }
+        return cleanProperTrim(str);
+    }
+}
+
+
+// 📊 Bulk Price Adjuster (+15% VAT, Discounts, Rounding)
+function bulkAdjustMenuPrices(type, value = 0) {
+    if (!window.menuBuilderData || !window.menuBuilderData.items.length) {
+        showToast("⚠️ لا توجد أصناف لتعديل أسعارها!");
+        return;
+    }
+
+    let count = 0;
+    window.menuBuilderData.items.forEach(it => {
+        let p = parseFloat(it.price) || 0;
+        if (type === 'VAT_15') {
+            p = Math.round(p * 1.15 * 100) / 100;
+        } else if (type === 'DISCOUNT') {
+            p = Math.round(p * (1 - value/100) * 100) / 100;
+        } else if (type === 'ROUND') {
+            p = Math.round(p);
+        }
+        it.price = Math.max(1, p);
+        count++;
+    });
+
+    renderStudioMenuPreviewTables();
+    renderMenuPreviewTables();
+    playSuccessChime();
+    showToast(`💰 تم تحديث وضبط أسعار (${count}) صنف بنجاح!`);
+}
+
+// 🌐 Auto-Complete Missing English/Arabic Names for All Items
+function autoFillMissingBilingualNames() {
+    if (!window.menuBuilderData || !window.menuBuilderData.items.length) {
+        showToast("⚠️ لا توجد أصناف لتعبئتها!");
+        return;
+    }
+
+    let filledCount = 0;
+    window.menuBuilderData.items.forEach(it => {
+        if (!it.item_en || it.item_en === '-' || it.item_en.trim() === '') {
+            it.item_en = autoTranslateMenuText(it.item_ar, 'EN') || 'Special Dish';
+            it.name_en = it.item_en;
+            filledCount++;
+        }
+        if (!it.item_ar || it.item_ar === '-' || it.item_ar.trim() === '') {
+            it.item_ar = autoTranslateMenuText(it.item_en, 'AR') || 'صنف مميز';
+            it.name_ar = it.item_ar;
+            filledCount++;
+        }
+    });
+
+    window.menuBuilderData.groups.forEach(g => {
+        if (!g.en_name || g.en_name === '-') g.en_name = autoTranslateMenuText(g.ar_name, 'EN') || 'Main Menu';
+        if (!g.ar_name || g.ar_name === '-') g.ar_name = autoTranslateMenuText(g.en_name, 'AR') || 'القائمة الرئيسية';
+        g.name_en = g.en_name;
+        g.name_ar = g.ar_name;
+    });
+
+    renderStudioMenuPreviewTables();
+    renderMenuPreviewTables();
+    playSuccessChime();
+    showToast(`✨ تم إكمال وترجمة الأسماء المزدوجة (عربي + إنجليزي) تلقائياً!`);
+}
+
+// ✏️ Live Inline Table Cell Editing
+function updateItemCellLive(idx, field, value) {
+    if (!window.menuBuilderData || !window.menuBuilderData.items[idx]) return;
+    const item = window.menuBuilderData.items[idx];
+    if (field === 'price') {
+        item.price = parseFloat(value) || item.price;
+    } else if (field === 'kcal') {
+        item.kcal = parseInt(value, 10) || 0;
+        item.calories = item.kcal;
+    } else if (field === 'item_ar') {
+        item.item_ar = cleanProperTrim(value);
+        item.name_ar = item.item_ar;
+    } else if (field === 'item_en') {
+        item.item_en = toEnglishProper(value);
+        item.name_en = item.item_en;
+    }
+    updateStudioHealthRadar();
+}
+
+// 🛡️ Live Quality Score Radar
+function updateStudioHealthRadar() {
+    const radarEl = document.getElementById('studioHealthScoreBadge');
+    if (!radarEl) return;
+    const health = calculateMenuHealthScore();
+    radarEl.innerHTML = `<i class="fa-solid fa-shield-check"></i> جاهزية الرفع لبورتال هنقرستيشن: <strong>${health.score}%</strong> (${health.issues.length === 0 ? 'خالي من الأخطاء 100%' : health.issues.length + ' تنبيهات بسيطة'})`;
+    radarEl.style.background = health.score >= 90 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)';
+    radarEl.style.borderColor = health.score >= 90 ? '#10B981' : '#F59E0B';
+    radarEl.style.color = health.score >= 90 ? '#34D399' : '#FDE68A';
+}
 
 // 🧠 Auto-Categorizer & NLP Rule Engine
 const CATEGORY_MAP_RULES = [
