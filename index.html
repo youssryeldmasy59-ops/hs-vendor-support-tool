@@ -3859,8 +3859,19 @@ Order Issues: 920033935`;
         }
 
         function displayCaseDualMacro(c, greetings, isEn) {
+            if (!c) {
+                c = (typeof allCases !== 'undefined' && allCases.length > 0 ? (allCases.find(x => x.id == 58 || x.id == 25) || allCases[0]) : null) || {
+                    id: 58,
+                    case_title: 'Compensation | تعويض',
+                    ccr: 'Billing Inquiries -> Invoice inquiries | الاستعلام عن الفاتوره -> Compensation | تعويض',
+                    procedure_arabic: 'يمكنك تقديم طلب تعويض عبر بوابة الشركاء من خلال: مساعدة (Help) ← استفسار جديد ← استفسارات تتعلق بالفواتير والمدفوعات ← اعتراض على طلب (Order Dispute).',
+                    procedure_english: 'You can submit a compensation request through the Partner Portal by following these steps: Help -> New Inquiry -> Payments / Billing -> Order Dispute.',
+                    internal_sop: 'إجراء الدعم الداخلي (Internal SOP):\nالتحقق من رقم الطلب والاعتراض عبر بوابة الشركاء.',
+                    url: 'https://hungerstation.knowledgeowl.com/home/cases-procedures'
+                };
+            }
             _macroActive = true;
-            const arProcText = c.procedure_arabic || "نفيدكم بأنه تم استلام طلبكم المرفوع وجاري تحديث المعاملة حسب إجراءات الـ KnowledgeOwl المعتمدة.";
+            const arProcText = c.procedure_arabic || "يمكنك تقديم طلب تعويض عبر بوابة الشركاء من خلال: مساعدة (Help) ← استفسار جديد ← استفسارات تتعلق بالفواتير والمدفوعات ← اعتراض على طلب (Order Dispute).";
             const enProcText = c.procedure_english || "We would like to inform you that your request has been received and is being followed up with the concerned department. We will update you shortly.";
             
             const arMacro = buildArabicMacro(greetings.arGreeting, arProcText);
