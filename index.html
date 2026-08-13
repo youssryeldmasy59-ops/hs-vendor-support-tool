@@ -3151,11 +3151,11 @@ async function generateResponse() {
             // ── Universal Inbound KnowledgeOwl Intent Map ──────────────────────────
             const inboundIntentMap = [
                 {
-                    keys: ['شرح الفاتورة', 'شرح فاتورة', 'ابعت لي الرد بتاع شرح الفاتورة', 'رد شرح الفاتورة', 'الفاتورة', 'فاتورة', 'فاتورة المبيعات', 'تفاصيل الفاتورة', 'شرح الفواتير', 'ملخص الفاتورة', 'كشف الفاتورة', 'شرح الفاتورة الشهري', 'توضيح الفاتورة', 'استفسار عن الفاتورة', 'invoice explanation', 'explain invoice', 'master invoice', 'invoice guide', 'invoice breakdown'],
+                    keys: ['شرح الفاتورة', 'شرح فاتورة', 'انفويس', 'الانفويس', 'ابعت لي الرد بتاع شرح الفاتورة', 'رد شرح الفاتورة', 'الفاتورة', 'فاتورة', 'فاتورة المبيعات', 'تفاصيل الفاتورة', 'شرح الفواتير', 'ملخص الفاتورة', 'كشف الفاتورة', 'شرح الفاتورة الشهري', 'توضيح الفاتورة', 'استفسار عن الفاتورة', 'invoice explanation', 'explain invoice', 'master invoice', 'invoice guide', 'invoice breakdown'],
                     id: 54
                 },
                 {
-                    keys: ['rider eta', 'request rider eta', 'eta', 'driver eta', 'rider location', 'delivery eta', 'اين المندوب', 'وين المندوب', 'فين المندوب', 'فين السائق', 'المندوب ما وصل', 'تاخر المندوب', 'تاخير السائق', 'السائق تاخر', 'تاخير وصول المندوب', 'تأخير وصول المندوب', 'تأخير في التوصيل', 'تاخير التوصيل', 'تاخير الطلب', 'rider late', 'delivery late', 'where is rider', 'driver delay'],
+                    keys: ['رايدر', 'الرايدر', 'رايدر متاخر', 'الرايدر متاخر', 'رايدر اتأخر', 'الرايدر اتأخر', 'الرايدر متأخر', 'رايدر متأخر', 'المندوب متأخر', 'مندوب متأخر', 'rider eta', 'request rider eta', 'eta', 'driver eta', 'rider location', 'delivery eta', 'اين المندوب', 'وين المندوب', 'فين المندوب', 'فين السائق', 'المندوب ما وصل', 'تاخر المندوب', 'تاخير السائق', 'السائق تاخر', 'تاخير وصول المندوب', 'تأخير وصول المندوب', 'تأخير في التوصيل', 'تاخير التوصيل', 'تاخير الطلب', 'rider late', 'delivery late', 'where is rider', 'driver delay'],
                     id: 50
                 },
                 {
@@ -3895,7 +3895,15 @@ ${invoiceGuideHtml || ""}
             }
 
             if (!matchedCase) {
-                matchedCase = allCases.find(c => c.id === 58) || allCases[0];
+                // Intelligent Fallback: Pick top scoring case from full KB search
+                let scoredCases = allCases.map(c => ({ c, score: smartScore(c, fullSearchText) }))
+                    .filter(x => x.score > 0)
+                    .sort((a, b) => b.score - a.score);
+                if (scoredCases.length > 0) {
+                    matchedCase = scoredCases[0].c;
+                } else {
+                    matchedCase = allCases.find(c => c.id === 50) || allCases[0];
+                }
             }
 
             const greetings = detectGreetings(text);
