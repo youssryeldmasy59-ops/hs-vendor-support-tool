@@ -830,7 +830,7 @@
             <div style="position: relative; margin-bottom: 12px;">
                 <textarea id="partnerMessage" style="min-height: 120px; padding-bottom: 48px;" placeholder="انقل أو الصق هنا رسالة الشريك مباشرة، أو اضغط الميكروفون بالأسفل للتحدث والتسجيل الصوتي المباشر بلا حدود..."></textarea>
                 <button id="mainMicBtn" onclick="toggleMainVoiceRecording()" type="button" style="position: absolute; bottom: 12px; right: 12px; background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFF; border: none; padding: 7px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4); z-index: 10; transition: all 0.2s;">
-                    <i class="fa-solid fa-microphone"></i> <span id="mainMicText">تحدث بالصوت مباشر (بدون حد)</span>
+                    <i class="fa-solid fa-microphone"></i> <span id="mainMicText">🎙️ تحدث بالصوت (عربي + English)</span>
                 </button>
             </div>
 
@@ -3867,7 +3867,33 @@ ${invoiceGuideHtml || ""}
         let isMainRecording = false;
         let accumulatedSpeechText = '';
 
-        function toggleMainVoiceRecording() {
+        
+        function normalizeBilingualSpeechText(text) {
+            if (!text) return '';
+            let t = text;
+            const map = {
+                '\binvoice\b': 'فاتورة',
+                '\bstatement of account\b': 'كشف حساب',
+                '\bsoa\b': 'كشف حساب',
+                '\brider\b': 'مندوب',
+                '\bdriver\b': 'سائق',
+                '\border\b': 'طلب',
+                '\bcompensation\b': 'تعويض',
+                '\bdispute\b': 'اعتراض',
+                '\biban\b': 'آيبان',
+                '\bbank\b': 'بنك',
+                '\bprice\b': 'سعر',
+                '\bmenu\b': 'منيو',
+                '\bworking hours\b': 'ساعات العمل',
+                '\bclose\b': 'إغلاق'
+            };
+            for (let k in map) {
+                t = t.replace(new RegExp(k, 'gi'), map[k]);
+            }
+            return t;
+        }
+
+function toggleMainVoiceRecording() {
             const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRec) {
                 alert("متصفحك لا يدعم التعرف الصوتي المباشر. يرجى استخدام متصفح Chrome أو Edge للحصول على أفضل تجربة صوتية!");
@@ -3890,6 +3916,10 @@ ${invoiceGuideHtml || ""}
             try {
                 mainSpeechRecognizer = new SpeechRec();
                 mainSpeechRecognizer.lang = 'ar-SA';
+                // Enable multi-language fallback if available
+                if ('langList' in mainSpeechRecognizer) {
+                    mainSpeechRecognizer.langList = ['ar-SA', 'ar-EG', 'en-US'];
+                }
                 mainSpeechRecognizer.continuous = true; // Unlimited continuous voice recording!
                 mainSpeechRecognizer.interimResults = true; // Live typing effect as you speak!
 
