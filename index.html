@@ -900,7 +900,7 @@
                         <div style="font-size: 0.85rem; font-weight: 700; color: #38BDF8; margin-bottom: 8px;">
                             <i class="fa-solid fa-upload"></i> 2. أو ارفع شيت إكسيل خام / CSV من الشريك:
                         </div>
-                        <div onclick="document.getElementById('studioRawMenuFileInput').click()" style="border: 2px dashed rgba(56, 189, 248, 0.4); border-radius: 10px; padding: 28px 16px; text-align: center; cursor: pointer; background: rgba(56, 189, 248, 0.03); transition: all 0.2s;">
+                        <div onclick="document.getElementById('studioRawMenuFileInput').click()" ondragover="event.preventDefault(); this.style.borderColor='#10B981'; this.style.background='rgba(16,185,129,0.1)';" ondragleave="this.style.borderColor='rgba(56, 189, 248, 0.4)'; this.style.background='rgba(56, 189, 248, 0.03)';" ondrop="event.preventDefault(); this.style.borderColor='rgba(56, 189, 248, 0.4)'; this.style.background='rgba(56, 189, 248, 0.03)'; handleStudioDroppedFiles(event);" style="border: 2px dashed rgba(56, 189, 248, 0.4); border-radius: 10px; padding: 28px 16px; text-align: center; cursor: pointer; background: rgba(56, 189, 248, 0.03); transition: all 0.2s;">
                             <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.2rem; color: #38BDF8; margin-bottom: 8px;"></i>
                             <div style="font-size: 0.92rem; font-weight: 800; color: #F1F5F9;">انقر لاختيار أو إسقاط ملف إكسيل الشريك (.xlsx, .xls, .csv)</div>
                             <div style="font-size: 0.75rem; color: #94A3B8; margin-top: 4px;">سيقوم النظام تلقائياً بتنظيفه، تصحيح الحروف الإنجليزية، وضبط السعرات وفقاً لدليل هنقرستيشن</div>
@@ -1639,12 +1639,45 @@ async function runMenuAutoPilot() {
 }
 
 // 2. Batch Multi-Menu File Processor (Process multiple partner sheets in parallel)
+
+function handleFileDirectly(file) {
+    if (!file) return;
+    if (typeof XLSX === 'undefined') {
+        showToast("⚠️ مكتبة قراءة الإكسيل قيد التحميل، يرجى الانتظار ثانية...");
+        return;
+    }
+
+    showToast(`⏳ جاري قراءة وتحليل ملف (${file.name})...`);
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            processVendorMenuWorkbook(workbook);
+            playSuccessChime();
+            const count = window.menuBuilderData.items.length;
+            showToast(`✅ تم قراءة وتحليل المنيو بنجاح! عدد الأصناف: (${count}) صنف.`);
+        } catch(err) {
+            console.error("Error reading file:", err);
+            showToast("❌ حدث خطأ أثناء قراءة ملف الإكسيل: " + err.message);
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function handleRawMenuFileUpload(event) {
+    const file = event.target.files ? event.target.files[0] : null;
+    if (file) {
+        handleFileDirectly(file);
+    }
+}
+
 function handleBatchMultiMenuUpload(event) {
-    const files = Array.from(event.target.files);
+    const files = event.target.files ? Array.from(event.target.files) : [];
     if (!files.length) return;
 
     if (files.length === 1) {
-        handleStudioRawMenuFileUpload(event);
+        handleFileDirectly(files[0]);
         return;
     }
 
@@ -1659,9 +1692,7 @@ function handleBatchMultiMenuUpload(event) {
                 const workbook = XLSX.read(data, { type: 'array' });
                 processVendorMenuWorkbook(workbook);
                 
-                // Trigger customized Excel download per file
                 setTimeout(() => {
-                    const count = window.menuBuilderData.items.length;
                     const wb = createOfficialMenuWorkbook();
                     XLSX.writeFile(wb, `_MenuUpload_${file.name.replace(/\.[^/.]+$/, "")}.xlsx`);
                     processedCount++;
@@ -1678,7 +1709,20 @@ function handleBatchMultiMenuUpload(event) {
     });
 }
 
-// Helper to create official workbook object cleanly
+function handleStudioDroppedFiles(event) {
+    event.preventDefault();
+    if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 0) {
+        const files = Array.from(event.dataTransfer.files);
+        if (files.length === 1) {
+            handleFileDirectly(files[0]);
+        } else {
+            const fakeEvent = { target: { files: files } };
+            handleBatchMultiMenuUpload(fakeEvent);
+        }
+    }
+}
+
+
 function createOfficialMenuWorkbook() {
     const { groups, items, modifiers } = window.menuBuilderData;
     const wb = XLSX.utils.book_new();
