@@ -3121,6 +3121,7 @@ Order Issues: 920033935`;
             const qNormSearch = normalizeArabic(fullSearchText);
             
             // ── Ultra-Smart Multi-Intent Engine ──────────────────────────
+            let matchedIntentCase = null;
             let detectedCases = [];
             for (const item of inboundIntentMap) {
                 if (item.keys.some(k => qNormSearch.includes(normalizeArabic(k)))) {
@@ -3170,15 +3171,15 @@ if (matchedIntentCase) {
                 .filter(x => x.score > 0)
                 .sort((a, b) => b.score - a.score);
 
-            if (scoredCases.length > 0) {
+            if (scoredCases.length > 0 && scoredCases[0] && scoredCases[0].c) {
                 // Instant match — zero delay (0.001s)
                 displayCaseDualMacro(scoredCases[0].c, greetings, isEn);
-                autoRecordInteraction(fullSearchText, scoredCases[0].c.case_title, '');
+                autoRecordInteraction(fullSearchText, scoredCases[0].c.case_title || '', '');
             } else {
                 // Fallback directly to Knowledge Base top matching case
-                let fallbackCase = allCases.find(c => c.id === 58) || allCases[0];
+                let fallbackCase = (typeof allCases !== 'undefined' && allCases.length > 0 ? (allCases.find(c => c.id === 58) || allCases[0]) : null) || { id: 58, case_title: 'Compensation | تعويض', ccr: 'Billing Inquiries -> Compensation', procedure_arabic: 'يمكنك تقديم طلب تعويض عبر بوابة الشركاء.', procedure_english: 'Submit compensation via Partner Portal.', internal_sop: 'Internal SOP', url: 'https://hungerstation.knowledgeowl.com' };
                 displayCaseDualMacro(fallbackCase, greetings, isEn);
-                autoRecordInteraction(fullSearchText, fallbackCase.case_title, fallbackCase.procedure_arabic);
+                autoRecordInteraction(fullSearchText, fallbackCase.case_title || '', fallbackCase.procedure_arabic || '');
             }
             } catch(err) {
                 console.error('generateResponse error:', err);
