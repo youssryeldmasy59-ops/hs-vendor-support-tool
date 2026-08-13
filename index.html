@@ -24,6 +24,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&amp;family=Outfit:wght@400;600;700&amp;display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- PDF.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <!-- Firebase SDK -->
@@ -2126,7 +2127,7 @@ ${titles}
         "ccr": "Contract and Sales Inquiries -> Account management  |  ادارة  الحساب -> Account management feedback on existing issue required | تقديم ملاحظات على ادارة الحسابات بسبب مشكلة حالية",
         "procedure_arabic": "نعتذر لكم وبشدة عن أي تأخير أو عدم رد من قبل مدير الحساب المخصص لفرعكم.\n\nنفيدكم بأنه تم رفع وتصعيد ملاحظاتكم وشكواكم مباشرة إلى مدير المنطقة (Area Manager) للتحقق والمتابعة الفورية والتواصل معكم خلال أقرب وقت ممكن معتذرين عن أي إزعاج.",
         "procedure_english": "We sincerely apologize for any delay or lack of response from your assigned Account Manager.\n\nPlease be informed that your feedback has been directly escalated to the Area Manager for immediate review and follow-up. They will get in touch with you shortly.",
-        "full_content": "Account management feedback on existing issue required | تقديم ملاحظات على ادارة الحسابات بسبب مشكلة حالية\nProcedure (English)\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\nProcedure (Arabic)\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nلقد تم تحويل طلبكم إلى مدير الحساب حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاث أيام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample مدير الحساب مدير المنطقة لا يرد ما يرد يتجاهل يتصل التصلت بمدير الحساب ما يجاوب شكوى مدير الحساب تصعيد لمدير المنطقة account manager area manager no response"
+        "full_content": "Account management feedback on existing issue required | تقديم ملاحظات على ادارة الحسابات بسبب مشكلة حالية\nProcedure (English)\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\nProcedure (Arabic)\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nنعتذر لكم وبشدة عن أي تقصير أو تأخير قد واجهتموه في التعامل مع مدير الحساب. نود إبلاغكم بأنه تم تصعيد طلبكم وشكواكم مباشرة إلى (مدير المنطقة - Area Manager) لمتابعة الحالة بشكل عاجل، وسيتم التواصل معكم من قبله خلال 3 أيام عمل لتقديم الدعم المطلوب وحل المشكلة.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample مدير الحساب مدير المنطقة لا يرد ما يرد يتجاهل يتصل التصلت بمدير الحساب ما يجاوب شكوى مدير الحساب تصعيد لمدير المنطقة account manager area manager no response"
     },
     {
         "id": 74,
@@ -3150,6 +3151,336 @@ async function generateResponse() {
 
             // ── Universal Inbound KnowledgeOwl Intent Map ──────────────────────────
             const inboundIntentMap = [
+
+
+                {
+                    keys: ['ملاحظات على إجراءات وتعليمات هنقرستيشن', 'إشادة بسرعة التجاوب وخدمة الدعم', 'الإجراءات معقدة وبدها تبسيط', 'تقييم إجراءات حل التذاكر', 'شكراً على تعاونكم السريع معنا', 'ملاحظات على الاجراءات', 'تعليق ايجابي', 'تعليق سلبي', 'اجراءات معقده', 'شكر وتقدير للدعم', 'process related feedback', 'positive feedback on process', 'negative process review', 'support procedure comments', 'partner satisfaction feedback'],
+                    id: 83
+                },
+                {
+                    keys: ['ملاحظات واقتراحات لتطوير سيستم هنقرستيشن', 'النظام والسيستم ممتاز ومريح', 'اقتراح ميزات جديدة في التطبيق', 'تقييم أداء نظام هنقرستيشن للشركاء', 'المتعلقة بالنظام', 'اقتراحات السيستم', 'تطوير النظام', 'راي الشريك بالنظام', 'system related feedback', 'system suggestions', 'partner platform feedback', 'app usability review', 'portal performance feedback'],
+                    id: 84
+                },
+                {
+                    keys: ['كيف ينحسب تقييم المطعم بالنجوم', 'ليه نزل تقييم فرعنا بالتطبيق', 'استفسار عن تقييمات ومراجعات العملاء', 'طريقة احتساب معدل النجوم للمتجر', 'تقييم آخر 3 شهور للمطعم', 'تقييمات العملاء', 'احتساب التقييم', 'نجوم المطعم', 'تقييم المتجر نزل', 'مراجعات الزبائن', 'customer evaluations inquiry', 'how restaurant rating is calculated', 'store star rating dropped', 'partner review calculation 3 months', 'customer feedback score'],
+                    id: 85
+                },
+                {
+                    keys: ['سيارتي عطلانة وكلمت دعم المناديب', 'تطبيق المناديب مقفل وبدي اشتغل مندوب', 'مشاكل سيارات وتوصيل المناديب', 'حساب المندوب مقفل وبدي افتحه', 'طلبت أوردر من مطعم وجاني الأكل بارد', 'الطلب وصل وفيه شعر أو مشكلة بالأكل', 'الأكل ناقص والزبون بيشتكي', 'خصم من بطاقتي والطلب ما وصلني', 'تذكرة غير واضحة وبدون بيانات المتجر', 'رسائل عشوائية Spam وغير متعلقة', 'تذكرة فاضية أو تيست test', 'بريد عشوائي', 'طلب غير واضح', 'رسالة سبام', 'ايميل عميل بالغلط', 'تسجيل مندوب', 'wecare customer complaint', 'rider support car issue', 'spam irrelevant', 'customer sent to partner support', 'rider registration inquiry', 'unclear partner request', 'blank or test ticket'],
+                    id: 86
+                },
+                {
+                    keys: ['إعدادات ومواعيد قائمة الفطور', 'تحديد وقت فطور الصباح بالمنيو', 'منيو الإفطار الصباحي', 'أوقات فطور المطعم', 'breakfast menu timings', 'breakfast hours setting', 'morning menu schedule'],
+                    id: 87
+                },
+                {
+                    keys: ['طلبات متعددة إعادة ترتيب الفئات وإضافة الأصناف', 'تغيير ترتيب المنيو وإضافة وجبات جديدة', 'تعديل Layout المنيو مع إضافة منتجات', 'multi request menu update', 'reorder categories and add items', 'menu layout and new dishes'],
+                    id: 88
+                },
+                {
+                    keys: ['تغيير وتحديث بيانات الحساب البنكي', 'خطاب الآيبان البنكي المعتمد', 'تعديل الآيبان IBAN في بوابة الشركاء', 'شهادة الحساب البنكي الرسمي', 'update bank account details change', 'iban certificate update', 'bank account change'],
+                    id: 92
+                },
+                {
+                    keys: ['تحديث السجل التجاري المجدد', 'صورة السجل التجاري الجديد', 'تجديد السجل في النظام', 'وثائق السجل التجاري الرسمية', 'commercial registration update', 'cr renewal update', 'new cr document'],
+                    id: 94
+                },
+                {
+                    keys: ['تغيير رقم جوال المالك', 'تعديل رقم هاتف صاحب المنشأة', 'تحديث جوال مالك المتجر للتواصل', 'owner mobile number change', 'update owner phone', 'new owner contact number'],
+                    id: 95
+                },
+                {
+                    keys: ['تغيير اسم المالك في العقد', 'تعديل اسم صاحب النشاط التجاري', 'تحديث اسم مالك المؤسسة الرسمي', 'owner name change', 'update owner full name', 'business owner name update'],
+                    id: 96
+                },
+
+
+                {
+                    keys: ['الاشتراك في حملات وعروض هنقرستيشن الكبرى', 'عايز أدخل في عروض اليوم الوطني أو التأسيس', 'المشاركة في الحملات التسويقية الكبرى', 'عروض مهرجانات رمضان والمناسبات', 'الحملات التسويقية', 'الاهتمام بالحملات', 'عروض اليوم الوطني', 'حملات هنقرستيشن', 'المشاركه في الحملات', 'special campaign participation', 'join national day campaign', 'marketing campaigns interest', 'hungerstation promotional events', 'participate in special event campaigns'],
+                    id: 77
+                },
+                {
+                    keys: ['إلغاء اشتراك الإعلان المميز', 'إيقاف خدمة الترويج والظهور الأول', 'عايز أوقف إعلانات البريميوم ليستنج', 'إنهاء عقد الإدراج المتميز', 'إلغاء عروض وخصومات الوجبات الترويجية للمطعم', 'إيقاف الخصم الترويجي على أصناف المطعم', 'انهاء الادراج المتميز', 'ايقاف الاعلان المميز', 'الغاء البريميوم', 'توقيف الترويج المميز', 'الغاء خصم وجبات المطعم', 'termination of premium listing', 'cancel sponsored listing', 'stop premium ads', 'end featured placement', 'disable restaurant promo discounts'],
+                    id: 78
+                },
+                {
+                    keys: ['الاشتراك في عروض التوصيل', 'حملة التوصيل المجاني للمطعم', 'عروض التوصيل المخفض Deal', 'عايز أعمل عرض توصيل مجاني للعملاء', 'تسجيل شركة توصيل لوجستية 3PL', 'نحن شركة مناديب ونريد التعاقد مع هنقرستيشن', 'إيميل التسجيل اللوجستي 3pl.registration@hungerstation.com', 'عرض صفقة توصيل تجارية خاصة', 'مهتم بصفقة', 'عروض التوصيل', 'التوصيل المجاني', 'التوصيل المخفض', 'تسجيل شركه لوجستيه', 'شركات التوصيل 3PL', 'interest in a deal', 'free delivery deal', 'reduced delivery promotion', '3pl logistics registration', 'delivery campaign deal'],
+                    id: 79
+                },
+                {
+                    keys: ['إلغاء وإنهاء عرض التوصيل المجاني', 'إيقاف حملة التوصيل المخفض Deal', 'عايز أنهي صفقة التوصيل الموقعة', 'إلغاء خصم التوصيل للعملاء', 'إنهاء صفقة التوصيل', 'انهاء الصفقة', 'الغاء الصفقه', 'ايقاف عرض التوصيل المجاني', 'الغاء صفقة التوصيل', 'فسخ الصفقة', 'termination of a deal', 'cancel delivery deal', 'end free delivery promo', 'terminate delivery deal', 'cancel 3pl deal'],
+                    id: 80
+                },
+                {
+                    keys: ['شكوى على أسلوب وسلوك المناديب', 'المندوب تعامله سيء مع عمال المطعم', 'شكوى على مناديب هنقرستيشن عموماً', 'السائقين بيتأخروا وما يلتزموا بالزي', 'تصعيد شكوى السائقين للوجستيك', 'شكوى على المندوب', 'سلوك المندوب سيء', 'شكوي السائقين', 'ملاحظات على المناديب', 'سوء تعامل المندوب', 'rider related feedback', 'rider bad behavior complaint', 'delivery drivers complaint', 'driver misconduct report', 'rider feedback to logistics'],
+                    id: 82
+                },
+
+
+                {
+                    keys: ['أريد رقم مدير حسابي', 'طلب اجتماع مع مدير الحساب Account Manager', 'كيف أتواصل مع المسؤول عن متجرنا', 'طلب زيارة من مسؤول هنقرستيشن للمحل', 'بيانات تواصل مدير الحساب', 'مدير الحساب', 'اجتماع مدير الحساب', 'رقم مدير حسابي', 'التواصل مع مدير الحساب', 'مسؤول الحساب', 'account manager meeting', 'contact account manager', 'request meeting with AM', 'account manager phone number', 'who is my account manager'],
+                    id: 72
+                },
+                {
+                    keys: ['مدير الحساب ما يرد على اتصالاتي', 'شكوى على مدير الحساب يتجاهلنا', 'تصعيد لمدير المنطقة Area Manager', 'المسؤول عن الفرع ما يجاوب', 'شكوى إهمال وتأخير من مدير الحساب', 'أريد التحدث مع مدير مدير الحساب', 'مدير الحساب لا يرد', 'شكوى مدير الحساب', 'مدير المنطقة', 'مدير الحساب ما يجاوب', 'شكوي علي مدير الحساب', 'account manager no response', 'complaint against account manager', 'escalate to area manager', 'AM ignoring calls', 'account manager poor support'],
+                    id: 73
+                },
+                {
+                    keys: ['عايز أطلع أول واحد في التطبيق', 'الترويج المميز Premium Listing', 'كيف أعمل إعلان لمتجري بهنقرستيشن', 'الاشتراك في الظهور المميز وزيادة الطلبات', 'إعلانات مدفوعة للمطعم', 'الترويج المميز', 'اعلانات هنقرستيشن', 'الظهور الاول', 'بريميوم ليستنج', 'اعلان للمطعم', 'premium listing interest', 'hungerstation ads', 'featured restaurant promotion', 'boost store ranking', 'sponsored listing inquiry'],
+                    id: 74
+                },
+                {
+                    keys: ['مشكلة في إعلان الترويج المميز', 'مشترك في البريميوم والمطعم مش طالع بالواجهة', 'ضعف أداء الحملة الترويجية المدفوعة', 'الإعلان المميز مش جايب مبيعات', 'خلل في ظهور الإعلان المميز', 'مشكلة الترويج المميز', 'الاعلان مش شغال', 'اداء القائمه المميزه', 'خلل في الاعلان', 'premium listing performance issue', 'ad not showing in top', 'poor sponsored results', 'featured campaign glitch', 'premium boost not working'],
+                    id: 75
+                },
+                {
+                    keys: ['طلب جلسة تصوير للمنيو والوجبات', 'بدي مصور من هنقرستيشن يصور الأكل', 'حجز جلسة تصوير احترافية 500 ريال', 'استلام صور جلسة التصوير السابقة', 'خدمة تصوير الأطعمة الفوتوغرافية', 'تصوير الوجبات', 'جلسة تصوير', 'جلسه تصوير فوتوغرافي', 'تصوير المنيو', 'مصور هنقرستيشن', 'meal photography interest', 'book food photo session', 'professional menu photoshoot', 'request hungerstation photographer', 'download photoshoot pictures'],
+                    id: 76
+                },
+
+
+                {
+                    keys: ['تم بيع المطعم لمالك جديد', 'تغيير ملكية المتجر في السجل التجاري', 'انتقال الملكية لمستثمر آخر', 'تعديل اسم الشركة والمالك بالعقد', 'إنهاء العقد القديم وتوقيع عقد جديد مع المالك الجديد', 'تغيير المالك', 'تغير اسم الشركه', 'بيع المطعم', 'نقل الملكية', 'تغيير اسم المؤسسة', 'change of owner', 'change business name termination', 'transfer store ownership', 'new owner contract transfer', 'company ownership transfer'],
+                    id: 67
+                },
+                {
+                    keys: ['تخفيض رسوم الاشتراك الأساسية', 'طلب خصم على الرسوم السنوية أو الشهرية', 'إعادة التفاوض على رسوم التسجيل والعقد', 'تعديل الرسوم الأساسية المتفق عليها', 'الرسوم الاساسية', 'تخفيض الرسوم', 'اعادة التفاوض على الرسوم', 'رسوم العقد', 'renegotiation base fee', 'discount subscription fee', 'reduce base fee', 'modify contract registration fees'],
+                    id: 68
+                },
+                {
+                    keys: ['تخفيض نسبة العمولة', 'العمولة عالية وبدنا ننزل النسبة', 'طلب تقليل نسبة هنقرستيشن على الطلبات', 'إعادة التفاوض على نسبة العقد', 'تعديل عمولة المبيعات', 'تخفيض عمولة هنقرستيشن', 'تقليل العمولة', 'العموله عاليه', 'تعديل نسبه المبيعات', 'اعادة التفاوض على العموله', 'renegotiation commission', 'reduce commission rate', 'lower hungerstation commission', 'commission percentage discount', 'negotiate sales cut'],
+                    id: 69
+                },
+                {
+                    keys: ['مراجعة بنود العقد مع مدير الحساب', 'إعادة التفاوض على شروط الاتفاقية', 'مناقشة بنود التعاقد العام', 'طلب تعديل شروط العقد المبرم', 'اعادة التفاوض العام', 'تعديل شروط العقد', 'مراجعة العقد', 'بنود الاتفاقية', 'general renegotiation', 'renegotiate contract terms', 'review partnership terms', 'contract discussion account manager'],
+                    id: 70
+                },
+                {
+                    keys: ['استفسار عن شروط وأحكام العقد', 'توضيح بنود الاتفاقية الموقعة', 'استفسارات عامة عن بنود هنقرستيشن', 'السؤال عن شروط العمل والتوصيل في العقد', 'استفسارات عامة عن البنود', 'شروط العقد', 'بنود الاتفاقيه', 'استفسار عن الشروط', 'general terms inquiry', 'contract terms questions', 'terms and conditions inquiry', 'understanding contract clauses'],
+                    id: 71
+                },
+
+
+                {
+                    keys: ['تسوية الدفع والحسابات', 'مطابقة المبالغ المحولة مع الفاتورة', 'هل باقي لي أي مبالغ مستحقة', 'تسوية مستحقات المتجر الشهرية', 'إقفال الحساب المالي للشهر', 'تسوية الدفع', 'تسوية الحساب', 'مطابقة الدفعات', 'تسوية المستحقات', 'تسويه الدفع', 'payment reconciliation', 'account settlement match', 'reconciliation inquiry', 'verify transferred amounts', 'settlement clearance'],
+                    id: 62
+                },
+                {
+                    keys: ['سجلت فرع جديد متى يشتغل', 'الاستعلام عن حالة تفعيل الفرع الجديد', 'متى يوصل جهاز هنقرستيشن للفرع الجديد', 'الفرع تحت التجهيز والأونبوردنج Onboarding', 'متابعة طلب تسجيل المتجر', 'انشاء فرع جديد', 'تفعيل الفرع الجديد', 'حالة الاونبوردنج', 'متى يتفعل الفرع', 'تسجيل فرع', 'onboarding status inquiry', 'new branch onboarding', 'store activation status', 'when will branch go live', 'new store setup progress'],
+                    id: 63
+                },
+                {
+                    keys: ['كيف أسجل مطعمي في هنقرستيشن', 'طلب الانضمام كشريك جديد', 'عايز أضيف فرع تاني لنفس البراند', 'رابط تسجيل الشركاء الجدد partner.hungerstation.com', 'تسجيل علامة تجارية جديدة', 'تسجيل شريك جديد', 'اضافة فرع اخر', 'تسجيل مطعم جديد', 'الانضمام لهنقرستيشن', 'تسجيل براند جديد', 'new partner sign up', 'join hungerstation', 'register new restaurant', 'add another branch to brand', 'new vendor registration'],
+                    id: 64
+                },
+                {
+                    keys: ['طلب إنهاء الشراكة وفسخ العقد', 'عايز ألغي عقدي مع هنقرستيشن', 'إشعار بإنهاء التعاقد', 'إيقاف التعامل وحذف المتجر نهائياً', 'طلب إلغاء الاشتراك والخروج من التطبيق', 'انهاء الشراكة', 'فسخ العقد', 'الغاء الشراكه', 'اشعار الانهاء', 'انهاء التعاقد', 'termination notice', 'contract cancellation', 'end partnership request', 'terminate contract hungerstation', 'leave hungerstation platform'],
+                    id: 65
+                },
+                {
+                    keys: ['المحل قفل نهائياً وبدنا نحذف الحساب', 'إغلاق النشاط التجاري وشطب السجل', 'المطعم سكر وخلاص وقفنا الشغل', 'إنهاء الشراكة بسبب إغلاق الفرع نهائياً', 'تصفية المحل وإلغاء العقد', 'اغلاق الشريك نهائيا', 'المحل قفل خلاص', 'انهاء بسبب الاغلاق', 'تسفير العمال وقفل المحل', 'اغلاق الفرع نهائي', 'termination partner closure', 'business permanently closed', 'store shutdown termination', 'closed down contract cancellation', 'commercial license cancelled'],
+                    id: 66
+                },
+
+
+                {
+                    keys: ['فيه خطأ في فاتورة هذا الشهر', 'حاسبين العمولة غلط بالفاتورة', 'مخصوم مبالغ بدون وجه حق', 'نسبة العمولة في الفاتورة مش مطابقة للعقد', 'اعتراض على خطأ في أرقام الفاتورة', 'خطأ في الفاتورة', 'خطا بالفاتوره', 'حساب الفاتوره غلط', 'الفاتوره فيها غلط', 'غلط في الفاتورة', 'mistake in invoice', 'wrong invoice calculation', 'incorrect commission charged', 'invoice dispute error', 'dispute invoice amount'],
+                    id: 57
+                },
+                {
+                    keys: ['بدي أقدم تظلم على خصم طلبات', 'طلب تعويض مالي عن طلبات الشهر', 'كيف أرفع اعتراض Order Dispute في البوابة', 'المحل يستحق تعويضات مالية', 'تظلم على مبالغ الفاتورة المخصومة', 'طلب تعويض', 'تظلم طلبات', 'اعتراض مالي', 'اوردر ديسبوت', 'تعويضات الشركاء', 'compensation request', 'order dispute', 'financial compensation claim', 'partner compensation portal', 'dispute order deductions'],
+                    id: 58
+                },
+                {
+                    keys: ['الحوالة اللي نزلت في الحساب ناقصة', 'وصلني مبلغ غلط في البنك', 'الحوالة البنكية أقل من صافي الفاتورة', 'المبلغ المحول غير صحيح', 'فيه نقص في التحويل البنكي للمطعم', 'دفعة غير صحيحة', 'الحواله ناقصه', 'مبلغ الحواله غلط', 'تحويل بنكي ناقص', 'استلام دفعه غير صحيحه', 'incorrect payment received', 'wrong amount transferred', 'bank transfer mismatch', 'short payment received', 'incorrect payout amount'],
+                    id: 59
+                },
+                {
+                    keys: ['ما نزل لي أي تحويل في البنك', 'فلوسي ما وصلت في الحساب', 'متى تنزل الحوالة ما استلمت شي', 'الحساب البنكي لم يصله أي دفعة', 'تأخر وصول أرباح المطعم في البنك', 'لم يتم استلام الدفعة', 'الحواله ما نزلت', 'ما استلمت الفلوس', 'الفلوس ما تحولت', 'تاخر الحواله البنكيه', 'payment not received', 'money not transferred', 'missing payout', 'haven't received monthly transfer', 'no payment in bank account'],
+                    id: 60
+                },
+                {
+                    keys: ['متى مواعيد التحويل البنكي', 'كم يوم تأخذ الحوالة عشان تنزل', 'دورة التحويلات المالية في هنقرستيشن', 'مواعيد صرف مستحقات المطاعم', 'جدول التحويل الأسبوعي والشهري', 'الاستعلام عن وقت الدفع', 'مواعيد التحويل', 'وقت نزول الحوالات', 'دورة الدفع', 'متى تنزل الحواله', 'payment cycle inquiry', 'transfer schedule', 'payout dates hungerstation', 'when are payments transferred', 'payout cycle time'],
+                    id: 61
+                },
+
+
+                {
+                    keys: ['المندوب نسي صنف في المطعم ومشي', 'السائق ساب كيس العصير', 'المندوب ترك بعض الأغراض بالفرع', 'السواق أخذ جزء من الطلب ونسي الباقي', 'باقي الطلب لسه في المحل والمندوب راح للعميل', 'ترك المندوب بعض العناصر', 'المندوب نسي صنف', 'المندوب ساب اكل', 'نسيان المندوب للطلب', 'المندوب ترك اغراض', 'rider left some items', 'driver forgot items', 'rider left part of order', 'missing bag left by driver', 'driver missed items'],
+                    id: 52
+                },
+                {
+                    keys: ['عايز فاتورة الشهر الماضي', 'أين أجد فاتورة المبيعات', 'طلب إرسال الفاتورة الضريبية', 'طريقة تحميل الفاتورة من البوابة', 'ما نزلت لي فاتورة شهر يوليو', 'طلب نسخة من الفاتورة الشهرية PDF', 'طلب الفاتورة', 'تحميل الفاتوره', 'فاتورة المبيعات', 'ارسال الفاتوره', 'الفاتورة الضريبية', 'طلب فاتوره', 'invoice request', 'download monthly invoice', 'where is my invoice', 'tax invoice request', 'send me invoice pdf', 'invoice not showing in portal'],
+                    id: 53
+                },
+                {
+                    keys: ['شرح الفاتورة', 'تفاصيل الفاتورة والمبيعات', 'كيف انحسبت عمولة هنقرستيشن', 'شرح بنود الفاتورة والعمولات', 'استفسار عن طريقة حساب الفاتورة', 'ليه مخصوم عمولة بنكية', 'توضيح تفاصيل خصومات الفاتورة', 'ملخص الحساب والفاتورة', 'شرح الفاتوره', 'تفاصيل الفاتوره', 'كيف تحسب الفاتوره', 'شرح العمولات', 'توضيح الفاتوره', 'حساب الفاتوره', 'invoice calculation explanation', 'invoice breakdown', 'explain invoice deductions', 'commission calculation breakdown', 'sales summary explanation', 'شرح حساب الفاتورة', 'دليل الفاتورة'],
+                    id: 54
+                },
+                {
+                    keys: ['طلب كشف حساب مالي SOA', 'أريد كشف حساب تفصيلي بالمبيعات', 'كشف حساب الشريك', 'استفسار عن كشف الحساب المعتمد', 'إرسال كشف الحساب النهائي', 'Statement of account SOA', 'كشف الحساب', 'كشف حساب مالي', 'طلب كشف حساب', 'كشف حساب الشريك', 'كشف حساب dunning', 'dunning inquiry', 'statement of account', 'soa request', 'financial account statement', 'vendor account statement'],
+                    id: 55
+                },
+                {
+                    keys: ['المحل مقفل وبتوصلني فواتير سداد', 'مستحقات هنقرستيشن على المطعم المحذوف', 'كيف أسدد المبلغ المستحق على الفرع', 'آيبان بنك ساب لسداد مستحقات هنقرستيشن', 'تصفية حساب فرع ملغي', 'مستحقات الشركاء', 'سداد مستحقات هنقرستيشن', 'مستحقات التطبيق', 'ايبان سداد المديونية', 'vendor dues to delivery hero', 'outstanding dues closed store', 'how to pay hungerstation dues', 'settle debt deleted branch', 'sabb bank iban payment'],
+                    id: 56
+                },
+
+
+                {
+                    keys: ['تغيير صورة الوجبة', 'رفع صورة جديدة لصنف بالمنيو', 'تعديل صورة البرجر', 'إضافة صور للأطباق', 'تحديث صورة المنتج', 'الصورة مش راضية تظهر على الصنف', 'تغيير صور الوجبات في المنيو', 'تغيير صورة المنتج', 'رفع صور الوجبات', 'تعديل صورة الصنف', 'تغير صوره المنتج', 'صور الاصناف', 'change product photo', 'upload dish image', 'update item photo', 'change meal picture', 'upload product image'],
+                    id: 42
+                },
+                {
+                    keys: ['تغيير صورة الغلاف للمطعم', 'تعديل الكفر فوتو Cover Photo', 'رفع صورة البانر العريض في التطبيق', 'تغيير صورة خلفية المتجر', 'مقاس 1500*750 كفر فوتو', 'تحديث صورة واجهة المحل', 'تغيير صوره الغلاف', 'الكفر فوتو', 'تعديل البانر', 'صوره الخلفيه للمطعم', 'تغير الكفر', 'change listing image', 'upload cover photo', 'update banner image', 'restaurant cover photo', 'listing image update', 'header image hungerstation'],
+                    id: 43
+                },
+                {
+                    keys: ['تغيير لوجو المطعم', 'رفع شعار جديد للمحل Logo', 'تعديل لوجو الشريك', 'تحديث الشعار باللغتين عربي وإنجليزي', 'لوجو المتجر مقاس 800*800', 'تغيير أيقونة وصورة المحل الرسمية', 'تغيير الشعار', 'رفع اللوقو', 'تعديل اللوجو', 'تغير الشعار', 'لوقو المطعم', 'شعار المتجر', 'change logo', 'upload logo', 'update brand logo', 'restaurant logo change', 'modify store logo'],
+                    id: 44
+                },
+                {
+                    keys: ['العميل ألغى الطلب بعد ما جهزناه وبدنا تعويض', 'طلب ملغي وعايز تعويض', 'الاعتراض على خصم الطلب الملغي', 'الزبون كنسل الأوردر بعد الطبخ', 'استحقاق تعويض الطلب الملغي', 'المحل يستحق تعويض عن الطلب رقم', 'رفع تذكرة تعويض لطلب مكنسل', 'الغاء العميل', 'طلب تعويض ملغي', 'الطلب اتكنسل وعايز تعويض', 'تعويض اوردر ملغي', 'كنسله العميل', 'اعتراض على طلب ملغي', 'الطلب نزل بعد وقت قفل المحل', 'أوردر جاني خارج أوقات الدوام', 'المحل كان مقفل والطلب نزل في السيستم', 'المندوب وصل والفرع مغلق بعد الدوام', 'الطلب وصل في وقت الإغلاق', 'طلب خارج ساعات العمل الرسمية', 'طلب خارج ساعات العمل', 'الاوردر نزل والمحل مقفل', 'طلب بعد وقت الاغلاق', 'طلب خارج الدوام', 'customer cancellation', 'canceled order compensation', 'dispute canceled order', 'compensation claim canceled order', 'customer cancelled after prep', 'order placed outside of opening hours', 'order after closing time', 'order received when closed'],
+                    id: 45
+                },
+
+
+                {
+                    keys: ['تعديل أسعار الوجبات', 'رفع سعر صنف معين', 'تغيير سعر البرجر', 'تحديث الأسعار في المنيو', 'تخفيض أسعار المشروبات', 'عايز أعدل سعر الوجبة على التطبيق', 'تحديث قائمة الأسعار بالكامل', 'تعديل السعر لصنف معين', 'تغير الاسعار', 'تعديل الاسعار', 'تحديث الاسعار', 'تغيير السعر', 'تعديل اسعار المنيو', 'سعر الوجبات', 'prices change', 'change item price', 'update prices', 'menu price adjustment', 'modify price', 'price update request'],
+                    id: 36
+                },
+                {
+                    keys: ['إخفاء صنف من المنيو', 'الوجبة خلصت وعايز أوقفها 86', 'الصنف غير متوفر بالمطعم', 'حذف وجبة من قائمة الطعام', 'إلغاء تفعيل صنف نافد', 'إخفاء قسم كامل مؤقتاً', 'المنتج Out of stock', 'وقف صنف من الطلب', 'ازالة صنف', 'اخفاء وجبه', 'صنف غير متوفر', 'اوت اوف ستوك', 'صنف نافذ', 'ايقاف صنف', 'حذف صنف من المنيو', 'remove or hide dish', 'out of stock', 'item 86', 'hide menu item', 'disable item', 'delete dish', 'item unavailable', 'sold out item'],
+                    id: 37
+                },
+                {
+                    keys: ['إضافة أصناف أقل من 30 صنف', 'إضافة وجبة جديدة للمنيو', 'عايز أضيف أصناف جديدة', 'إضافة خيارات صوصات وجبن Toppings', 'تنزيل منتج جديد في القائمة', 'إضافة أحجام جديدة للوجبة', 'إضافة إضافات للأطباق', 'اضافة اصناف', 'اضافه وجبه جديده', 'اضافة اضافات', 'اضافه توبينق', 'اضافة صنف للمنيو', 'تنزيل صنف جديد', 'add items', 'add toppings', 'new dish addition', 'add modifiers', 'add new meal to menu', 'add extra options'],
+                    id: 38
+                },
+                {
+                    keys: ['تحديث المنيو بالكامل', 'أكثر من 30 صنف', 'رفع قائمة طعام جديدة كاملة', 'تغيير كامل أصناف وأسعار المطعم', 'تجديد منيو المطعم كله', 'إرسال ملف منيو جديد بالكامل PDF', 'تحديث كل المنيو من الصفر', 'رفع شيت منيو جديد', 'تحميل شيت منيو كامل', 'إضافة منيو كبير كامل', 'قائمة كاملة', 'تحديث المنيو كامل', 'رفع منيو جديد كامل', 'منيو جديد كامل', 'تغيير المنيو بالكامل', 'full menu update', 'upload entire new menu', 'complete menu overhaul', 'full menu replacement', 'brand new menu', 'menu upload file'],
+                    id: 40
+                },
+
+
+                {
+                    keys: ['تعديل مواعيد فتح وقفل المحل', 'تغيير ساعات العمل في التطبيق', 'بدنا نعدل دوام رمضان', 'تحديث أوقات الدوام للفرع', 'تغيير وقت استلام أول وآخر طلب', 'المحل بيفتح متأخر وعايزين نعدل الوقت', 'جدول العمل المعتاد للمتجر', 'تعديل أوقات الدوام الرسمي', 'تحديث ساعات العمل', 'تعديل مواعيد العمل', 'تغيير اوقات الدوام', 'ساعات عمل الفرع', 'تعديل الدوام', 'تغير مواعيد الفرع', 'اوقات فتح المحل', 'update operating hours', 'change working hours', 'update schedule', 'ramadan working hours', 'change store timings', 'modify opening hours', 'usual work schedule'],
+                    id: 26
+                },
+                {
+                    keys: ['إعادة تفعيل الفرع بعد الإجازة', 'المحل فتح من جديد وبدنا نشغله', 'تنشيط المتجر بعد الإغلاق المؤقت', 'المطعم كان مقفل صيانة وفتحنا اليوم', 'فك إيقاف الفرع المؤقت', 'رجعنا فتحنا وعايزين نستقبل طلبات', 'طلب إعادة فتح المتجر بهنقرستيشن', 'اعادة تنشيط المطعم', 'تفعيل الفرع بعد الاغلاق', 'تنشيط المحل', 'اعادة تفعيل الحساب', 'فتح المحل بعد الاجازة', 'تشغيل الفرع المقفل', 'reactivate restaurant', 'reopen branch after closure', 'reactivate after temporary closure', 'unpause store', 'resume orders after break', 'activate closed branch'],
+                    id: 27
+                },
+                {
+                    keys: ['المطعم مش ظاهر للعملاء', 'المطعم مختفي على الأبلكيشن', 'المطعم باين إنه مغلق في التطبيق', 'المطعم مش باين لي', 'المطعم مش شايفه', 'المحل فيه مشكلة ومش طالع في البحث', 'المطعم ظاهر مقفل بالتطبيق', 'المحل مسكر بالتطبيق', 'الفرع طالع مقفل والعمال شغالين', 'المطعم مو ظاهر بهنقرستيشن', 'اختفاء صفحة المطعم من التطبيق', 'فحص حالة الفرع في السيستم', 'التأكد من حالة المتجر في السيلزفورس', 'معرفة سبب إيقاف الفرع من الباك إند', 'فحص حالة المتجر الداخلية', 'تشييك حالة الفرع Backend', 'التحقق من حالة الواجهة الخلفية', 'فحص الباك اند', 'تشييك السيستم', 'حالة المتجر في الباك اند', 'فحص حالة الفرع', 'check backend status', 'backend branch status', 'restaurant not visible on app', 'store appears closed', 'store showing closed', 'restaurant disappeared from hungerstation', 'cant find restaurant on customer app', 'salesforce branch check', 'check portal status'],
+                    id: 28
+                },
+                {
+                    keys: ['تغيير الحد الأدنى للطلب', 'عايز أرفع أو أنزل أقل قيمة للأوردر', 'تعديل المينيموم أوردر Minimum Order', 'الحد الأدنى للطلب عالي وبدنا نقلله', 'تحديد الحد الأدنى لقيمة الشراء', 'تعديل minimum order amount', 'تغيير الحد الادنى للطلب', 'تعديل المينيمم', 'الحد الادني للطلب', 'اقل قيمة للطلب', 'تعديل المينيموم', 'changes in minimum order value', 'change minimum order', 'update mov', 'lower minimum order amount', 'minimum basket size', 'modify min order value'],
+                    id: 29
+                },
+                {
+                    keys: ['تعديل رسوم التوصيل', 'عايزين نغير سعر توصيل الأوردر', 'تخفيض أو زيادة رسوم الدليفري', 'تغيير تكلفة التوصيل للعملاء', 'سعر التوصيل غالي وبدنا نعدله', 'تعديل سعر شحن الطلبات', 'تغيير رسوم التوصيل', 'تعديل سعر التوصيل', 'رسوم التوصيل غاليه', 'تغير رسوم الدليفري', 'تكلفة التوصيل', 'changes in delivery fee', 'change delivery fee', 'update delivery charge', 'reduce delivery price', 'delivery cost modification', 'delivery pricing issue'],
+                    id: 30
+                },
+
+
+                {
+                    keys: ['تغيير اسم المطعم في التطبيق', 'بدنا نعدل اسم المحل بهنقرستيشن', 'تحديث الاسم التجاري للمتجر', 'تغيير اسم الفرع الظاهر للعملاء', 'اسم المطعم اتغير في السجل التجاري', 'طلب تعديل اسم الشريك', 'تغيير اسم البراند على التطبيق', 'تغيير اسم الشريك', 'تعديل اسم المحل', 'تغيير اسم المتجر', 'تغير اسم المطعم', 'تحديث اسم الفرع', 'تعديل اسم الشريك', 'partner name change', 'change restaurant name', 'update store name', 'brand name change', 'modify partner name', 'business name change'],
+                    id: 21
+                },
+                {
+                    keys: ['تغيير رقم جوال الفرع', 'تحديث رقم التواصل مع المطعم', 'تعديل رقم هاتف المحل', 'رقم الجوال القديم مفصول وبدنا نضيف رقم جديد', 'تغيير رقم المسؤول عن الاستلام', 'تحديث أرقام الاتصال بالمتجر', 'إضافة رقم هاتف جديد للفرع', 'تحديث رقم التواصل', 'تغيير رقم الجوال', 'تعديل رقم الهاتف', 'تغير رقم التواصل', 'رقم جوال المطعم', 'تغيير رقم الاتصال', 'partner contact details change', 'update phone number', 'change mobile number', 'update store contact', 'change restaurant phone', 'update contact details'],
+                    id: 22
+                },
+                {
+                    keys: ['تغيير رقم الآيبان البنكي', 'تحديث الحساب البنكي للشريك', 'بدنا نغير البنك اللي بتنزل عليه الحوالات', 'خطاب الغرفة التجارية للآيبان', 'تعديل الآيبان IBAN', 'شهادة الآيبان الجديدة', 'تغيير الحساب البنكي لمؤسسة ثانية', 'تحديث الحساب البنكي للمتجر', 'تحديث الايبان', 'تغيير الايبان', 'تعديل الايبان', 'شهاده الايبان', 'الحساب البنكى', 'تغير الايبان', 'خطاب الغرفه التجاريه', 'تحديث الحساب البنكي', 'partner bank account details change', 'update iban', 'change bank account', 'bank details update', 'iban certificate', 'chamber of commerce letter iban', 'new iban request'],
+                    id: 23
+                },
+                {
+                    keys: ['تحديث بيانات الملف الشخصي للمتجر', 'تعديل البيانات الأساسية للشريك', 'تحديث معلومات المتجر العامة', 'تغيير بيانات صاحب المنشأة', 'تعديل الملف التعريفي للفرع', 'تغيير تفاصيل الشريك', 'تحديث بيانات الشريك', 'تعديل الملف الشخصي', 'تحديث بيانات المنشأه', 'تعديل بيانات المطعم', 'partner details changes', 'update partner profile', 'change business details', 'general profile update', 'update vendor info'],
+                    id: 24
+                },
+                {
+                    keys: ['تغيير لوكيشن المطعم على الخريطة', 'المحل نقل لشارع جديد', 'تعديل موقع الفرع', 'المندوبين بيروحوا عنوان غلط', 'تحديث إحداثيات الفرع GPS', 'نقلنا المتجر لحي ثاني', 'تصحيح مكان المطعم على الخريطة', 'تعديل العنوان الوطني للفرع', 'تغيير العنوان', 'تعديل الموقع', 'تغيير اللوكيشن', 'احداثيات الفرع', 'لوكيشن المحل غلط', 'تغير موقع المطعم', 'تعديل عنوان المحل', 'مكان الفرع غلط', 'address change', 'change location', 'update store address', 'wrong store gps', 'restaurant moved to new location', 'update coordinates', 'change map location'],
+                    id: 25
+                },
+
+
+                {
+                    keys: ['مشكلة في ربط الكاشير', 'الطلبات مش بتنزل على كاشير فودكس', 'مشكلة في ربط نقاط البيع POS', 'الـ Integration بين هنقرستيشن والكاشير فاصل', 'أوردرات هنقرستيشن مش مسمعة في جهاز الكاشير', 'عطل في ربط Foodics', 'عطل في ربط Geidea', 'عطل في ربط Odoo', 'الطلبات بتعلق ومش بتدخل في نظام المحاسبة', 'فصل نظام نقاط البيع', 'مشكله ربط نقاط البيع', 'ربط فودكس معلق', 'الربط مع الكاشير', 'مشكله فنية في ال pos', 'عطل تكامل الكاشير', 'ربط السيستم عطلان', 'pos technical problem', 'foodics integration issue', 'pos not receiving orders', 'pos sync error', 'pos connection down', 'cashier integration bug', 'orders not printing on pos'],
+                    id: 19
+                },
+                {
+                    keys: ['عايزين نربط المتجر مع كاشير', 'عايز أربط مع فودكس', 'طلب ربط جديد بنظام نقاط البيع POS', 'عايز أغير شركة الكاشير لنظام تاني', 'طلب إعداد الـ Integration', 'إلغاء ربط الكاشير والرجوع لطابعة التابلت', 'تفعيل الربط المباشر مع الكاشير', 'إعداد نظام POS جديد', 'طلب ربط نقاط البيع', 'اعداد ربط فودكس', 'تغيير نظام الكاشير', 'تفعيل ال pos', 'الغاء ربط الكاشير', 'لسه هنربط مع الكاشير', 'pos set-up', 'pos integration setup', 'connect hungerstation to foodics', 'change pos provider', 'switch pos integration', 'new pos setup request', 'disconnect pos'],
+                    id: 20
+                },
+
+
+                {
+                    keys: ['إزاي أرفع طلب من التطبيق', 'كيف أستخدم التطبيق', 'شرح طريقة رفع الطلبات', 'طريقة استخدام تطبيق الشريك', 'كيف أقدم شكوى من البرنامج', 'استفسار عن وظائف التطبيق', 'طريقة طلب تعديل من التطبيق', 'شرح خصائص برنامج المحل', 'سؤال وظيفي', 'ازاي استخدم التطبيق', 'شرح التطبيق', 'طريقة رفع طلب', 'طريقه استخدام البرنامج', 'استفسار وظيفي', 'functionality question', 'how to use partner app', 'app guide', 'how to submit request on app', 'partner app instructions', 'app feature question'],
+                    id: 11
+                },
+                {
+                    keys: ['التطبيق بيقفل لوحده فجأة', 'بيطلع لي Error غريب في التطبيق', 'التطبيق مش راضي يتحدث', 'مشكلة عامة في تطبيق الشريك', 'التطبيق بيكراش كل ما أفتحه', 'برنامج هنقرستيشن فيه مشكلة تقنية', 'مشكلة فنية في التطبيق', 'برنامج الشريك معطل', 'مشكلات التطبيق الاخرى', 'التطبيق يخرج لوحده', 'كراش في التطبيق', 'خطا في البرنامج', 'تطبيق معطل', 'مشاكل التطبيق', 'other app issues', 'app crashing', 'app keeps closing', 'app error code', 'partner app bug', 'app glitch', 'unknown app issue', 'update failed app'],
+                    id: 12
+                },
+                {
+                    keys: ['مش عارف أدخل على بوابة الشركاء', 'نسيت باسورد البوابة', 'البورتال مش راضي يفتح', 'مشكلة تسجيل دخول في Vendor Portal', 'بيقولي كلمة المرور غير صحيحة في البوابة', 'الحساب معلق في موقع الشركاء', 'إعادة تعيين كلمة مرور البوابة', 'مش راضي يسجل دخول على البورتال', 'غير قادر على تسجيل الدخول', 'مشكله دخول البوابه', 'نسيت الباسورد البورتال', 'تسجيل الدخول البوابه', 'فندر بورتال معلق', 'دخول بوابه الشركاء', 'unable to log in', 'portal login issue', 'forgot portal password', 'vendor portal login failed', 'cant access portal', 'invalid credentials portal', 'portal account locked', 'reset portal password'],
+                    id: 13
+                },
+                {
+                    keys: ['عايز أعمل حساب جديد على بوابة الشركاء', 'إضافة إيميل جديد للبورتال', 'إنشاء يوزر جديد للمحاسب في البوابة', 'عايز أضيف مستخدم على Vendor Portal', 'فتح حساب جديد في بوابة الشركاء', 'إعطاء صلاحية لموظف جديد على البوابة', 'طلب إضافة بريد إلكتروني للبوابة', 'انشاء حساب بوابه الشركاء', 'اضافه ايميل جديد', 'يوزر جديد للبورتال', 'اضافة مستخدم للبوابه', 'صلاحيات بوابه الشركاء', 'فتح حساب فندر بورتال', 'create new portal account', 'add email to portal', 'new vendor portal user', 'grant portal access', 'add user to portal', 'portal functionality question', 'new account vendor portal'],
+                    id: 14
+                },
+                {
+                    keys: ['الفواتير بتطبع عربي بدل إنجليزي', 'الإيصالات بتطبع إنجليزي بدل عربي', 'لغة طباعة الفاتورة مقلوبة', 'مشكلة لغة الطباعة في الجهاز', 'مش راضي يفتح البورتال رغم تغيير الباسورد', 'عطل غير مفهوم في البوابة', 'الفاتورة بتطلع بلغة تانية', 'عطل غريب في الفندر بورتال', 'لغة إيصال الطلبات معكوسة', 'technical problem portal', 'receipt printing wrong language', 'invoice language inverted', 'print language arabic english issue', 'portal login persistent error'],
+                    id: 15
+                },
+
+
+                {
+                    keys: ['الجهاز بيهنج كتير', 'صوت جرس الطلبات مش شغال', 'التابلت بيقفل ويفتح لوحده', 'زرار الباور معلق', 'الطابعة مش بتطلع صوت رنة الطلب', 'البلوتوث مش راضي يربط', 'الشاشة بتهنج وتجمد', 'الجهاز بيسخن ويطفي', 'عطل في مكنة الطلبات', 'صوت المنبه واطي أو مكتوم', 'مشاكل الجهاز', 'عطل هاردوير', 'جهاز مهنج', 'طابعه معلقه', 'زر الباور', 'صوت الطلبات مو شغال', 'طابعتنا تهنج', 'مشكلة هارد وير', 'hardware issues', 'device freezing', 'printer sound not working', 'power button stuck', 'device restarting', 'bluetooth not pairing', 'speaker broken', 'hardware problem', 'device overheating', 'hardware fault'],
+                    id: 6
+                },
+                {
+                    keys: ['بتابع طلب صيانة الطابعة', 'محدش تواصل معايا بخصوص الجهاز الخربان', 'الفني لسه ما وصل للصيانة', 'شو صار على تصليح الطابعة', 'متابعة تذكرة الدعم الفني للجهاز', 'وين وصل طلب تبديل الطابعة', 'رفعت بلاغ صيانة ومحد رد', 'استعجال صيانة التابلت', 'متابعه صيانه', 'استعجال طابعه', 'متابعة عطل', 'طلب صيانه سابق', 'استعجال الدعم الفني للطابعات', 'hardware chase up', 'printer chase up', 'maintenance follow up', 'printer repair status', 'technician delay', 'device replacement follow up', 'ticket follow up printer'],
+                    id: 7
+                },
+                {
+                    keys: ['عايزين نغير نوع جهاز الاستقبال', 'تبديل مكنة هنقرستيشن بجهاز تاني', 'تغيير قناة استلام الطلبات', 'بدنا نغير التابلت ونستقبل من جوال', 'طلب جهاز موديل جديد', 'تحويل طريقة استلام الطلبات', 'تغيير طابعة الشريك', 'استبدال نوع الجهاز', 'تغيير جهاز الشريك', 'تبديل الجهاز', 'تغير نوع الطابعه', 'استبدال الطابعه', 'تغيير جهازالشريك', 'transmission device change', 'device change request', 'change partner device', 'switch printer type', 'change order channel', 'swap pos device'],
+                    id: 8
+                },
+                {
+                    keys: ['التطبيق مش بينزل طلبات خالص', 'المحل شغال بس مفيش أوردرات بتوصل', 'الطلبات وقفت فجأة على التطبيق', 'التطبيق معلق وما يستلم طلبات', 'الفرع ظاهر مغلق والطلبات مش بتدخل', 'تطبيق الشريك لا يستقبل الطلبات', 'مشكلة في استقبال الطلبات بالتطبيق', 'العملاء بيقولوا المتجر مقفل', 'التطبيق لا يتلقى الطلبات', 'مفيش طلبات بتنزل', 'تطبيق الشريك معلق', 'تطبيق لا يستقبل', 'الطلبات مو واصله', 'تطبيق هنقرستيشن لا يستقبل', 'app does not receive orders', 'no orders received', 'app not receiving orders', 'partner app no orders', 'store appears closed', 'orders not coming through', 'orders stopped on app'],
+                    id: 9
+                },
+                {
+                    keys: ['تطبيق الشريك فاتح شاشة بيضاء', 'التطبيق معلق على شاشة فارغة', 'الشاشة سوداء والتطبيق مش بيفتح', 'تطبيق هنقرستيشن واقف على صفحة بيضا', 'مش ظاهر أي حاجة في التطبيق غير شاشة بيضاء', 'التطبيق بيفتح ويقف على اللوجو', 'شاشة معلقة وفاضية', 'شاشه فارغه', 'شاشه بيضاء', 'التطبيق شاشه سودا', 'تطبيق معلق صفحه بيضه', 'شاشه بيضا', 'تطبيق الشريك شاشة بيضاء', 'app shows blank screen', 'white screen app', 'blank screen issue', 'black screen app', 'partner app frozen on white screen', 'app stuck on loading', 'white display partner app'],
+                    id: 10
+                },
+
+
+                {
+                    keys: ['الجهاز اتسرق من المحل', 'المكنة ضاعت', 'التابلت اتسرق', 'مش لاقيين الطابعة', 'فقدنا جهاز الطلبات', 'العمال ضيعوا التابلت', 'انسرق التابلت', 'انسرقت الطابعة', 'ضاع الجهاز', 'سرقة طابعة الطلبات', 'بديل للجهاز المفقود', 'طلب طابعة جديدة بدل المسروقة', 'مكان التابلت مش معروف', 'طابعه مسروقه', 'طابعة مفقوده', 'تبلت مسروق', 'تبلت ضايع', 'جهاز ضايع', 'طابعتنا انسرقت', 'التابلة مفقودة', 'التابلة مسروقة', 'طابعة الطلبات ضايعة', 'tablet lost', 'tablet stolen', 'stolen printer', 'lost device', 'printer missing', 'lost tablet', 'stolen tablet', 'device missing', 'lost pos', 'stolen pos', 'device lost'],
+                    id: 1
+                },
+                {
+                    keys: ['التابلت وقع واتكسر', 'شاشة الطابعة مكسورة', 'المكنة باظت خالص', 'الجهاز انكب عليه مياه', 'الطابعة احترقت', 'التابلت مش شغال وفيه كسر', 'شاشة اللمس مكسورة', 'طابعة مكسورة', 'الجهاز مخبوط والشاشة سودا', 'الجهاز تالف', 'طابعة خربانة كسر', 'تبديل طابعة تالفة', 'طابعه تالفه', 'طابعه مكسوره', 'تبلت تالف', 'تبلت مكسور', 'شاشه مكسوره', 'طابعتنا خربانه', 'طابعة مكسور شاشتها', 'جهاز مكسور', 'التابلة تالفة', 'tablet damaged', 'broken printer', 'screen cracked', 'broken tablet', 'cracked screen', 'device damaged', 'damaged printer', 'printer broken', 'screen broken', 'water damaged', 'broken pos'],
+                    id: 2
+                },
+                {
+                    keys: ['سلك الشاحن مقطوع', 'شاحن الطابعة ضاع', 'مش لاقيين الشاحن', 'الشاحن انحرق', 'التابلت مش بيشحن والسلك باظ', 'شاحن المكنة مفقود', 'ضاع شاحن الجهاز', 'وصلة الشاحن خربانة', 'راس الشاحن خربان', 'بدنا شاحن جديد للطابعة', 'شاحن هنقرستيشن مقطوع', 'فيشة الشاحن مكسورة', 'شاحن مفقود', 'شاحن تالف', 'شاحن ضايع', 'شاحن باظ', 'سلك شاحن مقطوع', 'شارحن', 'شاحن الطابعه', 'شاحن التبلت', 'الشااحن خربان', 'سلك الشحن', 'charger lost', 'charger damaged', 'broken charger', 'lost charger', 'cable broken', 'charger cable cut', 'charging wire broken', 'missing charger', 'power adapter broken', 'charger adapter'],
+                    id: 3
+                },
+                {
+                    keys: ['الطابعة مش لاقطة نت', 'الجهاز فاصل واي فاي', 'التابلت أوفلاين ومش عارف يدخل', 'الطلبات مش بتنزل بسبب النت', 'الواي فاي بيفصل كل شوية', 'الشبكة ضعيفة في الطابعة', 'معلق على جاري الاتصال', 'مش عارفين نعمل Check in', 'الجهاز مش متصل بالسيرفر', 'النت شغال بس الطابعة مش راضية تشبك', 'مشكله اتصال', 'واى فاى فاصل', 'وايفاي مفصول', 'التابلت اوفلاين', 'الطابعه اوفلاين', 'عدم الاتصال بالنت', 'الشبكه فاصله', 'مش راضي يشبك', 'وايفاي خربان', 'طابعة بدون نت', 'connection issues', 'wifi problem', 'device offline', 'printer offline', 'tablet offline', 'no wifi connection', 'cant connect to internet', 'internet issue', 'wifi disconnected', 'check in error', 'network failure'],
+                    id: 4
+                },
+                {
+                    keys: ['شريحة البيانات مش شغالة', 'مفيش شبكة في شريحة التابلت', 'الشريحة مقفولة أو منتهية', 'الجهاز كاتب No SIM', 'أبراج الشريحة مش ظاهرة', 'شريحة زين/stc فاصلة في الطابعة', 'السيم كارت مش بيقرأ نت', 'شريحة الجهاز بدون رصيد أو نت', 'الشريحة مش مقروءة جوا التابلت', 'انقطاع نت الشريحة', 'مشكله الشريحه', 'شريحه البيانات', 'السيم كارد', 'سيم كارت', 'شريحة اس تي سي', 'شريحة مو شغالة', 'مفيش شبكه سيم', 'شريحة طابعة الطلبات', 'sim card issue', 'sim card error', 'no sim signal', 'sim not working', 'data sim disconnected', 'no service sim', 'sim card invalid', 'insert sim error', 'sim data problem'],
+                    id: 5
+                },
                 {
                     keys: ['شرح الفاتورة', 'شرح فاتورة', 'انفويس', 'الانفويس', 'ابعت لي الرد بتاع شرح الفاتورة', 'رد شرح الفاتورة', 'الفاتورة', 'فاتورة', 'فاتورة المبيعات', 'تفاصيل الفاتورة', 'شرح الفواتير', 'ملخص الفاتورة', 'كشف الفاتورة', 'شرح الفاتورة الشهري', 'توضيح الفاتورة', 'استفسار عن الفاتورة', 'invoice explanation', 'explain invoice', 'master invoice', 'invoice guide', 'invoice breakdown'],
                     id: 54
@@ -4148,6 +4479,534 @@ function toggleMainVoiceRecording() {
             setTimeout(initKBTreeNavigator, 100);
         });
 
+
+
+// ==========================================
+// 🍽️ HUNGERSTATION MENU EXCEL BUILDER ENGINE
+// ==========================================
+
+window.menuBuilderData = {
+    groups: [],
+    items: [],
+    modifiers: [],
+    imageLinks: []
+};
+
+function openMenuBuilderModal() {
+    const modal = document.getElementById('menuBuilderModal');
+    if (modal) modal.style.display = 'block';
+}
+
+function closeMenuBuilderModal() {
+    const modal = document.getElementById('menuBuilderModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function showMenuPreviewTab(tab) {
+    const tabs = ['groups', 'items', 'modifiers'];
+    tabs.forEach(t => {
+        const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+        const container = document.getElementById('tableContainer' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (btn) {
+            if (t === tab) {
+                btn.style.background = '#3B82F6';
+                btn.style.color = '#FFF';
+            } else {
+                btn.style.background = 'rgba(255,255,255,0.1)';
+                btn.style.color = '#94A3B8';
+            }
+        }
+        if (container) {
+            container.style.display = (t === tab) ? 'block' : 'none';
+        }
+    });
+}
+
+function cleanProperTrim(str) {
+    if (!str) return '';
+    let cleaned = String(str)
+        .replace(/[&%@\/\\|~]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    return cleaned;
+}
+
+function toEnglishProper(str) {
+    if (!str) return '';
+    let cleaned = cleanProperTrim(str);
+    return cleaned.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+}
+
+function extractImageUrls(text) {
+    const urls = [];
+    if (!text) return urls;
+    const urlRegex = /(https?:\/\/[^\s,;"'<>]+)/gi;
+    let match;
+    while ((match = urlRegex.exec(text)) !== null) {
+        const u = match[1];
+        if (u.includes('drive.google.com') || u.includes('dropbox.com') || u.includes('onedrive') || 
+            u.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i) || u.includes('photos.app.goo.gl')) {
+            urls.push(u);
+        }
+    }
+    return [...new Set(urls)];
+}
+
+function renderExtractedImages() {
+    const container = document.getElementById('extractedImagesContainer');
+    const list = document.getElementById('extractedImagesList');
+    const badge = document.getElementById('imgCountBadge');
+    
+    if (!window.menuBuilderData.imageLinks.length) {
+        if (container) container.style.display = 'none';
+        return;
+    }
+    
+    if (container) container.style.display = 'block';
+    if (badge) badge.textContent = `${window.menuBuilderData.imageLinks.length} رابط مستخرج`;
+    if (list) {
+        list.innerHTML = window.menuBuilderData.imageLinks.map((url, i) => `
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.05); padding:4px 0;">
+                <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:80%;">${i + 1}. <a href="${url}" target="_blank" style="color:#60A5FA; text-decoration:underline;">${url}</a></span>
+                <button onclick="navigator.clipboard.writeText('${url}')" style="background:rgba(255,255,255,0.1); border:none; color:#FFF; font-size:0.7rem; padding:2px 6px; border-radius:4px; cursor:pointer;">نسخ</button>
+            </div>
+        `).join('');
+    }
+}
+
+function renderMenuPreviewTables() {
+    const { groups, items, modifiers } = window.menuBuilderData;
+    
+    const previewSection = document.getElementById('menuPreviewSection');
+    if (previewSection) previewSection.style.display = 'block';
+    
+    // Badges
+    const bg = document.getElementById('badgeGroupsCount');
+    const bi = document.getElementById('badgeItemsCount');
+    const bm = document.getElementById('badgeModifiersCount');
+    if (bg) bg.textContent = `(${groups.length})`;
+    if (bi) bi.textContent = `(${items.length})`;
+    if (bm) bm.textContent = `(${modifiers.length})`;
+    
+    // Tbody Groups
+    const tbodyGroups = document.getElementById('tbodyGroups');
+    if (tbodyGroups) {
+        tbodyGroups.innerHTML = groups.map(g => `
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 6px 8px; color: #F59E0B; font-weight: 700;">${g.id}</td>
+                <td style="padding: 6px 8px; color: #FFF;">${g.en_name}</td>
+                <td style="padding: 6px 8px; color: #E2E8F0;">${g.ar_name}</td>
+                <td style="padding: 6px 8px; color: #94A3B8;">${g.en_type || 'General'}</td>
+                <td style="padding: 6px 8px; color: #94A3B8;">${g.ar_type || 'عام'}</td>
+            </tr>
+        `).join('');
+    }
+    
+    // Tbody Items
+    const tbodyItems = document.getElementById('tbodyItems');
+    if (tbodyItems) {
+        tbodyItems.innerHTML = items.map(it => `
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 6px 8px; color: #F59E0B; font-weight: 700;">${it.id}</td>
+                <td style="padding: 6px 8px; color: #38BDF8;">${it.group_id}</td>
+                <td style="padding: 6px 8px; color: #94A3B8;">${it.prod_en || '-'}</td>
+                <td style="padding: 6px 8px; color: #94A3B8;">${it.prod_ar || '-'}</td>
+                <td style="padding: 6px 8px; color: #FFF; font-weight: 600;">${it.item_en}</td>
+                <td style="padding: 6px 8px; color: #E2E8F0;">${it.item_ar}</td>
+                <td style="padding: 6px 8px; color: #10B981; font-weight: 700;">${it.price}</td>
+                <td style="padding: 6px 8px; color: #F59E0B;">${it.kcal}</td>
+                <td style="padding: 6px 8px; color: #C084FC;">${it.modifier_groups || ''}</td>
+            </tr>
+        `).join('');
+    }
+    
+    // Tbody Modifiers
+    const tbodyModifiers = document.getElementById('tbodyModifiers');
+    if (tbodyModifiers) {
+        tbodyModifiers.innerHTML = modifiers.map(m => `
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 6px 8px; color: #F59E0B; font-weight: 700;">${m.id}</td>
+                <td style="padding: 6px 8px; color: #FFF; font-weight: 600;">${m.group_en}</td>
+                <td style="padding: 6px 8px; color: #E2E8F0;">${m.group_ar}</td>
+                <td style="padding: 6px 8px; color: #38BDF8;">${m.max_limit}</td>
+                <td style="padding: 6px 8px; color: #94A3B8;">${m.min_limit}</td>
+                <td style="padding: 6px 8px; color: #FFF;">${m.mod_en}</td>
+                <td style="padding: 6px 8px; color: #E2E8F0;">${m.mod_ar}</td>
+                <td style="padding: 6px 8px; color: #10B981; font-weight: 700;">${m.price}</td>
+                <td style="padding: 6px 8px; color: #F59E0B;">${m.kcal}</td>
+            </tr>
+        `).join('');
+    }
+}
+
+function parseRawMenuInput() {
+    const rawText = document.getElementById('rawMenuInput')?.value || '';
+    if (!rawText.trim()) {
+        alert('الرجاء لصق نص المنيو أو روابط الصور أولاً!');
+        return;
+    }
+
+    // 1. Extract Images / Drive links
+    const extractedImgs = extractImageUrls(rawText);
+    window.menuBuilderData.imageLinks = extractedImgs;
+    renderExtractedImages();
+
+    // 2. Parse Lines
+    const lines = rawText.split(/\r?\n/);
+    const groups = [];
+    const items = [];
+    const modifiers = [];
+
+    let currentGroup = null;
+    let currentGroupId = 0;
+    let currentModifierGroup = null;
+    let currentModGroupId = 0;
+    let inModifierSection = false;
+
+    lines.forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed) return;
+        if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return; // handled in images
+
+        // Check if Modifier section header
+        if (trimmed.match(/(إضافات|اضافات|add-?ons|toppings|modifiers|صوصات|نكهات)/i) && (trimmed.includes(':') || trimmed.includes('/') || trimmed.length < 30)) {
+            inModifierSection = true;
+            return;
+        }
+
+        // Check if Category header (e.g. قسم المشويات / Grills: or Category: Desserts or [Burgers])
+        const catMatch = trimmed.match(/^(?:قسم|فئة|category|menu group|group)?[\s:#\[]*([\u0600-\u06FF\s]+)(?:[\/|\-\\]+([a-zA-Z\s]+))?[\s:\]]*$/i);
+        const isHeaderLine = (trimmed.startsWith('#') || trimmed.startsWith('===') || trimmed.endsWith(':') || trimmed.includes('قسم ') || trimmed.includes('Category:'));
+
+        if (!inModifierSection && isHeaderLine && !trimmed.match(/\d+\s*(?:ريال|sar|sr|\$)/i)) {
+            currentGroupId++;
+            let arName = cleanProperTrim(trimmed.replace(/^(?:قسم|فئة|category|menu group|group)?[\s:#\[]*/i, '').replace(/[:\]]/g, ''));
+            let enName = arName;
+            
+            if (trimmed.includes('/')) {
+                const parts = trimmed.split('/');
+                arName = cleanProperTrim(parts[0].replace(/^(?:قسم|فئة)?[\s:#]*/i, ''));
+                enName = toEnglishProper(parts[1].replace(/[:\]]/g, ''));
+            } else if (trimmed.match(/[a-zA-Z]/)) {
+                enName = toEnglishProper(trimmed.replace(/[^a-zA-Z\s]/g, ''));
+            }
+
+            currentGroup = {
+                id: currentGroupId,
+                en_name: enName || `Category ${currentGroupId}`,
+                ar_name: arName || `قسم ${currentGroupId}`,
+                en_type: 'General',
+                ar_type: 'عام'
+            };
+            groups.push(currentGroup);
+            return;
+        }
+
+        // Ensure default group if none created yet
+        if (!groups.length && !inModifierSection) {
+            currentGroupId = 1;
+            currentGroup = { id: 1, en_name: 'Main Menu', ar_name: 'القائمة الرئيسية', en_type: 'General', ar_type: 'عام' };
+            groups.push(currentGroup);
+        }
+
+        // Parse Price
+        const priceMatch = trimmed.match(/(\d+(?:\.\d+)?)\s*(?:ريال|sar|sr|rs|\$|جنيه)?/i);
+        let price = priceMatch ? parseFloat(priceMatch[1]) : 10;
+
+        // Parse Calories
+        const kcalMatch = trimmed.match(/(\d+)\s*(?:kcal|سعرة|سعره|كالوري|cal)/i);
+        let kcal = kcalMatch ? parseInt(kcalMatch[1], 10) : 0;
+
+        // Remove bullet markers
+        let cleanNameLine = trimmed
+            .replace(/^[-*•\d.]+\s*/, '')
+            .replace(/(?:السعر|price)?[\s:]*\d+(?:\.\d+)?\s*(?:ريال|sar|sr|rs|\$)?/gi, '')
+            .replace(/(?:السعرات|kcal|سعرة|كالوري)?[\s:]*\d+\s*(?:kcal|سعرة|سعره|كالوري|cal)?/gi, '')
+            .trim();
+
+        let arItemName = cleanProperTrim(cleanNameLine);
+        let enItemName = arItemName;
+
+        if (cleanNameLine.includes('(') && cleanNameLine.includes(')')) {
+            const inside = cleanNameLine.match(/\(([^)]+)\)/);
+            if (inside) {
+                if (inside[1].match(/[a-zA-Z]/)) {
+                    enItemName = toEnglishProper(inside[1]);
+                    arItemName = cleanProperTrim(cleanNameLine.replace(/\([^)]+\)/, ''));
+                } else {
+                    arItemName = cleanProperTrim(inside[1]);
+                    enItemName = toEnglishProper(cleanNameLine.replace(/\([^)]+\)/, ''));
+                }
+            }
+        } else if (cleanNameLine.includes('/')) {
+            const parts = cleanNameLine.split('/');
+            arItemName = cleanProperTrim(parts[0]);
+            enItemName = toEnglishProper(parts[1]);
+        }
+
+        if (inModifierSection) {
+            currentModGroupId++;
+            modifiers.push({
+                id: modifiers.length + 1,
+                group_en: currentModifierGroup ? '' : 'Add-ons',
+                group_ar: currentModifierGroup ? '' : 'الإضافات',
+                max_limit: currentModifierGroup ? '' : 3,
+                min_limit: currentModifierGroup ? '' : 0,
+                mod_en: enItemName || `Modifier ${modifiers.length + 1}`,
+                mod_ar: arItemName || `إضافة ${modifiers.length + 1}`,
+                price: price || 2,
+                kcal: kcal || 0
+            });
+            currentModifierGroup = true;
+        } else {
+            items.push({
+                id: items.length + 1,
+                group_id: currentGroupId || 1,
+                prod_en: '-',
+                prod_ar: '-',
+                prod_en_desc: '',
+                prod_ar_desc: '',
+                item_en: enItemName || `Item ${items.length + 1}`,
+                item_ar: arItemName || `صنف ${items.length + 1}`,
+                item_en_desc: '',
+                item_ar_desc: '',
+                price: price || 15,
+                pickup_price: '',
+                kcal: kcal || 0,
+                modifier_groups: modifiers.length ? '1' : ''
+            });
+        }
+    });
+
+    window.menuBuilderData.groups = groups;
+    window.menuBuilderData.items = items;
+    window.menuBuilderData.modifiers = modifiers;
+
+    renderMenuPreviewTables();
+}
+
+function handleRawMenuFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            
+            // Collect all text from sheet to extract images
+            let allSheetText = '';
+            workbook.SheetNames.forEach(sheetName => {
+                const sheet = workbook.Sheets[sheetName];
+                const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+                json.forEach(row => {
+                    allSheetText += ' ' + row.join(' ');
+                });
+            });
+
+            // Extract Images
+            const extractedImgs = extractImageUrls(allSheetText);
+            window.menuBuilderData.imageLinks = extractedImgs;
+            renderExtractedImages();
+
+            // Check if uploaded file is already formatted or raw
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonRows = XLSX.utils.sheet_to_json(firstSheet);
+
+            const groups = [{ id: 1, en_name: 'Main Menu', ar_name: 'القائمة الرئيسية', en_type: 'General', ar_type: 'عام' }];
+            const items = [];
+            
+            jsonRows.forEach((row, idx) => {
+                const name = row['Name'] || row['name'] || row['الاسم'] || row['اسم الصنف'] || row['Item'] || row['item'] || Object.values(row)[0] || `Item ${idx+1}`;
+                const price = parseFloat(row['Price'] || row['price'] || row['السعر'] || row['price*'] || 10);
+                const kcal = parseInt(row['Kcal'] || row['kcal'] || row['السعرات'] || 0, 10);
+                const desc = String(row['Description'] || row['description'] || row['الوصف'] || '');
+
+                let arName = cleanProperTrim(String(name));
+                let enName = toEnglishProper(String(name));
+
+                items.push({
+                    id: idx + 1,
+                    group_id: 1,
+                    prod_en: '-',
+                    prod_ar: '-',
+                    prod_en_desc: '',
+                    prod_ar_desc: '',
+                    item_en: enName,
+                    item_ar: arName,
+                    item_en_desc: desc,
+                    item_ar_desc: desc,
+                    price: price || 15,
+                    pickup_price: '',
+                    kcal: kcal || 0,
+                    modifier_groups: ''
+                });
+            });
+
+            window.menuBuilderData.groups = groups;
+            window.menuBuilderData.items = items;
+            window.menuBuilderData.modifiers = [];
+
+            renderMenuPreviewTables();
+        } catch(err) {
+            alert('حدث خطأ أثناء قراءة ملف الإكسيل: ' + err.message);
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function loadSampleMenuData() {
+    const sampleText = `قسم البرجر والمشويات / Burgers & Grills:
+- برجر لحم كلاسيك (Classic Beef Burger) - السعر: 28 ريال - السعرات: 520 kcal
+- برجر دجاج مقرمش (Crispy Chicken Burger) - السعر: 24 ريال - السعرات: 480 kcal
+- كباب لحم نعيمي (Naemi Meat Kebab) - السعر: 38 ريال - السعرات: 610 kcal
+
+قسم المشروبات الباردة / Cold Drinks:
+- عصير برتقال طازج (Fresh Orange Juice) - السعر: 12 ريال - السعرات: 110 kcal
+- بيبسي دايت (Diet Pepsi) - السعر: 5 ريال - السعرات: 0 kcal
+
+إضافات / Add-ons:
+- جبنة شيدر إضافية (Extra Cheddar Cheese) - السعر: 4 ريال - السعرات: 70 kcal
+- بطاطس مقلية وسط (Medium French Fries) - السعر: 8 ريال - السعرات: 220 kcal
+- صوص سبيشال (Special Sauce) - السعر: 3 ريال - السعرات: 45 kcal
+
+روابط صور المنيو Drive:
+https://drive.google.com/drive/folders/1A2B3C4D5E6F7G8H9-hungerstation-menu-photos
+https://drive.google.com/file/d/1XyZ987654321-classic-burger.jpg/view`;
+
+    const input = document.getElementById('rawMenuInput');
+    if (input) input.value = sampleText;
+    parseRawMenuInput();
+}
+
+function copyExtractedImages() {
+    if (!window.menuBuilderData.imageLinks.length) return;
+    navigator.clipboard.writeText(window.menuBuilderData.imageLinks.join('\n'))
+        .then(() => alert('تم نسخ جميع روابط الصور إلى الحافظة بنجاح!'));
+}
+
+function downloadImagesTxt() {
+    if (!window.menuBuilderData.imageLinks.length) return;
+    const blob = new Blob([window.menuBuilderData.imageLinks.join('\n')], { type: 'text/plain;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'Menu_Image_Links.txt';
+    link.click();
+}
+
+function downloadOfficialMenuExcel() {
+    if (typeof XLSX === 'undefined') {
+        alert('مكتبة SheetJS قيد التحميل، يرجى الانتظار ثانية والمحاولة مجدداً!');
+        return;
+    }
+
+    const { groups, items, modifiers } = window.menuBuilderData;
+    if (!items.length) {
+        alert('لا توجد أصناف لتصديرها! يرجى معالجة المنيو أولاً.');
+        return;
+    }
+
+    const wb = XLSX.utils.book_new();
+
+    // 1. Sheet: menu group
+    const ws1_data = [
+        ['#', 'english name *', 'arabic name *', 'english category type', 'arabic category type']
+    ];
+    groups.forEach(g => {
+        ws1_data.push([
+            g.id,
+            toEnglishProper(g.en_name),
+            cleanProperTrim(g.ar_name),
+            toEnglishProper(g.en_type || 'General'),
+            cleanProperTrim(g.ar_type || 'عام')
+        ]);
+    });
+    // Add empty numbered rows up to 10 for template perfection
+    for (let r = groups.length + 1; r <= 10; r++) {
+        ws1_data.push([r, '', '', '', '']);
+    }
+    const ws1 = XLSX.utils.aoa_to_sheet(ws1_data);
+    XLSX.utils.book_append_sheet(wb, ws1, 'menu group');
+
+    // 2. Sheet: Modifier groupsmodifiers
+    const ws2_data = [
+        ['#', 'Group. english name *', 'Group. arabic name *', 'max limit', 'min limit *', 'Modifier en name *', 'Modifier ar name *', 'price *', 'kcal', 'Vendor ID']
+    ];
+    modifiers.forEach((m, idx) => {
+        ws2_data.push([
+            idx + 1,
+            m.group_en ? toEnglishProper(m.group_en) : '',
+            m.group_ar ? cleanProperTrim(m.group_ar) : '',
+            m.max_limit !== '' ? Number(m.max_limit) : '',
+            m.min_limit !== '' ? Number(m.min_limit) : '',
+            toEnglishProper(m.mod_en),
+            cleanProperTrim(m.mod_ar),
+            Number(m.price) || 0,
+            parseInt(m.kcal, 10) || 0,
+            ''
+        ]);
+    });
+    const ws2 = XLSX.utils.aoa_to_sheet(ws2_data);
+    XLSX.utils.book_append_sheet(wb, ws2, 'Modifier groupsmodifiers');
+
+    // 3. Sheet: Menu productsitems
+    const ws3_data = [
+        [
+            '#', 'menu group # *', 'Product english name *', 'Product arabic name *', 'Product english desc', 'Product arabic desc',
+            'item english name *', 'item arabic name *', 'item english desc', 'item arabic desc', 'price*', 'pickup_price', 'kcal',
+            'modifier groups #', 'Vendor ID', 'Allergens', 'Protein', 'Full Fat', 'Saturated fat', 'Trans Fat', 'Cholesterol',
+            'Carbohydrate', 'Fiber', 'Total Sugers', 'Added Sugars', 'Salt', 'Sodiom', 'Caffeine', 'Dietary Preferences'
+        ]
+    ];
+    items.forEach((it, idx) => {
+        ws3_data.push([
+            idx + 1,
+            Number(it.group_id) || 1,
+            it.prod_en === '-' ? '-' : toEnglishProper(it.prod_en),
+            it.prod_ar === '-' ? '-' : cleanProperTrim(it.prod_ar),
+            cleanProperTrim(it.prod_en_desc),
+            cleanProperTrim(it.prod_ar_desc),
+            toEnglishProper(it.item_en),
+            cleanProperTrim(it.item_ar),
+            cleanProperTrim(it.item_en_desc),
+            cleanProperTrim(it.item_ar_desc),
+            Number(it.price) || 0,
+            it.pickup_price ? Number(it.pickup_price) : '',
+            parseInt(it.kcal, 10) || 0,
+            String(it.modifier_groups || ''),
+            '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
+        ]);
+    });
+    const ws3 = XLSX.utils.aoa_to_sheet(ws3_data);
+    XLSX.utils.book_append_sheet(wb, ws3, 'Menu productsitems');
+
+    // 4. Sheet: Valid Allergens
+    const ws4_data = [
+        ['Valid Allergens', 'Arabic Allergens'],
+        ['No Allergens', 'لا تحتوي علي مواد مسببه للحساسية'],
+        ['Fish and its products', 'الأسماك ومنتجاتها'],
+        ['Peanuts and its products', 'الفول السوداني و منتجاته'],
+        ['Nuts and its products', 'المكسرات و منتجاتها'],
+        ['Milk and its products', 'الحليب و منتجاته'],
+        ['Eggs and its products', 'البيض ومنتجاته'],
+        ['Gluten and its products', 'الجلوتين ومنتجاته'],
+        ['Soybeans and its products', 'فول الصويا ومنتجاته'],
+        ['Crustaceans and their products', 'القشريات ومنتجاتها'],
+        ['Mustard and its products', 'الخردل ومنتجاته'],
+        ['Sesame seeds and their products', 'بذور السمسم ومنتجاتها'],
+        ['Celery and its products', 'الكرفس ومنتجاته'],
+        ['Molluscs and their products', 'الرخويات ومنتجاتها'],
+        ['Lupin and its products', 'الترمس ومنتجاته'],
+        ['Sulphur Dioxide (Sulfites)', 'ثاني أكسيد الكبريت (الكبريتات)']
+    ];
+    const ws4 = XLSX.utils.aoa_to_sheet(ws4_data);
+    XLSX.utils.book_append_sheet(wb, ws4, 'Valid Allergens');
+
+    // Download the final compliant XLSX file
+    XLSX.writeFile(wb, '_MenuUpload.xlsx');
+}
+
 </script>
 <!-- AI Settings Modal -->
     <div id="aiSettingsModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 99999; align-items: center; justify-content: center; padding: 15px;">
@@ -4227,6 +5086,174 @@ function toggleMainVoiceRecording() {
             </div>
         </div>
     </div>
+
+
+<!-- 🍽️ Hungerstation Menu Excel Builder & Image Extractor Modal -->
+<div id="menuBuilderModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; overflow-y: auto; padding: 20px; backdrop-filter: blur(8px);">
+    <div style="background: #1E293B; border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; max-width: 1200px; margin: 0 auto; padding: 24px; color: #FFF; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);">
+        
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #10B981, #059669); display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                    <i class="fa-solid fa-file-excel"></i>
+                </div>
+                <div>
+                    <h2 style="font-size: 1.25rem; font-weight: 800; color: #F8FAFC; margin: 0;">منشئ ومجهز شيت المنيو التلقائي (Hungerstation Menu Excel Builder)</h2>
+                    <p style="font-size: 0.8rem; color: #94A3B8; margin: 2px 0 0 0;">استخراج الأصناف، الأقسام، الإضافات، الأسعار، وعزل روابط صور Google Drive مطابقة للـ Template الرسمي 100%</p>
+                </div>
+            </div>
+            <button onclick="closeMenuBuilderModal()" style="background: rgba(255,255,255,0.1); border: none; color: #FFF; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Input Section -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+            <!-- Left: Text / Drive Links Input -->
+            <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px;">
+                <div style="font-size: 0.85rem; font-weight: 700; color: #F59E0B; margin-bottom: 8px; display: flex; justify-content: space-between;">
+                    <span><i class="fa-solid fa-paste"></i> 1. الصق بيانات المنيو الخام أو المحادثة أو روابط الصور:</span>
+                    <span style="font-size: 0.75rem; color: #94A3B8;">يدعم نصوص الواتساب، كشوف المنيو، وروابط Drive</span>
+                </div>
+                <textarea id="rawMenuInput" style="width: 100%; height: 160px; background: #0F172A; color: #F8FAFC; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px; font-family: monospace; font-size: 0.82rem; resize: vertical;" placeholder="مثال للصق:
+قسم المشويات / Grills:
+- كباب لحم (Meat Kebab) - السعر: 35 ريال - السعرات: 450 kcal
+- شيش طاووق (Shish Tawook) - السعر: 30 ريال - السعرات: 380 kcal
+إضافات / Add-ons:
+- جبنة إضافية (Extra Cheese) - 4 ريال
+- ثومية (Garlic Sauce) - 2 ريال
+روابط الصور: https://drive.google.com/drive/folders/..."></textarea>
+                
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                    <button onclick="parseRawMenuInput()" style="flex: 1; background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> معالجة وتوليد الشيت فوراً
+                    </button>
+                    <button onclick="loadSampleMenuData()" style="background: rgba(255,255,255,0.1); color: #CBD5E1; border: 1px solid rgba(255,255,255,0.1); padding: 10px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+                        📋 تجربة بيانات تجريبية
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right: Upload Raw File or Excel -->
+            <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="font-size: 0.85rem; font-weight: 700; color: #38BDF8; margin-bottom: 8px;">
+                        <i class="fa-solid fa-upload"></i> 2. أو ارفع شيت إكسيل خام / CSV من الشريك:
+                    </div>
+                    <div onclick="document.getElementById('rawMenuFileInput').click()" style="border: 2px dashed rgba(56, 189, 248, 0.4); border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; background: rgba(56, 189, 248, 0.03); transition: all 0.2s;">
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: #38BDF8; margin-bottom: 8px;"></i>
+                        <div style="font-size: 0.88rem; font-weight: 700; color: #F1F5F9;">اضغط لاختيار ملف إكسيل الشريك (.xlsx, .csv)</div>
+                        <div style="font-size: 0.72rem; color: #94A3B8; margin-top: 4px;">سيقوم الذكاء بترتيبه وتنسيقه حسب Template هنقرستيشن الرسمي</div>
+                        <input type="file" id="rawMenuFileInput" accept=".xlsx,.xls,.csv,.txt" style="display: none;" onchange="handleRawMenuFileUpload(event)">
+                    </div>
+                </div>
+
+                <!-- Guidelines Notice -->
+                <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 8px; padding: 10px; margin-top: 12px; font-size: 0.75rem; color: #FDE68A;">
+                    <i class="fa-solid fa-circle-check"></i> <strong>قواعد الشيت المعتمدة:</strong> تطبيق Proper & Trim، إزالة الرموز المحظورة (&, %, @)، السعرات أرقام صحيحة بلا كسور، وعزل الصور في قائمة منفصلة لضمان عدم حدوث Error 422.
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Links Box (Separated so Excel is clean) -->
+        <div id="extractedImagesContainer" style="display: none; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 14px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <div style="font-size: 0.85rem; font-weight: 700; color: #C4B5FD; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-brands fa-google-drive"></i> <span>🖼️ روابط وصور الأصناف المستخرجة (Google Drive & Links):</span>
+                    <span id="imgCountBadge" style="background: #8B5CF6; color: #FFF; font-size: 0.7rem; padding: 2px 8px; border-radius: 12px;">0 رابط</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="copyExtractedImages()" style="background: #8B5CF6; color: #FFF; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+                        <i class="fa-solid fa-copy"></i> نسخ الروابط
+                    </button>
+                    <button onclick="downloadImagesTxt()" style="background: rgba(255,255,255,0.1); color: #FFF; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer;">
+                        <i class="fa-solid fa-download"></i> حفظ ملف TXT
+                    </button>
+                </div>
+            </div>
+            <div id="extractedImagesList" style="max-height: 90px; overflow-y: auto; background: #0F172A; border-radius: 6px; padding: 8px; font-size: 0.75rem; color: #93C5FD; font-family: monospace; line-height: 1.6;"></div>
+        </div>
+
+        <!-- Preview Tabs & Tables -->
+        <div id="menuPreviewSection" style="display: none; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div style="display: flex; gap: 6px;">
+                    <button id="tabBtnGroups" class="menu-preview-tab active" onclick="showMenuPreviewTab('groups')" style="background: #3B82F6; color: #FFF; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">
+                        📁 1. الأقسام (Menu Groups) <span id="badgeGroupsCount" style="opacity: 0.8;">(0)</span>
+                    </button>
+                    <button id="tabBtnItems" class="menu-preview-tab" onclick="showMenuPreviewTab('items')" style="background: rgba(255,255,255,0.1); color: #94A3B8; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">
+                        🍔 2. الأصناف والأسعار (Products & Items) <span id="badgeItemsCount" style="opacity: 0.8;">(0)</span>
+                    </button>
+                    <button id="tabBtnModifiers" class="menu-preview-tab" onclick="showMenuPreviewTab('modifiers')" style="background: rgba(255,255,255,0.1); color: #94A3B8; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">
+                        🍟 3. الإضافات (Modifier Groups) <span id="badgeModifiersCount" style="opacity: 0.8;">(0)</span>
+                    </button>
+                </div>
+
+                <button onclick="downloadOfficialMenuExcel()" style="background: linear-gradient(135deg, #10B981, #047857); color: #FFF; border: none; padding: 8px 20px; border-radius: 8px; font-size: 0.9rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+                    <i class="fa-solid fa-file-excel"></i> 📥 تحميل شيت المنيو المعتمد (_MenuUpload.xlsx)
+                </button>
+            </div>
+
+            <!-- Table 1: Menu Groups -->
+            <div id="tableContainerGroups" style="max-height: 280px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.78rem; text-align: right;">
+                    <thead style="background: #1E293B; color: #94A3B8; position: sticky; top: 0;">
+                        <tr>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); width: 50px;">#</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">English Name *</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">Arabic Name *</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">English Category Type</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">Arabic Category Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyGroups"></tbody>
+                </table>
+            </div>
+
+            <!-- Table 2: Products & Items -->
+            <div id="tableContainerItems" style="display: none; max-height: 280px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.78rem; text-align: right;">
+                    <thead style="background: #1E293B; color: #94A3B8; position: sticky; top: 0;">
+                        <tr>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); width: 40px;">#</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); width: 60px;">Group #</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">Product EN</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">Product AR</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">Item EN *</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">Item AR *</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); width: 70px;">Price *</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); width: 60px;">kcal</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); width: 80px;">Modifiers #</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyItems"></tbody>
+                </table>
+            </div>
+
+            <!-- Table 3: Modifiers -->
+            <div id="tableContainerModifiers" style="display: none; max-height: 280px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.78rem; text-align: right;">
+                    <thead style="background: #1E293B; color: #94A3B8; position: sticky; top: 0;">
+                        <tr>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); width: 40px;">#</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">Group EN *</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">Group AR *</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); width: 50px;">Max</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); width: 50px;">Min</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">Modifier EN *</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">Modifier AR *</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); width: 60px;">Price *</th>
+                            <th style="padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); width: 50px;">kcal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyModifiers"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 </body>
 </html>
