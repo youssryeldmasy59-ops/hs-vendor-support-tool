@@ -837,12 +837,18 @@
                         <p style="font-size: 0.82rem; color: #94A3B8; margin: 4px 0 0 0;">استخراج الأصناف، الأقسام، الإضافات، الأسعار، السعرات، وعزل صور Google Drive في شيت إكسيل رسمي فوري بدون أخطاء.</p>
                     </div>
                 </div>
-                <div style="display: flex; gap: 10px;">
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="runMenuAutoPilot()" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #000; border: none; padding: 10px 22px; border-radius: 10px; font-weight: 900; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.5); animation: pulse 2s infinite;" title="1-Click Auto-Pilot: يحول الشيت + ينزل _MenuUpload.xlsx + يختار CCR التذكرة + ينسخ الماكرو في ثانية واحدة!">
+                        <i class="fa-solid fa-bolt" style="font-size: 1.1rem;"></i> ⚡ الطيار الآلي الشامل (1-Click Auto-Pilot)
+                    </button>
                     <button onclick="downloadOfficialMenuExcel()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
                         <i class="fa-solid fa-cloud-arrow-down"></i> تنزيل شيت الإكسيل الرسمي (_MenuUpload.xlsx)
                     </button>
+                    <button onclick="quickAddCustomItem()" style="background: rgba(59, 130, 246, 0.2); color: #60A5FA; border: 1px solid #3B82F6; padding: 10px 14px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-plus-circle"></i> إضافة صنف يدوي
+                    </button>
                     <button onclick="switchMainWorkspace('TICKETS')" style="background: rgba(255,255,255,0.08); color: #CBD5E1; border: 1px solid rgba(255,255,255,0.15); padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer;">
-                        <i class="fa-solid fa-arrow-right"></i> العودة لمولد التذاكر
+                        <i class="fa-solid fa-arrow-right"></i> مولد التذاكر
                     </button>
                 </div>
             </div>
@@ -898,7 +904,7 @@
                             <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.2rem; color: #38BDF8; margin-bottom: 8px;"></i>
                             <div style="font-size: 0.92rem; font-weight: 800; color: #F1F5F9;">انقر لاختيار أو إسقاط ملف إكسيل الشريك (.xlsx, .xls, .csv)</div>
                             <div style="font-size: 0.75rem; color: #94A3B8; margin-top: 4px;">سيقوم النظام تلقائياً بتنظيفه، تصحيح الحروف الإنجليزية، وضبط السعرات وفقاً لدليل هنقرستيشن</div>
-                            <input type="file" id="studioRawMenuFileInput" accept=".xlsx,.xls,.csv,.txt" style="display: none;" onchange="handleStudioRawMenuFileUpload(event)">
+                            <input type="file" id="studioRawMenuFileInput" accept=".xlsx,.xls,.csv,.txt" multiple style="display: none;" onchange="handleBatchMultiMenuUpload(event)">
                         </div>
                     </div>
 
@@ -1383,6 +1389,290 @@ var allCases = window.allCases = [];
                 showToast(`🎯 تم اختيار Add items (#38) لأن عدد الأصناف (${count}) صنف ➔ أقل من 30!`);
             }
         }
+
+
+// 🎵 Built-in Web Audio Sound FX for Instant Feedback
+function playSuccessChime() {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.08); // A5
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.35);
+    } catch(e) {}
+}
+
+
+// 🧠 Auto-Categorizer & NLP Rule Engine
+const CATEGORY_MAP_RULES = [
+    { cat_ar: 'البرجر والساندوتشات', cat_en: 'Burgers and Sandwiches', keywords: ['برجر', 'ساندوتش', 'شاورما', 'فاهيتا', 'زنجر', 'برگر', 'burger', 'sandwich', 'wrap', 'zinger', 'shawarma'] },
+    { cat_ar: 'المشويات والمأكولات الرئيسية', cat_en: 'Grills and Main Dishes', keywords: ['مشاوي', 'كباب', 'اوصال', 'شيش', 'كفتة', 'ريش', 'دجاج', 'لحم', 'grill', 'kebab', 'tawook', 'meat', 'chicken', 'steak'] },
+    { cat_ar: 'البيتزا والمعجنات', cat_en: 'Pizza and Pastries', keywords: ['بيتزا', 'فطيرة', 'معجنات', 'منقوشة', 'بيتزا', 'pizza', 'pie', 'pastry', 'manakish'] },
+    { cat_ar: 'المقبلات والوجبات الجانبية', cat_en: 'Appetizers and Sides', keywords: ['مقبلات', 'بطاطس', 'ورق عنب', 'حمص', 'متبل', 'سمبوسة', 'فرايز', 'fries', 'appetizer', 'hummus', 'sambosa', 'wings'] },
+    { cat_ar: 'المشروبات والعصائر', cat_en: 'Beverages and Juices', keywords: ['عصير', 'بيبسي', 'كولا', 'مشروب', 'ماء', 'موهيتو', 'شاي', 'قهوة', 'juice', 'pepsi', 'cola', 'drink', 'water', 'mojito', 'coffee', 'tea'] },
+    { cat_ar: 'الحلويات والآيس كريم', cat_en: 'Desserts and Ice Cream', keywords: ['حلا', 'كيك', 'تشيز', 'ايس كريم', 'كريب', 'وافل', 'بسبوسة', 'كنافة', 'dessert', 'cake', 'ice cream', 'crepe', 'waffle', 'sweets'] }
+];
+
+function smartDetectCategory(itemName) {
+    const norm = normalizeArabic(String(itemName || '').toLowerCase());
+    for (const rule of CATEGORY_MAP_RULES) {
+        if (rule.keywords.some(k => norm.includes(normalizeArabic(k)))) {
+            return { ar: rule.cat_ar, en: rule.cat_en };
+        }
+    }
+    return { ar: 'القائمة الرئيسية', en: 'Main Menu' };
+}
+
+
+// =========================================================================
+// 🚀 ULTIMATE MENU AI AUTO-PILOT & BATCH PROCESSING ENGINE
+// =========================================================================
+
+// 1. One-Click Complete Auto-Pilot
+async function runMenuAutoPilot() {
+    const inputVal = (document.getElementById('studioRawMenuInput') ? document.getElementById('studioRawMenuInput').value : '') || (document.getElementById('rawMenuInput') ? document.getElementById('rawMenuInput').value : '');
+    
+    if (!inputVal.trim() && (!window.menuBuilderData || window.menuBuilderData.items.length === 0)) {
+        showToast("⚠️ برجاء لصق المنيو أو رفع ملف الإكسيل أولاً لتشغيل الطيار الآلي!");
+        return;
+    }
+
+    if (inputVal.trim()) {
+        parseStudioRawMenuInput();
+    }
+
+    const count = window.menuBuilderData.items.length;
+    if (count === 0) {
+        showToast("⚠️ لم يتم العثور على أصناف لمعالجتها!");
+        return;
+    }
+
+    // Step A: Download official Excel automatically
+    downloadOfficialMenuExcel();
+    playSuccessChime();
+
+    // Step B: Choose CCR based on count rule (< 30 -> Add items #38, >= 30 -> Full menu #40)
+    switchMainWorkspace('TICKETS');
+    const targetCaseId = count >= 30 ? 40 : 38;
+    selectCase(targetCaseId);
+
+    // Step C: Auto-copy final macro to clipboard
+    setTimeout(() => {
+        const macroEl = document.getElementById('arMacroText');
+        if (macroEl) {
+            navigator.clipboard.writeText(macroEl.innerText || macroEl.textContent);
+        }
+        showToast(`⚡ طيار آلي تم بنجاح! تم تنزيل شيت _MenuUpload.xlsx وتوليد ونسخ ماكرو (${count >= 30 ? 'Full Menu #40' : 'Add Items #38'}) بعدد ${count} صنف! 🚀`);
+    }, 300);
+}
+
+// 2. Batch Multi-Menu File Processor (Process multiple partner sheets in parallel)
+function handleBatchMultiMenuUpload(event) {
+    const files = Array.from(event.target.files);
+    if (!files.length) return;
+
+    if (files.length === 1) {
+        handleStudioRawMenuFileUpload(event);
+        return;
+    }
+
+    showToast(`📂 جاري معالجة ${files.length} ملفات منيو دفعة واحدة...`);
+    let processedCount = 0;
+    
+    files.forEach((file, fIdx) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                processVendorMenuWorkbook(workbook);
+                
+                // Trigger customized Excel download per file
+                setTimeout(() => {
+                    const count = window.menuBuilderData.items.length;
+                    const wb = createOfficialMenuWorkbook();
+                    XLSX.writeFile(wb, `_MenuUpload_${file.name.replace(/\.[^/.]+$/, "")}.xlsx`);
+                    processedCount++;
+                    if (processedCount === files.length) {
+                        playSuccessChime();
+                        showToast(`🎉 تم تحويل وتنزيل جميع ملفات المنيو (${files.length} شيت) بنجاح فائق!`);
+                    }
+                }, fIdx * 400);
+            } catch(err) {
+                console.error("Batch file error:", err);
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    });
+}
+
+// Helper to create official workbook object cleanly
+function createOfficialMenuWorkbook() {
+    const { groups, items, modifiers } = window.menuBuilderData;
+    const wb = XLSX.utils.book_new();
+
+    // 1. menu group
+    const ws1_data = [['#', 'english name *', 'arabic name *', 'english category type', 'arabic category type']];
+    groups.forEach(g => {
+        ws1_data.push([
+            g.id,
+            toEnglishProper(g.en_name || g.name_en),
+            cleanProperTrim(g.ar_name || g.name_ar),
+            toEnglishProper(g.en_type || 'General'),
+            cleanProperTrim(g.ar_type || 'عام')
+        ]);
+    });
+    for (let r = groups.length + 1; r <= 10; r++) ws1_data.push([r, '', '', '', '']);
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws1_data), 'menu group');
+
+    // 2. Modifier groupsmodifiers
+    const ws2_data = [['#', 'Group. english name *', 'Group. arabic name *', 'max limit', 'min limit *', 'Modifier en name *', 'Modifier ar name *', 'price *', 'kcal', 'Vendor ID']];
+    modifiers.forEach((m, idx) => {
+        ws2_data.push([
+            idx + 1,
+            m.group_en ? toEnglishProper(m.group_en) : (m.group_name ? toEnglishProper(m.group_name) : ''),
+            m.group_ar ? cleanProperTrim(m.group_ar) : (m.group_name ? cleanProperTrim(m.group_name) : ''),
+            m.max_limit !== '' ? Number(m.max_limit) : '',
+            m.min_limit !== '' ? Number(m.min_limit) : '',
+            toEnglishProper(m.mod_en || m.option_en),
+            cleanProperTrim(m.mod_ar || m.option_ar),
+            Number(m.price) || 0,
+            parseInt(m.kcal, 10) || 0,
+            ''
+        ]);
+    });
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws2_data), 'Modifier groupsmodifiers');
+
+    // 3. Menu productsitems
+    const ws3_data = [[
+        '#', 'menu group # *', 'Product english name *', 'Product arabic name *', 'Product english desc', 'Product arabic desc',
+        'item english name *', 'item arabic name *', 'item english desc', 'item arabic desc', 'price*', 'pickup_price', 'kcal',
+        'modifier groups #', 'Vendor ID', 'Allergens', 'Protein', 'Full Fat', 'Saturated fat', 'Trans Fat', 'Cholesterol',
+        'Carbohydrate', 'Fiber', 'Total Sugers', 'Added Sugars', 'Salt', 'Sodiom', 'Caffeine', 'Dietary Preferences'
+    ]];
+    items.forEach((it, idx) => {
+        ws3_data.push([
+            idx + 1,
+            Number(it.group_id) || 1,
+            it.prod_en === '-' ? '-' : toEnglishProper(it.prod_en),
+            it.prod_ar === '-' ? '-' : cleanProperTrim(it.prod_ar),
+            cleanProperTrim(it.prod_en_desc),
+            cleanProperTrim(it.prod_ar_desc),
+            toEnglishProper(it.item_en || it.name_en),
+            cleanProperTrim(it.item_ar || it.name_ar),
+            cleanProperTrim(it.item_en_desc || it.desc_en),
+            cleanProperTrim(it.item_ar_desc || it.desc_ar),
+            Number(it.price) || 0,
+            it.pickup_price ? Number(it.pickup_price) : '',
+            parseInt(it.kcal || it.calories, 10) || 0,
+            String(it.modifier_groups || ''),
+            '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
+        ]);
+    });
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws3_data), 'Menu productsitems');
+
+    // 4. Valid Allergens
+    const ws4_data = [
+        ['Valid Allergens', 'Arabic Allergens'],
+        ['No Allergens', 'لا تحتوي علي مواد مسببه للحساسية'],
+        ['Fish and its products', 'الأسماك ومنتجاتها'],
+        ['Peanuts and its products', 'الفول السوداني و منتجاته'],
+        ['Nuts and its products', 'المكسرات و منتجاتها'],
+        ['Milk and its products', 'الحليب و منتجاته'],
+        ['Eggs and its products', 'البيض ومنتجاته'],
+        ['Gluten and its products', 'الجلوتين ومنتجاته'],
+        ['Soybeans and its products', 'فول الصويا ومنتجاته'],
+        ['Crustaceans and their products', 'القشريات ومنتجاتها'],
+        ['Mustard and its products', 'الخردل ومنتجاته'],
+        ['Sesame seeds and their products', 'بذور السمسم ومنتجاتها'],
+        ['Celery and its products', 'الكرفس ومنتجاته'],
+        ['Molluscs and their products', 'الرخويات ومنتجاتها'],
+        ['Lupin and its products', 'الترمس ومنتجاته'],
+        ['Sulphur Dioxide (Sulfites)', 'ثاني أكسيد الكبريت (الكبريتات)']
+    ];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws4_data), 'Valid Allergens');
+    return wb;
+}
+
+// 3. Quick Item Addition Dialog / Live Table Inline Adder
+function quickAddCustomItem() {
+    const name = prompt("أدخل اسم الصنف الجديد (عربي أو إنجليزي):");
+    if (!name || !name.trim()) return;
+    const priceStr = prompt("أدخل السعر (ريال):", "25");
+    const price = parseFloat(priceStr) || 25;
+    const cat = smartDetectCategory(name);
+
+    let groupId = 1;
+    let group = window.menuBuilderData.groups.find(g => (g.ar_name || g.name_ar) === cat.ar);
+    if (!group) {
+        groupId = window.menuBuilderData.groups.length + 1;
+        window.menuBuilderData.groups.push({
+            id: groupId,
+            name_en: cat.en,
+            name_ar: cat.ar,
+            en_name: cat.en,
+            ar_name: cat.ar,
+            en_type: 'General',
+            ar_type: 'عام',
+            order: groupId
+        });
+    } else {
+        groupId = group.id;
+    }
+
+    const newItem = {
+        id: window.menuBuilderData.items.length + 1,
+        group_id: groupId,
+        group_name: cat.ar + ' / ' + cat.en,
+        name_en: toEnglishProper(name),
+        name_ar: cleanProperTrim(name),
+        item_en: toEnglishProper(name),
+        item_ar: cleanProperTrim(name),
+        price: price,
+        calories: 0,
+        kcal: 0,
+        desc_ar: '',
+        desc_en: '',
+        prod_en: '-',
+        prod_ar: '-'
+    };
+
+    window.menuBuilderData.items.push(newItem);
+    renderStudioMenuPreviewTables();
+    renderMenuPreviewTables();
+    playSuccessChime();
+    showToast(`➕ تم إضافة "${name}" بالسعر ${price} ريال بنجاح!`);
+}
+
+// 4. Live Health & Quality Score Validator
+function calculateMenuHealthScore() {
+    const items = window.menuBuilderData.items || [];
+    if (!items.length) return { score: 100, issues: [] };
+
+    let score = 100;
+    let issues = [];
+
+    items.forEach((it, idx) => {
+        if (!it.price || it.price <= 0) {
+            score -= 5;
+            issues.push(`صنف #${idx+1} (${it.item_ar || it.name_ar}) لا يحتوي على سعر صحيح.`);
+        }
+        if (!it.item_ar && !it.name_ar) {
+            score -= 5;
+            issues.push(`صنف #${idx+1} ينقصه الاسم بالعربي.`);
+        }
+    });
+
+    score = Math.max(10, score);
+    return { score, issues };
+}
 
 // ============================================================
         // 🧠 AI SELF-LEARNING ENGINE v2 — Arabic Normalization + Fuzzy + Gemini
