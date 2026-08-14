@@ -5653,6 +5653,242 @@ function downloadImagesTxt() {
 }
 
 
+
+// =========================================================================
+// 🍽️ MENU PREVIEW TABLES & SAMPLE DATA LOADERS
+// =========================================================================
+
+function renderMenuPreviewTables() {
+    renderStudioMenuPreviewTables();
+    
+    // Modal table updates if modal elements are in DOM
+    const data = window.menuBuilderData || { groups: [], items: [], modifiers: [] };
+    const groups = data.groups || [];
+    const items = data.items || [];
+    const modifiers = data.modifiers || [];
+
+    const bg = document.getElementById('badgeGroupsCount');
+    const bi = document.getElementById('badgeItemsCount');
+    const bm = document.getElementById('badgeModifiersCount');
+    if (bg) bg.textContent = `(${groups.length})`;
+    if (bi) bi.textContent = `(${items.length})`;
+    if (bm) bm.textContent = `(${modifiers.length})`;
+
+    const tbodyG = document.getElementById('tbodyGroups');
+    if (tbodyG) {
+        if (!groups.length) {
+            tbodyG.innerHTML = '<tr><td colspan="5" style="padding:20px;text-align:center;color:#64748B;">لا توجد أقسام.</td></tr>';
+        } else {
+            tbodyG.innerHTML = groups.map((g, i) => `
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.05); background:${i%2===0?'rgba(255,255,255,0.02)':'transparent'};">
+                    <td style="padding:8px 10px; color:#F59E0B; font-weight:700;">#${g.id}</td>
+                    <td style="padding:8px 10px; font-weight:600; color:#FFF;">${g.name_en || g.en_name}</td>
+                    <td style="padding:8px 10px; color:#93C5FD;">${g.name_ar || g.ar_name}</td>
+                    <td style="padding:8px 10px;">${g.order || g.id}</td>
+                    <td style="padding:8px 10px;"><span style="background:rgba(16,185,129,0.2); color:#34D399; padding:2px 8px; border-radius:4px; font-size:0.72rem;">Active</span></td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    const tbodyI = document.getElementById('tbodyItems');
+    if (tbodyI) {
+        if (!items.length) {
+            tbodyI.innerHTML = '<tr><td colspan="7" style="padding:20px;text-align:center;color:#64748B;">لا توجد أصناف.</td></tr>';
+        } else {
+            tbodyI.innerHTML = items.map((it, i) => `
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.05); background:${i%2===0?'rgba(255,255,255,0.02)':'transparent'};">
+                    <td style="padding:8px 10px; color:#F59E0B; font-weight:700;">#${it.id}</td>
+                    <td style="padding:8px 10px; color:#A78BFA;">${it.group_name || it.group_id}</td>
+                    <td style="padding:8px 10px; font-weight:600; color:#FFF;">${it.name_en || it.item_en}</td>
+                    <td style="padding:8px 10px; color:#93C5FD;">${it.name_ar || it.item_ar}</td>
+                    <td style="padding:8px 10px; color:#34D399; font-weight:700;">${it.price} SAR</td>
+                    <td style="padding:8px 10px; color:#FCD34D;">${it.kcal || it.calories ? (it.kcal || it.calories) + ' kcal' : '-'}</td>
+                    <td style="padding:8px 10px; font-size:0.75rem; color:#94A3B8;">${it.desc_ar || it.item_ar_desc || it.desc_en || '-'}</td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    const tbodyM = document.getElementById('tbodyModifiers');
+    if (tbodyM) {
+        if (!modifiers.length) {
+            tbodyM.innerHTML = '<tr><td colspan="6" style="padding:20px;text-align:center;color:#64748B;">لا توجد إضافات.</td></tr>';
+        } else {
+            tbodyM.innerHTML = modifiers.map((m, i) => `
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.05); background:${i%2===0?'rgba(255,255,255,0.02)':'transparent'};">
+                    <td style="padding:8px 10px; color:#F59E0B; font-weight:700;">#${m.id}</td>
+                    <td style="padding:8px 10px; color:#EC4899; font-weight:600;">${m.group_name || m.group_ar}</td>
+                    <td style="padding:8px 10px; font-weight:600; color:#FFF;">${m.option_en || m.mod_en}</td>
+                    <td style="padding:8px 10px; color:#93C5FD;">${m.option_ar || m.mod_ar}</td>
+                    <td style="padding:8px 10px; color:#34D399;">+${m.price} SAR</td>
+                    <td style="padding:8px 10px;"><span style="background:rgba(59,130,246,0.2); color:#60A5FA; padding:2px 8px; border-radius:4px; font-size:0.72rem;">${m.type || 'Optional'}</span></td>
+                </tr>
+            `).join('');
+        }
+    }
+}
+
+function loadSampleMenuData() {
+    const sampleText = `قسم المشويات / Grills:
+- كباب لحم نعيمي (Naemi Meat Kebab) - السعر: 38 ريال - السعرات: 610 kcal
+- شيش طاووق (Shish Tawook) - السعر: 32 ريال - السعرات: 450 kcal
+- كفتة بالجبن (Cheese Kofta) - السعر: 40 ريال - السعرات: 540 kcal
+
+قسم البرجر / Burgers:
+- برجر لحم كلاسيك (Classic Beef Burger) - السعر: 28 ريال - السعرات: 520 kcal
+- برجر دجاج مقرمش (Crispy Chicken Burger) - السعر: 24 ريال - السعرات: 480 kcal
+
+قسم المشروبات / Beverages:
+- عصير برتقال طازج (Fresh Orange Juice) - السعر: 14 ريال - السعرات: 120 kcal
+- بيبسي دايت (Diet Pepsi) - السعر: 5 ريال - السعرات: 0 kcal
+
+إضافات / Add-ons:
+- جبنة شيدر إضافية (Extra Cheddar Cheese) - السعر: 4 ريال
+- صوص سبيشال (Special Sauce) - السعر: 3 ريال
+- بطاطس مقلية (French Fries) - السعر: 8 ريال
+
+روابط صور Google Drive:
+https://drive.google.com/drive/folders/1A2B3C4D5E6F7G8H9-hungerstation-menu-photos`;
+
+    const rawInput = document.getElementById('rawMenuInput');
+    const studioInput = document.getElementById('studioRawMenuInput');
+    if (rawInput) rawInput.value = sampleText;
+    if (studioInput) studioInput.value = sampleText;
+    parseRawMenuInput();
+}
+
+function parseRawMenuInput() {
+    const rawText = (document.getElementById('studioRawMenuInput') ? document.getElementById('studioRawMenuInput').value : '') || 
+                    (document.getElementById('rawMenuInput') ? document.getElementById('rawMenuInput').value : '');
+    
+    if (!rawText.trim()) return;
+
+    // Extract Images
+    const extractedImgs = extractImageUrls(rawText);
+    window.menuBuilderData.imageLinks = extractedImgs;
+    renderExtractedImages();
+
+    const lines = rawText.split('\n');
+    const groups = [];
+    const items = [];
+    const modifiers = [];
+
+    let currentGroup = null;
+    let isModifierSection = false;
+    let currentModGroupAr = 'الإضافات';
+    let currentModGroupEn = 'Add-ons';
+
+    lines.forEach((line) => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('http') || trimmed.startsWith('روابط')) return;
+
+        // Check if Category / Section Header
+        if (trimmed.startsWith('قسم') || trimmed.startsWith('مجموعة') || trimmed.toLowerCase().startsWith('category') || trimmed.toLowerCase().startsWith('group') || (trimmed.endsWith(':') && !trimmed.includes('السعر'))) {
+            let catClean = trimmed.replace(/^قسم|^مجموعة|category|group|:$/gi, '').trim();
+            if (catClean.toLowerCase().includes('إضافات') || catClean.toLowerCase().includes('اضافات') || catClean.toLowerCase().includes('add-on') || catClean.toLowerCase().includes('modifier') || catClean.toLowerCase().includes('options') || catClean.toLowerCase().includes('نكهات') || catClean.toLowerCase().includes('مكسرات')) {
+                isModifierSection = true;
+                currentModGroupAr = cleanProperTrim(catClean.split('/')[0] || catClean);
+                currentModGroupEn = toEnglishProper(catClean.split('/')[1] || catClean);
+                return;
+            }
+
+            isModifierSection = false;
+            let arCat = cleanProperTrim(catClean.split('/')[0] || catClean);
+            let enCat = toEnglishProper(catClean.split('/')[1] || autoTranslateMenuText(arCat, 'EN'));
+
+            currentGroup = {
+                id: groups.length + 1,
+                en_name: enCat || 'Main Menu',
+                ar_name: arCat || 'القائمة الرئيسية',
+                name_en: enCat || 'Main Menu',
+                name_ar: arCat || 'القائمة الرئيسية',
+                en_type: enCat.toLowerCase().includes('drink') || enCat.toLowerCase().includes('juice') ? 'Beverages' : (enCat.toLowerCase().includes('breakfast') ? 'Breakfast' : 'General'),
+                ar_type: arCat.includes('مشروب') || arCat.includes('عصير') ? 'المشروبات' : (arCat.includes('فطور') ? 'الإفطار' : 'عام'),
+                order: groups.length + 1
+            };
+            groups.push(currentGroup);
+            return;
+        }
+
+        const parsed = parseRawLineIntoItem(trimmed);
+        if (!parsed) return;
+
+        if (isModifierSection) {
+            modifiers.push({
+                id: modifiers.length + 1,
+                group_ar: currentModGroupAr,
+                group_en: currentModGroupEn,
+                group_name: currentModGroupAr + ' / ' + currentModGroupEn,
+                mod_ar: parsed.ar_name,
+                mod_en: parsed.en_name,
+                option_ar: parsed.ar_name,
+                option_en: parsed.en_name,
+                price: parsed.price,
+                kcal: parsed.kcal,
+                max_limit: 3,
+                min_limit: 0,
+                type: 'Optional',
+                vendor_id: `M${modifiers.length + 1}`
+            });
+        } else {
+            if (!currentGroup) {
+                const autoCat = (typeof smartDetectCategory === 'function') ? smartDetectCategory(parsed.ar_name) : { ar: 'القائمة الرئيسية', en: 'Main Menu' };
+                currentGroup = {
+                    id: 1,
+                    en_name: autoCat.en,
+                    ar_name: autoCat.ar,
+                    name_en: autoCat.en,
+                    name_ar: autoCat.ar,
+                    en_type: 'General',
+                    ar_type: 'عام',
+                    order: 1
+                };
+                groups.push(currentGroup);
+            }
+
+            items.push({
+                id: items.length + 1,
+                group_id: currentGroup.id,
+                group_name: currentGroup.ar_name + ' / ' + currentGroup.en_name,
+                prod_en: parsed.en_name,
+                prod_ar: parsed.ar_name,
+                name_en: parsed.en_name,
+                name_ar: parsed.ar_name,
+                item_en: parsed.en_name,
+                item_ar: parsed.ar_name,
+                prod_en_desc: '',
+                prod_ar_desc: '',
+                item_en_desc: '',
+                item_ar_desc: '',
+                price: parsed.price,
+                pickup_price: parsed.price,
+                kcal: parsed.kcal,
+                calories: parsed.kcal,
+                modifier_groups: modifiers.length > 0 ? '1' : '',
+                vendor_id: `P${items.length + 1}`,
+                allergens: 'No Allergens'
+            });
+        }
+    });
+
+    if (groups.length === 0) {
+        groups.push({ id: 1, en_name: 'Main Menu', ar_name: 'القائمة الرئيسية', name_en: 'Main Menu', name_ar: 'القائمة الرئيسية', en_type: 'General', ar_type: 'عام', order: 1 });
+    }
+
+    window.menuBuilderData = {
+        groups: groups,
+        items: items,
+        modifiers: modifiers,
+        imageLinks: extractedImgs
+    };
+
+    renderStudioMenuPreviewTables();
+    renderMenuPreviewTables();
+    if (typeof updateStudioHealthRadar === 'function') updateStudioHealthRadar();
+}
+
+
 function processVendorMenuWorkbook(workbook) {
     console.log("processVendorMenuWorkbook started with sheets:", workbook.SheetNames);
     let allSheetText = '';
