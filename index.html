@@ -2420,9 +2420,9 @@ ${titles}
         "case_title": "Partner name change | تغيير اسم الشريك",
         "url": "https://hungerstation.knowledgeowl.com/home/basic-profile-change",
         "ccr": "Partner Data Update -> Basic profile change | تغيير الملف الشخصي  الاساسي -> Partner name change | تغيير اسم الشريك",
-        "procedure_arabic": "Your request has been forwarded the outbound team.\nThey should revert to you in two working days.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nI wish you good health and well-being\nلقد تم تحويل طلبكم إلى فريق الدعم،حيث سيقوم الفريق بمتابعة طلبكم وسيتم التواصل معكم خلال يومين  عمل في حال وجود أي استفسارات.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
-        "procedure_english": "",
-        "full_content": "Partner name change | تغيير اسم الشريك\nProcedure (English)\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\nProcedure (Arabic)\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded the outbound team.\nThey should revert to you in two working days.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nلقد تم تحويل طلبكم إلى فريق الدعم،حيث سيقوم الفريق بمتابعة طلبكم وسيتم التواصل معكم خلال يومين  عمل في حال وجود أي استفسارات.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample\n305602756"
+        "procedure_arabic": "لقد تم تحويل طلبكم إلى فريق الدعم، حيث سيقوم الفريق بمتابعة طلبكم وسيتم التواصل معكم خلال يومين عمل في حال وجود أي استفسارات.",
+        "procedure_english": "Your request has been forwarded to the support team. They will follow up on your request and contact you within two working days in case of any inquiries.",
+        "full_content": "Partner name change | تغيير اسم الشريك\nلقد تم تحويل طلبكم إلى فريق الدعم، حيث سيقوم الفريق بمتابعة طلبكم وسيتم التواصل معكم خلال يومين عمل في حال وجود أي استفسارات.\nYour request has been forwarded to the support team. They will follow up on your request and contact you within two working days in case of any inquiries."
     },
     {
         "id": 22,
@@ -3811,39 +3811,72 @@ function cleanArabicProcedure(text) {
             return { arGreeting, enGreeting };
         }
 
-        function buildArabicMacro(greeting, kbContentText) {
+                function buildArabicMacro(greeting, kbContentText) {
             const arAgent = getAgentArabicName();
-            if (!kbContentText) return `${greeting}شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nتم استلام طلبكم ومتابعته مع القسم المعني.\n\nشكراً\n${arAgent}\nهنقرستيشن\nتفاصيل التواصل:\nمشاكل الطلبات: 920033935`;
-            
-            let text = kbContentText.trim();
-            // If already a complete macro with greetings and closing, inject agent name and greeting smoothly
-            if (text.includes("شريكنا") || text.includes("شكراً لتواصلكم")) {
-                text = text.replace(/اسم الموظف|Employee Name/gi, arAgent);
-                text = text.replace(/\( اسم الشريك \)|\(اسم الشريك\)/gi, "العزيز");
-                if (greeting) {
-                    text = greeting + text;
-                }
-                return text;
+            if (!kbContentText) {
+                return `${greeting ? greeting + '\n\n' : ''}شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nتم استلام طلبكم ومتابعته مع القسم المعني.\n\nنود إفادتكم بأنه سيتم إرسال استبيان تلقائي خاص بهذه التذكرة.\nتشير نجمة واحدة إلى أن مستوى الخدمة لم يكن مرضياً، بينما تشير خمس نجوم إلى أن مستوى الخدمة كان مرضياً جداً.\nشكراً لتواصلكم معنا.\nنتمنى لكم الصحة والعافية.\nمع الشكر،\n${arAgent}\nهنقرستيشن\nتفاصيل التواصل:\nمشاكل الطلبات: 920033935`;
             }
 
-            return `${greeting}شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\n${text}\n\nنود إفادتكم بأنه سيتم إرسال استبيان تلقائي خاص بهذه التذكرة.\nتشير نجمة واحدة إلى أن مستوى الخدمة لم يكن مرضياً، بينما تشير خمس نجوم إلى أن مستوى الخدمة كان مرضياً جداً.\nشكراً لتواصلكم معنا.\nنتمنى لكم الصحة والعافية.\nمع الشكر،\n${arAgent}\nهنقرستيشن\nتفاصيل التواصل:\nمشاكل الطلبات: 920033935`;
+            const lines = kbContentText.split('\n');
+            const cleanLines = [];
+            
+            for (let l of lines) {
+                let s = l.trim();
+                if (!s) continue;
+                // Filter out English text from Arabic Macro
+                let enCount = (s.match(/[a-zA-Z]/g) || []).length;
+                let arCount = (s.match(/[\u0600-\u06FF]/g) || []).length;
+                if (enCount > arCount && enCount > 8 && !s.includes('@') && !s.startsWith('http')) {
+                    continue;
+                }
+                if (s.includes('Dear') || s.includes('Thank you for contacting') || s.includes('Your request has been') || s.includes('Five Star') || s.includes('One Star') || s.includes('Contact Details:') || s.includes('Issues with Orders:') || s.includes('revert to you') || s.includes('I was honored')) {
+                    continue;
+                }
+                // Filter out duplicated greetings/survey/closing lines
+                if (s.startsWith('شريكنا') || s.startsWith('شكراً لتواصلكم') || s.startsWith('مع الشكر') || s.startsWith('هنقرستيشن') || s.startsWith('تفاصيل التواصل') || s.startsWith('مشاكل الطلبات') || s.startsWith('نود إفادتكم بأنه سيتم إرسال استبيان') || s.startsWith('تشير نجمة واحدة') || s.startsWith('⭐⭐⭐') || s.startsWith('نجمة واحدة') || s.startsWith('خمس نجوم') || s.startsWith('شكرا لتواصلك معنا اتمنى لك الصحه') || s.startsWith('تشرفت بمساعدتك اليوم')) {
+                    continue;
+                }
+                cleanLines.push(s);
+            }
+            
+            let coreBody = cleanLines.join('\n\n').trim();
+            if (!coreBody) coreBody = "تم استلام طلبكم وجاري متابعته مع الفريق المختص.";
+
+            return `${greeting ? greeting + '\n\n' : ''}شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\n${coreBody}\n\nنود إفادتكم بأنه سيتم إرسال استبيان تلقائي خاص بهذه التذكرة.\nتشير نجمة واحدة إلى أن مستوى الخدمة لم يكن مرضياً، بينما تشير خمس نجوم إلى أن مستوى الخدمة كان مرضياً جداً.\nشكراً لتواصلكم معنا.\nنتمنى لكم الصحة والعافية.\nمع الشكر،\n${arAgent}\nهنقرستيشن\nتفاصيل التواصل:\nمشاكل الطلبات: 920033935`;
         }
 
         function buildEnglishMacro(greeting, kbContentText) {
             const enAgent = getAgentEnglishName();
-            if (!kbContentText) return `${greeting}Dear Partner,\n\nThank you for contacting HungerStation.\n\nYour request has been received and is being processed.\n\nThank you,\n${enAgent}\nHungerStation\nContact Details:\nOrder Issues: 920033935`;
-
-            let text = kbContentText.trim();
-            if (text.includes("Dear Partner") || text.includes("Thank you for contacting")) {
-                text = text.replace(/Employee Name|اسم الموظف/gi, enAgent);
-                text = text.replace(/\(Partner Name\)|\( Partner Name \)/gi, "");
-                if (greeting) {
-                    text = greeting + text;
-                }
-                return text;
+            if (!kbContentText) {
+                return `${greeting ? greeting + '\n\n' : ''}Dear Valued Partner,\n\nThank you for contacting HungerStation.\n\nYour request has been received and is being processed by the relevant department.\n\nWe would like to inform you that an automated survey will be sent regarding this ticket.\nOne star indicates that the service level was unsatisfactory, while five stars indicate that the service level was very satisfactory.\nThank you for contacting us.\nWe wish you good health and well-being.\nBest regards,\n${enAgent}\nHungerStation\nContact Details:\nOrder Issues: 920033935`;
             }
 
-            return `${greeting}Dear Partner,\n\nThank you for contacting HungerStation.\n\n${text}\n\nWe would like to inform you that an automatic survey will be sent regarding this ticket.\nOne star indicates that the service level was unsatisfactory, while five stars indicate that the service level was very satisfactory.\nThank you for contacting us.\nWe wish you good health and well-being.\nBest regards,\n${enAgent}\nHungerStation\nContact Details:\nOrder Issues: 920033935`;
+            const lines = kbContentText.split('\n');
+            const cleanLines = [];
+            
+            for (let l of lines) {
+                let s = l.trim();
+                if (!s) continue;
+                // Filter out Arabic text from English Macro
+                let arCount = (s.match(/[\u0600-\u06FF]/g) || []).length;
+                let enCount = (s.match(/[a-zA-Z]/g) || []).length;
+                if (arCount > enCount && arCount > 5) {
+                    continue;
+                }
+                if (s.includes('شريكنا') || s.includes('شكراً لتواصلكم') || s.includes('نود إفادتكم') || s.includes('نجمة واحدة') || s.includes('خمس نجوم') || s.includes('هنقرستيشن') || s.includes('تفاصيل التواصل') || s.includes('مشاكل الطلبات')) {
+                    continue;
+                }
+                // Filter out duplicated greetings/closing
+                if (s.startsWith('Dear') || s.startsWith('Thank you for contacting') || s.startsWith('Best regards') || s.startsWith('Hungerstation') || s.startsWith('HungerStation') || s.startsWith('Contact Details') || s.startsWith('Order Issues') || s.startsWith('We would like to inform you that an auto') || s.startsWith('One star indicates') || s.startsWith('⭐⭐⭐')) {
+                    continue;
+                }
+                cleanLines.push(s);
+            }
+            
+            let coreBody = cleanLines.join('\n\n').trim();
+            if (!coreBody) coreBody = "Your request has been received and is being processed by the relevant department.";
+
+            return `${greeting ? greeting + '\n\n' : ''}Dear Valued Partner,\n\nThank you for contacting HungerStation.\n\n${coreBody}\n\nWe would like to inform you that an automated survey will be sent regarding this ticket.\nOne star indicates that the service level was unsatisfactory, while five stars indicate that the service level was very satisfactory.\nThank you for contacting us.\nWe wish you good health and well-being.\nBest regards,\n${enAgent}\nHungerStation\nContact Details:\nOrder Issues: 920033935`;
         }
 
         let _macroActive = false;
