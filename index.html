@@ -7,511 +7,7 @@
     <meta http-equiv="Expires" content="0">
 
     <!-- 🔥 Firebase Config -->
-    <script>
-
-// =========================================================================
-// 🍽️ GLOBAL HOISTED HUNGERSTATION MENU ENGINE (ATTACHED TO WINDOW)
-// =========================================================================
-
-window.menuBuilderData = {
-    groups: [],
-    items: [],
-    modifiers: [],
-    imageLinks: []
-};
-
-window.cleanProperTrim = function(str) {
-    if (!str && str !== 0) return '';
-    return String(str).replace(/[&%@\/\\|~*]/g, ' ').replace(/\s+/g, ' ').trim();
-};
-
-window.toEnglishProper = function(str) {
-    if (!str && str !== 0) return '';
-    let cleaned = window.cleanProperTrim(str);
-    return cleaned.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
-};
-
-window.extractImageUrls = function(text) {
-    const urls = [];
-    if (!text) return urls;
-    const urlRegex = /https?:\/\/[^\s,;"'<>]+/gi;
-    let match;
-    const str = String(text);
-    while ((match = urlRegex.exec(str)) !== null) {
-        const u = match[0];
-        if (u.includes('drive.google.com') || u.includes('dropbox.com') || u.includes('onedrive') || 
-            u.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i) || u.includes('photos.app.goo.gl')) {
-            urls.push(u);
-        }
-    }
-    return [...new Set(urls)];
-};
-
-window.renderExtractedImages = function() {
-    const container = document.getElementById('extractedImagesContainer') || document.getElementById('studioExtractedImagesContainer');
-    const list = document.getElementById('extractedImagesList') || document.getElementById('studioExtractedImagesList');
-    const badge = document.getElementById('imgCountBadge') || document.getElementById('studioImgCountBadge');
-    const links = (window.menuBuilderData && window.menuBuilderData.imageLinks) ? window.menuBuilderData.imageLinks : [];
-
-    if (!links.length) {
-        if (container) container.style.display = 'none';
-        return;
-    }
-
-    if (container) container.style.display = 'block';
-    if (badge) badge.textContent = `${links.length} رابط مستخرج`;
-    if (list) {
-        list.innerHTML = links.map((url, i) => `
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.05); padding:4px 0;">
-                <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:80%;">${i + 1}. <a href="${url}" target="_blank" style="color:#60A5FA; text-decoration:underline;">${url}</a></span>
-                <button onclick="navigator.clipboard.writeText('${url}'); showToast('تم نسخ الرابط!');" style="background:rgba(255,255,255,0.1); border:none; color:#FFF; font-size:0.7rem; padding:2px 6px; border-radius:4px; cursor:pointer;">نسخ</button>
-            </div>
-        `).join('');
-    }
-};
-
-window.copyExtractedImages = function() {
-    const links = (window.menuBuilderData && window.menuBuilderData.imageLinks) ? window.menuBuilderData.imageLinks : [];
-    if (!links.length) {
-        showToast("⚠️ لا توجد روابط لنسخها!");
-        return;
-    }
-    navigator.clipboard.writeText(links.join('\n'));
-    showToast(`📋 تم نسخ (${links.length}) رابط صور بنجاح!`);
-};
-
-window.downloadImagesTxt = function() {
-    const links = (window.menuBuilderData && window.menuBuilderData.imageLinks) ? window.menuBuilderData.imageLinks : [];
-    if (!links.length) {
-        showToast("⚠️ لا توجد روابط لتنزيلها!");
-        return;
-    }
-    const blob = new Blob([links.join('\n')], { type: 'text/plain;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'Menu_Image_Links.txt';
-    link.click();
-    showToast("💾 تم تنزيل ملف الروابط بنجاح!");
-};
-
-window.renderStudioMenuPreviewTables = function() {
-    const data = window.menuBuilderData || { groups: [], items: [], modifiers: [], imageLinks: [] };
-    const groups = data.groups || [];
-    const items = data.items || [];
-    const modifiers = data.modifiers || [];
-    const imageLinks = data.imageLinks || [];
-
-    // Badges
-    const bg = document.getElementById('studioBadgeGroupsCount');
-    const bi = document.getElementById('studioBadgeItemsCount');
-    const bm = document.getElementById('studioBadgeModifiersCount');
-    if (bg) bg.textContent = `(${groups.length})`;
-    if (bi) bi.textContent = `(${items.length})`;
-    if (bm) bm.textContent = `(${modifiers.length})`;
-
-    // Image list container
-    const imgBox = document.getElementById('studioExtractedImagesContainer');
-    const imgList = document.getElementById('studioExtractedImagesList');
-    const imgBadge = document.getElementById('studioImgCountBadge');
-
-    if (imageLinks && imageLinks.length > 0) {
-        if (imgBox) imgBox.style.display = 'block';
-        if (imgBadge) imgBadge.textContent = `${imageLinks.length} رابط مستخرج`;
-        if (imgList) {
-            imgList.innerHTML = imageLinks.map((url, i) => `
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.05); padding:4px 0;">
-                    <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:80%;">${i + 1}. <a href="${url}" target="_blank" style="color:#60A5FA; text-decoration:underline;">${url}</a></span>
-                    <button onclick="navigator.clipboard.writeText('${url}'); showToast('تم نسخ الرابط!');" style="background:rgba(255,255,255,0.1); border:none; color:#FFF; font-size:0.7rem; padding:2px 6px; border-radius:4px; cursor:pointer;">نسخ</button>
-                </div>
-            `).join('');
-        }
-    } else {
-        if (imgBox) imgBox.style.display = 'none';
-    }
-
-    // Tbody Groups
-    const tbodyG = document.getElementById('studioTbodyGroups');
-    if (tbodyG) {
-        if (groups.length === 0) {
-            tbodyG.innerHTML = '<tr><td colspan="5" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال أقسام بعد. الصق بيانات المنيو أو اضغط "تجربة بيانات نموذجية".</td></tr>';
-        } else {
-            tbodyG.innerHTML = groups.map((g, i) => `
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'};">
-                    <td style="padding: 8px 10px; color: #F59E0B; font-weight: 700;">#${g.id}</td>
-                    <td style="padding: 8px 10px; font-weight: 600; color: #FFF;">${g.name_en || g.en_name}</td>
-                    <td style="padding: 8px 10px; color: #93C5FD;">${g.name_ar || g.ar_name}</td>
-                    <td style="padding: 8px 10px;">${g.order || g.id}</td>
-                    <td style="padding: 8px 10px;"><span style="background: rgba(16,185,129,0.2); color: #34D399; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem;">Active</span></td>
-                </tr>
-            `).join('');
-        }
-    }
-
-    // Tbody Items
-    const tbodyI = document.getElementById('studioTbodyItems');
-    if (tbodyI) {
-        if (items.length === 0) {
-            tbodyI.innerHTML = '<tr><td colspan="7" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال أصناف بعد.</td></tr>';
-        } else {
-            tbodyI.innerHTML = items.map((it, i) => `
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'};">
-                    <td style="padding: 8px 10px; color: #F59E0B; font-weight: 700;">#${it.id}</td>
-                    <td style="padding: 8px 10px; color: #A78BFA;">${it.group_name || it.group_id}</td>
-                    <td style="padding: 8px 10px; font-weight: 600; color: #FFF;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'item_en', this.innerText)" title="انقر لتعديل الاسم بالإنجليزي">${it.name_en || it.item_en}</td>
-                    <td style="padding: 8px 10px; color: #93C5FD;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'item_ar', this.innerText)" title="انقر لتعديل الاسم بالعربي">${it.name_ar || it.item_ar}</td>
-                    <td style="padding: 8px 10px; color: #34D399; font-weight: 700;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'price', this.innerText)" title="انقر لتعديل السعر">${it.price} SAR</td>
-                    <td style="padding: 8px 10px; color: #FCD34D;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'kcal', this.innerText)" title="انقر لتعديل السعرات">${it.kcal || it.calories ? (it.kcal || it.calories) + ' kcal' : '-'}</td>
-                    <td style="padding: 8px 10px; font-size: 0.75rem; color: #94A3B8;">${it.desc_ar || it.desc_en || '-'}</td>
-                </tr>
-            `).join('');
-        }
-    }
-
-    // Tbody Modifiers
-    const tbodyM = document.getElementById('studioTbodyModifiers');
-    if (tbodyM) {
-        if (modifiers.length === 0) {
-            tbodyM.innerHTML = '<tr><td colspan="6" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال إضافات بعد.</td></tr>';
-        } else {
-            tbodyM.innerHTML = modifiers.map((m, i) => `
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'};">
-                    <td style="padding: 8px 10px; color: #F59E0B; font-weight: 700;">#${m.id}</td>
-                    <td style="padding: 8px 10px; color: #EC4899; font-weight: 600;">${m.group_name || m.group_ar}</td>
-                    <td style="padding: 8px 10px; font-weight: 600; color: #FFF;">${m.option_en || m.mod_en}</td>
-                    <td style="padding: 8px 10px; color: #93C5FD;">${m.option_ar || m.mod_ar}</td>
-                    <td style="padding: 8px 10px; color: #34D399;">+${m.price} SAR</td>
-                    <td style="padding: 8px 10px;"><span style="background: rgba(59,130,246,0.2); color: #60A5FA; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem;">${m.type || 'Optional'}</span></td>
-                </tr>
-            `).join('');
-        }
-    }
-};
-
-window.renderMenuPreviewTables = function() {
-    window.renderStudioMenuPreviewTables();
-};
-
-window.processVendorMenuWorkbook = function(workbook) {
-    console.log("processVendorMenuWorkbook started with sheets:", workbook.SheetNames);
-    let allSheetText = '';
-    const sheetNames = workbook.SheetNames;
-    const isOfficialFormat = sheetNames.some(s => s.toLowerCase().includes('menu group') || s.toLowerCase().includes('menu products') || s.toLowerCase().includes('modifier'));
-
-    let groups = [];
-    let items = [];
-    let modifiers = [];
-
-    // Collect all text for image URL extraction
-    sheetNames.forEach(sname => {
-        const s = workbook.Sheets[sname];
-        if (s) {
-            const json = XLSX.utils.sheet_to_json(s, { header: 1 });
-            json.forEach(row => {
-                if (Array.isArray(row)) allSheetText += ' ' + row.join(' ');
-            });
-        }
-    });
-
-    if (isOfficialFormat) {
-        // CASE A: Official / Exported Hungerstation Menu
-        const groupSheetName = sheetNames.find(s => s.toLowerCase().includes('group')) || sheetNames[0];
-        const groupSheet = workbook.Sheets[groupSheetName];
-        if (groupSheet) {
-            const rawGroups = XLSX.utils.sheet_to_json(groupSheet);
-            rawGroups.forEach((grow, idx) => {
-                const gid = parseInt(grow['#'] || idx + 1, 10);
-                const enName = grow['english name *'] || grow['English Name'] || grow['name_en'] || '';
-                const arName = grow['arabic name *'] || grow['Arabic Name'] || grow['name_ar'] || '';
-                const enType = grow['english category type'] || 'General';
-                const arType = grow['arabic category type'] || 'عام';
-
-                if (enName || arName) {
-                    groups.push({
-                        id: gid,
-                        en_name: window.toEnglishProper(enName || arName),
-                        ar_name: window.cleanProperTrim(arName || enName),
-                        name_en: window.toEnglishProper(enName || arName),
-                        name_ar: window.cleanProperTrim(arName || enName),
-                        en_type: window.toEnglishProper(enType),
-                        ar_type: window.cleanProperTrim(arType),
-                        order: gid
-                    });
-                }
-            });
-        }
-
-        // Modifiers Sheet
-        const modSheetName = sheetNames.find(s => s.toLowerCase().includes('modifier'));
-        if (modSheetName && workbook.Sheets[modSheetName]) {
-            const modSheet = workbook.Sheets[modSheetName];
-            const rawMods = XLSX.utils.sheet_to_json(modSheet);
-            let curGrpEn = 'Options';
-            let curGrpAr = 'الخيارات';
-            let curMax = 3;
-            let curMin = 0;
-
-            rawMods.forEach((mrow, idx) => {
-                if (mrow['Group. english name *'] || mrow['Group. arabic name *']) {
-                    curGrpEn = window.toEnglishProper(mrow['Group. english name *'] || '');
-                    curGrpAr = window.cleanProperTrim(mrow['Group. arabic name *'] || '');
-                    curMax = mrow['max limit '] !== undefined ? mrow['max limit '] : (mrow['max limit'] !== undefined ? mrow['max limit'] : 3);
-                    curMin = mrow['min limit *'] !== undefined ? mrow['min limit *'] : 0;
-                }
-
-                const optEn = mrow['Modifier en name *'] || mrow['Option English'] || mrow['Modifier En'] || '';
-                const optAr = mrow['Modifier ar name *'] || mrow['Option Arabic'] || mrow['Modifier Ar'] || '';
-                const modPrice = parseFloat(mrow['price *'] || mrow['Price'] || 0);
-                const modKcal = parseInt(mrow['kcal '] || mrow['kcal'] || mrow['Kcal'] || 0, 10);
-                const vendorId = mrow['Vendor ID'] || `M${idx + 1}`;
-
-                if (optEn || optAr) {
-                    modifiers.push({
-                        id: idx + 1,
-                        group_en: curGrpEn,
-                        group_ar: curGrpAr,
-                        group_name: curGrpAr + ' / ' + curGrpEn,
-                        mod_en: window.toEnglishProper(optEn || optAr),
-                        mod_ar: window.cleanProperTrim(optAr || optEn),
-                        option_en: window.toEnglishProper(optEn || optAr),
-                        option_ar: window.cleanProperTrim(optAr || optEn),
-                        price: isNaN(modPrice) ? 0 : modPrice,
-                        kcal: isNaN(modKcal) ? 0 : modKcal,
-                        max_limit: curMax,
-                        min_limit: curMin,
-                        vendor_id: vendorId,
-                        type: curMin > 0 ? 'Mandatory' : 'Optional'
-                    });
-                }
-            });
-        }
-
-        // Products / Items Sheet
-        const itemSheetName = sheetNames.find(s => s.toLowerCase().includes('product') || s.toLowerCase().includes('item'));
-        if (itemSheetName && workbook.Sheets[itemSheetName]) {
-            const itemSheet = workbook.Sheets[itemSheetName];
-            const rawItems = XLSX.utils.sheet_to_json(itemSheet);
-
-            rawItems.forEach((irow, idx) => {
-                const gid = parseInt(irow['menu group # *'] || irow['group_id'] || 1, 10);
-                const prodEn = irow['Product english name *'] || '-';
-                const prodAr = irow['Product arabic name *'] || '-';
-                const itemEn = irow[' item english name *'] || irow['item english name *'] || irow['Item English'] || prodEn;
-                const itemAr = irow[' item arabic name *'] || irow['item arabic name *'] || irow['Item Arabic'] || prodAr;
-                const prodDescEn = irow['Product english desc '] || irow['Product english desc'] || '';
-                const prodDescAr = irow['Product arabic desc '] || irow['Product arabic desc'] || '';
-                const itemDescEn = irow['item english desc '] || irow['item english desc'] || prodDescEn;
-                const itemDescAr = irow['item arabic desc '] || irow['item arabic desc'] || prodDescAr;
-                const price = parseFloat(irow['price*'] || irow['price'] || irow['Price'] || 15);
-                const pickupPrice = irow['pickup_price'] || '';
-                const kcal = parseInt(irow['kcal '] || irow['kcal'] || irow['Kcal'] || 0, 10);
-                const modGroups = irow['modifier groups #'] || '';
-                const vendorId = irow['Vendor ID'] || `P${idx + 1}`;
-                const allergens = irow['Allergens'] || 'No Allergens';
-
-                const matchedGroup = groups.find(g => g.id === gid);
-                const groupName = matchedGroup ? (matchedGroup.ar_name + ' / ' + matchedGroup.en_name) : `Group #${gid}`;
-
-                items.push({
-                    id: idx + 1,
-                    group_id: gid,
-                    group_name: groupName,
-                    prod_en: prodEn === '-' ? '-' : window.toEnglishProper(prodEn),
-                    prod_ar: prodAr === '-' ? '-' : window.cleanProperTrim(prodAr),
-                    item_en: window.toEnglishProper(String(itemEn)),
-                    item_ar: window.cleanProperTrim(String(itemAr)),
-                    name_en: window.toEnglishProper(String(itemEn)),
-                    name_ar: window.cleanProperTrim(String(itemAr)),
-                    prod_en_desc: window.cleanProperTrim(prodDescEn),
-                    prod_ar_desc: window.cleanProperTrim(prodDescAr),
-                    item_en_desc: window.cleanProperTrim(itemDescEn),
-                    item_ar_desc: window.cleanProperTrim(itemDescAr),
-                    desc_en: window.cleanProperTrim(itemDescEn),
-                    desc_ar: window.cleanProperTrim(itemDescAr),
-                    price: isNaN(price) ? 15 : price,
-                    pickup_price: pickupPrice,
-                    kcal: isNaN(kcal) ? 0 : kcal,
-                    calories: isNaN(kcal) ? 0 : kcal,
-                    modifier_groups: modGroups ? String(modGroups) : '',
-                    vendor_id: vendorId,
-                    allergens: allergens
-                });
-            });
-        }
-
-    } else {
-        // CASE B: Raw Single Sheet Vendor Excel / CSV
-        const firstSheet = workbook.Sheets[sheetNames[0]];
-        const rawRows = XLSX.utils.sheet_to_json(firstSheet);
-        const groupsMap = new Map();
-        let groupIdCounter = 1;
-
-        rawRows.forEach((row, idx) => {
-            const rawCat = row['Category'] || row['category'] || row['القسم'] || row['الفئة'] || row['مجموعة'] || row['Group'] || 'Main Menu';
-            const cleanCatAr = window.cleanProperTrim(String(rawCat));
-            const cleanCatEn = window.toEnglishProper(String(rawCat));
-
-            if (!groupsMap.has(cleanCatEn)) {
-                groupsMap.set(cleanCatEn, {
-                    id: groupIdCounter++,
-                    en_name: cleanCatEn,
-                    ar_name: cleanCatAr,
-                    name_en: cleanCatEn,
-                    name_ar: cleanCatAr,
-                    en_type: 'General',
-                    ar_type: 'عام',
-                    order: groupsMap.size + 1
-                });
-            }
-            const groupObj = groupsMap.get(cleanCatEn);
-
-            const nameAr = row['Arabic Name'] || row['الاسم بالعربي'] || row['اسم الصنف'] || row['Name Ar'] || row['Name'] || row['الاسم'] || `صنف ${idx+1}`;
-            const nameEn = row['English Name'] || row['الاسم بالإنجليزي'] || row['Name En'] || row['Item Name'] || row['Name'] || row['Item'] || autoTranslateMenuText(nameAr, 'EN');
-            const price = parseFloat(row['Price'] || row['price'] || row['السعر'] || row['price*'] || 15);
-            const kcal = parseInt(row['Calories'] || row['calories'] || row['Kcal'] || row['kcal'] || row['السعرات'] || 0, 10);
-            const descAr = window.cleanProperTrim(String(row['Arabic Description'] || row['الوصف بالعربي'] || row['الوصف'] || row['Description'] || ''));
-            const descEn = window.cleanProperTrim(String(row['English Description'] || row['الوصف بالإنجليزي'] || row['Description En'] || row['Description'] || ''));
-
-            items.push({
-                id: idx + 1,
-                group_id: groupObj.id,
-                group_name: groupObj.ar_name + ' / ' + groupObj.en_name,
-                prod_en: '-',
-                prod_ar: '-',
-                item_en: window.toEnglishProper(String(nameEn)),
-                item_ar: window.cleanProperTrim(String(nameAr)),
-                name_en: window.toEnglishProper(String(nameEn)),
-                name_ar: window.cleanProperTrim(String(nameAr)),
-                prod_en_desc: '',
-                prod_ar_desc: '',
-                item_en_desc: descEn,
-                item_ar_desc: descAr,
-                desc_en: descEn,
-                desc_ar: descAr,
-                price: isNaN(price) ? 15 : price,
-                pickup_price: '',
-                kcal: isNaN(kcal) ? 0 : kcal,
-                calories: isNaN(kcal) ? 0 : kcal,
-                modifier_groups: '',
-                vendor_id: `P${idx + 1}`,
-                allergens: 'No Allergens'
-            });
-        });
-
-        groups = Array.from(groupsMap.values());
-    }
-
-    if (groups.length === 0) {
-        groups.push({ id: 1, en_name: 'Main Menu', ar_name: 'القائمة الرئيسية', name_en: 'Main Menu', name_ar: 'القائمة الرئيسية', en_type: 'General', ar_type: 'عام', order: 1 });
-    }
-
-    window.menuBuilderData = {
-        groups: groups,
-        items: items,
-        modifiers: modifiers,
-        imageLinks: window.extractImageUrls(allSheetText)
-    };
-
-    console.log("Successfully processed workbook! Total items:", items.length);
-    window.renderStudioMenuPreviewTables();
-    window.renderMenuPreviewTables();
-    if (typeof window.updateStudioHealthRadar === 'function') window.updateStudioHealthRadar();
-};
-
-window.handleFileDirectly = function(file) {
-    if (!file) return;
-    if (typeof XLSX === 'undefined') {
-        alert("⚠️ جاري تحميل مكتبة قراءة الإكسيل، يرجى الانتظار 3 ثواني والمحاولة مرة أخرى.");
-        return;
-    }
-
-    showToast(`⏳ جاري قراءة وتحليل ملف (${file.name})...`);
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: 'array' });
-            window.processVendorMenuWorkbook(workbook);
-            if (typeof playSuccessChime === 'function') playSuccessChime();
-            const count = window.menuBuilderData.items.length;
-            showToast(`✅ تم قراءة وتحليل المنيو بنجاح! عدد الأصناف: (${count}) صنف.`);
-        } catch(err) {
-            console.error("Error reading file:", err);
-            alert("حدث خطأ أثناء قراءة ملف الإكسيل: " + err.message);
-        }
-    };
-    reader.readAsArrayBuffer(file);
-};
-
-window.handleRawMenuFileUpload = function(event) {
-    const file = event.target.files ? event.target.files[0] : null;
-    if (file) window.handleFileDirectly(file);
-};
-
-window.handleStudioRawMenuFileUpload = function(event) {
-    const file = event.target.files ? event.target.files[0] : null;
-    if (file) window.handleFileDirectly(file);
-};
-
-window.handleBatchMultiMenuUpload = function(event) {
-    const files = event.target.files ? Array.from(event.target.files) : [];
-    if (!files.length) return;
-    if (files.length === 1) {
-        window.handleFileDirectly(files[0]);
-        return;
-    }
-
-    showToast(`📂 جاري معالجة ${files.length} ملفات منيو دفعة واحدة...`);
-    let processedCount = 0;
     
-    files.forEach((file, fIdx) => {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                window.processVendorMenuWorkbook(workbook);
-                
-                setTimeout(() => {
-                    const wb = window.createOfficialMenuWorkbook();
-                    XLSX.writeFile(wb, `_MenuUpload_${file.name.replace(/\.[^/.]+$/, "")}.xlsx`);
-                    processedCount++;
-                    if (processedCount === files.length) {
-                        if (typeof playSuccessChime === 'function') playSuccessChime();
-                        showToast(`🎉 تم تحويل وتنزيل جميع ملفات المنيو (${files.length} شيت) بنجاح!`);
-                    }
-                }, fIdx * 400);
-            } catch(err) {
-                console.error("Batch file error:", err);
-            }
-        };
-        reader.readAsArrayBuffer(file);
-    });
-};
-
-window.handleStudioDroppedFiles = function(event) {
-    event.preventDefault();
-    if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 0) {
-        const files = Array.from(event.dataTransfer.files);
-        if (files.length === 1) {
-            window.handleFileDirectly(files[0]);
-        } else {
-            const fakeEvent = { target: { files: files } };
-            window.handleBatchMultiMenuUpload(fakeEvent);
-        }
-    }
-};
-
-
-        window.HS_FIREBASE_CONFIG = {
-            apiKey: "AIzaSyBZpCmup29_jAio77MJ2FtbI_5UwwHZll4",
-            authDomain: "hs-vendor-support.firebaseapp.com",
-            projectId: "hs-vendor-support",
-            storageBucket: "hs-vendor-support.firebasestorage.app",
-            messagingSenderId: "336716383268",
-            appId: "1:336716383268:web:ac08daf9d61acc75c204b1",
-            measurementId: "G-0ZZQN324TX"
-        };
-    </script>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -1704,6 +1200,105 @@ window.handleStudioDroppedFiles = function(event) {
     </div>
 
     <script>
+
+window.renderStudioMenuPreviewTables = function() {
+    const data = window.menuBuilderData || { groups: [], items: [], modifiers: [], imageLinks: [] };
+    const groups = data.groups || [];
+    const items = data.items || [];
+    const modifiers = data.modifiers || [];
+    const imageLinks = data.imageLinks || [];
+
+    // Badges
+    const bg = document.getElementById('studioBadgeGroupsCount');
+    const bi = document.getElementById('studioBadgeItemsCount');
+    const bm = document.getElementById('studioBadgeModifiersCount');
+    if (bg) bg.textContent = `(${groups.length})`;
+    if (bi) bi.textContent = `(${items.length})`;
+    if (bm) bm.textContent = `(${modifiers.length})`;
+
+    // Image list container
+    const imgBox = document.getElementById('studioExtractedImagesContainer');
+    const imgList = document.getElementById('studioExtractedImagesList');
+    const imgBadge = document.getElementById('studioImgCountBadge');
+
+    if (imageLinks && imageLinks.length > 0) {
+        if (imgBox) imgBox.style.display = 'block';
+        if (imgBadge) imgBadge.textContent = `${imageLinks.length} رابط مستخرج`;
+        if (imgList) {
+            imgList.innerHTML = imageLinks.map((url, i) => `
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.05); padding:4px 0;">
+                    <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:80%;">${i + 1}. <a href="${url}" target="_blank" style="color:#60A5FA; text-decoration:underline;">${url}</a></span>
+                    <button onclick="navigator.clipboard.writeText('${url}'); showToast('تم نسخ الرابط!');" style="background:rgba(255,255,255,0.1); border:none; color:#FFF; font-size:0.7rem; padding:2px 6px; border-radius:4px; cursor:pointer;">نسخ</button>
+                </div>
+            `).join('');
+        }
+    } else {
+        if (imgBox) imgBox.style.display = 'none';
+    }
+
+    // Tbody Groups
+    const tbodyG = document.getElementById('studioTbodyGroups');
+    if (tbodyG) {
+        if (groups.length === 0) {
+            tbodyG.innerHTML = '<tr><td colspan="5" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال أقسام بعد. الصق بيانات المنيو أو اضغط "تجربة بيانات نموذجية".</td></tr>';
+        } else {
+            tbodyG.innerHTML = groups.map((g, i) => `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'};">
+                    <td style="padding: 8px 10px; color: #F59E0B; font-weight: 700;">#${g.id}</td>
+                    <td style="padding: 8px 10px; font-weight: 600; color: #FFF;">${g.name_en || g.en_name}</td>
+                    <td style="padding: 8px 10px; color: #93C5FD;">${g.name_ar || g.ar_name}</td>
+                    <td style="padding: 8px 10px;">${g.order || g.id}</td>
+                    <td style="padding: 8px 10px;"><span style="background: rgba(16,185,129,0.2); color: #34D399; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem;">Active</span></td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    // Tbody Items
+    const tbodyI = document.getElementById('studioTbodyItems');
+    if (tbodyI) {
+        if (items.length === 0) {
+            tbodyI.innerHTML = '<tr><td colspan="7" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال أصناف بعد.</td></tr>';
+        } else {
+            tbodyI.innerHTML = items.map((it, i) => `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'};">
+                    <td style="padding: 8px 10px; color: #F59E0B; font-weight: 700;">#${it.id}</td>
+                    <td style="padding: 8px 10px; color: #A78BFA;">${it.group_name || it.group_id}</td>
+                    <td style="padding: 8px 10px; font-weight: 600; color: #FFF;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'item_en', this.innerText)" title="انقر لتعديل الاسم بالإنجليزي">${it.name_en || it.item_en}</td>
+                    <td style="padding: 8px 10px; color: #93C5FD;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'item_ar', this.innerText)" title="انقر لتعديل الاسم بالعربي">${it.name_ar || it.item_ar}</td>
+                    <td style="padding: 8px 10px; color: #34D399; font-weight: 700;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'price', this.innerText)" title="انقر لتعديل السعر">${it.price} SAR</td>
+                    <td style="padding: 8px 10px; color: #FCD34D;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'kcal', this.innerText)" title="انقر لتعديل السعرات">${it.kcal || it.calories ? (it.kcal || it.calories) + ' kcal' : '-'}</td>
+                    <td style="padding: 8px 10px; font-size: 0.75rem; color: #94A3B8;">${it.desc_ar || it.desc_en || '-'}</td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    // Tbody Modifiers
+    const tbodyM = document.getElementById('studioTbodyModifiers');
+    if (tbodyM) {
+        if (modifiers.length === 0) {
+            tbodyM.innerHTML = '<tr><td colspan="6" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال إضافات بعد.</td></tr>';
+        } else {
+            tbodyM.innerHTML = modifiers.map((m, i) => `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'};">
+                    <td style="padding: 8px 10px; color: #F59E0B; font-weight: 700;">#${m.id}</td>
+                    <td style="padding: 8px 10px; color: #EC4899; font-weight: 600;">${m.group_name || m.group_ar}</td>
+                    <td style="padding: 8px 10px; font-weight: 600; color: #FFF;">${m.option_en || m.mod_en}</td>
+                    <td style="padding: 8px 10px; color: #93C5FD;">${m.option_ar || m.mod_ar}</td>
+                    <td style="padding: 8px 10px; color: #34D399;">+${m.price} SAR</td>
+                    <td style="padding: 8px 10px;"><span style="background: rgba(59,130,246,0.2); color: #60A5FA; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem;">${m.type || 'Optional'}</span></td>
+                </tr>
+            `).join('');
+        }
+    }
+};
+
+window.renderMenuPreviewTables = window.renderStudioMenuPreviewTables;
+function renderMenuPreviewTables() { window.renderStudioMenuPreviewTables(); }
+function renderStudioMenuPreviewTables() { window.renderStudioMenuPreviewTables(); }
+
+
         try {
             if (typeof pdfjsLib !== 'undefined' && pdfjsLib.GlobalWorkerOptions) {
                 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -6460,7 +6055,7 @@ function handleFileDirectly(file) {
             showToast(`✅ تم قراءة وتحليل المنيو بنجاح! عدد الأصناف: (${count}) صنف.`);
         } catch(err) {
             console.error("Error reading file:", err);
-            alert("حدث خطأ أثناء قراءة ملف الإكسيل: " + err.message);
+            console.error("Excel read error:", err); showToast("⚠️ تعذر قراءة بعض الحقول: " + err.message);
         }
     };
     reader.readAsArrayBuffer(file);
