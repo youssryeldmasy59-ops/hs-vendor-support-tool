@@ -1600,6 +1600,115 @@
             color: #FFF;
         }
     
+    
+        /* 🔮 Predictive Next-Move Card */
+        .next-move-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(99, 102, 241, 0.05) 100%);
+            border: 1.5px dashed rgba(139, 92, 246, 0.4);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        .next-move-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        /* 🚨 Legal & QA Blacklist Shield Warning */
+        .blacklist-warning-badge {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1.5px solid #EF4444;
+            color: #EF4444;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            animation: pulse 2s infinite;
+        }
+
+        /* 🧠 Vendor Psychology Radar Bar */
+        .psychology-radar-card {
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            align-items: center;
+        }
+        .radar-metric-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+        }
+
+        /* 🛸 Floating Glass HUD Capsule */
+        #floatingGlassHud {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 999999;
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 15px rgba(245, 158, 11, 0.25);
+            border-radius: 18px;
+            width: 320px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+        #floatingGlassHud.collapsed {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            overflow: hidden;
+            padding: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hud-header {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+        }
+
+        /* 🎙️ Teleprompter Call Script */
+        .teleprompter-script-box {
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-main);
+            font-weight: 600;
+            max-height: 380px;
+            overflow-y: auto;
+        }
+    
     </style>
 </head>
 <body>
@@ -1716,6 +1825,10 @@
 
             <!-- 📊 Policy Calculator Button -->
             <!-- 🤖 Vendor Support Copilot Trigger -->
+            <!-- 🛸 Floating Glass HUD Toggle Button -->
+            <button type="button" class="header-btn" onclick="toggleFloatingGlassHud()" title="تفعيل النافذة العائمة الشبحية فوق Zendesk">
+                <i class="fa-solid fa-layer-group" style="color: #38BDF8;"></i> <span>نافذة عائمة 🛸</span>
+            </button>
             <button type="button" class="header-btn" onclick="openCopilotModal()" title="المساعد الذكي التفاعلي المباشر" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(99, 102, 241, 0.15)); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.35);">
                 <i class="fa-solid fa-robot"></i> <span>كابيلوت الدعم 🤖</span>
             </button>
@@ -6446,6 +6559,65 @@ function cleanArabicProcedure(text) {
             _macroActive = false;
             const output = document.getElementById('outputContent');
             if (!output) return;
+            
+            // 🧠 Vendor Psychology & Escalation Radar Computation
+            const psychAnalysis = analyzeVendorPsychology(partnerMsgVal);
+            let psychRadarHtml = '';
+            if (partnerMsgVal && partnerMsgVal.trim().length > 6) {
+                psychRadarHtml = `
+                    <div class="psychology-radar-card">
+                        <div class="radar-metric-box">
+                            <i class="fa-solid ${psychAnalysis.moodIcon}" style="font-size: 1.2rem; color: ${psychAnalysis.moodColor};"></i>
+                            <div>
+                                <span style="display: block; font-size: 0.7rem; color: var(--text-muted);">حالة التاجر النفسية:</span>
+                                <strong style="color: ${psychAnalysis.moodColor};">${psychAnalysis.moodLabel} (${psychAnalysis.angerScore}%)</strong>
+                            </div>
+                        </div>
+                        <div class="radar-metric-box">
+                            <i class="fa-solid ${psychAnalysis.riskIcon}" style="font-size: 1.2rem; color: ${psychAnalysis.riskColor};"></i>
+                            <div>
+                                <span style="display: block; font-size: 0.7rem; color: var(--text-muted);">مستوى خطر التصعيد:</span>
+                                <strong style="color: ${psychAnalysis.riskColor};">${psychAnalysis.riskLabel}</strong>
+                            </div>
+                        </div>
+                        <div class="radar-metric-box" style="grid-column: 1 / -1; background: rgba(0,0,0,0.05); padding: 6px 10px; border-radius: 6px;">
+                            <i class="fa-solid fa-compass" style="color: var(--primary);"></i>
+                            <span><strong>التكتيك المقترح:</strong> ${psychAnalysis.tactic}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 🔮 Predictive Next-Move Computation
+            const nextMove = getPredictiveNextMove(c, activeSubMacroIdx);
+            let nextMoveHtml = '';
+            if (nextMove) {
+                nextMoveHtml = `
+                    <div class="next-move-card">
+                        <div class="next-move-header">
+                            <span style="font-size: 0.8rem; font-weight: 800; color: #8B5CF6; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-chess-knight"></i> <strong>حركة الشطرنج التالية: سؤال الشريك المتوقع بنسبة 90%:</strong>
+                            </span>
+                            <span style="font-size: 0.72rem; color: var(--text-muted); background: var(--bg-card); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border);">جاهز للاستخدام الفوري</span>
+                        </div>
+                        <div style="font-size: 0.84rem; font-weight: 700; color: var(--text-main);">
+                            ❓ ${nextMove.question}
+                        </div>
+                        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;">
+                            ${nextMove.previewText}
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" onclick="applyNextMoveToWorkspace('${nextMove.id}')" style="background: linear-gradient(135deg, #8B5CF6, #6366F1); color: #FFF; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.76rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-bolt"></i> تجهيز هذا الرد للخطوة القادمة فوراً ⚡
+                            </button>
+                            <button type="button" onclick="navigator.clipboard.writeText('${nextMove.macroText.replace(/'/g, "\'")}'); showToast('تم نسخ رد الخطوة التالية! 📋');" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">
+                                <i class="fa-solid fa-copy"></i> نسخ الرد التالي
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+    
             output.innerHTML = `
                 <div style="background: rgba(255,196,0,0.08); border: 1px solid rgba(255,196,0,0.25); border-radius: 8px; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                     <span style="font-weight: 700; color: var(--primary); font-size: 0.92rem;"><i class="fa-solid fa-book-bookmark"></i> Knowledge Base الإينبوند (7 أقسام):</span>
@@ -7568,6 +7740,7 @@ function cleanArabicProcedure(text) {
 
             output.innerHTML = `
                 <div class="result-card">
+                    ${psychRadarHtml || ""}
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
                         <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--primary);"><i class="fa-solid fa-file-contract"></i> ${scen.title}</h3>
                     </div>
@@ -7620,7 +7793,7 @@ ${invoiceGuideHtml || ""}
                     <!-- Arabic Macro Container -->
                     <div id="arMacroContainer" style="display: ${!isEn ? 'block' : 'none'};">
                         ${aiBadgeNotice || ""}
-<div class="response-box" id="arMacroText" contenteditable="true" style="border-color: rgba(255, 196, 0, 0.3); background: rgba(255, 196, 0, 0.05); color: #FFF; font-weight: 600; margin-bottom: 10px;" title="يمكنك تعديل أي كلمة هنا بالداخل مباشرة">${scen.arMacro}</div>
+<div class="response-box" id="arMacroText" contenteditable="true" oninput="checkLegalBlacklist()" style="border-color: rgba(255, 196, 0, 0.3); background: rgba(255, 196, 0, 0.05); color: #FFF; font-weight: 600; margin-bottom: 10px;" title="يمكنك تعديل أي كلمة هنا بالداخل مباشرة">${scen.arMacro}</div>
                         <button class="btn-copy" onclick="copyText('arMacroText')"><i class="fa-solid fa-copy"></i> نسخ الماكرو العربي الجاهز (باسم ${arAgentName}) 🚀</button>
                         <button class="btn-learn" onclick="saveLearnedCorrection()"><i class="fa-solid fa-brain"></i> حفظ وتدريب النظام الذاتي على هذا الرد 🧠</button>
                     </div>
@@ -7836,9 +8009,68 @@ ${invoiceGuideHtml || ""}
                 `;
             }
 
+            // 🧠 Vendor Psychology & Escalation Radar Computation
+            const psychAnalysis = typeof analyzeVendorPsychology === 'function' ? analyzeVendorPsychology(partnerMsgVal) : null;
+            let psychRadarHtml = '';
+            if (psychAnalysis && partnerMsgVal && partnerMsgVal.trim().length > 6) {
+                psychRadarHtml = `
+                    <div class="psychology-radar-card">
+                        <div class="radar-metric-box">
+                            <i class="fa-solid ${psychAnalysis.moodIcon}" style="font-size: 1.2rem; color: ${psychAnalysis.moodColor};"></i>
+                            <div>
+                                <span style="display: block; font-size: 0.7rem; color: var(--text-muted);">حالة التاجر النفسية:</span>
+                                <strong style="color: ${psychAnalysis.moodColor};">${psychAnalysis.moodLabel} (${psychAnalysis.angerScore}%)</strong>
+                            </div>
+                        </div>
+                        <div class="radar-metric-box">
+                            <i class="fa-solid ${psychAnalysis.riskIcon}" style="font-size: 1.2rem; color: ${psychAnalysis.riskColor};"></i>
+                            <div>
+                                <span style="display: block; font-size: 0.7rem; color: var(--text-muted);">مستوى خطر التصعيد:</span>
+                                <strong style="color: ${psychAnalysis.riskColor};">${psychAnalysis.riskLabel}</strong>
+                            </div>
+                        </div>
+                        <div class="radar-metric-box" style="grid-column: 1 / -1; background: rgba(0,0,0,0.05); padding: 6px 10px; border-radius: 6px;">
+                            <i class="fa-solid fa-compass" style="color: var(--primary);"></i>
+                            <span><strong>التكتيك المقترح:</strong> ${psychAnalysis.tactic}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 🔮 Predictive Next-Move Computation
+            const nextMove = typeof getPredictiveNextMove === 'function' ? getPredictiveNextMove(c, activeSubMacroIdx) : null;
+            let nextMoveHtml = '';
+            if (nextMove) {
+                nextMoveHtml = `
+                    <div class="next-move-card">
+                        <div class="next-move-header">
+                            <span style="font-size: 0.8rem; font-weight: 800; color: #8B5CF6; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-chess-knight"></i> <strong>حركة الشطرنج التالية: سؤال الشريك المتوقع بنسبة 90%:</strong>
+                            </span>
+                            <span style="font-size: 0.72rem; color: var(--text-muted); background: var(--bg-card); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border);">جاهز للاستخدام الفوري</span>
+                        </div>
+                        <div style="font-size: 0.84rem; font-weight: 700; color: var(--text-main);">
+                            ❓ ${nextMove.question}
+                        </div>
+                        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;">
+                            ${nextMove.previewText}
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" onclick="applyNextMoveToWorkspace('${nextMove.id}')" style="background: linear-gradient(135deg, #8B5CF6, #6366F1); color: #FFF; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.76rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-bolt"></i> تجهيز هذا الرد للخطوة القادمة فوراً ⚡
+                            </button>
+                            <button type="button" onclick="navigator.clipboard.writeText('${nextMove.macroText.replace(/'/g, "\'")}'); showToast('تم نسخ رد الخطوة التالية! 📋');" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">
+                                <i class="fa-solid fa-copy"></i> نسخ الرد التالي
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
             const output = document.getElementById('outputContent');
             output.innerHTML = `
                 <div class="result-card">
+                    ${psychRadarHtml || ""}
                     <!-- Confidence & Entity Bar -->
                     <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
                         <div>
@@ -7943,10 +8175,13 @@ ${invoiceGuideHtml || ""}
                             </button>
                         </div>
 
-                        <div class="response-box" id="arMacroText" contenteditable="true" style="border-color: rgba(255, 196, 0, 0.3); background: rgba(255, 196, 0, 0.05); color: #FFF; font-weight: 600; margin-bottom: 10px;" title="يمكنك تعديل أي كلمة هنا بالداخل مباشرة">${arMacro}</div>
+                        <div class="response-box" id="arMacroText" contenteditable="true" oninput="checkLegalBlacklist()" style="border-color: rgba(255, 196, 0, 0.3); background: rgba(255, 196, 0, 0.05); color: #FFF; font-weight: 600; margin-bottom: 10px;" title="يمكنك تعديل أي كلمة هنا بالداخل مباشرة">${arMacro}</div>
                         
                         <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
                             <button class="btn-copy" onclick="copyText('arMacroText')" style="flex: 2;"><i class="fa-solid fa-copy"></i> نسخ الماكرو العربي الجاهز (باسم ${arAgentName}) 🚀</button>
+                            <button class="btn-learn" onclick="openTeleprompterModal()" style="background: linear-gradient(135deg, rgba(236,72,153,0.15), rgba(139,92,246,0.15)); color: #EC4899; border-color: rgba(236,72,153,0.35);" title="تحويل الماكرو لنقاط تحدث شفوية لمكالمة هاتفية مع الشريك">
+                                <i class="fa-solid fa-phone-volume"></i> ملقن المكالمة 🎙️
+                            </button>
                             <button class="btn-learn" onclick="copyCrmWrapUpNote()" style="flex: 1; background: rgba(139, 92, 246, 0.15); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.35);" title="نسخ ملخص تذكرة منسق للإغلاق السريع في Zendesk أو Salesforce">
                                 <i class="fa-solid fa-clipboard-list"></i> ملخص الـ CRM 📋
                             </button>
@@ -7970,6 +8205,9 @@ ${invoiceGuideHtml || ""}
                         
                         <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
                             <button class="btn-copy-en" onclick="copyText('enMacroText')" style="flex: 2;"><i class="fa-solid fa-copy"></i> Copy English Macro (${enAgentName}) 🚀</button>
+                            <button class="btn-learn" onclick="openTeleprompterModal()" style="background: linear-gradient(135deg, rgba(236,72,153,0.15), rgba(139,92,246,0.15)); color: #EC4899; border-color: rgba(236,72,153,0.35);" title="تحويل الماكرو لنقاط تحدث شفوية لمكالمة هاتفية مع الشريك">
+                                <i class="fa-solid fa-phone-volume"></i> ملقن المكالمة 🎙️
+                            </button>
                             <button class="btn-learn" onclick="copyCrmWrapUpNote()" style="flex: 1; background: rgba(139, 92, 246, 0.15); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.35);" title="Copy CRM wrap-up log">
                                 <i class="fa-solid fa-clipboard-list"></i> CRM Log 📋
                             </button>
@@ -7982,6 +8220,7 @@ ${invoiceGuideHtml || ""}
                         </div>
                         <div class="response-box">${sopText}</div>
                     </div>
+                    ${nextMoveHtml || ""}
 
                     <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                         <a href="${caseUrl}" target="_blank" style="color: var(--primary); text-decoration: underline; font-size: 0.85rem;"><i class="fa-solid fa-arrow-up-right-from-square"></i> فتح المقال الأصلي في KnowledgeOwl</a>
@@ -10598,6 +10837,393 @@ function downloadOfficialMenuExcel() {
             showToast(`تم فتح الحالة #${caseId} في مساحة العمل بنجاح! 🚀`);
         }
     
+    
+        // ══════════════════════════════════════════════════════════════════
+        // 🧠 1. VENDOR PSYCHOLOGY & ESCALATION RADAR (رادار نفسية الشريك)
+        // ══════════════════════════════════════════════════════════════════
+        function analyzeVendorPsychology(text) {
+            if (!text || text.trim().length < 5) {
+                return {
+                    angerScore: 15,
+                    moodLabel: 'استفسار هادئ',
+                    moodColor: '#10B981',
+                    moodIcon: 'fa-face-smile',
+                    riskLabel: 'طبيعي جداً',
+                    riskColor: '#10B981',
+                    riskIcon: 'fa-shield-check',
+                    tactic: 'تقديم الرد المعتمد بأسلوب رسمي واضح وسريع.'
+                };
+            }
+
+            const t = text.toLowerCase();
+            let anger = 20;
+            let isChurnRisk = false;
+            let isFrustrated = false;
+
+            // Churn / Disconnection threats
+            if (t.includes('فسخ') || t.includes('الغاء العقد') || t.includes('إلغاء العقد') || t.includes('وقف الفرع') || t.includes('اقفل المحل') || t.includes('سحب الجهاز') || t.includes('حسبي الله') || t.includes('ما راح اشتغل معكم') || t.includes('بوقف التعامل') || t.includes('cancel contract')) {
+                anger += 60;
+                isChurnRisk = true;
+            }
+
+            // Extreme frustration keywords
+            if (t.includes('سرقة') || t.includes('نصب') || t.includes('حرامية') || t.includes('مهزلة') || t.includes('اسوأ تطبيق') || t.includes('صارلي ساعتين') || t.includes('كل يوم نفس المشكلة') || t.includes('لا احد يرد') || t.includes('اشتكي لوزارة التجارة')) {
+                anger += 40;
+                isFrustrated = true;
+            }
+
+            if (t.includes('وين السائق') || t.includes('تاخر') || t.includes('تأخر') || t.includes('طعام بارد') || t.includes('خسارة')) {
+                anger += 20;
+            }
+
+            anger = Math.min(anger, 98);
+
+            if (isChurnRisk) {
+                return {
+                    angerScore: anger,
+                    moodLabel: 'غضب حاد وتهديد بالانسحاب 🚨',
+                    moodColor: '#EF4444',
+                    moodIcon: 'fa-face-angry',
+                    riskLabel: 'خطر فقدان الشريك (High Churn)',
+                    riskColor: '#EF4444',
+                    riskIcon: 'fa-triangle-exclamation',
+                    tactic: 'تفعيل نبرة امتصاص الغضب فوراً 🛡️، والاعتذار عن التجربة دون تقديم وعود مخالفة للائحة.'
+                };
+            } else if (isFrustrated) {
+                return {
+                    angerScore: anger,
+                    moodLabel: 'متوتر ومستاء بشدة ⚠️',
+                    moodColor: '#F59E0B',
+                    moodIcon: 'fa-face-frown',
+                    riskLabel: 'احتمال تصعيد للإدارة',
+                    riskColor: '#F59E0B',
+                    riskIcon: 'fa-circle-exclamation',
+                    tactic: 'استخدام أسلوب التهدئة وإبراز خطوات الدعم الملموسة ورقم التذكرة لزرع الطمأنينة.'
+                };
+            } else {
+                return {
+                    angerScore: anger,
+                    moodLabel: 'استفسار روتيني هادئ 😊',
+                    moodColor: '#10B981',
+                    moodIcon: 'fa-face-smile',
+                    riskLabel: 'منخفض وطبيعي',
+                    riskColor: '#10B981',
+                    riskIcon: 'fa-circle-check',
+                    tactic: 'تقديم الماكرو الرسمي المعتمد وتوضيح الخطوات القادمة بنقاط محددة.'
+                };
+            }
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // 🔮 2. PREDICTIVE NEXT-MOVE CHESS ENGINE (حركة الشطرنج التالية)
+        // ══════════════════════════════════════════════════════════════════
+        function getPredictiveNextMove(caseObj, activeSubIdx) {
+            if (!caseObj) return null;
+            const cid = caseObj.id;
+
+            // 1. Device Replacement (500 SAR) -> Next question: "How deducted and delivery time?"
+            if (cid === 1 || cid === 3) {
+                return {
+                    id: 'device_deduction_and_dispatch',
+                    question: 'سؤال التاجر المتوقع: "كيف سيتم خصم رسوم الـ 500 ريال؟ ومتى سيصل الجهاز الجديد للفرع؟"',
+                    previewText: 'إفادة الشريك بآلية الخصم (من مستحقات مبيعات الأسبوع القادمة) وتوصيل الجهاز خلال يومين عمل.',
+                    macroText: `شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nبخصوص استفساركم عن رسوم الجهاز وموعد التوصيل:\n1. يتم خصم الرسوم (500 ريال) تلقائياً من إجمالي مبيعات المتجر في دورة الفاتورة الأسبوعية القادمة دون الحاجة لدفع نقدي.\n2. يتم توصيل الجهاز الجديد لفرعكم خلال يومي عمل من تاريخ تأكيد الطلب.\n\nشاكرين حسن تعاونكم،\nفريق دعم الشركاء | هنقرستيشن`
+                };
+            }
+
+            // 2. Cancellation Compensation (Case 45) -> Next question: "When will compensation deposit?"
+            if (cid === 45 || cid === 44) {
+                return {
+                    id: 'comp_payout_schedule',
+                    question: 'سؤال التاجر المتوقع: "متى سينزل مبلغ التعويض في حسابي البنكي وفاتورة أي أسبوع؟"',
+                    previewText: 'توضيح تاريخ نزول التعويض في كشف حساب الأسبوع وموعد الإيداع البنكي المعتمد.',
+                    macroText: `شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nنحيطكم علماً بأن مبالغ التعويضات المعتمدة تدرج في كشف حساب المبيعات الأسبوعي الحالي، وتصدر فاتورتها يوم الأربعاء القادم ويتم إيداعها بحسابكم البنكي يوم الخميس.\n\nشاكرين حسن تفهمكم،\nفريق دعم الشركاء | هنقرستيشن`
+                };
+            }
+
+            // 3. IBAN / Bank Update (Case 56) -> Next question: "How long does verification take?"
+            if (cid === 56 || cid === 20) {
+                return {
+                    id: 'iban_audit_sla',
+                    question: 'سؤال التاجر المتوقع: "كم المدة التي يستغرقها تدقيق الحساب البنكي الجديد واعتماده؟"',
+                    previewText: 'إيضاح مهلة التدقيق والتحقق المالي من قبل الإدارة المالية (24 إلى 48 ساعة عمل).',
+                    macroText: `شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nنود إفادتكم بأن التحقق من شهادة الآيبان والبيانات البنكية يستغرق من 24 إلى 48 ساعة عمل من تاريخ استلام المستندات المطلوبة، وسيصلكم إشعار فوري فور اكتمال الاعتماد وتحديث الحساب بالنظام.\n\nشاكرين تعاونكم،\nفريق دعم الشركاء | هنقرستيشن`
+                };
+            }
+
+            // 4. Closed Store (Case 18) -> Next question: "What if app is still closed?"
+            if (cid === 18) {
+                return {
+                    id: 'pos_deep_restart',
+                    question: 'سؤال التاجر المتوقع: "أعدت تشغيل الجهاز وما زال الفرع مغلقاً في التطبيق، ماذا أفعل؟"',
+                    previewText: 'خطوات إضافية: إعادة تسجيل الدخول في Partner App والتحقق من ساعات العمل الرسمية.',
+                    macroText: `شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nفي حال استمرار ظهور المتجر مغلقاً، يرجى التكرم بتسجيل الخروج من تطبيق Partner App ثم تسجيل الدخول مجدداً، والتأكد من تفعيل زر "استقبال الطلبات" بالشاشة الرئيسية ومطابقة ساعات العمل الرسمية المعتمدة لفرعكم.\n\nشاكرين تعاونكم،\nفريق دعم الشركاء | هنقرستيشن`
+                };
+            }
+
+            // Default generic predictive next step
+            return {
+                id: 'generic_followup',
+                question: 'سؤال الشريك المتوقع: "كيف أتابع حالة التذكرة أو أرفع مستندات إضافية؟"',
+                previewText: 'توجيه الشريك لكيفية الرد على نفس الإيميل أو متابعة التذكرة عبر بوابة الشركاء.',
+                macroText: `شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nلمتابعة حالة طلبكم أو تزويدنا بأي مستندات إضافية، يمكنكم الرد مباشرة على هذا الإيميل وسيصل التحديث لفريق الدعم لمتابعة الإجراء فوراً.\n\nدمتم بخير،\nفريق دعم الشركاء | هنقرستيشن`
+            };
+        }
+
+        function applyNextMoveToWorkspace(moveId) {
+            const c = window.currentActiveCaseObj;
+            const nextMove = getPredictiveNextMove(c, window.currentActiveSubMacroIdx);
+            if (!nextMove) return;
+
+            const arEl = document.getElementById('arMacroText');
+            if (arEl) {
+                arEl.innerText = nextMove.macroText;
+                showToast("تم اعتماد وتجهيز رد الخطوة التالية للتاجر فوراً! 🔮⚡");
+            }
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // 🚨 3. QA & LEGAL BLACKLIST SHIELD (درع الكلمات المحظورة قانونياً)
+        // ══════════════════════════════════════════════════════════════════
+        const LEGAL_BLACKLIST_RULES = [
+            {
+                pattern: /(أوعدك|نوعدك|بوعدك|وعد مني|i promise)/gi,
+                dangerWord: 'أوعدك / نوعدك',
+                reason: 'وعود غير نظامية تسحب درجات الـ QA',
+                safeReplacement: 'نحرص على متابعة الإجراء وفق اللوائح المعتمدة'
+            },
+            {
+                pattern: /(غلطتنا|خطأنا|غلطة هنقرستيشن|our mistake)/gi,
+                dangerWord: 'غلطتنا / خطأنا',
+                reason: 'اعتراف بالخطأ دون إذن رسمي يورط قانونياً',
+                safeReplacement: 'يجري التحقق من الحالة التشغيلية بالتنسيق مع القسم المختص'
+            },
+            {
+                pattern: /(السيستم بايظ|النظام عطلان|النظام خربان|system down)/gi,
+                dangerWord: 'السيستم بايظ / عطلان',
+                reason: 'تعبير مسيء للعلامة التجارية يخصم درجات الجودة',
+                safeReplacement: 'يخضع النظام لتحديثات تقنية مؤقتة لرفع كفاءة الخدمة'
+            },
+            {
+                pattern: /(السائق سرق|المندوب هرب|المندوب سرق|driver stole)/gi,
+                dangerWord: 'السائق سرق / هرب',
+                reason: 'اتهام جنائي مباشر محظور في قنوات الدعم الرسمية',
+                safeReplacement: 'تعذر اكتمال تسليم الطلب من قِبل مندوب التوصيل'
+            },
+            {
+                pattern: /(هنعوضك أكيد|تعويض مضمون|guaranteed refund)/gi,
+                dangerWord: 'هنعوضك أكيد',
+                reason: 'وعد مالي استباقي قبل صدور قرار المالية',
+                safeReplacement: 'يخضع الطلب للمراجعة والتقييم وفق سياسة التعويضات الرسمية'
+            },
+            {
+                pattern: /(خلال نص ساعة|خلال دقائق فورا|in 10 mins)/gi,
+                dangerWord: 'خلال دقائق / نص ساعة',
+                reason: 'وعود زمنية وهمية تخترق معايير الـ SLA',
+                safeReplacement: 'في أقرب وقت ممكن خلال أوقات العمل الرسمية'
+            }
+        ];
+
+        function checkLegalBlacklist() {
+            const isEn = (typeof activeLangTab !== 'undefined' && activeLangTab === 'EN');
+            const boxId = isEn ? 'enMacroText' : 'arMacroText';
+            const el = document.getElementById(boxId);
+            if (!el) return;
+
+            const text = el.innerText || '';
+            const detectedViolations = [];
+
+            LEGAL_BLACKLIST_RULES.forEach(rule => {
+                if (rule.pattern.test(text)) {
+                    detectedViolations.push(rule);
+                }
+            });
+
+            // Update QA Badge
+            const badge = document.getElementById(isEn ? 'enQaBadge' : 'arQaBadge');
+            if (badge) {
+                if (detectedViolations.length > 0) {
+                    const first = detectedViolations[0];
+                    badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color: #EF4444;"></i> <strong style="color: #EF4444;">تحذير درع الجودة: تم رصد عبارة محظورة ("${first.dangerWord}"). اضغط للتصحيح الفوري 🛡️</strong>`;
+                    badge.style.background = 'rgba(239, 68, 68, 0.12)';
+                    badge.style.borderColor = '#EF4444';
+                    badge.style.cursor = 'pointer';
+                    badge.onclick = () => fixBlacklistViolation(boxId, first);
+                } else {
+                    badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #10B981;"></i> <strong>فحص الجودة (QA 100%): محصن تماماً من الكلمات المحظورة قانونياً ✨</strong>`;
+                    badge.style.background = 'rgba(16, 185, 129, 0.08)';
+                    badge.style.borderColor = 'rgba(16, 185, 129, 0.25)';
+                    badge.onclick = null;
+                }
+            }
+        }
+
+        function fixBlacklistViolation(boxId, rule) {
+            const el = document.getElementById(boxId);
+            if (!el) return;
+            el.innerText = el.innerText.replace(rule.pattern, rule.safeReplacement);
+            checkLegalBlacklist();
+            showToast(`تم استبدال ("${rule.dangerWord}") بالصيغة النظامية المعتمدة! 🛡️✨`);
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // 🎙️ 4. LIVE PHONE CALL TELEPROMPTER (ملقن المكالمات التليفونية)
+        // ══════════════════════════════════════════════════════════════════
+        let _callTimerInterval = null;
+        let _callSeconds = 0;
+
+        function openTeleprompterModal() {
+            const m = document.getElementById('teleprompterModal');
+            if (!m) return;
+            m.style.display = 'flex';
+
+            const c = window.currentActiveCaseObj || { id: 1, case_title: 'استفسار الشريك' };
+            const agentName = getAgentArabicName();
+            const entities = window.currentActiveDetectedEntities || {};
+            const storeName = entities.storeName || 'يا غالي';
+            const orderId = entities.orderId ? `رقم ${entities.orderId}` : 'طلبكم';
+
+            let spokenScript = '';
+
+            if (c.id === 1 || c.id === 3) {
+                spokenScript = `
+• <strong>الترحيب وبناء الألفة:</strong> "أهلاً وسهلاً بك شريكنا العزيز، معاك ${agentName} من دعم شركاء هنقرستيشن، كيف صحتك اليوم؟"
+<br><br>
+• <strong>توضيح المشكلة باحترافية:</strong> "بخصوص بلاغ فقدان أو تلف جهاز الطابعة للفرع، أحب أطمنك إننا جاهزين نرسل لك جهاز بديل فوراً."
+<br><br>
+• <strong>توضيح الرسوم بطريقة مريحة:</strong> "حسب اللائحة المعتمدة، رسوم الجهاز البديل هي <strong>500 ريال</strong>، وميزتها إنها هتتخصم من مبيعات الأسبوع الجاي من الفاتورة، يعني ما في أي دفع كاش حالياً."
+<br><br>
+• <strong>أخذ الموافقة وإنهاء الإجراء:</strong> "إذا معتمد وموافق، أعطيني إشارتك وأنا برفع لك الطلب الآن ويوصلك مندوب التوصيل بالفرع خلال يومين عمل بإذن الله."
+                `;
+            } else if (c.id === 45 || c.id === 44) {
+                spokenScript = `
+• <strong>الترحيب:</strong> "أهلاً بك يا غالي، معاك ${agentName} من دعم الشركاء بخصوص ${orderId}."
+<br><br>
+• <strong>شرح حكم التعويض:</strong> "أنا شفت تفاصيل الطلب، ولأنكم جهزتوا الوجبة والسائق اتأخر أكثر من 15 دقيقة، فحقكم محفوظ بالكامل والطلب مؤهل للتعويض <strong>بنسبة 100%</strong>."
+<br><br>
+• <strong>طمأنة الشريك:</strong> "المبلغ مسجل وهيظهر لك في فاتورة مبيعات الأسبوع الحالي وينزل بحسابكم البنكي يوم الخميس القادم. هل تحب أساعدك بأي استفسار آخر؟"
+                `;
+            } else {
+                spokenScript = `
+• <strong>التحية المباشرة:</strong> "أهلاً بك شريكنا العزيز، معاك ${agentName} من خدمة شركاء هنقرستيشن."
+<br><br>
+• <strong>صلب الإجراء:</strong> "بخصوص تذكرتكم المتعلقة بـ (${c.case_title})، تم مراجعة الطلب والإجراء المعتمد هو: ${c.internal_sop || c.procedure_arabic}"
+<br><br>
+• <strong>التوجيه والمتابعة:</strong> "نحن متابعين طلبكم بشكل مباشر، وتقدر في أي وقت تتابع التحديث من خلال بوابة الشركاء. يومك سعيد يا رب."
+                `;
+            }
+
+            const textBox = document.getElementById('teleprompterScriptText');
+            if (textBox) textBox.innerHTML = spokenScript;
+
+            // Start call timer
+            _callSeconds = 0;
+            if (_callTimerInterval) clearInterval(_callTimerInterval);
+            _callTimerInterval = setInterval(() => {
+                _callSeconds++;
+                const mins = String(Math.floor(_callSeconds / 60)).padStart(2, '0');
+                const secs = String(_callSeconds % 60).padStart(2, '0');
+                const timerEl = document.getElementById('callDurationTimer');
+                if (timerEl) timerEl.innerText = `⏱️ ${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function closeTeleprompterModal() {
+            const m = document.getElementById('teleprompterModal');
+            if (m) m.style.display = 'none';
+            if (_callTimerInterval) {
+                clearInterval(_callTimerInterval);
+                _callTimerInterval = null;
+            }
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // 🛸 5. FLOATING GLASS HUD (النافذة الشبحية العائمة)
+        // ══════════════════════════════════════════════════════════════════
+        function toggleFloatingGlassHud() {
+            const hud = document.getElementById('floatingGlassHud');
+            if (!hud) return;
+            if (hud.classList.contains('collapsed')) {
+                expandHud();
+            } else {
+                collapseHud();
+            }
+        }
+
+        function expandHud(e) {
+            if (e) e.stopPropagation();
+            const hud = document.getElementById('floatingGlassHud');
+            if (!hud) return;
+            hud.classList.remove('collapsed');
+            document.getElementById('hudCollapsedIcon').style.display = 'none';
+            document.getElementById('hudExpandedContent').style.display = 'block';
+            setTimeout(() => {
+                const inp = document.getElementById('hudSearchInput');
+                if (inp) inp.focus();
+            }, 150);
+        }
+
+        function collapseHud(e) {
+            if (e) e.stopPropagation();
+            const hud = document.getElementById('floatingGlassHud');
+            if (!hud) return;
+            hud.classList.add('collapsed');
+            document.getElementById('hudCollapsedIcon').style.display = 'flex';
+            document.getElementById('hudExpandedContent').style.display = 'none';
+        }
+
+        function handleHudSearch(val) {
+            const list = document.getElementById('hudResultsList');
+            if (!list) return;
+            if (!val || val.trim().length === 0) {
+                list.innerHTML = '';
+                return;
+            }
+
+            const cases = (typeof allCases !== 'undefined' && allCases.length > 0) ? allCases : ((typeof embeddedKB !== 'undefined') ? embeddedKB : []);
+            const q = val.trim().toLowerCase();
+            const matches = cases.filter(c => (c.case_title || '').toLowerCase().includes(q) || (c.procedure_arabic || '').toLowerCase().includes(q)).slice(0, 5);
+
+            if (matches.length === 0) {
+                list.innerHTML = '<div style="font-size: 0.72rem; color: #94A3B8; text-align: center; padding: 6px;">لا توجد حالات مطابقة</div>';
+                return;
+            }
+
+            list.innerHTML = matches.map(c => `
+                <div onclick="selectHudCase(${c.id})" style="background: rgba(255,255,255,0.06); padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: 0.74rem; color: #F1F5F9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: 1px solid rgba(255,255,255,0.1);">
+                    #${c.id} ${c.case_title}
+                </div>
+            `).join('');
+        }
+
+        window._hudActiveMacroText = '';
+        function selectHudCase(cid) {
+            const cases = (typeof allCases !== 'undefined' && allCases.length > 0) ? allCases : ((typeof embeddedKB !== 'undefined') ? embeddedKB : []);
+            const c = cases.find(x => x.id == cid);
+            if (!c) return;
+
+            const box = document.getElementById('hudActiveMacroBox');
+            const copyBtn = document.getElementById('hudCopyBtn');
+            const agentName = getAgentArabicName();
+            const macro = buildArabicMacro('', c.procedure_arabic || '');
+            window._hudActiveMacroText = macro;
+
+            if (box) {
+                box.style.display = 'block';
+                box.innerText = macro;
+            }
+            if (copyBtn) {
+                copyBtn.style.display = 'flex';
+            }
+        }
+
+        function copyHudActiveMacro() {
+            if (!window._hudActiveMacroText) return;
+            navigator.clipboard.writeText(window._hudActiveMacroText);
+            incrementDailyTicketCount();
+            showToast("تم نسخ الماكرو من الـ HUD بنجاح! 🚀🛸");
+        }
+    
     </script>
 <!-- AI Settings Modal -->
     <div id="aiSettingsModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 99999; align-items: center; justify-content: center; padding: 15px;">
@@ -11150,6 +11776,76 @@ function downloadOfficialMenuExcel() {
                 <button type="button" onclick="sendCopilotMsg()" style="background: linear-gradient(135deg, #8B5CF6, #6366F1); color: #FFF; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
                     <i class="fa-solid fa-paper-plane"></i> إرسال
                 </button>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- 🛸 FLOATING GLASS HUD (كبسولة عائمة فوق كل الشاشات) -->
+    <div id="floatingGlassHud" class="collapsed" onclick="if(this.classList.contains('collapsed')) expandHud(event)">
+        <div id="hudCollapsedIcon" style="font-size: 1.3rem; color: #F59E0B;">
+            <i class="fa-solid fa-headset"></i>
+        </div>
+        <div id="hudExpandedContent" style="display: none; padding: 12px;">
+            <div class="hud-header">
+                <span style="font-size: 0.8rem; font-weight: 800; color: #F59E0B; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-bolt"></i> HS Vendor Mini-HUD
+                </span>
+                <div style="display: flex; gap: 6px;">
+                    <button type="button" onclick="collapseHud(event)" style="background: none; border: none; color: #94A3B8; cursor: pointer; font-size: 0.9rem;">
+                        <i class="fa-solid fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div style="padding-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+                <input type="text" id="hudSearchInput" placeholder="بحث سريع في الـ 96 حالة..." oninput="handleHudSearch(this.value)" style="width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: #FFF; font-size: 0.78rem; outline: none;">
+                <div id="hudResultsList" style="max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;"></div>
+                <div id="hudActiveMacroBox" style="background: rgba(255,196,0,0.08); border: 1px solid rgba(255,196,0,0.25); border-radius: 6px; padding: 8px; font-size: 0.74rem; color: #E2E8F0; max-height: 90px; overflow-y: auto; display: none;"></div>
+                <button type="button" id="hudCopyBtn" onclick="copyHudActiveMacro()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 800; cursor: pointer; display: none; align-items: center; justify-content: center; gap: 6px;">
+                    <i class="fa-solid fa-copy"></i> نسخ الرد المعتمد
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎙️ LIVE PHONE CALL TELEPROMPTER MODAL -->
+    <div class="modal-overlay" id="teleprompterModal" style="display: none;">
+        <div class="modal-card" style="max-width: 680px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                        <i class="fa-solid fa-phone-volume"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; color: var(--text-main); font-size: 1.15rem; font-weight: 800;">ملقن المكالمات التليفونية المباشر (Call Teleprompter)</h3>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">نقاط تحدث شفوية عامية سلسة تقال في الهاتف مباشرة للتاجر</span>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span id="callDurationTimer" style="background: rgba(239,68,68,0.12); color: #EF4444; border: 1px solid rgba(239,68,68,0.3); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; font-family: monospace;">
+                        ⏱️ 00:00
+                    </span>
+                    <button onclick="closeTeleprompterModal()" style="background: none; border: none; color: var(--text-main); font-size: 1.3rem; cursor: pointer;">✕</button>
+                </div>
+            </div>
+
+            <!-- Teleprompter Spoken Script Box -->
+            <div class="teleprompter-script-box" id="teleprompterScriptText">
+                <!-- Dynamically populated spoken script -->
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; flex-wrap: wrap; gap: 8px;">
+                <div style="font-size: 0.75rem; color: var(--text-muted);">
+                    💡 <strong>نصيحة المكالمة:</strong> حافظ على نبرة ودودة وابتسامة صوتية، واذكر اسم الشريك لتوطيد الثقة.
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('teleprompterScriptText').innerText); showToast('تم نسخ سيناريو المكالمة! 📋');" class="btn-copy" style="width: auto; padding: 8px 16px;">
+                        <i class="fa-solid fa-copy"></i> نسخ نص التحدث
+                    </button>
+                    <button class="btn-learn" onclick="closeTeleprompterModal()" style="width: auto; padding: 8px 16px;">
+                        إنهاء المكالمة وإغلاق
+                    </button>
+                </div>
             </div>
         </div>
     </div>
