@@ -12,7 +12,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hungerstation Vendor Support AI Suite | المنصة الذكية لدعم الشركاء</title>
+    <title>Hungerstation Vendor Support AI Suite v3.0 | المنصة الذكية لدعم الشركاء</title>
     <!-- Google Fonts: Cairo & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -90,32 +90,22 @@
 
     <style>
         :root {
-            --bg-dark: #080B11;
-            --bg-canvas: #0D121F;
-            --bg-card: rgba(18, 24, 38, 0.75);
-            --bg-card-solid: #131A2B;
-            --bg-card-hover: rgba(26, 35, 54, 0.85);
+            --bg-body: #080B12;
+            --bg-card: rgba(16, 22, 36, 0.85);
+            --bg-card-hover: rgba(22, 30, 48, 0.95);
             --primary: #FFC400;
             --primary-hover: #FFB300;
-            --primary-dark: #D97706;
-            --primary-glow: rgba(255, 196, 0, 0.28);
-            --primary-subtle: rgba(255, 196, 0, 0.08);
+            --primary-glow: rgba(255, 196, 0, 0.25);
             --text-main: #F8FAFC;
-            --text-secondary: #CBD5E1;
             --text-muted: #94A3B8;
-            --border-color: rgba(255, 255, 255, 0.09);
-            --border-glow: rgba(255, 196, 0, 0.35);
-            --accent-green: #10B981;
-            --accent-blue: #3B82F6;
-            --accent-purple: #8B5CF6;
-            --accent-rose: #F43F5E;
-            --radius-xl: 22px;
-            --radius-lg: 16px;
-            --radius-md: 12px;
-            --radius-sm: 8px;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 196, 0, 0.35);
+            --radius-xl: 20px;
+            --radius-lg: 14px;
+            --radius-md: 10px;
+            --radius-sm: 7px;
             --radius-pill: 9999px;
-            --shadow-card: 0 16px 36px -8px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06);
-            --shadow-glow: 0 8px 25px -4px var(--primary-glow);
+            --shadow-panel: 0 12px 32px -4px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
         }
 
         * {
@@ -126,43 +116,42 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Custom Modern Scrollbars */
+        /* Slim Glass Scrollbars */
         ::-webkit-scrollbar {
-            width: 7px;
-            height: 7px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.15);
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.18);
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 196, 0, 0.45);
+            background: var(--primary);
         }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-body);
             background-image: 
-                radial-gradient(circle at 12% 15%, rgba(255, 196, 0, 0.06) 0%, transparent 40%),
-                radial-gradient(circle at 88% 85%, rgba(59, 130, 246, 0.05) 0%, transparent 45%),
+                radial-gradient(ellipse at 15% 10%, rgba(255, 196, 0, 0.07) 0%, transparent 45%),
+                radial-gradient(ellipse at 85% 90%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
                 radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.03) 0%, transparent 60%);
             background-attachment: fixed;
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            line-height: 1.5;
         }
 
-        /* Header Styling */
-        header {
-            background: rgba(13, 18, 31, 0.82);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-bottom: 1px solid var(--border-color);
-            padding: 14px 28px;
+        /* Modern Enterprise Top Header */
+        header.main-header {
+            background: rgba(11, 16, 28, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -175,93 +164,144 @@
         .logo-area {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
 
         .logo-badge {
-            background: linear-gradient(135deg, var(--primary) 0%, #FFA000 100%);
+            background: linear-gradient(135deg, #FFC400 0%, #F59E0B 100%);
             color: #000;
-            font-weight: 800;
-            padding: 8px 16px;
+            font-weight: 900;
+            padding: 6px 14px;
             border-radius: var(--radius-md);
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             display: flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 0 20px var(--primary-glow);
-            letter-spacing: -0.3px;
+            gap: 7px;
+            box-shadow: 0 0 16px var(--primary-glow);
         }
 
         .logo-title h1 {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: 800;
             color: #FFF;
             line-height: 1.2;
-            letter-spacing: -0.2px;
         }
 
         .logo-title p {
-            font-size: 0.78rem;
+            font-size: 0.74rem;
             color: var(--text-muted);
-            margin-top: 2px;
         }
 
+        .version-badge {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid #10B981;
+            color: #34D399;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: var(--radius-pill);
+        }
+
+        /* Header Right Utility Cluster */
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
-        .agent-pill {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 7px 14px;
+        .agent-chip {
+            background: rgba(255, 196, 0, 0.1);
+            border: 1px solid rgba(255, 196, 0, 0.3);
+            color: var(--primary);
+            padding: 6px 14px;
             border-radius: var(--radius-pill);
-            font-size: 0.82rem;
+            font-size: 0.84rem;
             font-weight: 700;
             display: flex;
             align-items: center;
             gap: 7px;
             cursor: pointer;
-            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-            user-select: none;
+            transition: all 0.2s;
         }
 
-        .agent-pill:hover {
-            background: rgba(255, 255, 255, 0.09);
-            border-color: rgba(255, 255, 255, 0.25);
+        .agent-chip:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        .header-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: var(--radius-pill);
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
             color: #FFF;
             transform: translateY(-1px);
         }
 
-        .stat-badge {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            padding: 7px 14px;
-            border-radius: var(--radius-pill);
-            font-size: 0.82rem;
-            color: var(--text-muted);
+        /* Workspace Switcher Bar */
+        .workspace-bar {
+            max-width: 1720px;
+            margin: 14px auto 0;
+            padding: 0 28px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .ws-tab-btn {
+            flex: 1;
+            padding: 10px 18px;
+            border-radius: var(--radius-lg);
+            font-weight: 800;
+            font-size: 0.9rem;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 7px;
-            transition: all 0.2s;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.22s;
         }
 
-        .stat-badge:hover {
-            border-color: var(--primary);
-            color: var(--primary);
+        .ws-tab-btn.active {
+            background: linear-gradient(135deg, #1E293B, #0F172A);
+            color: #FFF;
+            border: 2px solid #3B82F6;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.25);
         }
 
-        /* Layout Grid */
+        .ws-tab-btn.menu-tab {
+            background: rgba(16, 185, 129, 0.12);
+            color: #A7F3D0;
+            border: 2px solid #10B981;
+        }
+
+        .ws-tab-btn.menu-tab:hover {
+            background: rgba(16, 185, 129, 0.25);
+        }
+
+        /* App Container & Panels */
         .app-container {
             display: grid;
-            grid-template-columns: 1fr 1.22fr;
-            gap: 22px;
-            padding: 20px 28px;
+            grid-template-columns: 1fr 1.25fr;
+            gap: 20px;
+            padding: 16px 28px 28px 28px;
             flex: 1;
-            max-width: 1780px;
+            max-width: 1720px;
             margin: 0 auto;
             width: 100%;
         }
@@ -269,7 +309,7 @@
         @media (max-width: 1100px) {
             .app-container {
                 grid-template-columns: 1fr;
-                padding: 16px;
+                padding: 14px;
             }
         }
 
@@ -277,13 +317,13 @@
             background: var(--bg-card);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border);
             border-radius: var(--radius-xl);
-            padding: 22px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            box-shadow: var(--shadow-card);
+            gap: 14px;
+            box-shadow: var(--shadow-panel);
             position: relative;
         }
 
@@ -296,109 +336,33 @@
         }
 
         .panel-title {
-            font-size: 1.05rem;
+            font-size: 1rem;
             font-weight: 800;
             display: flex;
             align-items: center;
-            gap: 9px;
+            gap: 8px;
             color: var(--primary);
-            letter-spacing: -0.2px;
         }
 
         .step-pill {
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: linear-gradient(135deg, var(--primary), #D97706);
             color: #000;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            font-size: 0.8rem;
-            box-shadow: 0 0 10px var(--primary-glow);
+            font-size: 0.75rem;
+            box-shadow: 0 0 8px var(--primary-glow);
         }
 
-        /* Category Tabs Carousel */
-        .category-tabs {
-            display: flex;
-            gap: 6px;
-            overflow-x: auto;
-            padding: 2px 2px 8px 2px;
-            scrollbar-width: none;
-        }
-        .category-tabs::-webkit-scrollbar {
-            display: none;
-        }
-
-        .tab-btn {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 7px 14px;
-            border-radius: var(--radius-pill);
-            font-size: 0.8rem;
-            font-weight: 700;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            user-select: none;
-        }
-
-        .tab-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: #FFF;
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-1px);
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, var(--primary) 0%, #FFA000 100%);
-            color: #000;
-            font-weight: 800;
-            border-color: var(--primary);
-            box-shadow: 0 4px 14px var(--primary-glow);
-            transform: translateY(-1px);
-        }
-
-        /* Search Box */
-        .cases-search-box {
-            position: relative;
-        }
-
-        .cases-search-box input {
-            width: 100%;
-            background: rgba(10, 15, 26, 0.65);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 12px 42px 12px 16px;
-            color: var(--text-main);
-            font-size: 0.9rem;
-            outline: none;
-            transition: all 0.2s;
-        }
-
-        .cases-search-box input:focus {
-            border-color: var(--primary);
-            background: rgba(10, 15, 26, 0.9);
-            box-shadow: 0 0 0 3px var(--primary-glow);
-        }
-
-        .cases-search-box i {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            pointer-events: none;
-        }
-
-        /* Textarea Studio */
+        /* Modern Textarea Studio */
         .textarea-wrapper {
             position: relative;
-            border: 1px solid var(--border-color);
-            background: rgba(10, 15, 26, 0.65);
+            border: 1px solid var(--border);
+            background: rgba(10, 15, 26, 0.7);
             border-radius: var(--radius-lg);
             overflow: hidden;
             transition: all 0.22s;
@@ -407,15 +371,15 @@
         .textarea-wrapper:focus-within {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px var(--primary-glow);
-            background: rgba(10, 15, 26, 0.9);
+            background: rgba(10, 15, 26, 0.95);
         }
 
         textarea#partnerMessage {
             width: 100%;
-            min-height: 125px;
+            min-height: 135px;
             background: transparent;
             border: none;
-            padding: 16px 16px 48px 16px;
+            padding: 14px 14px 44px 14px;
             color: var(--text-main);
             font-size: 0.95rem;
             line-height: 1.65;
@@ -448,7 +412,7 @@
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--text-muted);
-            font-size: 0.73rem;
+            font-size: 0.74rem;
             font-weight: 700;
             padding: 4px 10px;
             border-radius: 6px;
@@ -464,38 +428,98 @@
             color: #FFF;
         }
 
-        /* Drag & Drop File Upload Box */
-        .upload-area {
-            border: 2px dashed rgba(255, 196, 0, 0.35);
-            background: rgba(255, 196, 0, 0.03);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            text-align: center;
+        .mic-pulse-btn {
+            background: linear-gradient(135deg, #EC4899, #8B5CF6);
+            color: #FFF;
+            border: none;
+            padding: 5px 14px;
+            border-radius: var(--radius-pill);
+            font-size: 0.78rem;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 10px rgba(236, 72, 153, 0.4);
+            transition: all 0.2s;
         }
 
-        .upload-area:hover, .upload-area.dragover {
+        .mic-pulse-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 14px rgba(236, 72, 153, 0.6);
+        }
+
+        /* Main Generate Button */
+        .btn-generate {
+            background: linear-gradient(135deg, #FFC400 0%, #FFA000 50%, #E68A00 100%);
+            color: #000;
+            font-weight: 900;
+            font-size: 1.02rem;
+            padding: 13px 20px;
+            border: none;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            box-shadow: 0 6px 22px rgba(255, 196, 0, 0.35);
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(255, 196, 0, 0.45);
+        }
+
+        .btn-generate:active {
+            transform: translateY(0);
+        }
+
+        /* Compact Attachment Strip */
+        .compact-attach-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .attach-trigger {
+            border: 1px dashed rgba(255, 196, 0, 0.35);
+            background: rgba(255, 196, 0, 0.03);
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .attach-trigger:hover, .attach-trigger.dragover {
             border-color: var(--primary);
-            background: rgba(255, 196, 0, 0.1);
-            box-shadow: 0 0 20px var(--primary-glow);
-            transform: translateY(-1px);
+            background: rgba(255, 196, 0, 0.09);
+            color: #FFF;
         }
 
         .file-badges-container {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
-            margin-top: 8px;
         }
 
         .file-badge {
             background: rgba(16, 185, 129, 0.15);
             border: 1px solid #10B981;
             border-radius: var(--radius-pill);
-            padding: 5px 12px;
-            font-size: 0.78rem;
+            padding: 4px 10px;
+            font-size: 0.75rem;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -506,31 +530,39 @@
         .file-badge .remove-btn {
             color: #EF4444;
             cursor: pointer;
-            margin-right: 4px;
             font-weight: 900;
         }
 
-        /* Presets Chips */
+        /* Quick Presets Carousel */
+        .presets-section {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
         .presets-grid {
             display: flex;
-            flex-wrap: wrap;
             gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+        .presets-grid::-webkit-scrollbar {
+            display: none;
         }
 
         .preset-chip {
             background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border);
             color: var(--text-secondary);
-            padding: 6px 12px;
+            padding: 5px 12px;
             border-radius: var(--radius-pill);
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             font-weight: 600;
             cursor: pointer;
+            white-space: nowrap;
             transition: all 0.2s;
             user-select: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
         }
 
         .preset-chip:hover {
@@ -540,67 +572,116 @@
             transform: translateY(-1px);
         }
 
-        /* Main Generate Button */
-        .btn-generate {
-            background: linear-gradient(135deg, #FFC400 0%, #FFA000 50%, #E68A00 100%);
-            color: #000;
-            font-weight: 900;
-            font-size: 1.02rem;
-            padding: 14px 20px;
-            border: none;
+        /* Collapsible KB Filter Card */
+        .kb-filter-card {
+            background: rgba(10, 15, 26, 0.55);
+            border: 1px solid var(--border);
             border-radius: var(--radius-lg);
-            cursor: pointer;
+            padding: 12px;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 6px 25px rgba(255, 196, 0, 0.35);
-            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .cases-search-box {
             position: relative;
-            overflow: hidden;
         }
 
-        .btn-generate::before {
-            content: '';
+        .cases-search-box input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 9px 36px 9px 12px;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .cases-search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-glow);
+        }
+
+        .cases-search-box i {
             position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.6s ease;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            pointer-events: none;
         }
 
-        .btn-generate:hover::before {
-            left: 100%;
+        .category-tabs {
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+            scrollbar-width: none;
+        }
+        .category-tabs::-webkit-scrollbar {
+            display: none;
         }
 
-        .btn-generate:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(255, 196, 0, 0.45);
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 5px 11px;
+            border-radius: var(--radius-pill);
+            font-size: 0.74rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            user-select: none;
         }
 
-        .btn-generate:active {
-            transform: translateY(0);
+        .tab-btn:hover {
+            color: #FFF;
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary) 0%, #FFA000 100%);
+            color: #000;
+            font-weight: 800;
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px var(--primary-glow);
+        }
+
+        .compact-select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            color: #FFF;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 6px 8px;
+            font-size: 0.76rem;
+            outline: none;
         }
 
         /* Result Card & Macro Box */
         .result-card {
-            background: rgba(10, 15, 26, 0.55);
-            border: 1px solid var(--border-color);
+            background: rgba(10, 15, 26, 0.65);
+            border: 1px solid var(--border);
             border-radius: var(--radius-lg);
-            padding: 20px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
         }
 
         .ccr-badge {
             background: rgba(59, 130, 246, 0.12);
             color: #93C5FD;
             border: 1px solid rgba(59, 130, 246, 0.3);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 0.8rem;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.78rem;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
@@ -612,8 +693,8 @@
             background: rgba(14, 20, 33, 0.85);
             border: 1px solid rgba(255, 196, 0, 0.25);
             border-radius: var(--radius-md);
-            padding: 18px;
-            font-size: 0.95rem;
+            padding: 16px;
+            font-size: 0.94rem;
             line-height: 1.8;
             white-space: pre-wrap;
             color: #F8FAFC;
@@ -624,21 +705,21 @@
         .lang-switcher-bar {
             display: flex;
             background: rgba(0, 0, 0, 0.35);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            padding: 4px;
+            padding: 3px;
             gap: 4px;
         }
 
         .lang-tab {
             flex: 1;
-            padding: 8px 14px;
+            padding: 7px 12px;
             border: none;
             border-radius: var(--radius-sm);
             background: transparent;
             color: var(--text-muted);
             font-weight: 700;
-            font-size: 0.84rem;
+            font-size: 0.82rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -651,18 +732,18 @@
             background: linear-gradient(135deg, var(--primary) 0%, #FFA000 100%);
             color: #000;
             font-weight: 800;
-            box-shadow: 0 2px 10px var(--primary-glow);
+            box-shadow: 0 2px 8px var(--primary-glow);
         }
 
         .lang-tab.active-en {
             background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
             color: #FFF;
             font-weight: 800;
-            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
         }
 
         .btn-copy {
-            background: linear-gradient(135deg, rgba(255, 196, 0, 0.2) 0%, rgba(245, 158, 11, 0.15) 100%);
+            background: linear-gradient(135deg, rgba(255, 196, 0, 0.22) 0%, rgba(245, 158, 11, 0.16) 100%);
             border: 1px solid var(--primary);
             color: var(--primary);
             padding: 12px 18px;
@@ -686,12 +767,8 @@
             box-shadow: 0 6px 20px var(--primary-glow);
         }
 
-        .btn-copy:active {
-            transform: translateY(0);
-        }
-
         .btn-copy-en {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.15) 100%);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.22) 0%, rgba(37, 99, 235, 0.16) 100%);
             border: 1px solid #3B82F6;
             color: #93C5FD;
             padding: 12px 18px;
@@ -705,32 +782,9 @@
             gap: 8px;
             transition: all 0.2s;
             width: 100%;
-            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.15);
         }
-
         .btn-copy-en:hover {
             background: #3B82F6;
-            color: #FFF;
-            transform: translateY(-1px);
-        }
-
-        .btn-copy-purple {
-            background: rgba(139, 92, 246, 0.15);
-            border: 1px solid #8B5CF6;
-            color: #C4B5FD;
-            padding: 10px 16px;
-            border-radius: var(--radius-sm);
-            font-size: 0.85rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: all 0.2s;
-        }
-        .btn-copy-purple:hover {
-            background: #8B5CF6;
             color: #FFF;
         }
 
@@ -738,9 +792,9 @@
             background: rgba(16, 185, 129, 0.12);
             border: 1px solid #10B981;
             color: #34D399;
-            padding: 9px 16px;
+            padding: 8px 14px;
             border-radius: var(--radius-md);
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 700;
             cursor: pointer;
             display: inline-flex;
@@ -750,48 +804,15 @@
             transition: all 0.2s;
             width: 100%;
         }
-
         .btn-learn:hover {
             background: #10B981;
             color: #000;
         }
 
-        /* Case Item inside Sidebar & Accordion */
-        .case-item {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 12px 14px;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .case-item:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 196, 0, 0.4);
-            transform: translateX(-2px);
-        }
-
-        /* Sub-Macro Pills */
-        .sub-macro-pill {
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            user-select: none;
-        }
-        .sub-macro-pill:hover {
-            transform: translateY(-1px);
-        }
-        .sub-macro-pill.active-sub-macro {
-            animation: pulse-glow 2s infinite alternate;
-        }
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
-            100% { box-shadow: 0 0 18px rgba(245, 158, 11, 0.6); }
-        }
-
         /* Floating Modern Toast */
         .toast {
             position: fixed;
-            bottom: 32px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%) translateY(120px);
             background: rgba(18, 24, 38, 0.95);
@@ -799,20 +820,15 @@
             border: 1px solid var(--primary);
             color: #FFF;
             font-weight: 800;
-            font-size: 0.92rem;
-            padding: 12px 24px;
+            font-size: 0.9rem;
+            padding: 10px 22px;
             border-radius: var(--radius-pill);
             box-shadow: 0 14px 35px rgba(0, 0, 0, 0.6), 0 0 20px var(--primary-glow);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 3000;
-        }
-
-        .toast i {
-            color: var(--primary);
-            font-size: 1.15rem;
         }
 
         .toast.show {
@@ -844,36 +860,14 @@
             background: #111726;
             border: 1px solid rgba(255, 196, 0, 0.35);
             border-radius: var(--radius-xl);
-            padding: 28px;
+            padding: 26px;
             width: 90%;
-            max-width: 620px;
+            max-width: 600px;
             box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
             text-align: center;
-        }
-
-        .modal-card h2, .modal-card h3 {
-            color: var(--primary);
-            font-weight: 800;
-        }
-
-        .modal-card input {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 12px 16px;
-            color: #FFF;
-            font-size: 1rem;
-            outline: none;
-            text-align: center;
-        }
-
-        .modal-card input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px var(--primary-glow);
         }
 
         .history-list {
@@ -886,13 +880,13 @@
 
         .history-item {
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            padding: 12px 14px;
+            border: 1px solid var(--border);
+            padding: 10px 12px;
             border-radius: var(--radius-sm);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
         }
 
         .dim-input-group {
@@ -902,7 +896,7 @@
             background: rgba(0,0,0,0.3);
             padding: 10px;
             border-radius: var(--radius-md);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border);
         }
         .dim-input-group input {
             padding: 8px !important;
@@ -1002,59 +996,65 @@
     </div>
 
     <!-- Header -->
-    <header>
-        <div class="logo-area" style="display: flex; align-items: center; gap: 14px;">
-            <div class="logo-badge"><i class="fa-solid fa-headset"></i> HS Vendor AI</div>
+        <!-- Header -->
+    <header class="main-header">
+        <div class="logo-area">
+            <div class="logo-badge">
+                <i class="fa-solid fa-headset"></i>
+                <span>HS VENDOR AI</span>
+            </div>
             <div class="logo-title">
                 <h1>Hungerstation Vendor Support Suite</h1>
-                <p>مولّد الماكرو التكتيكي المكتمل، قراءة واستخراج أرقام الفواتير، والتعلم الذاتي التلقائي</p>
+                <p>المنصة المعتمدة للردود التلقائية، المنيو، وقاعدة المعرفة (96 حالة)</p>
             </div>
+            <span class="version-badge">v3.0 Ultra ✨</span>
         </div>
+
         <div class="header-controls">
-
-            <div class="agent-pill" onclick="toggleVoiceAiDrawer()" id="voiceAiTriggerBtn" style="background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%); color: #FFF; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);">
-                <i class="fa-solid fa-microphone"></i> <span id="voiceBadgeText">🎙️ المساعد الصوتي والذكاء التفاعلي</span>
+            <div class="agent-chip" onclick="promptChangeName()" title="تعديل اسم الموظف">
+                <i class="fa-solid fa-circle-user"></i>
+                <span id="displayAgentName">الموظف: عمر</span>
+                <i class="fa-solid fa-pen" style="font-size: 0.68rem; opacity: 0.6;"></i>
             </div>
 
-            <div class="agent-pill" onclick="openAiSettingsModal()" id="aiStatusBadge" style="background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%); color: #FFF; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="aiBadgeText">⚡ ربط الذكاء الاصطناعي المجاني</span>
-            </div>
-            <div class="agent-pill" onclick="downloadStandaloneFile()" style="background: rgba(59, 130, 246, 0.15); color: #60A5FA; border-color: rgba(59, 130, 246, 0.4);" title="تحميل الملف المستقل أوفلاين بنقرة واحدة">
-                <i class="fa-solid fa-download"></i> <span>تنزيل الملف</span>
-            </div>
-            <div class="agent-pill" onclick="showLearningModal()" style="background: rgba(16, 185, 129, 0.15); color: #34D399; border-color: rgba(16, 185, 129, 0.4);">
-                <i class="fa-solid fa-brain"></i> <span id="learnedRulesCountBadge">ذاكرة التعلم (5)</span>
-            </div>
-                        <div class="agent-pill" onclick="openMenuBuilderModal()" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: #FFF; border: none; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 7px 16px; border-radius: 20px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);" title="بناء وتجهيز شيت المنيو الرسمي تلقائياً (_MenuUpload.xlsx)">
-                <i class="fa-solid fa-file-excel" style="font-size: 1.1rem; color: #FFF;"></i> <span>📋 أداة بناء المنيو الرسمي (_MenuUpload.xlsx)</span>
-            </div>
-<div class="agent-pill" onclick="showResizerModal()" style="background: rgba(139, 92, 246, 0.15); color: #A78BFA; border-color: rgba(139, 92, 246, 0.4);">
-                <i class="fa-solid fa-crop-simple"></i> <span>المحرر الشامل للصور</span>
-            </div>
-            <div class="agent-pill" onclick="promptChangeName()">
-                <i class="fa-solid fa-user-circle"></i> <span id="displayAgentName">الموظف: عمر (Omar)</span> <i class="fa-solid fa-pen" style="font-size: 0.75rem;"></i>
-            </div>
-            <div class="stat-badge" onclick="showHistoryModal()" style="cursor: pointer;">
+            <button type="button" class="header-btn" onclick="toggleVoiceAiDrawer()" id="voiceAiTriggerBtn" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFF; border: none;">
+                <i class="fa-solid fa-microphone"></i> <span id="voiceBadgeText">🎙️ صوتي</span>
+            </button>
+
+            <button type="button" class="header-btn" onclick="openAiSettingsModal()" id="aiStatusBadge">
+                <i class="fa-solid fa-wand-magic-sparkles" style="color: #A78BFA;"></i> <span>⚡ AI</span>
+            </button>
+
+            <button type="button" class="header-btn" onclick="showLearningModal()" style="color: #34D399;">
+                <i class="fa-solid fa-brain"></i> <span id="learnedRulesCountBadge">ذاكرة (5)</span>
+            </button>
+
+            <button type="button" class="header-btn" onclick="showHistoryModal()">
                 <i class="fa-solid fa-clock-rotate-left"></i> <span id="historyCountBadge">السجل (9)</span>
-            </div>
+            </button>
+
+            <button type="button" class="header-btn" onclick="showResizerModal()">
+                <i class="fa-solid fa-crop-simple"></i> <span>محرر الصور</span>
+            </button>
+
+            <button type="button" class="header-btn" onclick="downloadStandaloneFile()" style="background: rgba(59, 130, 246, 0.2); color: #93C5FD; border-color: rgba(59, 130, 246, 0.4);">
+                <i class="fa-solid fa-download"></i> <span>تنزيل أوفلاين</span>
+            </button>
         </div>
     </header>
 
-    <!-- 🧭 Main Workspace View Switcher -->
-    <div style="max-width: 1400px; margin: 12px auto 0; padding: 0 20px; display: flex; gap: 12px; align-items: center;">
-        <button id="viewBtnTickets" onclick="switchMainWorkspace('TICKETS')" style="flex: 1; padding: 12px 20px; background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); color: #F8FAFC; border: 2px solid #3B82F6; border-radius: 12px; font-weight: 800; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25); transition: all 0.2s;">
-            <i class="fa-solid fa-headset" style="color: #60A5FA; font-size: 1.2rem;"></i>
+        <!-- 🧭 Main Workspace View Switcher -->
+    <div class="workspace-bar">
+        <button id="viewBtnTickets" onclick="switchMainWorkspace('TICKETS')" class="ws-tab-btn active">
+            <i class="fa-solid fa-comment-dots" style="color: #60A5FA;"></i>
             <span>💬 مولد ردود التذاكر وقاعدة المعرفة (96 حالة معتمدة)</span>
         </button>
-        <button id="viewBtnMenu" onclick="switchMainWorkspace('MENU_STUDIO')" style="flex: 1; padding: 12px 20px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.25) 100%); color: #A7F3D0; border: 2px solid #10B981; border-radius: 12px; font-weight: 800; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); transition: all 0.2s;">
-            <i class="fa-solid fa-file-excel" style="color: #34D399; font-size: 1.2rem;"></i>
+        <button id="viewBtnMenu" onclick="switchMainWorkspace('MENU_STUDIO')" class="ws-tab-btn menu-tab">
+            <i class="fa-solid fa-file-excel" style="color: #34D399;"></i>
             <span>🍽️ استوديو إنشاء وتجهيز المنيو الرسمي (_MenuUpload.xlsx)</span>
-            <span style="background: #10B981; color: #000; font-size: 0.72rem; padding: 2px 8px; border-radius: 12px; font-weight: 800;">أداة المنيو التلقائية</span>
         </button>
     </div>
 
-
-    
     <!-- 🍽️ DEDICATED MENU BUILDER STUDIO WORKSPACE -->
     <div id="menuStudioWorkspace" style="display: none; max-width: 1400px; margin: 16px auto; padding: 0 20px;">
         <div style="background: #1E293B; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 24px; color: #FFF; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
@@ -1282,72 +1282,22 @@
 
 <div class="app-container">
 
-        <!-- Left Input Panel -->
+        <!-- Left Input Panel (Uncluttered & Airy) -->
         <div class="panel">
             <div class="panel-header">
-                <div class="panel-title"><i class="fa-solid fa-pen-to-square"></i> رسالة الشريك / استفسار المتجر والمرفقات</div>
-            </div>
-
-            <!-- Category Tabs -->
-            <div class="category-tabs" id="categoryTabs">
-                <button class="tab-btn active" onclick="filterCategory('ALL')">الكل</button>
-                <button class="tab-btn" onclick="filterCategory('Technical Inquiry')">إستفسار فني</button>
-                <button class="tab-btn" onclick="filterCategory('Partner Data Update')">تحديث بيانات</button>
-                <button class="tab-btn" onclick="filterCategory('Content Update')">تحديث المنيو</button>
-                <button class="tab-btn" onclick="filterCategory('Live Order Inquiries')">الطلبات الجارية</button>
-                <button class="tab-btn" onclick="filterCategory('Billing Inquiries')">الفواتير والتعويضات</button>
-                <button class="tab-btn" onclick="filterCategory('Contract and Sales Inquiries')">العقود والمبيعات</button>
-                <button class="tab-btn" onclick="filterCategory('Partner Feedback')">تعليقات المتاجر</button>
-            </div>
-
-            <!-- Search -->
-            
-            <!-- 3-Level KnowledgeOwl Tree Hierarchy Navigator -->
-            <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
-                <div style="font-size: 0.82rem; font-weight: 700; color: #F59E0B; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-                    <span><i class="fa-solid fa-sitemap"></i> شجرة تصفح الـ KB (Inbound Cases procedures):</span>
-                    <span style="font-size: 0.72rem; color: var(--text-muted);">96 حالة معتمدة (7 أقسام رئيسية)</span>
+                <div class="panel-title">
+                    <span class="step-pill">1</span>
+                    <span>رسالة الشريك / استفسار المتجر</span>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                    <div>
-                        <label style="font-size: 0.72rem; color: #94A3B8; display: block; margin-bottom: 4px;">القسم الرئيسي (Level 1):</label>
-                        <select id="level1Select" onchange="onLevel1Change()" style="width: 100%; background: #0F172A; color: #FFF; border: 1px solid var(--border-color); border-radius: 6px; padding: 6px 8px; font-size: 0.8rem;">
-                            <option value="ALL">🔍 جميع الأقسام الرئيسية (7)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="font-size: 0.72rem; color: #94A3B8; display: block; margin-bottom: 4px;">القسم الفرعي (Level 2):</label>
-                        <select id="level2Select" onchange="onLevel2Change()" style="width: 100%; background: #0F172A; color: #FFF; border: 1px solid var(--border-color); border-radius: 6px; padding: 6px 8px; font-size: 0.8rem;">
-                            <option value="ALL">🌐 جميع الفروع الثانوية</option>
-                        </select>
-                    </div>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 0.74rem; color: var(--text-muted);">اختصار:</span>
+                    <kbd style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; padding: 2px 6px; font-size: 0.72rem; color: var(--primary);">Ctrl + Enter</kbd>
                 </div>
             </div>
 
-<div class="cases-search-box">
-                <input type="text" id="searchInput" placeholder="ابحث باسم الحالة (مثل: تعويض، الفاتورة، الآيبان، شاشة فارغة)..." oninput="searchCases()">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </div>
-
-                        <!-- 🍽️ Quick Menu Builder Banner -->
-            <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.25) 100%); border: 1px solid #10B981; border-radius: 12px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 36px; height: 36px; border-radius: 8px; background: #10B981; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #FFF;">
-                        <i class="fa-solid fa-utensils"></i>
-                    </div>
-                    <div>
-                        <strong style="font-size: 0.88rem; color: #34D399; display: block;">أداة إنشاء وتجهيز شيت المنيو الرسمي (_MenuUpload.xlsx)</strong>
-                        <span style="font-size: 0.72rem; color: #A7F3D0;">استخراج الأصناف والأسعار وعزل صور Google Drive في شيت إكسيل رسمي فوري</span>
-                    </div>
-                </div>
-                <button onclick="openMenuBuilderModal()" style="background: #10B981; color: #000; border: none; font-weight: 800; font-size: 0.8rem; padding: 7px 14px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4); white-space: nowrap;">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> فتح أداة المنيو
-                </button>
-            </div>
-
-            <!-- Text Input -->
-            <div class="textarea-wrapper" style="margin-bottom: 12px;">
-                <textarea id="partnerMessage" placeholder="انقل أو الصق هنا رسالة الشريك مباشرة، أو اضغط للتسجيل الصوتي (يدعم الاختصار السريع: Ctrl + Enter للتوليد الفوري)..." oninput="updateInputStats()"></textarea>
+            <!-- Textarea Box with Integrated Toolbar (At the Top for instant focus!) -->
+            <div class="textarea-wrapper">
+                <textarea id="partnerMessage" placeholder="الصق رسالة الشريك هنا مباشرة، أو اضغط للتسجيل الصوتي... (يستخرج النظام بيانات التذاكر والأرقام تلقائياً)" oninput="updateInputStats()"></textarea>
                 <div class="textarea-toolbar">
                     <div class="textarea-tools-left">
                         <button type="button" class="tool-mini-btn" onclick="pastePartnerMessage()" title="لصق من الحافظة">
@@ -1356,45 +1306,75 @@
                         <button type="button" class="tool-mini-btn" onclick="clearPartnerMessage()" title="مسح النص">
                             <i class="fa-solid fa-trash-can"></i> مسح
                         </button>
-                        <span id="inputStatsBadge" style="font-size: 0.72rem; color: var(--text-muted); margin-right: 6px;">0 كلمة | 0 حرف</span>
+                        <span id="inputStatsBadge" style="font-size: 0.72rem; color: var(--text-muted); margin-right: 4px;">0 كلمة | 0 حرف</span>
                     </div>
                     <div>
-                        <button id="mainMicBtn" onclick="toggleMainVoiceRecording()" type="button" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFF; border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 3px 12px rgba(236, 72, 153, 0.4); transition: all 0.2s;">
-                            <i class="fa-solid fa-microphone"></i> <span id="mainMicText">🎙️ تسجيل صوتي</span>
+                        <button id="mainMicBtn" onclick="toggleMainVoiceRecording()" type="button" class="mic-pulse-btn">
+                            <i class="fa-solid fa-microphone"></i> <span id="mainMicText">تسجيل صوتي</span>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Drag & Drop Attachment Upload Box -->
-            <div>
-                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; display: flex; justify-content: space-between;">
-                    <span><i class="fa-solid fa-paperclip"></i> إرفاق أي ملف أو صورة (سحب وإسقاط Drag &amp; Drop أو انقر):</span>
-                </div>
-                <div class="upload-area" id="mainDropzone" onclick="triggerFileInput('multiFileInput')">
-                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 6px;"></i>
-                    <div style="font-size: 0.95rem; font-weight: 700;">اسحب الفواتير أو الصور واسقطها هنا أو انقر لاختيار الملفات</div>
-                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">يدعم PDF، الصور (PNG/JPG)، الاكسيل (XLSX/CSV)، والكشوف</p>
+            <!-- Primary Generate Button (Prominent right below message) -->
+            <button class="btn-generate" id="mainGenerateBtn" onclick="generateResponse()">
+                <i class="fa-solid fa-bolt-lightning" style="font-size: 1.1rem;"></i>
+                <span>توليد الماكرو المعتمد فوراً</span>
+            </button>
+
+            <!-- Compact Attachment Row -->
+            <div class="compact-attach-row">
+                <div class="attach-trigger" id="mainDropzone" onclick="triggerFileInput('multiFileInput')">
+                    <i class="fa-solid fa-paperclip" style="color: var(--primary);"></i>
+                    <span>إرفاق ملف أو فاتورة (PDF, صور, Excel) أو اسحبه هنا</span>
                 </div>
                 <div class="file-badges-container" id="uploadedFilesList"></div>
             </div>
 
-            <!-- Presets -->
-            <div>
-                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;"><i class="fa-solid fa-bolt"></i> حالات شائعة:</div>
+            <!-- Popular Quick Presets -->
+            <div class="presets-section">
+                <div style="font-size: 0.76rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
+                    <i class="fa-solid fa-bolt" style="color: var(--primary);"></i> استفسارات شائعة:
+                </div>
                 <div class="presets-grid">
-                    <div class="preset-chip" onclick="setPreset('تحديث مواعيد وساعات عمل قائمة الفطور والفطار من الساعة 6 ص إلى 11:30 ص')">🍳 مواعيد قائمة الفطور (6:00 ص - 11:30 ص)</div>
-                    <div class="preset-chip" onclick="setPreset('بناء على المكالمة الهاتفيّة في انتظار تزويدنا بالمتطلبات الخاصّة بتحديث إعدادات قائمة الطعام')">📞 متابعة مكالمة تحديث إعدادات المنيو (Update menu settings)</div>
-                    <div class="preset-chip" onclick="setPreset('صباح الخير استفسار عن تحويل الفاتورة والمبيعات الأسبوعية والحوالة لم تصل')">💵 شرح الفاتورة والمبيعات / عدم وصول الحوالة</div>
-                    <div class="preset-chip" onclick="setPreset('السلام عليكم تلقيت شكاوى من العملاء او خصم تعويض كيف اعرف تفاصيلها واسبابها عشان اتجنبها')">👋 السلام عليكم + طلب تعويض</div>
-                    <div class="preset-chip" onclick="setPreset('Hello I have sales and invoice breakdown questions')">🇬🇧 English: Invoice &amp; Sales Breakdown</div>
-                    <div class="preset-chip" onclick="setPreset('طلب تحديث رقم الآيبان الحساب البنكي')">🏦 تحديث رقم الآيبان البنكي</div>
+                    <div class="preset-chip" onclick="setPreset('تحديث مواعيد وساعات عمل قائمة الفطور والفطار من الساعة 6 ص إلى 11:30 ص')">🍳 ساعات الفطور</div>
+                    <div class="preset-chip" onclick="setPreset('صباح الخير استفسار عن تحويل الفاتورة والمبيعات الأسبوعية والحوالة لم تصل')">💵 استفسار عن الفاتورة</div>
+                    <div class="preset-chip" onclick="setPreset('السلام عليكم طلب تعويض عن طلب ملغي')">🛵 طلب تعويض</div>
+                    <div class="preset-chip" onclick="setPreset('طلب تحديث رقم الآيبان الحساب البنكي')">🏦 تحديث الآيبان</div>
+                    <div class="preset-chip" onclick="setPreset('Hello I have sales and invoice breakdown questions')">🇬🇧 Invoice Breakdown</div>
                 </div>
             </div>
 
-            <button class="btn-generate" id="mainGenerateBtn" onclick="generateResponse()">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> توليد الماكرو المعتمد المكتمل باسم الموظف
-            </button>
+            <!-- Collapsible KB Search & Filter Card -->
+            <div class="kb-filter-card">
+                <div class="cases-search-box">
+                    <input type="text" id="searchInput" placeholder="ابحث باسم الحالة أو الكود (مثال: تعويض، آيبان، طابعة، فاتورة)..." oninput="searchCases(true)">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+
+                <!-- Category Tabs Carousel -->
+                <div class="category-tabs" id="categoryTabs">
+                    <button class="tab-btn active" onclick="filterCategory('ALL')">🌟 الكل</button>
+                    <button class="tab-btn" onclick="filterCategory('Technical Inquiry')">🛠️ فني</button>
+                    <button class="tab-btn" onclick="filterCategory('Partner Data Update')">🏢 بيانات</button>
+                    <button class="tab-btn" onclick="filterCategory('Content Update')">🍔 منيو</button>
+                    <button class="tab-btn" onclick="filterCategory('Live Order Inquiries')">🛵 طلبات</button>
+                    <button class="tab-btn" onclick="filterCategory('Billing Inquiries')">💰 فواتير</button>
+                    <button class="tab-btn" onclick="filterCategory('Contract and Sales Inquiries')">📝 عقود</button>
+                    <button class="tab-btn" onclick="filterCategory('Partner Feedback')">💬 تقييمات</button>
+                </div>
+
+                <!-- 3-Level Quick Hierarchy Dropdowns -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <select id="level1Select" onchange="onLevel1Change()" class="compact-select">
+                        <option value="ALL">🔍 الأقسام الـ 7 الرئيسية</option>
+                    </select>
+                    <select id="level2Select" onchange="onLevel2Change()" class="compact-select">
+                        <option value="ALL">🌐 الفروع الثانوية</option>
+                    </select>
+                </div>
+            </div>
+
         </div>
 
         <!-- Right Output Panel -->
