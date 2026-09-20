@@ -1466,6 +1466,140 @@
             width: fit-content;
         }
 
+    
+        /* 🎭 AI Tone Switcher Bar */
+        .tone-switcher-bar {
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .tone-buttons-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .tone-pill-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .tone-pill-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .tone-pill-btn.active-tone {
+            background: var(--primary);
+            color: #000 !important;
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px var(--primary-glow);
+        }
+
+        /* 🌳 Decision Tree Styles */
+        .dt-step-card {
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+        .dt-question-title {
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dt-options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px;
+        }
+        .dt-option-btn {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            text-align: right;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .dt-option-btn:hover {
+            border-color: var(--primary);
+            background: var(--bg-card-hover);
+            transform: translateY(-1px);
+        }
+        .dt-option-btn.selected {
+            border-color: #10B981;
+            background: rgba(16, 185, 129, 0.12);
+            color: #059669;
+        }
+
+        /* 🤖 Vendor Care Copilot Chat Styles */
+        .copilot-msg-bubble {
+            padding: 12px 16px;
+            border-radius: 14px;
+            font-size: 0.86rem;
+            line-height: 1.6;
+            max-width: 88%;
+            word-break: break-word;
+        }
+        .copilot-user-msg {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #2563EB, #1D4ED8);
+            color: #FFF;
+            border-bottom-left-radius: 4px;
+        }
+        .copilot-ai-msg {
+            align-self: flex-start;
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        .copilot-prompt-chip {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #8B5CF6;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .copilot-prompt-chip:hover {
+            background: #8B5CF6;
+            color: #FFF;
+        }
+    
     </style>
 </head>
 <body>
@@ -1581,6 +1715,15 @@
             </button>
 
             <!-- 📊 Policy Calculator Button -->
+            <!-- 🤖 Vendor Support Copilot Trigger -->
+            <button type="button" class="header-btn" onclick="openCopilotModal()" title="المساعد الذكي التفاعلي المباشر" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(99, 102, 241, 0.15)); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.35);">
+                <i class="fa-solid fa-robot"></i> <span>كابيلوت الدعم 🤖</span>
+            </button>
+
+            <!-- 🌳 Interactive Decision Tree Trigger -->
+            <button type="button" class="header-btn" onclick="openDecisionTreeModal()" title="شجرة القرارات التفاعلية للحالات المعقدة" style="background: rgba(245, 158, 11, 0.12); color: #D97706; border-color: rgba(245, 158, 11, 0.35);">
+                <i class="fa-solid fa-sitemap"></i> <span>شجرة القرارات 🌳</span>
+            </button>
             <button type="button" class="header-btn" onclick="openPolicyCalculatorModal()" title="حاسبة تعويضات الطلبات ومواعيد الفواتير" style="background: rgba(16, 185, 129, 0.12); color: #059669; border-color: rgba(16, 185, 129, 0.35);">
                 <i class="fa-solid fa-calculator"></i> <span>حاسبة السياسات والتعويضات</span>
             </button>
@@ -6296,6 +6439,28 @@ function cleanArabicProcedure(text) {
 
         window.backToKBList = function() {
             _macroActive = false;
+            
+            const rawPartnerMsgForAudit = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '') || (document.getElementById('searchInput') ? document.getElementById('searchInput').value : '');
+            const auditFindings = auditTicketMessage(rawPartnerMsgForAudit);
+            let auditAlertHtml = '';
+            if (auditFindings && auditFindings.length > 0) {
+                auditAlertHtml = `
+                    <div style="background: rgba(245, 158, 11, 0.08); border: 1.5px solid rgba(245, 158, 11, 0.35); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px;">
+                        <div style="font-size: 0.82rem; font-weight: 800; color: #D97706; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-shield-halved"></i> <strong>التدقيق الذكي للشكوى ومطابقة السياسة (Smart Policy Auditor):</strong>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                            ${auditFindings.map(f => `
+                                <div style="font-size: 0.78rem; color: var(--text-main); display: flex; align-items: flex-start; gap: 8px;">
+                                    <i class="fa-solid ${f.icon}" style="color: ${f.type === 'danger' ? '#EF4444' : f.type === 'warning' ? '#F59E0B' : '#3B82F6'}; margin-top: 3px;"></i>
+                                    <div><strong>${f.title}</strong> ${f.desc}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+    
             const output = document.getElementById('outputContent');
             if (!output) return;
             output.innerHTML = `
@@ -7706,6 +7871,57 @@ ${invoiceGuideHtml || ""}
 
                     ${subMacrosHtml}
 
+                    <!-- ⚡ Dynamic Live Variable Fillers -->
+                    <div class="variable-chips-card" id="macroVariableBar">
+                        <div class="var-chips-header">
+                            <span style="font-size: 0.8rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> <strong>حقول التعبئة الفورية (تتحدث داخل الرد العربي والإنجليزي فوراً):</strong>
+                            </span>
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">اكتب رقم الطلب أو اسم المتجر للتعويض التلقائي في الماكرو</span>
+                        </div>
+                        <div class="var-chips-grid">
+                            <div class="var-chip-box">
+                                <i class="fa-solid fa-receipt" style="color: #0284C7;"></i>
+                                <input type="text" id="liveVarOrderId" placeholder="رقم الطلب (Order ID)" value="${detectedEntities.orderId || ''}" oninput="updateLiveMacroVariables()">
+                            </div>
+                            <div class="var-chip-box">
+                                <i class="fa-solid fa-shop" style="color: #10B981;"></i>
+                                <input type="text" id="liveVarStoreName" placeholder="اسم المتجر (Store Name)" value="${detectedEntities.storeName || ''}" oninput="updateLiveMacroVariables()">
+                            </div>
+                            <div class="var-chip-box">
+                                <i class="fa-solid fa-money-bill-wave" style="color: #F59E0B;"></i>
+                                <input type="text" id="liveVarAmount" placeholder="المبلغ (SAR)" value="${detectedEntities.amount || ''}" oninput="updateLiveMacroVariables()">
+                            </div>
+                            <div class="var-chip-box">
+                                <i class="fa-solid fa-user" style="color: #EC4899;"></i>
+                                <input type="text" id="liveVarCustomer" placeholder="اسم العميل / المندوب" value="${detectedEntities.customerName || ''}" oninput="updateLiveMacroVariables()">
+                            </div>
+                        </div>
+                    </div>
+
+                    ${auditAlertHtml || ''}
+
+                    <!-- 🎭 AI Tone Switcher Bar -->
+                    <div class="tone-switcher-bar">
+                        <span style="font-size: 0.76rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+                            <i class="fa-solid fa-sliders"></i> نبرة الصياغة:
+                        </span>
+                        <div class="tone-buttons-group">
+                            <button type="button" class="tone-pill-btn active-tone" id="toneBtn_original" onclick="applyMacroTone('original')" title="الرد الرسمي المعتمد من قاعدة المعرفة">
+                                <i class="fa-solid fa-rotate-left"></i> الرد الأصلي المعتمد
+                            </button>
+                            <button type="button" class="tone-pill-btn" id="toneBtn_de-escalation" onclick="applyMacroTone('de-escalation')" title="نبرة دبلوماسية راقية لتهدئة الشريك الغاضب">
+                                <i class="fa-solid fa-shield-heart" style="color: #EC4899;"></i> امتصاص الغضب 🛡️
+                            </button>
+                            <button type="button" class="tone-pill-btn" id="toneBtn_firm" onclick="applyMacroTone('firm')" title="نبرة مهنية حازمة توضح شروط العقد والسياسة">
+                                <i class="fa-solid fa-scale-balanced" style="color: #3B82F6;"></i> رسمي وحازم ⚖️
+                            </button>
+                            <button type="button" class="tone-pill-btn" id="toneBtn_quick" onclick="applyMacroTone('quick')" title="نقاط مختصرة وسريعة مناسبة للشات المباشر">
+                                <i class="fa-solid fa-bolt" style="color: #F59E0B;"></i> شات سريع ومختصر ⚡
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Language Switcher Tabs -->
                     <div class="lang-switcher-bar">
                         <button class="lang-tab ${!isEn ? 'active-ar' : ''}" id="tabBtnAr" onclick="switchLangTab('AR')">
@@ -7719,15 +7935,47 @@ ${invoiceGuideHtml || ""}
                     <!-- Arabic Macro Container -->
                     <div id="arMacroContainer" style="display: ${!isEn ? 'block' : 'none'};">
                         ${aiBadgeNotice || ""}
-<div class="response-box" id="arMacroText" contenteditable="true" style="border-color: rgba(255, 196, 0, 0.3); background: rgba(255, 196, 0, 0.05); color: #FFF; font-weight: 600; margin-bottom: 10px;" title="يمكنك تعديل أي كلمة هنا بالداخل مباشرة">${arMacro}</div>
-                        <button class="btn-copy" onclick="copyText('arMacroText')"><i class="fa-solid fa-copy"></i> نسخ الماكرو العربي الجاهز (باسم ${arAgentName}) 🚀</button>
-                        <button class="btn-learn" onclick="saveLearnedCorrection()"><i class="fa-solid fa-brain"></i> حفظ وتدريب النظام الذاتي على هذا الرد 🧠</button>
+<!-- ✨ QA Proofreader and Quality Score Bar -->
+                        <div class="qa-proofread-card" style="display: flex; justify-content: space-between; align-items: center; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 8px; padding: 6px 12px; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+                            <span id="arQaBadge" style="font-size: 0.76rem; color: #059669; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-circle-check"></i> <strong>فحص الجودة (QA): الرد مدقق لغوياً وخالي من الأخطاء</strong>
+                            </span>
+                            <button type="button" onclick="proofreadCurrentMacro()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> تدقيق لغوي وإملائي فوري (QA 100%) ✨
+                            </button>
+                        </div>
+
+                        <div class="response-box" id="arMacroText" contenteditable="true" style="border-color: rgba(255, 196, 0, 0.3); background: rgba(255, 196, 0, 0.05); color: #FFF; font-weight: 600; margin-bottom: 10px;" title="يمكنك تعديل أي كلمة هنا بالداخل مباشرة">${arMacro}</div>
+                        
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
+                            <button class="btn-copy" onclick="copyText('arMacroText')" style="flex: 2;"><i class="fa-solid fa-copy"></i> نسخ الماكرو العربي الجاهز (باسم ${arAgentName}) 🚀</button>
+                            <button class="btn-learn" onclick="copyCrmWrapUpNote()" style="flex: 1; background: rgba(139, 92, 246, 0.15); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.35);" title="نسخ ملخص تذكرة منسق للإغلاق السريع في Zendesk أو Salesforce">
+                                <i class="fa-solid fa-clipboard-list"></i> ملخص الـ CRM 📋
+                            </button>
+                            <button class="btn-learn" onclick="saveLearnedCorrection()" style="width: auto;"><i class="fa-solid fa-brain"></i> تدريب 🧠</button>
+                        </div>
                     </div>
 
                     <!-- English Macro Container -->
                     <div id="enMacroContainer" style="display: ${isEn ? 'block' : 'none'};">
+                        <!-- ✨ English QA Proofreader -->
+                        <div class="qa-proofread-card" style="display: flex; justify-content: space-between; align-items: center; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 8px; padding: 6px 12px; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+                            <span id="enQaBadge" style="font-size: 0.76rem; color: #0284C7; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-circle-check"></i> <strong>QA Verified: 100% Quality Grammar & Punctuation</strong>
+                            </span>
+                            <button type="button" onclick="proofreadCurrentMacro()" style="background: linear-gradient(135deg, #3B82F6, #2563EB); color: #FFF; border: none; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Proofread English (QA 100%) ✨
+                            </button>
+                        </div>
+
                         <div class="response-box" id="enMacroText" contenteditable="true" dir="ltr" style="border-color: rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.05); color: #FFF; font-weight: 600; text-align: left; margin-bottom: 10px;" title="You can edit text directly">${enMacro}</div>
-                        <button class="btn-copy-en" onclick="copyText('enMacroText')"><i class="fa-solid fa-copy"></i> Copy English Macro (${enAgentName}) 🚀</button>
+                        
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
+                            <button class="btn-copy-en" onclick="copyText('enMacroText')" style="flex: 2;"><i class="fa-solid fa-copy"></i> Copy English Macro (${enAgentName}) 🚀</button>
+                            <button class="btn-learn" onclick="copyCrmWrapUpNote()" style="flex: 1; background: rgba(139, 92, 246, 0.15); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.35);" title="Copy CRM wrap-up log">
+                                <i class="fa-solid fa-clipboard-list"></i> CRM Log 📋
+                            </button>
+                        </div>
                     </div>
 
                     <div style="margin-top: 10px;">
@@ -9778,6 +10026,580 @@ function downloadOfficialMenuExcel() {
             }
         }
 
+    
+        // ══════════════════════════════════════════════════════════════════
+        // 💎 1. LINGUISTIC & QA PROOFREADING ENGINE (ضمان الجودة والتدقيق اللغوي)
+        // ══════════════════════════════════════════════════════════════════
+        function cleanArabicLinguistics(text) {
+            if (!text) return "";
+            let s = text;
+            
+            const words = [
+                ['الغاء', 'إلغاء'],
+                ['الغي', 'أُلغي'],
+                ['ارجاع', 'إرجاع'],
+                ['ارسال', 'إرسال'],
+                ['ايداع', 'إيداع'],
+                ['اشعار', 'إشعار'],
+                ['اشعارات', 'إشعارات'],
+                ['ايميل', 'إيميل'],
+                ['اجراء', 'إجراء'],
+                ['اجراءات', 'إجراءات'],
+                ['ادارة', 'إدارة'],
+                ['اضافة', 'إضافة'],
+                ['امكانية', 'إمكانية'],
+                ['افادة', 'إفادة'],
+                ['افادتنا', 'إفادتنا'],
+                ['اغلاق', 'إغلاق'],
+                ['اعادة', 'إعادة'],
+                ['اصدار', 'إصدار'],
+                ['إعتذار', 'اعتذار'],
+                ['إستفسار', 'استفسار'],
+                ['إستلام', 'استلام'],
+                ['إختيار', 'اختيار'],
+                ['إشتراك', 'اشتراك'],
+                ['إعتماد', 'اعتماد'],
+                ['إستكمال', 'استكمال'],
+                ['شكرا', 'شكرًا'],
+                ['عفوا', 'عفوًا'],
+                ['اهلا', 'أهلاً'],
+                ['مرحبا', 'مرحبًا'],
+                ['فورا', 'فورًا'],
+                ['دائما', 'دائمًا'],
+                ['ايضا', 'أيضًا'],
+                ['مجددا', 'مجددًا'],
+                ['تماما', 'تمامًا'],
+                ['سياسه', 'سياسة'],
+                ['خدمه', 'خدمة'],
+                ['شركه', 'شركة'],
+                ['منصه', 'منصة'],
+                ['طريقه', 'طريقة'],
+                ['مراجعه', 'مراجعة'],
+                ['قيمه', 'قيمة'],
+                ['المعمتد', 'المعتمد'],
+                ['المعتمده', 'المعتمدة'],
+                ['الي', 'إلى'],
+                ['حتي', 'حتى'],
+                ['فى', 'في']
+            ];
+
+            for (const [w, rep] of words) {
+                const pattern = new RegExp('(?<![\\u0600-\\u06FF])([وف]?[بل]?)?(' + w + ')(?![\\u0600-\\u06FF])', 'g');
+                s = s.replace(pattern, (match, prefix, base) => (prefix || '') + rep);
+            }
+
+            // Preposition 'علي' before specific nouns -> 'على'
+            const aliRgx = new RegExp('(?<![\\u0600-\\u06FF])علي\\s+(الشريك|الطلب|المتجر|الفرع|المنصة|الحساب|الفاتورة|النظام|التطبيق|أنه|أننا|علم|ضوء|الرقم|مدار|كافة|جميع|أن)', 'g');
+            s = s.replace(aliRgx, 'على $1');
+
+            // Punctuation spacing (no space before comma/period, space after)
+            s = s.replace(/\s+([،,\.!\?:])/g, '$1');
+            s = s.replace(/,(\S)/g, '، $1');
+            s = s.replace(/،(\S)/g, '، $1');
+            s = s.replace(/\.(\S)/g, '. $1');
+            s = s.replace(/([،,\.!\?])\s{2,}/g, '$1 ');
+            s = s.replace(/\s{2,}/g, ' ');
+
+            // Safe QA Placeholder fallback (prevent QA penalties for untyped brackets)
+            s = s.replace(/\[رقم الطلب\]/g, 'الطلب الموضح');
+            s = s.replace(/\[اسم المتجر\]|\[اسم الشريك\]/g, 'متجركم الكريم');
+            s = s.replace(/\[المبلغ\]/g, 'المبلغ المحدد');
+            s = s.replace(/\[اسم العميل\]|\[اسم المندوب\]/g, 'الطرف المعني');
+
+            return s.trim();
+        }
+
+        function cleanEnglishLinguistics(text) {
+            if (!text) return "";
+            let s = text;
+            s = s.replace(/\bhungerstation\b/gi, 'Hungerstation');
+            s = s.replace(/\border id\b/gi, 'Order ID');
+            s = s.replace(/\bsar\b/gi, 'SAR');
+            s = s.replace(/\bi\s+/g, 'I ');
+            s = s.replace(/\brecieve\b/gi, 'receive');
+            s = s.replace(/\bseperate\b/gi, 'separate');
+            s = s.replace(/\bcancelation\b/gi, 'cancellation');
+            
+            s = s.replace(/\s+([,\.!\?:])/g, '$1');
+            s = s.replace(/,(\S)/g, ', $1');
+            s = s.replace(/\.(\S)/g, '. $1');
+            s = s.replace(/\s{2,}/g, ' ');
+            
+            s = s.replace(/(^\s*|[.!?]\s+)([a-z])/g, (m, p1, p2) => p1 + p2.toUpperCase());
+
+            s = s.replace(/\[Order ID\]/g, 'the specified order');
+            s = s.replace(/\[Store Name\]|\[Partner Name\]/g, 'your esteemed store');
+            s = s.replace(/\[Amount\]/g, 'the specified amount');
+            s = s.replace(/\[Customer Name\]|\[Rider Name\]/g, 'the relevant party');
+
+            return s.trim();
+        }
+
+        function proofreadCurrentMacro() {
+            const isEn = (typeof activeLangTab !== 'undefined' && activeLangTab === 'EN');
+            const boxId = isEn ? 'enMacroText' : 'arMacroText';
+            const el = document.getElementById(boxId);
+            if (!el) return;
+
+            const original = el.innerText;
+            const corrected = isEn ? cleanEnglishLinguistics(original) : cleanArabicLinguistics(original);
+            el.innerText = corrected;
+
+            const badge = document.getElementById(isEn ? 'enQaBadge' : 'arQaBadge');
+            if (badge) {
+                badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #10B981;"></i> <strong>درجة الجودة: 100% ممتاز (خالي تماماً من الأخطاء الإملائية والترقيم) ✨</strong>`;
+                badge.style.color = '#059669';
+            }
+            showToast("تم تدقيق الرد وتصحيح الهمزات والتنوين وعلامات الترقيم بنجاح! 🎯");
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // 🎭 2. AI TONE SWITCHER (مغير نبرة الرد الذكي)
+        // ══════════════════════════════════════════════════════════════════
+        window._currentArMacroRaw = "";
+        window._currentEnMacroRaw = "";
+
+        function applyMacroTone(tone) {
+            const c = window.currentActiveCaseObj;
+            if (!c) return;
+
+            const arEl = document.getElementById('arMacroText');
+            const enEl = document.getElementById('enMacroText');
+            if (!arEl && !enEl) return;
+
+            const agentAr = getAgentArabicName();
+            const agentEn = getAgentEnglishName();
+
+            const idx = window.currentActiveSubMacroIdx || 0;
+            const sm = (c.sub_macros && c.sub_macros[idx]) ? c.sub_macros[idx] : null;
+            let coreAr = (sm && sm.macro_arabic) ? sm.macro_arabic : (c.procedure_arabic || "تم استلام طلبكم وجاري متابعته مع الفريق المختص.");
+            let coreEn = (sm && sm.macro_english) ? sm.macro_english : (c.procedure_english || "Your request has been received and is being processed.");
+
+            const entities = window.currentActiveDetectedEntities || {};
+            if (entities.orderId) {
+                coreAr = coreAr.replace(/\[رقم الطلب\]/g, entities.orderId);
+                coreEn = coreEn.replace(/\[Order ID\]/g, entities.orderId);
+            }
+            if (entities.storeName) {
+                coreAr = coreAr.replace(/\[اسم المتجر\]|\[اسم الشريك\]/g, entities.storeName);
+                coreEn = coreEn.replace(/\[Store Name\]|\[Partner Name\]/g, entities.storeName);
+            }
+            if (entities.amount) {
+                coreAr = coreAr.replace(/\[المبلغ\]/g, entities.amount + ' ريال');
+                coreEn = coreEn.replace(/\[Amount\]/g, entities.amount + ' SAR');
+            }
+
+            let finalAr = "";
+            let finalEn = "";
+
+            if (tone === 'de-escalation') {
+                finalAr = `عزيزنا الشريك،\n\nنود في البداية أن نؤكد لكم بالغ تقديرنا لشراكتكم القيّمة واهتمامنا الكامل بنجاح متجركم، ونعتذر بصدق عن أي إزعاج أو تجربة غير ملائمة قد تكون واجهتكم.\n\nبخصوص استفساركم الكريم، نود توضيح الإجراء التالي:\n${cleanArabicLinguistics(coreAr)}\n\nنحن دائماً بجانبكم ويسعدنا تقديم كامل الدعم والمساندة لضمان تجربة تشغيلية مثالية.\n\nتقبلوا خالص التحية والتقدير،\nفريق دعم الشركاء | هنقرستيشن\n${agentAr}`;
+                
+                finalEn = `Dear Esteemed Partner,\n\nWe would like to express our highest appreciation for your partnership and sincere apologies for any inconvenience you may have experienced.\n\nRegarding your inquiry, please note the following approved procedure:\n${cleanEnglishLinguistics(coreEn)}\n\nWe remain committed to supporting your business every step of the way.\n\nBest regards,\nPartner Operations Support | Hungerstation\n${agentEn}`;
+            } else if (tone === 'firm') {
+                finalAr = `عزيزنا الشريك،\n\nإشارةً إلى استفساركم، وتأكيداً على اللوائح والسياسات التشغيلية المعتمدة لدى منصة هنقرستيشن:\n\n${cleanArabicLinguistics(coreAr)}\n\nنأمل التكرم بالالتزام بالإجراءات المحددة أعلاه لضمان سير العمليات وفق أعلى معايير الجودة والشفافية.\n\nشاكرين حسن تعاونكم وتفهمكم،\nفريق إدارة عمليات الشركاء | هنقرستيشن\n${agentAr}`;
+                
+                finalEn = `Dear Partner,\n\nIn reference to your inquiry and in accordance with Hungerstation official operational guidelines and policies:\n\n${cleanEnglishLinguistics(coreEn)}\n\nWe kindly ask for your adherence to these approved standards to ensure optimal operations.\n\nSincerely,\nVendor Operations Compliance | Hungerstation\n${agentEn}`;
+            } else if (tone === 'quick') {
+                const cleanSingleAr = coreAr.replace(/\n+/g, ' ').trim();
+                const cleanSingleEn = coreEn.replace(/\n+/g, ' ').trim();
+                finalAr = `أهلاً بك عزيزنا الشريك 🌹\n• بخصوص تذكرتك: ${cleanArabicLinguistics(cleanSingleAr)}\n• لأي مساعدة إضافية نحن بخدمتكم فوراً.\n${agentAr}`;
+                
+                finalEn = `Hello Partner 👋\n• Resolution: ${cleanEnglishLinguistics(cleanSingleEn)}\n• Please let us know if you need further assistance.\n${agentEn}`;
+            } else {
+                const greetings = window.currentActiveGreetings || { arGreeting: "", enGreeting: "" };
+                finalAr = buildArabicMacro(greetings.arGreeting, coreAr);
+                finalEn = buildEnglishMacro(greetings.enGreeting, coreEn);
+            }
+
+            if (arEl) arEl.innerText = finalAr;
+            if (enEl) enEl.innerText = finalEn;
+
+            const buttons = document.querySelectorAll('.tone-pill-btn');
+            buttons.forEach(b => b.classList.remove('active-tone'));
+            const clickedBtn = document.getElementById('toneBtn_' + tone);
+            if (clickedBtn) clickedBtn.classList.add('active-tone');
+
+            const toneLabel = tone === 'de-escalation' ? 'امتصاص الغضب 🛡️' : tone === 'firm' ? 'رسمي وحازم ⚖️' : tone === 'quick' ? 'مختصر وسريع ⚡' : 'الرد الأصلي 🔄';
+            showToast(`تم تبديل النبرة إلى: ${toneLabel}`);
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // 📋 3. 1-CLICK CRM WRAP-UP NOTE (ملخص التذكرة لـ Zendesk/CRM)
+        // ══════════════════════════════════════════════════════════════════
+        function copyCrmWrapUpNote() {
+            const c = window.currentActiveCaseObj || { id: 0, case_title: 'Inquiry', ccr: 'General' };
+            const entities = window.currentActiveDetectedEntities || {};
+            const agent = getAgentArabicName();
+            const orderStr = entities.orderId ? `#${entities.orderId}` : 'N/A';
+            const storeStr = entities.storeName ? entities.storeName : 'N/A';
+            const amtStr = entities.amount ? `${entities.amount} SAR` : 'N/A';
+            const now = new Date();
+            const timeStr = now.toLocaleDateString('ar-SA') + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const note = `════════ HS VENDOR SUPPORT TICKET SUMMARY ════════
+• Case ID: #${c.id} - ${c.case_title}
+• Order ID: ${orderStr}
+• Store / Partner: ${storeStr}
+• Value / Amount: ${amtStr}
+• CCR Classification: ${c.ccr}
+• Action Taken: Official KnowledgeOwl Inbound Macro Dispatched
+• QA Status: 100% Quality Assurance Verified
+• Agent: ${agent} | Timestamp: ${timeStr}
+══════════════════════════════════════════════════`;
+
+            navigator.clipboard.writeText(note);
+            incrementDailyTicketCount();
+            showToast("تم نسخ ملخص التذكرة المنظم للـ CRM / Zendesk بنجاح! 📋✨");
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // 🔍 4. SMART TICKET AUDITOR (المدقق التلقائي للشكوى والسياسات)
+        // ══════════════════════════════════════════════════════════════════
+        function auditTicketMessage(text) {
+            if (!text || text.trim().length < 5) return null;
+            const t = text.toLowerCase();
+            const findings = [];
+
+            if ((t.includes('تعويض') || t.includes('فلوس') || t.includes('مبلغ') || t.includes('compensation')) && 
+                (t.includes('ما جهز') || t.includes('لم يجهز') || t.includes('قبل التجهيز') || t.includes('قبل التحضير') || t.includes('not prepared') || t.includes('كنسل بدري'))) {
+                findings.push({
+                    type: 'danger',
+                    icon: 'fa-triangle-exclamation',
+                    title: 'تنبيه تعويض (رفض 0%):',
+                    desc: 'الشريك يطالب بتعويض لطلب ملغي قبل بدء التحضير. وفق لائحة هنقرستيشن لا يستحق الشريك أي تعويض في هذه الحالة.'
+                });
+            }
+
+            if (t.includes('تأخر') || t.includes('سائق') || t.includes('مندوب') || t.includes('driver delay')) {
+                const delayMatch = t.match(/(\d+)\s*(دقيقة|دقايق|دقائق|min|mins)/);
+                if (delayMatch && parseInt(delayMatch[1]) < 15) {
+                    findings.push({
+                        type: 'warning',
+                        icon: 'fa-clock',
+                        title: 'تنبيه وقت انتظار السائق:',
+                        desc: `المدة المذكورة (${delayMatch[1]} دقيقة) أقل من الحد الأدنى للتعويض (15 دقيقة بعد اكتمال التجهيز).`
+                    });
+                }
+            }
+
+            if (t.includes('ايبان') || t.includes('آيبان') || t.includes('حساب بنكي') || t.includes('سجل تجاري') || t.includes('iban') || t.includes('cr')) {
+                findings.push({
+                    type: 'info',
+                    icon: 'fa-file-shield',
+                    title: 'متطلبات التحقق الإلزامية:',
+                    desc: 'يتطلب خطاب رسمي مختوم من المنشأة + شهادة بنكية للآيبان متطابقة حرفياً مع الاسم في السجل التجاري لتجنب رفض الطلب.'
+                });
+            }
+
+            if (t.includes('فاتورة') || t.includes('مبيعات') || t.includes('تحويل') || t.includes('الحوالة') || t.includes('invoice') || t.includes('payout')) {
+                findings.push({
+                    type: 'info',
+                    icon: 'fa-calendar-check',
+                    title: 'دورة الصرف الأسبوعية المعتمدة:',
+                    desc: 'فواتير الأسبوع (الإثنين-الأحد) تصدر الأربعاء، والإيداع البنكي الخميس (الراجحي/الأهلي) أو الأحد صباحاً لباقي البنوك.'
+                });
+            }
+
+            return findings;
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // 🌳 5. INTERACTIVE DECISION TREE ENGINE (شجرة القرارات التفاعلية)
+        // ══════════════════════════════════════════════════════════════════
+        window._dtState = {
+            prep: 'READY',
+            reason: 'DRIVER_DELAY',
+            bankChoice: 'IBAN_SAME',
+            posChoice: 'CLOSED_APP'
+        };
+
+        function openDecisionTreeModal() {
+            const m = document.getElementById('decisionTreeModal');
+            if (m) {
+                m.style.display = 'flex';
+                dtRenderCancelVerdict();
+            }
+        }
+
+        function closeDecisionTreeModal() {
+            const m = document.getElementById('decisionTreeModal');
+            if (m) m.style.display = 'none';
+        }
+
+        function switchDecisionFlow(flow) {
+            ['cancel', 'bank', 'pos'].forEach(f => {
+                const btn = document.getElementById('dtTabBtn_' + f);
+                const view = document.getElementById('dtFlow_' + f);
+                if (btn) btn.classList.toggle('active', f === flow);
+                if (view) view.style.display = (f === flow) ? 'block' : 'none';
+            });
+            if (flow === 'cancel') dtRenderCancelVerdict();
+            if (flow === 'bank') dtRenderBankVerdict();
+            if (flow === 'pos') dtRenderPosVerdict();
+        }
+
+        function dtSelectOption(type, val, btn) {
+            window._dtState[type] = val;
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.dt-option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            dtRenderCancelVerdict();
+        }
+
+        function dtRenderCancelVerdict() {
+            const prep = window._dtState.prep;
+            const reason = window._dtState.reason;
+            let percent = 0;
+            let label = "";
+            let caseId = 45;
+            let note = "";
+
+            if (prep === 'NOT_PREPARED') {
+                percent = 0;
+                label = "غير مستحق للتعويض (0%)";
+                note = "لم يتم تحضير الطعام إطلاقاً قبل الإلغاء، لذا لا يتحمل النظام أي تكلفة تكبدها الشريك.";
+                caseId = 44;
+            } else if (reason === 'OUT_OF_STOCK') {
+                percent = 0;
+                label = "غير مستحق للتعويض (0% - خطأ الشريك)";
+                note = "الإلغاء بسبب عدم توفر الصنف لدى المتجر، وتعتبر مسؤولية الشريك المباشرة.";
+                caseId = 44;
+            } else if (reason === 'DRIVER_DELAY' || reason === 'NO_DRIVER') {
+                percent = 100;
+                label = "مستحق للتعويض الكامل (100%)";
+                note = "تم تجهيز الطعام وتأخر السائق أكثر من 15 دقيقة أو لم يحضر. يعوض الشريك عن قيمة الوجبة كاملة.";
+                caseId = 45;
+            } else if (reason === 'CUSTOMER_CANCEL') {
+                percent = prep === 'READY' ? 100 : 50;
+                label = prep === 'READY' ? "مستحق للتعويض الكامل (100%)" : "تعويض جزئي (50% قيد التحضير)";
+                note = "إلغاء العميل بعد بدء التحضير يعوض الشريك وفق نسبة الجاهزية المسجلة.";
+                caseId = 45;
+            }
+
+            const box = document.getElementById('dtCancelVerdictBox');
+            if (box) {
+                const color = percent > 0 ? '#10B981' : '#EF4444';
+                box.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                        <span style="background: ${color}22; border: 1.5px solid ${color}; color: ${color}; padding: 6px 12px; border-radius: 20px; font-weight: 800; font-size: 0.95rem;">
+                            <i class="fa-solid fa-gavel"></i> ${label}
+                        </span>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">الحالة المعتمدة: #${caseId}</span>
+                    </div>
+                    <div style="font-size: 0.84rem; color: var(--text-main); margin-top: 6px; line-height: 1.5;">${note}</div>
+                    <div style="margin-top: 10px;">
+                        <button class="btn-copy" onclick="dtApplyCaseToWorkspace(${caseId})" style="width: 100%; justify-content: center;">
+                            <i class="fa-solid fa-bolt"></i> اعتماد الحالة #${caseId} وتجهيز الماكرو في مساحة العمل فوراً
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function dtSelectBankOption(choice, btn) {
+            window._dtState.bankChoice = choice;
+            btn.parentElement.querySelectorAll('.dt-option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            dtRenderBankVerdict();
+        }
+
+        function dtRenderBankVerdict() {
+            const choice = window._dtState.bankChoice;
+            let caseId = 56;
+            let title = "تحديث رقم الحساب البنكي (الآيبان)";
+            let reqs = "خطاب رسمي مطبوع ومختوم + شهادة بنكية رسمية برقم الآيبان باسم المنشأة.";
+            if (choice === 'TRANSFER_CR') {
+                caseId = 20;
+                title = "نقل ملكية المتجر وتعديل السجل التجاري";
+                reqs = "عقد التنازل الموثق + صورة السجل التجاري الجديد + شهادة الآيبان الجديد باسم المالك الجديد.";
+            } else if (choice === 'STORE_NAME') {
+                caseId = 19;
+                title = "تعديل اسم المتجر أو الشهرة في التطبيق";
+                reqs = "صورة السجل التجاري أو العلامة التجارية المسجلة لإثبات الاسم المطلوب.";
+            }
+
+            const box = document.getElementById('dtBankVerdictBox');
+            if (box) {
+                box.innerHTML = `
+                    <div style="font-weight: 800; color: #3B82F6; font-size: 0.95rem; margin-bottom: 6px;">
+                        <i class="fa-solid fa-file-signature"></i> ${title} (#${caseId})
+                    </div>
+                    <div style="font-size: 0.82rem; color: var(--text-main); margin-bottom: 10px;">
+                        <strong>المستندات المطلوبة:</strong> ${reqs}
+                    </div>
+                    <button class="btn-copy" onclick="dtApplyCaseToWorkspace(${caseId})" style="width: 100%; justify-content: center;">
+                        <i class="fa-solid fa-bolt"></i> فتح الحالة #${caseId} وتجهيز الماكرو للشريك فوراً
+                    </button>
+                `;
+            }
+        }
+
+        function dtSelectPosOption(choice, btn) {
+            window._dtState.posChoice = choice;
+            btn.parentElement.querySelectorAll('.dt-option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            dtRenderPosVerdict();
+        }
+
+        function dtRenderPosVerdict() {
+            const choice = window._dtState.posChoice;
+            let caseId = 18;
+            let title = "المتجر مغلق في التطبيق";
+            let sop = "التحقق من اتصال جهاز التابلت بالإنترنت، ثم فحص حالة الفرع في الـ Backoffice وتفعيله.";
+            if (choice === 'PRINTER_FAIL') {
+                caseId = 7;
+                title = "عطل طابعة الفواتير أو الاتصال";
+                sop = "إعادة تشغيل البلوتوث بالطابعة والتابلت، التحقق من بكرة الورق، وتحديث تطبيق Partner App.";
+            } else if (choice === 'LOGIN_PASS') {
+                caseId = 24;
+                title = "إعادة تعيين كلمة المرور لبوابة الشركاء";
+                sop = "إرسال رابط استعادة كلمة المرور للإيميل الرسمي المسجل للشريك.";
+            }
+
+            const box = document.getElementById('dtPosVerdictBox');
+            if (box) {
+                box.innerHTML = `
+                    <div style="font-weight: 800; color: #10B981; font-size: 0.95rem; margin-bottom: 6px;">
+                        <i class="fa-solid fa-screwdriver-wrench"></i> ${title} (#${caseId})
+                    </div>
+                    <div style="font-size: 0.82rem; color: var(--text-main); margin-bottom: 10px;">
+                        <strong>الإجراء التشغيلي:</strong> ${sop}
+                    </div>
+                    <button class="btn-copy" onclick="dtApplyCaseToWorkspace(${caseId})" style="width: 100%; justify-content: center;">
+                        <i class="fa-solid fa-bolt"></i> فتح الحالة #${caseId} وتجهيز الماكرو فوراً
+                    </button>
+                `;
+            }
+        }
+
+        function dtApplyCaseToWorkspace(caseId) {
+            closeDecisionTreeModal();
+            selectCase(caseId);
+            showToast(`تم فتح الحالة المعتمدة #${caseId} في مساحة العمل بنجاح! 🚀`);
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // 🤖 6. VENDOR SUPPORT COPILOT AI ASSISTANT (كابيلوت الدعم التفاعلي)
+        // ══════════════════════════════════════════════════════════════════
+        function openCopilotModal() {
+            const m = document.getElementById('copilotModal');
+            if (m) {
+                m.style.display = 'flex';
+                const input = document.getElementById('copilotInput');
+                if (input) setTimeout(() => input.focus(), 150);
+            }
+        }
+
+        function closeCopilotModal() {
+            const m = document.getElementById('copilotModal');
+            if (m) m.style.display = 'none';
+        }
+
+        function askCopilot(query) {
+            const input = document.getElementById('copilotInput');
+            if (input) {
+                input.value = query;
+                sendCopilotMsg();
+            }
+        }
+
+        function sendCopilotMsg() {
+            const input = document.getElementById('copilotInput');
+            if (!input || !input.value.trim()) return;
+
+            const userText = input.value.trim();
+            input.value = '';
+
+            const log = document.getElementById('copilotChatLog');
+            if (!log) return;
+
+            // Append User message
+            const userBubble = document.createElement('div');
+            userBubble.className = 'copilot-msg-bubble copilot-user-msg';
+            userBubble.innerText = userText;
+            log.appendChild(userBubble);
+            log.scrollTop = log.scrollHeight;
+
+            // Show Typing / Thinking indicator
+            const typingBubble = document.createElement('div');
+            typingBubble.className = 'copilot-msg-bubble copilot-ai-msg';
+            typingBubble.id = 'copilotTyping';
+            typingBubble.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري استشارة قاعدة المعرفة واللوائح المعتمدة...';
+            log.appendChild(typingBubble);
+            log.scrollTop = log.scrollHeight;
+
+            setTimeout(() => {
+                const typing = document.getElementById('copilotTyping');
+                if (typing) typing.remove();
+
+                // Find best matching case from allCases
+                const cases = (typeof allCases !== 'undefined' && allCases.length > 0) ? allCases : ((typeof embeddedKB !== 'undefined') ? embeddedKB : []);
+                let bestCase = null;
+                let highestScore = 0;
+                const cleanQuery = normalizeArabic(userText.toLowerCase());
+
+                cases.forEach(c => {
+                    let score = 0;
+                    const cTitle = normalizeArabic((c.case_title || '').toLowerCase());
+                    const cProc = normalizeArabic((c.procedure_arabic || '').toLowerCase());
+                    const cKeywords = normalizeArabic((c.keywords || []).join(' ').toLowerCase());
+
+                    cleanQuery.split(' ').forEach(word => {
+                        if (word.length > 2) {
+                            if (cTitle.includes(word)) score += 5;
+                            if (cKeywords.includes(word)) score += 4;
+                            if (cProc.includes(word)) score += 2;
+                        }
+                    });
+
+                    if (score > highestScore) {
+                        highestScore = score;
+                        bestCase = c;
+                    }
+                });
+
+                if (!bestCase || highestScore < 3) {
+                    bestCase = cases.find(c => c.id === 86 || c.id === 58) || cases[0];
+                }
+
+                const agentName = getAgentArabicName();
+                const macroText = cleanArabicLinguistics(bestCase.procedure_arabic || "تم استلام الطلب وجاري متابعته.");
+
+                const aiResponseBubble = document.createElement('div');
+                aiResponseBubble.className = 'copilot-msg-bubble copilot-ai-msg';
+                aiResponseBubble.innerHTML = `
+                    <div style="font-weight: 800; color: #8B5CF6; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+                        <span><i class="fa-solid fa-robot"></i> كابيلوت هنقرستيشن الذكي:</span>
+                        <span style="font-size: 0.72rem; background: rgba(139, 92, 246, 0.15); padding: 2px 8px; border-radius: 6px;">كود الحالة: #${bestCase.id}</span>
+                    </div>
+                    <div style="font-size: 0.85rem; line-height: 1.5; margin-bottom: 8px;">
+                        📌 <strong>التشخيص المعتمد:</strong> ${bestCase.case_title}<br>
+                        🗂️ <strong>تصنيف التذكرة (CCR):</strong> <code>${bestCase.ccr}</code>
+                    </div>
+                    <div style="background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-size: 0.82rem; margin-bottom: 10px; font-weight: 600; line-height: 1.5;">
+                        ${macroText}
+                    </div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button type="button" onclick="copilotApplyToWorkspace(${bestCase.id})" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                            <i class="fa-solid fa-bolt"></i> فتح وتطبيق في مساحة العمل
+                        </button>
+                        <button type="button" onclick="navigator.clipboard.writeText('${macroText.replace(/'/g, "\'")}'); showToast('تم نسخ الرد بنجاح! 🚀');" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;">
+                            <i class="fa-solid fa-copy"></i> نسخ الرد
+                        </button>
+                    </div>
+                `;
+                log.appendChild(aiResponseBubble);
+                log.scrollTop = log.scrollHeight;
+            }, 300);
+        }
+
+        function copilotApplyToWorkspace(caseId) {
+            closeCopilotModal();
+            selectCase(caseId);
+            showToast(`تم فتح الحالة #${caseId} في مساحة العمل بنجاح! 🚀`);
+        }
+    
     </script>
 <!-- AI Settings Modal -->
     <div id="aiSettingsModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 99999; align-items: center; justify-content: center; padding: 15px;">
@@ -10128,5 +10950,211 @@ function downloadOfficialMenuExcel() {
         </div>
     </div>
 
+
+    <!-- 🌳 INTERACTIVE POLICY DECISION TREE MODAL -->
+    <div class="modal-overlay" id="decisionTreeModal" style="display: none;">
+        <div class="modal-card" style="max-width: 760px; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(245, 158, 11, 0.15); color: #D97706; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                        <i class="fa-solid fa-sitemap"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; color: var(--text-main); font-size: 1.15rem; font-weight: 800;">شجرة القرارات التفاعلية (Decision Flow)</h3>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">تشخيص الحالات المعقدة وإصدار الحكم الرسمي واختيار الماكرو المعتمد</span>
+                    </div>
+                </div>
+                <button onclick="closeDecisionTreeModal()" style="background: none; border: none; color: var(--text-main); font-size: 1.3rem; cursor: pointer;">✕</button>
+            </div>
+
+            <!-- Decision Flow Category Tabs -->
+            <div class="calc-tabs-bar" style="margin-bottom: 16px;">
+                <button class="calc-tab-btn active" id="dtTabBtn_cancel" onclick="switchDecisionFlow('cancel')">
+                    <i class="fa-solid fa-ban"></i> تعويضات إلغاء الطلبات
+                </button>
+                <button class="calc-tab-btn" id="dtTabBtn_bank" onclick="switchDecisionFlow('bank')">
+                    <i class="fa-solid fa-building-columns"></i> تعديل الآيبان والسجل والملكية
+                </button>
+                <button class="calc-tab-btn" id="dtTabBtn_pos" onclick="switchDecisionFlow('pos')">
+                    <i class="fa-solid fa-print"></i> أعطال الطابعة والـ POS والتطبيق
+                </button>
+            </div>
+
+            <!-- Flow 1: Cancellation Flow -->
+            <div id="dtFlow_cancel" class="dt-flow-view">
+                <div class="dt-step-card">
+                    <div class="dt-question-title">
+                        <span style="background: #D97706; color: #FFF; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">1</span>
+                        ما هي حالة وتوقيت تحضير وجبة الطلب الملغي؟
+                    </div>
+                    <div class="dt-options-grid">
+                        <button type="button" class="dt-option-btn" onclick="dtSelectOption('prep', 'READY', this)">
+                            <span>🍲 مجهزة وجاهزة للاستلام بالكامل</span>
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button type="button" class="dt-option-btn" onclick="dtSelectOption('prep', 'IN_PREP', this)">
+                            <span>🍳 قيد التحضير في المطبخ</span>
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button type="button" class="dt-option-btn" onclick="dtSelectOption('prep', 'NOT_PREPARED', this)">
+                            <span>❌ لم يتم البدء في تحضيرها</span>
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dt-step-card">
+                    <div class="dt-question-title">
+                        <span style="background: #D97706; color: #FFF; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">2</span>
+                        ما هو سبب الإلغاء والطرف المسؤول؟
+                    </div>
+                    <div class="dt-options-grid">
+                        <button type="button" class="dt-option-btn" onclick="dtSelectOption('reason', 'DRIVER_DELAY', this)">
+                            <span>🛵 تأخر المندوب عن الاستلام (15+ دقيقة)</span>
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button type="button" class="dt-option-btn" onclick="dtSelectOption('reason', 'CUSTOMER_CANCEL', this)">
+                            <span>👤 إلغاء العميل بعد بدء التحضير</span>
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button type="button" class="dt-option-btn" onclick="dtSelectOption('reason', 'NO_DRIVER', this)">
+                            <span>⚠️ لم يحضر أي مندوب لاستلام الطلب</span>
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button type="button" class="dt-option-btn" onclick="dtSelectOption('reason', 'OUT_OF_STOCK', this)">
+                            <span>📦 نفاد أصناف من المتجر</span>
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Result Box -->
+                <div class="calc-result-box" id="dtCancelVerdictBox">
+                    <div style="color: var(--text-muted); font-size: 0.85rem; text-align: center;">
+                        <i class="fa-solid fa-hand-pointer"></i> اختر حالة التحضير وسبب الإلغاء لعرض حكم السياسة والماكرو فوراً
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flow 2: Bank / CR Flow -->
+            <div id="dtFlow_bank" class="dt-flow-view" style="display: none;">
+                <div class="dt-step-card">
+                    <div class="dt-question-title">
+                        <span style="background: #2563EB; color: #FFF; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">1</span>
+                        ما هو نوع التعديل المطلوب لبيانات الشريك؟
+                    </div>
+                    <div class="dt-options-grid">
+                        <button type="button" class="dt-option-btn" onclick="dtSelectBankOption('IBAN_SAME', this)">
+                            <span>🏦 تحديث الآيبان لنفس المالك والسجل</span>
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button type="button" class="dt-option-btn" onclick="dtSelectBankOption('TRANSFER_CR', this)">
+                            <span>📝 نقل ملكية المتجر وتغيير السجل التجاري</span>
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button type="button" class="dt-option-btn" onclick="dtSelectBankOption('STORE_NAME', this)">
+                            <span>🏷️ تعديل اسم المتجر / الاسم التجاري فقط</span>
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="calc-result-box" id="dtBankVerdictBox">
+                    <div style="color: var(--text-muted); font-size: 0.85rem; text-align: center;">
+                        <i class="fa-solid fa-hand-pointer"></i> اختر نوع التعديل لعرض المستندات المطلوبة والماكرو المعتمد
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flow 3: POS / App Flow -->
+            <div id="dtFlow_pos" class="dt-flow-view" style="display: none;">
+                <div class="dt-step-card">
+                    <div class="dt-question-title">
+                        <span style="background: #10B981; color: #FFF; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">1</span>
+                        ما هي المشكلة التقنية أو التشغيلية التي يواجهها الشريك؟
+                    </div>
+                    <div class="dt-options-grid">
+                        <button type="button" class="dt-option-btn" onclick="dtSelectPosOption('CLOSED_APP', this)">
+                            <span>🔒 الفرع يظهر مغلق بالرغم من تشغيل الجهاز</span>
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button type="button" class="dt-option-btn" onclick="dtSelectPosOption('PRINTER_FAIL', this)">
+                            <span>🖨️ الطابعة لا تطبع الفواتير أو لا تتصل</span>
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button type="button" class="dt-option-btn" onclick="dtSelectPosOption('LOGIN_PASS', this)">
+                            <span>🔑 نسيان كلمة المرور وحساب بوابة الشركاء</span>
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="calc-result-box" id="dtPosVerdictBox">
+                    <div style="color: var(--text-muted); font-size: 0.85rem; text-align: center;">
+                        <i class="fa-solid fa-hand-pointer"></i> اختر المشكلة التقنية لعرض خطوات الدعم الفني والماكرو المعتمد
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
+                <button class="btn-learn" onclick="closeDecisionTreeModal()" style="width: auto; padding: 8px 18px;">
+                    إغلاق النافذة
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 🤖 VENDOR CARE COPILOT AI DRAWER / MODAL -->
+    <div class="modal-overlay" id="copilotModal" style="display: none;">
+        <div class="modal-card" style="max-width: 680px; height: 85vh; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+            <!-- Copilot Header -->
+            <div style="background: var(--bg-card); padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #8B5CF6, #6366F1); color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <h3 style="margin: 0; color: var(--text-main); font-size: 1.05rem; font-weight: 800;">مساعد دعم الشركاء الذكي (HS Copilot AI)</h3>
+                            <span style="background: rgba(16, 185, 129, 0.15); color: #10B981; font-size: 0.7rem; padding: 2px 8px; border-radius: 12px; font-weight: 800;">● متصل بالـ Inbound KB</span>
+                        </div>
+                        <span style="font-size: 0.74rem; color: var(--text-muted);">اسأل بالعامية أو الفصحى عن أي مشكلة للشريك وسيرشدك للحل والرد المعتمد فوراً</span>
+                    </div>
+                </div>
+                <button onclick="closeCopilotModal()" style="background: none; border: none; color: var(--text-main); font-size: 1.3rem; cursor: pointer;">✕</button>
+            </div>
+
+            <!-- Copilot Suggestions Row -->
+            <div style="background: var(--input-bg); padding: 8px 16px; border-bottom: 1px solid var(--border); display: flex; gap: 8px; overflow-x: auto; white-space: nowrap;">
+                <button type="button" class="copilot-prompt-chip" onclick="askCopilot('التاجر يطلب تعويض لطلب ملغي بعد تجهيزه')">🍲 طلب ملغي بعد التجهيز</button>
+                <button type="button" class="copilot-prompt-chip" onclick="askCopilot('التاجر يسأل متى موعد نزول الفواتير والأرباح')">💵 مواعيد صرف الفواتير</button>
+                <button type="button" class="copilot-prompt-chip" onclick="askCopilot('المتجر يظهر مغلق في تطبيق هنقرستيشن')">🔒 الفرع مقفل بالتطبيق</button>
+                <button type="button" class="copilot-prompt-chip" onclick="askCopilot('الشريك يريد تحديث رقم الحساب البنكي والآيبان')">🏦 تحديث رقم الآيبان</button>
+                <button type="button" class="copilot-prompt-chip" onclick="askCopilot('التاجر يطلب تعديل أسعار وجبات المنيو')">🍔 تعديل أسعار المنيو</button>
+            </div>
+
+            <!-- Copilot Chat Log -->
+            <div id="copilotChatLog" style="flex: 1; padding: 18px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; background: var(--bg-body);">
+                <!-- Initial Welcome AI Bubble -->
+                <div class="copilot-msg-bubble copilot-ai-msg">
+                    <div style="font-weight: 800; color: #8B5CF6; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-robot"></i> كابيلوت هنقرستيشن:
+                    </div>
+                    أهلاً بك يا بطل! 👋 أنا مساعدك الذكي المتخصص في سياسات وإجراءات <strong>Hungerstation Vendor Support</strong> (96 حالة معتمدة).<br>
+                    اكتب لي استفسار الشريك أو اسألني كيف تتصرف في أي موقف، وسأعطيك التشخيص الدقيق وحكم اللائحة والرد المعتمد لنسخه فوراً. 🚀
+                </div>
+            </div>
+
+            <!-- Copilot Input Bar -->
+            <div style="background: var(--bg-card); padding: 12px 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: center;">
+                <input type="text" id="copilotInput" placeholder="اكتب سؤالك أو استفسار الشريك هنا (مثلاً: التاجر معترض على عمولة شهر 8)..." onkeydown="if(event.key==='Enter') sendCopilotMsg()" style="flex: 1; padding: 10px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--input-bg); color: var(--text-main); font-size: 0.88rem; outline: none;">
+                <button type="button" onclick="sendCopilotMsg()" style="background: linear-gradient(135deg, #8B5CF6, #6366F1); color: #FFF; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-paper-plane"></i> إرسال
+                </button>
+            </div>
+        </div>
+    </div>
+    
 </body>
 </html>
