@@ -121,7 +121,7 @@ function resolvePendingTicket(id) {
 
 function openTicketInWorkspace(ticketId, category) {
     closePendingVaultModal();
-    const q = document.getElementById('queryInput');
+    const q = document.getElementById('partnerMessage') || document.getElementById('queryInput');
     if (q) {
         q.value = `متابعة التذكرة #${ticketId} بخصوص ${category}`;
         if (typeof generateResponse === 'function') generateResponse();
@@ -835,7 +835,7 @@ window.addEventListener('focus', async () => {
         if (clipText && clipText.length >= 10 && clipText !== lastProcessedClipboardText) {
             if (!clipText.includes('فريق دعم الشركاء') && !clipText.includes('Hungerstation Vendor Support')) {
                 lastProcessedClipboardText = clipText;
-                const q = document.getElementById('queryInput');
+                const q = document.getElementById('partnerMessage') || document.getElementById('queryInput');
                 if (q) {
                     q.value = clipText;
                     if (typeof generateResponse === 'function') generateResponse();
