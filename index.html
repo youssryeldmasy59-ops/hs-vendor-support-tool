@@ -1280,7 +1280,193 @@
             border-radius: var(--radius-md);
             border: 1px solid var(--border);
         }
-</style>
+
+        /* ⚡ Smart Variable Chips Bar */
+        .variable-chips-card {
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease;
+        }
+        .var-chips-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .var-chips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 8px;
+        }
+        .var-chip-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .var-chip-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2.5px var(--primary-glow);
+            background: var(--bg-card-hover);
+        }
+        .var-chip-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-main);
+            font-size: 0.82rem;
+            font-weight: 700;
+            width: 100%;
+            font-family: inherit;
+        }
+        .var-chip-box input::placeholder {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* 🗂️ Compact Sidebar Mode (وضع الشاشة المزدوجة) */
+        body.compact-sidebar-mode {
+            max-width: 580px;
+            margin: 0 auto;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.15);
+        }
+        body.compact-sidebar-mode .main-header {
+            padding: 10px 14px;
+        }
+        body.compact-sidebar-mode .logo-title p {
+            display: none;
+        }
+        body.compact-sidebar-mode .workspace-bar {
+            padding: 0 12px;
+            margin-top: 8px;
+        }
+        body.compact-sidebar-mode .ws-tab-btn {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+        }
+        body.compact-sidebar-mode .motivation-bar {
+            grid-template-columns: 1fr;
+            padding: 0 12px;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        body.compact-sidebar-mode .motivation-greeting-card {
+            padding: 10px 14px;
+        }
+        body.compact-sidebar-mode .motivation-stats-card {
+            padding: 10px 14px;
+            gap: 8px;
+        }
+        body.compact-sidebar-mode .app-container {
+            grid-template-columns: 1fr !important;
+            padding: 10px 12px 24px;
+            gap: 14px;
+            max-width: 100%;
+        }
+        body.compact-sidebar-mode .panel {
+            padding: 14px;
+            border-radius: 14px;
+        }
+        body.compact-sidebar-mode textarea#partnerMessage {
+            min-height: 100px;
+        }
+
+        /* 📊 Policy Calculator Modal Styling */
+        .calc-tabs-bar {
+            display: flex;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 4px;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+        .calc-tab-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .calc-tab-btn.active {
+            background: var(--primary);
+            color: #000;
+            font-weight: 800;
+            box-shadow: 0 2px 8px var(--primary-glow);
+        }
+        .calc-grid-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            text-align: right;
+        }
+        @media (max-width: 600px) {
+            .calc-grid-form { grid-template-columns: 1fr; }
+        }
+        .calc-field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .calc-field-group label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+        .calc-field-group select, .calc-field-group input {
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            color: var(--text-main);
+            font-size: 0.86rem;
+            font-weight: 700;
+            outline: none;
+        }
+        .calc-result-box {
+            background: var(--input-bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            margin-top: 14px;
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .calc-verdict-badge {
+            font-size: 0.95rem;
+            font-weight: 900;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            width: fit-content;
+        }
+
+    </style>
 </head>
 <body>
 
@@ -1388,10 +1574,20 @@
         </div>
 
         <div class="header-controls">
-            <!-- ☀️ Theme Switcher (مبهج / ليلي) -->
-            <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" id="themeToggleBtn" title="تبديل مظهر الواجهة (مبهج مشمس / نيون ليلي)">
+            <!-- ☀️ Theme Switcher -->
+            <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" id="themeToggleBtn" title="تبديل مظهر الواجهة">
                 <i class="fa-solid fa-sun" style="color: #F59E0B;" id="themeToggleIcon"></i>
                 <span id="themeToggleText">الوضع المبهج ☀️</span>
+            </button>
+
+            <!-- 📊 Policy Calculator Button -->
+            <button type="button" class="header-btn" onclick="openPolicyCalculatorModal()" title="حاسبة تعويضات الطلبات ومواعيد الفواتير" style="background: rgba(16, 185, 129, 0.12); color: #059669; border-color: rgba(16, 185, 129, 0.35);">
+                <i class="fa-solid fa-calculator"></i> <span>حاسبة السياسات والتعويضات</span>
+            </button>
+
+            <!-- 🗂️ Compact Sidebar Toggle Button -->
+            <button type="button" class="header-btn" onclick="toggleCompactSidebarMode()" id="compactModeBtn" title="وضع الشاشة المزدوجة للعمل بجانب نظام التذاكر">
+                <i class="fa-solid fa-table-columns" style="color: #0284C7;"></i> <span id="compactModeText">شاشة مزدوجة</span>
             </button>
             <div class="agent-chip" onclick="promptChangeName()" title="تعديل اسم الموظف">
                 <i class="fa-solid fa-circle-user"></i>
@@ -2832,6 +3028,7 @@ ${titles}
             setupDragAndDrop();
             initTheme();
             initDailyStreak();
+            initCompactSidebarMode();
         }
 
         function saveAgentName() {
@@ -7234,6 +7431,34 @@ ${invoiceGuideHtml || ""}
                         <i class="fa-solid fa-sitemap"></i> ${scen.ccr}
                     </div>
 
+                    <!-- ⚡ Dynamic Live Variable Fillers -->
+                    <div class="variable-chips-card" id="macroVariableBar">
+                        <div class="var-chips-header">
+                            <span style="font-size: 0.8rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> <strong>حقول التعبئة الفورية (تتحدث داخل الرد العربي والإنجليزي فوراً):</strong>
+                            </span>
+                            <span style="font-size: 0.72rem; color: var(--text-muted);">اكتب رقم الطلب أو اسم المتجر للتعويض التلقائي في الماكرو</span>
+                        </div>
+                        <div class="var-chips-grid">
+                            <div class="var-chip-box">
+                                <i class="fa-solid fa-receipt" style="color: #0284C7;"></i>
+                                <input type="text" id="liveVarOrderId" placeholder="رقم الطلب (Order ID)" value="${detectedEntities.orderId || ''}" oninput="updateLiveMacroVariables()">
+                            </div>
+                            <div class="var-chip-box">
+                                <i class="fa-solid fa-shop" style="color: #10B981;"></i>
+                                <input type="text" id="liveVarStoreName" placeholder="اسم المتجر (Store Name)" value="${detectedEntities.storeName || ''}" oninput="updateLiveMacroVariables()">
+                            </div>
+                            <div class="var-chip-box">
+                                <i class="fa-solid fa-money-bill-wave" style="color: #F59E0B;"></i>
+                                <input type="text" id="liveVarAmount" placeholder="المبلغ (SAR)" value="${detectedEntities.amount || ''}" oninput="updateLiveMacroVariables()">
+                            </div>
+                            <div class="var-chip-box">
+                                <i class="fa-solid fa-user" style="color: #EC4899;"></i>
+                                <input type="text" id="liveVarCustomer" placeholder="اسم العميل / المندوب" value="${detectedEntities.customerName || ''}" oninput="updateLiveMacroVariables()">
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Language Switcher Tabs -->
                     <div class="lang-switcher-bar">
                         <button class="lang-tab ${!isEn ? 'active-ar' : ''}" id="tabBtnAr" onclick="switchLangTab('AR')">
@@ -9224,6 +9449,335 @@ function downloadOfficialMenuExcel() {
             showToast(next === 'bright' ? 'تم تفعيل الوضع المبهج والمشمس ☀️' : 'تم تفعيل الوضع الليلي المتوهج 🌙');
         }
 
+    
+        // ── 📸 1. INSTANT CLIPBOARD SCREENSHOT OCR ────────────────
+        window.addEventListener('paste', function(e) {
+            if (!e.clipboardData || !e.clipboardData.items) return;
+            const items = e.clipboardData.items;
+            let imageItem = null;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    imageItem = items[i];
+                    break;
+                }
+            }
+
+            if (imageItem) {
+                const file = imageItem.getAsFile();
+                if (file) {
+                    const timeStr = new Date().toISOString().slice(11,19).replace(/:/g,'-');
+                    const fileName = `Screenshot_${timeStr}.png`;
+                    const imageFile = new File([file], fileName, { type: file.type });
+                    processFilesArray([imageFile]);
+                    showToast("📸 تم لصق السكرين شوت بنجاح! جاري فحصه وتوليد الماكرو... ⚡");
+
+                    // Read image data and scan for numbers
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        analyzePastedScreenshot(evt.target.result, fileName);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+
+        function analyzePastedScreenshot(dataUrl, fileName) {
+            // Check if user typed orderId or store in search
+            const matchOrder = fileName.match(/(\d{6,10})/);
+            if (matchOrder) {
+                const orderIdInput = document.getElementById('liveVarOrderId');
+                if (orderIdInput) {
+                    orderIdInput.value = matchOrder[1];
+                    updateLiveMacroVariables();
+                }
+            }
+        }
+
+        // ── ⚡ 2. SMART VARIABLE FILLERS (LIVE PLACEHOLDER REPLACEMENT) ──
+        function updateLiveMacroVariables() {
+            const orderId = (document.getElementById('liveVarOrderId') ? document.getElementById('liveVarOrderId').value.trim() : '');
+            const storeName = (document.getElementById('liveVarStoreName') ? document.getElementById('liveVarStoreName').value.trim() : '');
+            const amount = (document.getElementById('liveVarAmount') ? document.getElementById('liveVarAmount').value.trim() : '');
+            const customerName = (document.getElementById('liveVarCustomer') ? document.getElementById('liveVarCustomer').value.trim() : '');
+
+            window.currentActiveDetectedEntities = {
+                orderId: orderId,
+                storeName: storeName,
+                amount: amount,
+                customerName: customerName
+            };
+
+            const c = window.currentActiveCaseObj;
+            if (!c) return;
+            const idx = window.currentActiveSubMacroIdx || 0;
+            const sm = (c.sub_macros && c.sub_macros[idx]) ? c.sub_macros[idx] : null;
+
+            let arProc = (sm && sm.macro_arabic) ? sm.macro_arabic : (c.procedure_arabic || "تم استلام طلبكم وجاري متابعته مع الفريق المختص.");
+            let enProc = (sm && sm.macro_english) ? sm.macro_english : (c.procedure_english || "Your request has been received and is being followed up.");
+
+            // Replace dynamic placeholders
+            if (orderId) {
+                arProc = arProc.replace(/\[رقم الطلب\]|#?\b\d{7,10}\b/g, orderId);
+                enProc = enProc.replace(/\[Order ID\]|#?\b\d{7,10}\b/g, orderId);
+            }
+            if (storeName) {
+                arProc = arProc.replace(/\[اسم المتجر\]|\[اسم الشريك\]/g, storeName);
+                enProc = enProc.replace(/\[Store Name\]|\[Partner Name\]/g, storeName);
+            }
+            if (amount) {
+                arProc = arProc.replace(/\[المبلغ\]/g, amount + ' ريال');
+                enProc = enProc.replace(/\[Amount\]/g, amount + ' SAR');
+            }
+            if (customerName) {
+                arProc = arProc.replace(/\[اسم العميل\]|\[اسم المندوب\]/g, customerName);
+                enProc = enProc.replace(/\[Customer Name\]|\[Rider Name\]/g, customerName);
+            }
+
+            const greetings = window.currentActiveGreetings || { arGreeting: "", enGreeting: "" };
+            const finalAr = buildArabicMacro(greetings.arGreeting, arProc);
+            const finalEn = buildEnglishMacro(greetings.enGreeting, enProc);
+
+            const arEl = document.getElementById('arMacroText');
+            const enEl = document.getElementById('enMacroText');
+            if (arEl) arEl.innerText = finalAr;
+            if (enEl) enEl.innerText = finalEn;
+        }
+
+        // ── 🗂️ 3. COMPACT SIDEBAR MODE (وضع الشاشة المزدوجة) ───────
+        function toggleCompactSidebarMode() {
+            const isCompact = document.body.classList.toggle('compact-sidebar-mode');
+            localStorage.setItem('hs_compact_mode', isCompact ? 'true' : 'false');
+            updateCompactModeButtonText(isCompact);
+            showToast(isCompact ? 'تم تفعيل وضع الشاشة المزدوجة (Compact Sidebar) 🗂️' : 'تم العودة للوضع الكامل 🖥️');
+        }
+
+        function updateCompactModeButtonText(isCompact) {
+            const textEl = document.getElementById('compactModeText');
+            if (textEl) textEl.innerText = isCompact ? 'الوضع الكامل' : 'شاشة مزدوجة';
+        }
+
+        function initCompactSidebarMode() {
+            const isCompact = localStorage.getItem('hs_compact_mode') === 'true';
+            if (isCompact) {
+                document.body.classList.add('compact-sidebar-mode');
+                updateCompactModeButtonText(true);
+            }
+        }
+
+        // ── 📊 4. SLA & POLICY CALCULATOR ENGINE ──────────────────
+        function openPolicyCalculatorModal() {
+            const modal = document.getElementById('policyCalculatorModal');
+            if (modal) modal.classList.add('active');
+            calculateCompensationVerdict();
+            initBillingDateDefault();
+            calculateBillingSchedule();
+        }
+
+        function closePolicyCalculatorModal() {
+            const modal = document.getElementById('policyCalculatorModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function switchCalcTab(tab) {
+            const viewComp = document.getElementById('calcViewCompensation');
+            const viewBill = document.getElementById('calcViewBilling');
+            const btnComp = document.getElementById('calcTabBtnComp');
+            const btnBill = document.getElementById('calcTabBtnBilling');
+
+            if (tab === 'COMPENSATION') {
+                if (viewComp) viewComp.style.display = 'block';
+                if (viewBill) viewBill.style.display = 'none';
+                if (btnComp) btnComp.classList.add('active');
+                if (btnBill) btnBill.classList.remove('active');
+            } else {
+                if (viewComp) viewComp.style.display = 'none';
+                if (viewBill) viewBill.style.display = 'block';
+                if (btnComp) btnComp.classList.remove('active');
+                if (btnBill) btnBill.classList.add('active');
+            }
+        }
+
+        function calculateCompensationVerdict() {
+            const reason = (document.getElementById('calcCancelReason') ? document.getElementById('calcCancelReason').value : 'RIDER_DELAY');
+            const prepStatus = (document.getElementById('calcPrepStatus') ? document.getElementById('calcPrepStatus').value : 'READY');
+            const amount = parseFloat(document.getElementById('calcOrderAmount') ? document.getElementById('calcOrderAmount').value : 0) || 0;
+            const orderId = (document.getElementById('calcOrderIdInput') ? document.getElementById('calcOrderIdInput').value.trim() : '');
+
+            let eligible = false;
+            let percent = 0;
+            let verdictTitle = "";
+            let explanation = "";
+            let targetCaseId = 58; // Default compensation case
+
+            if (reason === 'RIDER_DELAY' || reason === 'RIDER_NO_SHOW') {
+                if (prepStatus === 'READY' || prepStatus === 'IN_PREP') {
+                    eligible = true;
+                    percent = 100;
+                    verdictTitle = "مؤهل للتعويض الكامل 100% ✅";
+                    explanation = "وفقاً لـ Inbound SOP: عند تأخر المندوب لأكثر من 15 دقيقة أو عدم حضوره وكان المتجر جهز الوجبة، يتم تعويض الشريك بنسبة 100% من قيمة السلة المجهزة.";
+                    targetCaseId = 58;
+                } else {
+                    eligible = false;
+                    percent = 0;
+                    verdictTitle = "غير مؤهل للتعويض ❌";
+                    explanation = "لم يتم البدء في تحضير الطعام، لذلك لا توجد خسارة مواد غذائية على المتجر، ويتم إغلاق التذكرة بتوجيه بدون تعويض.";
+                    targetCaseId = 50;
+                }
+            } else if (reason === 'CUSTOMER_CANCEL_AFTER_PREP') {
+                if (prepStatus === 'READY') {
+                    eligible = true;
+                    percent = 100;
+                    verdictTitle = "مؤهل للتعويض الكامل 100% ✅";
+                    explanation = "إلغاء من طرف العميل بعد انتهاء التحضير: يتم تعويض المتجر 100% من قيمة الوجبة لأن الإلغاء خارج عن إرادة الشريك بعد تكلفة التحضير.";
+                    targetCaseId = 45;
+                } else if (prepStatus === 'IN_PREP') {
+                    eligible = true;
+                    percent = 100;
+                    verdictTitle = "مؤهل للتعويض الكامل 100% ✅";
+                    explanation = "إلغاء من طرف العميل أثناء التحضير: يتم اعتماد التعويض وفقاً لسياسة حماية الشريك.";
+                    targetCaseId = 45;
+                } else {
+                    eligible = false;
+                    percent = 0;
+                    verdictTitle = "غير مؤهل للتعويض ❌";
+                    explanation = "الطلب ألغي قبل بدء المتجر في تجهيز الوجبة، لا توجد تكلفة تحضير مستحقة.";
+                    targetCaseId = 45;
+                }
+            } else if (reason === 'ITEM_OUT_OF_STOCK' || reason === 'PARTNER_REJECT') {
+                eligible = false;
+                percent = 0;
+                verdictTitle = "غير مؤهل للتعويض إطلاقاً ❌";
+                explanation = "سبب الإلغاء ناتج عن طرف الشريك (عدم توفر الصنف أو رفض الطلب). يُلزم الشريك بتحديث قائمة المنيو وإيقاف الأصناف النافذة من البوابة فوراً.";
+                targetCaseId = 46;
+            } else if (reason === 'TECHNICAL_ISSUE') {
+                if (prepStatus === 'READY') {
+                    eligible = true;
+                    percent = 100;
+                    verdictTitle = "مؤهل للتعويض الكامل 100% ✅";
+                    explanation = "خطأ تقني من نظام هنقرستيشن أدى للإلغاء بعد تجهيز الطعام: تعويض 100% فوري للشريك.";
+                    targetCaseId = 58;
+                } else {
+                    eligible = false;
+                    percent = 0;
+                    verdictTitle = "إجراء توجيه فني دون تعويض ℹ️";
+                    explanation = "خلل تقني تم تداركه قبل التحضير، لا يستحق تعويض مالي.";
+                    targetCaseId = 1;
+                }
+            }
+
+            const compAmount = (amount * percent / 100).toFixed(2);
+            const container = document.getElementById('calcCompResult');
+            if (!container) return;
+
+            window._currentCalcTargetCaseId = targetCaseId;
+            window._currentCalcVerdict = { eligible, compAmount, orderId, percent };
+
+            container.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                    <span class="calc-verdict-badge" style="background: ${eligible ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)'}; color: ${eligible ? '#10B981' : '#EF4444'}; border: 1px solid ${eligible ? '#10B981' : '#EF4444'};">
+                        ${verdictTitle}
+                    </span>
+                    <strong style="font-size: 1.1rem; color: var(--text-main);">
+                        مبلغ التعويض المستحق: <span style="color: ${eligible ? '#10B981' : 'var(--text-muted)'}; font-size: 1.25rem;">${compAmount} ريال</span>
+                    </strong>
+                </div>
+                <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; margin: 6px 0 0 0;">
+                    ${explanation}
+                </p>
+                <div style="font-size: 0.76rem; color: var(--primary); font-weight: 700; margin-top: 4px;">
+                    <i class="fa-solid fa-sitemap"></i> الإجراء والـ CCR المعتمد: حالة #${targetCaseId}
+                </div>
+            `;
+        }
+
+        function applyCompensationToWorkspace() {
+            closePolicyCalculatorModal();
+            const verdict = window._currentCalcVerdict || {};
+            const targetCaseId = window._currentCalcTargetCaseId || 58;
+            
+            // Populate live inputs
+            selectCase(targetCaseId);
+            setTimeout(() => {
+                if (verdict.orderId) {
+                    const el = document.getElementById('liveVarOrderId');
+                    if (el) el.value = verdict.orderId;
+                }
+                if (verdict.compAmount) {
+                    const elAmt = document.getElementById('liveVarAmount');
+                    if (elAmt) elAmt.value = verdict.compAmount;
+                }
+                updateLiveMacroVariables();
+                showToast("⚡ تم تطبيق نتيجة حاسبة السياسات على الماكرو وتجهيز الرد فوراً!");
+            }, 150);
+        }
+
+        function initBillingDateDefault() {
+            const dateInput = document.getElementById('calcBillingDateInput');
+            if (dateInput && !dateInput.value) {
+                dateInput.value = new Date().toISOString().slice(0, 10);
+            }
+        }
+
+        function calculateBillingSchedule() {
+            const dateVal = (document.getElementById('calcBillingDateInput') ? document.getElementById('calcBillingDateInput').value : '') || new Date().toISOString().slice(0, 10);
+            const d = new Date(dateVal);
+            if (isNaN(d.getTime())) return;
+
+            // Hungerstation Weekly Cycle: Starts Monday (00:00), Ends Sunday (23:59)
+            const day = d.getDay(); // 0 is Sunday, 1 is Monday ...
+            // Distance to Monday of that week
+            const distToMon = (day === 0 ? -6 : 1 - day);
+            const mon = new Date(d);
+            mon.setDate(d.getDate() + distToMon);
+
+            const sun = new Date(mon);
+            sun.setDate(mon.getDate() + 6);
+
+            // Invoice released on Wednesday after Sunday
+            const wed = new Date(sun);
+            wed.setDate(sun.getDate() + 3);
+
+            // Payout bank deposit on Thursday
+            const thu = new Date(sun);
+            thu.setDate(sun.getDate() + 4);
+
+            const formatDate = (date) => date.toLocaleDateString('ar-EG', { month: 'long', day: 'numeric', year: 'numeric' });
+
+            const container = document.getElementById('calcBillingResult');
+            if (!container) return;
+
+            const scheduleText = `نود إفادتكم بأن دورة مبيعاتكم تبدأ من (${formatDate(mon)}) إلى (${formatDate(sun)}). يتم إصدار الفاتورة الأسبوعية على بوابة الشركاء يوم الأربعاء (${formatDate(wed)})، ويتم إيداع الحوالة البنكية في حسابكم المعتمد يوم الخميس (${formatDate(thu)}) وتصل خلال 24-48 ساعة عمل.`;
+            window._currentBillingScheduleText = scheduleText;
+
+            container.innerHTML = `
+                <div style="font-size: 0.95rem; font-weight: 800; color: var(--primary); margin-bottom: 6px;">
+                    <i class="fa-solid fa-clock-rotate-left"></i> جدول دورة المستحقات الأسبوعية المعتمد:
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.82rem;">
+                    <div style="background: var(--bg-card); padding: 8px; border-radius: 6px; border: 1px solid var(--border);">
+                        <strong>📅 دورة الأسبوع المالي:</strong><br>
+                        <span style="color: var(--text-muted);">${formatDate(mon)} ➔ ${formatDate(sun)}</span>
+                    </div>
+                    <div style="background: var(--bg-card); padding: 8px; border-radius: 6px; border: 1px solid var(--border);">
+                        <strong>📑 صدور الفاتورة بالبوابة:</strong><br>
+                        <span style="color: #10B981; font-weight: 800;">الأربعاء (${formatDate(wed)})</span>
+                    </div>
+                    <div style="background: var(--bg-card); padding: 8px; border-radius: 6px; border: 1px solid var(--border); grid-column: span 2;">
+                        <strong>🏦 موعد الإيداع البنكي في الآيبان:</strong><br>
+                        <span style="color: #0284C7; font-weight: 800;">الخميس (${formatDate(thu)}) وتصل خلال 24-48 ساعة عمل</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function applyBillingScheduleToWorkspace() {
+            if (window._currentBillingScheduleText) {
+                navigator.clipboard.writeText(window._currentBillingScheduleText);
+                showToast("📋 تم نسخ نص مواعيد الفواتير والتحويل البنكي للحافظة بنجاح!");
+                closePolicyCalculatorModal();
+            }
+        }
+
     </script>
 <!-- AI Settings Modal -->
     <div id="aiSettingsModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 99999; align-items: center; justify-content: center; padding: 15px;">
@@ -9471,6 +10025,108 @@ function downloadOfficialMenuExcel() {
 
     </div>
 </div>
+
+
+    <!-- 📊 SLA, Compensation & Payout Policy Calculator Modal -->
+    <div class="modal-overlay" id="policyCalculatorModal">
+        <div class="modal-card" style="max-width: 680px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+                <h3 style="color: var(--primary); font-size: 1.15rem;"><i class="fa-solid fa-calculator"></i> حاسبة سياسات الدعم، التعويضات والفواتير المعتمدة</h3>
+                <button onclick="closePolicyCalculatorModal()" style="background: none; border: none; color: var(--text-main); font-size: 1.3rem; cursor: pointer;">✕</button>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="calc-tabs-bar">
+                <button type="button" class="calc-tab-btn active" id="calcTabBtnComp" onclick="switchCalcTab('COMPENSATION')">
+                    <i class="fa-solid fa-hand-holding-dollar"></i> تعويضات الطلبات الملغية
+                </button>
+                <button type="button" class="calc-tab-btn" id="calcTabBtnBilling" onclick="switchCalcTab('BILLING')">
+                    <i class="fa-solid fa-calendar-check"></i> مواعيد دورة الفواتير والتحويل
+                </button>
+            </div>
+
+            <!-- Tab 1: Compensation Calculator -->
+            <div id="calcViewCompensation">
+                <div class="calc-grid-form">
+                    <div class="calc-field-group">
+                        <label><i class="fa-solid fa-circle-question"></i> سبب إلغاء الطلب:</label>
+                        <select id="calcCancelReason" onchange="calculateCompensationVerdict()">
+                            <option value="RIDER_DELAY">تأخر المندوب عن الاستلام (15 دقيقة فأكثر)</option>
+                            <option value="CUSTOMER_CANCEL_AFTER_PREP">إلغاء العميل بعد بدء أو انتهاء تحضير الطلب</option>
+                            <option value="RIDER_NO_SHOW">لم يحضر أي مندوب لاستلام الطلب (No driver)</option>
+                            <option value="ITEM_OUT_OF_STOCK">نفاد صنف من الشريك (Item Out of Stock)</option>
+                            <option value="PARTNER_REJECT">رفض المتجر قبول أو تجهيز الطلب</option>
+                            <option value="TECHNICAL_ISSUE">خلل تقني من تطبيق هنقرستيشن</option>
+                        </select>
+                    </div>
+
+                    <div class="calc-field-group">
+                        <label><i class="fa-solid fa-utensils"></i> حالة تحضير الوجبة:</label>
+                        <select id="calcPrepStatus" onchange="calculateCompensationVerdict()">
+                            <option value="READY">جاهزة ومجهزة بالكامل (Food Ready)</option>
+                            <option value="IN_PREP">قيد التحضير (In Preparation)</option>
+                            <option value="NOT_PREPARED">لم يتم البدء في التحضير</option>
+                        </select>
+                    </div>
+
+                    <div class="calc-field-group">
+                        <label><i class="fa-solid fa-money-bill"></i> قيمة الوجبة / السلة (ريال):</label>
+                        <input type="number" id="calcOrderAmount" placeholder="مثال: 75" value="50" oninput="calculateCompensationVerdict()">
+                    </div>
+
+                    <div class="calc-field-group">
+                        <label><i class="fa-solid fa-hashtag"></i> رقم الطلب (اختياري):</label>
+                        <input type="text" id="calcOrderIdInput" placeholder="مثال: 29482711" oninput="calculateCompensationVerdict()">
+                    </div>
+                </div>
+
+                <div class="calc-result-box" id="calcCompResult">
+                    <!-- Dynamic Verdict Rendered Here -->
+                </div>
+
+                <div style="display: flex; gap: 8px; margin-top: 14px;">
+                    <button class="btn-copy" id="calcApplyCompBtn" onclick="applyCompensationToWorkspace()">
+                        <i class="fa-solid fa-bolt"></i> اعتماد الحالة وتجهيز ماكرو التعويض الرسمي فوراً
+                    </button>
+                    <button class="btn-learn" onclick="closePolicyCalculatorModal()" style="width: auto; padding: 10px 18px;">
+                        إغلاق
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 2: Billing & Payout Calculator -->
+            <div id="calcViewBilling" style="display: none;">
+                <div class="calc-grid-form">
+                    <div class="calc-field-group">
+                        <label><i class="fa-solid fa-calendar-day"></i> اختر تاريخ الطلب أو الاستفسار:</label>
+                        <input type="date" id="calcBillingDateInput" onchange="calculateBillingSchedule()">
+                    </div>
+                    <div class="calc-field-group">
+                        <label><i class="fa-solid fa-building-columns"></i> بنك الشريك:</label>
+                        <select id="calcPartnerBank" onchange="calculateBillingSchedule()">
+                            <option value="LOCAL_FAST">مصرف الراجحي / الأهلي (إيداع فوري الخميس)</option>
+                            <option value="LOCAL_OTHER">بنوك سعودية أخرى (إيداع الخميس أو الأحد صباحاً)</option>
+                            <option value="INTL">حساب بنكي دولي / خارج المملكة</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="calc-result-box" id="calcBillingResult">
+                    <!-- Dynamic Billing Schedule Rendered Here -->
+                </div>
+
+                <div style="display: flex; gap: 8px; margin-top: 14px;">
+                    <button class="btn-copy" id="calcApplyBillingBtn" onclick="applyBillingScheduleToWorkspace()">
+                        <i class="fa-solid fa-copy"></i> نسخ نص مواعيد الصرف المعتمد للشريك
+                    </button>
+                    <button class="btn-learn" onclick="closePolicyCalculatorModal()" style="width: auto; padding: 10px 18px;">
+                        إغلاق
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
 </body>
 </html>
