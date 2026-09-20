@@ -1936,7 +1936,12 @@ function calculateMenuHealthScore() {
         // ── 1. ARABIC TEXT NORMALIZER ──────────────────────────────────────
         function normalizeArabic(text) {
             if (!text) return '';
-            return text
+            let t = text
+                .replace(/صورة\s+الخليف[ةه]/gi, 'صورة الخلفية')
+                .replace(/صوره\s+الخليف[ةه]/gi, 'صورة الخلفية')
+                .replace(/كفر\s+(?:المتجر|المحل|المطعم)/gi, 'صورة الغلاف')
+                .replace(/بانر\s+(?:المتجر|المحل|المطعم)/gi, 'صورة الغلاف');
+            return t
                 .replace(/[أإآا]/g, 'ا')
                 .replace(/ة/g, 'ه')
                 .replace(/ى/g, 'ي')
@@ -3605,7 +3610,11 @@ async function loadKBData() {
             let cleaned = text;
 
             // 1. Remove email chain headers & quoted messages
-            cleaned = cleaned.replace(/(?:From|De|Von|من|الموضوع|Subject|Date|التاريخ|To|إلى|Cc|نسخة)\s*:[^\n\r]+/gi, ' ');
+            // Strip routing headers, but KEEP Subject/الموضوع content
+            cleaned = cleaned.replace(/(?:From|De|Von|Date|التاريخ|Cc|نسخة)\s*:[^\n\r]+/gi, ' ');
+            cleaned = cleaned.replace(/(?:To|إلى)\s*:\s*[^\n\r]+@\S+/gi, ' ');
+            cleaned = cleaned.replace(/(?:From|من)\s*:\s*[^\n\r]+@\S+/gi, ' ');
+            cleaned = cleaned.replace(/(?:الموضوع|Subject|سبب التواصل|نوع الطلب|نوع المشكلة)\s*[:\-]/gi, ' ');
             cleaned = cleaned.replace(/-----Original Message-----[\s\S]*$/gi, ' ');
             cleaned = cleaned.replace(/---+\s*(?:Forwarded message|الرسالة المعاد توجيهها)\s*---+[\s\S]*$/gi, ' ');
             cleaned = cleaned.replace(/On\s+[A-Za-z0-9,\s:]+wrote\s*:[\s\S]*$/gi, ' ');
@@ -3650,9 +3659,9 @@ async function loadKBData() {
                 }
             }
 
-            // 3. Store / Branch ID
-            const storeIdMatch = rawText.match(/(?:كود|معرف|رقم)\s*(?:الفرع|المتجر|المطعم|Store|Branch)\s*[:#-]?\s*(\d{3,8})/i) ||
-                                  rawText.match(/\b(?:Branch|Store)\s*#?\s*(\d{3,8})\b/i);
+            // 3. Store / Branch ID (e.g. رقم الايدي : 192968, ID: 12345, كود الفرع)
+            const storeIdMatch = rawText.match(/(?:كود|معرف|رقم|ايدي|الاي\s*دي|الايدي|ID)\s*(?:الفرع|المتجر|المطعم|Store|Branch|الايدي|الاي\s*دي)?\s*[:#-]?\s*(\d{4,8})/i) ||
+                                  rawText.match(/\b(?:Branch|Store|ID)\s*#?\s*[:#-]?\s*(\d{4,8})\b/i);
             if (storeIdMatch) entities.storeId = storeIdMatch[1];
 
             // 4. Ticket / Case ID
@@ -4148,6 +4157,9 @@ async function generateResponse() {
             const btnOrigHTML = btn ? btn.innerHTML : '';
             if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التوليد...'; }
             try {
+            if (!allCases || allCases.length === 0) {
+                allCases = window.allCases = (typeof window !== 'undefined' && window.embeddedKB) || (typeof embeddedKB !== 'undefined' ? embeddedKB : []);
+            }
             let partnerMsgVal = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '').trim();
             let searchInputVal = (document.getElementById('searchInput') ? document.getElementById('searchInput').value : '').trim();
             let rawMsg = partnerMsgVal || searchInputVal;
@@ -4156,8 +4168,18 @@ async function generateResponse() {
             // Extract Entities First from Raw Text (before sanitization)
             currentDetectedEntities = extractEmailEntities(rawMsg);
             
+            // Extract vendor macro subject/topic if formatted
+            const vendorSubjectMatch = rawMsg.match(/(?:الموضوع|Subject|سبب التواصل|نوع الطلب|نوع المشكلة|الطلب|بخصوص)\s*[:\-]\s*([^\n\r]+)/i);
+            const vendorSubject = vendorSubjectMatch ? vendorSubjectMatch[1].trim() : '';
+
             // Clean and Sanitize Vendor Email
             let cleanMsg = cleanVendorEmail(rawMsg).toLowerCase();
+            
+            // If vendor had a specific subject/topic in their macro, boost it at the front of the query!
+            if (vendorSubject) {
+                cleanMsg = vendorSubject + " " + cleanMsg;
+            }
+            let msg = cleanMsg;
             let msgNorm = normalizeArabic(cleanMsg);
             let fileTextCombined = extractedFileTexts.map(f => f.name + " " + f.text).join(" ").toLowerCase();
             let fullSearchText = msgNorm + " " + normalizeArabic(fileTextCombined);
@@ -4167,11 +4189,7 @@ async function generateResponse() {
             activeLangTab = isEn ? 'EN' : 'AR';
             
             if (!msg && extractedFileTexts.length === 0) {
-                // If input is empty, fallback to Case 58 Compensation or top KB case gracefully
-                let defaultCase = (typeof allCases !== 'undefined' && allCases.length > 0 ? (allCases.find(x => x.id == 58) || allCases[0]) : null);
-                if (defaultCase) {
-                    displayCaseDualMacro(defaultCase, { arGreeting: "", enGreeting: "" }, false);
-                }
+                showToast("الرجاء إدخال رسالة أو استفسار الشريك أولاً");
                 if (btn) { btn.disabled = false; btn.innerHTML = btnOrigHTML; }
                 return;
             }
@@ -4363,7 +4381,7 @@ async function generateResponse() {
                     id: 42
                 },
                 {
-                    keys: ['تغيير صورة الغلاف للمطعم', 'تعديل الكفر فوتو Cover Photo', 'رفع صورة البانر العريض في التطبيق', 'تغيير صورة خلفية المتجر', 'مقاس 1500*750 كفر فوتو', 'تحديث صورة واجهة المحل', 'تغيير صوره الغلاف', 'الكفر فوتو', 'تعديل البانر', 'صوره الخلفيه للمطعم', 'تغير الكفر', 'change listing image', 'upload cover photo', 'update banner image', 'restaurant cover photo', 'listing image update', 'header image hungerstation'],
+                    keys: ['تغيير صورة الخلفية', 'تغيير صورة الخلفيه', 'تغيير صورة الخليفه', 'تغيير صورة الغلاف', 'تعديل صورة الخلفية', 'صورة الخلفية بالصورة الاتية', 'صورة الخلفيه', 'صورة الغلاف للمطعم', 'تعديل الكفر فوتو Cover Photo', 'رفع صورة البانر العريض في التطبيق', 'تغيير صورة خلفية المتجر', 'مقاس 1500*750 كفر فوتو', 'تحديث صورة واجهة المحل', 'تغيير صوره الغلاف', 'الكفر فوتو', 'تعديل البانر', 'صوره الخلفيه للمطعم', 'تغير الكفر', 'change listing image', 'upload cover photo', 'update banner image', 'restaurant cover photo', 'listing image update', 'header image hungerstation'],
                     id: 43
                 },
                 {
