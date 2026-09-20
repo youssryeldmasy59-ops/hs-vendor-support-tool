@@ -2538,6 +2538,10 @@ function calculateMenuHealthScore() {
             updateAIBadge();
         }
 
+        function getSharedUsage() {
+            return window._hsSharedUsage || (typeof caseUsageData !== 'undefined' ? caseUsageData : {}) || {};
+        }
+
         function getUsageScore(caseId) {
             const shared = getSharedUsage();
             const d = shared[String(caseId)];
@@ -6095,36 +6099,6 @@ function cleanArabicProcedure(text) {
 
         window.backToKBList = function() {
             _macroActive = false;
-                        let subMacrosHtml = '';
-            if (c.sub_macros && c.sub_macros.length > 1) {
-                subMacrosHtml = `
-                    <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <span style="font-size: 0.85rem; font-weight: 700; color: #F59E0B; display: flex; align-items: center; gap: 6px;">
-                                <i class="fa-solid fa-layer-group"></i> السيناريوهات والردود المعتمدة لهذه الحالة (${c.sub_macros.length} خيارات للرد):
-                            </span>
-                            <span style="font-size: 0.72rem; color: #94A3B8; background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 6px;">اختر لتبديل الرد فوراً</span>
-                        </div>
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            ${c.sub_macros.map((sm, idx) => {
-                                const isSelected = idx === activeSubMacroIdx;
-                                const bg = isSelected ? 'linear-gradient(135deg, #F59E0B, #D97706)' : 'rgba(255, 255, 255, 0.05)';
-                                const color = isSelected ? '#000' : '#FFF';
-                                const border = isSelected ? '#F59E0B' : 'rgba(255, 255, 255, 0.15)';
-                                const weight = isSelected ? '800' : '600';
-                                const glow = isSelected ? 'box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);' : '';
-                                const icon = isSelected ? '<i class="fa-solid fa-circle-check"></i>' : `<i class="fa-solid fa-reply"></i>`;
-                                return `
-                                    <button type="button" onclick="selectSubMacro(${idx})" id="subMacroBtn_${idx}" class="sub-macro-pill ${isSelected ? 'active-sub-macro' : ''}" style="background: ${bg}; border: 1px solid ${border}; color: ${color}; font-weight: ${weight}; padding: 7px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; ${glow}">
-                                        ${icon} <span>${sm.title_arabic}</span>
-                                    </button>
-                                `;
-                            }).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-
             const output = document.getElementById('outputContent');
             if (!output) return;
             output.innerHTML = `
@@ -6224,10 +6198,18 @@ function cleanArabicProcedure(text) {
         };
 
         window.selectCaseWithSubMacro = function(caseId, subMacroIdx) {
-            const c = (typeof allCases !== 'undefined' ? allCases : []).find(x => x.id === caseId);
-            if (!c) return;
-            trackCaseUsage(caseId);
-            displayCaseDualMacro(c, { arGreeting: "", enGreeting: "" }, false, null, 100, [], {}, subMacroIdx);
+            if (!allCases || allCases.length === 0) {
+                allCases = window.allCases = (typeof window !== 'undefined' && window.embeddedKB) || (typeof embeddedKB !== 'undefined' ? embeddedKB : []);
+            }
+            const c = (allCases || []).find(x => x && x.id == caseId);
+            if (!c) {
+                console.warn('Case not found for id:', caseId);
+                return;
+            }
+            if (typeof trackCaseUsage === 'function') trackCaseUsage(caseId);
+            const greetings = detectGreetings((document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '') || '');
+            displayCaseDualMacro(c, greetings, false, null, 100, [], {}, Number(subMacroIdx || 0));
+            scrollToOutput();
         };
 
         function renderCasesList(cases, query) {
@@ -6381,11 +6363,21 @@ function cleanArabicProcedure(text) {
         }
 
         function selectCase(id) {
-            const c = allCases.find(item => item && item.id == id);
-            if (!c) return;
-            trackCaseUsage(id);
-            displayCaseDualMacro(c, { arGreeting: "", enGreeting: "" }, false, null, 100, [], {}, 0);
+            if (!allCases || allCases.length === 0) {
+                allCases = window.allCases = (typeof window !== 'undefined' && window.embeddedKB) || (typeof embeddedKB !== 'undefined' ? embeddedKB : []);
+            }
+            const c = (allCases || []).find(item => item && item.id == id);
+            if (!c) {
+                console.warn('Case not found for id:', id);
+                return;
+            }
+            if (typeof trackCaseUsage === 'function') trackCaseUsage(id);
+            const greetings = detectGreetings((document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '') || '');
+            displayCaseDualMacro(c, greetings, false, null, 100, [], {}, 0);
+            scrollToOutput();
         }
+        window.selectCase = selectCase;
+        window.switchSubMacro = window.selectSubMacro;
 
         
         /* ── Autonomous Built-in Adaptive Neural Intent Engine ── */
@@ -7421,6 +7413,36 @@ ${invoiceGuideHtml || ""}
                                     <i class="fa-solid fa-arrow-turn-down-left"></i> #${alt.id} ${alt.case_title}
                                 </button>
                             `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+                        let subMacrosHtml = '';
+            if (c.sub_macros && c.sub_macros.length > 1) {
+                subMacrosHtml = `
+                    <div style="background: var(--input-bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span style="font-size: 0.85rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-layer-group"></i> السيناريوهات والردود المعتمدة لهذه الحالة (${c.sub_macros.length} خيارات للرد):
+                            </span>
+                            <span style="font-size: 0.72rem; color: var(--text-muted); background: var(--bg-card); padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border);">اختر لتبديل الرد فوراً</span>
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            ${c.sub_macros.map((sm, idx) => {
+                                const isSelected = idx === activeSubMacroIdx;
+                                const bg = isSelected ? 'linear-gradient(135deg, #F59E0B, #D97706)' : 'var(--bg-card)';
+                                const color = isSelected ? '#000' : 'var(--text-main)';
+                                const border = isSelected ? '#F59E0B' : 'var(--border)';
+                                const weight = isSelected ? '800' : '600';
+                                const glow = isSelected ? 'box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);' : '';
+                                const icon = isSelected ? '<i class="fa-solid fa-circle-check"></i>' : `<i class="fa-solid fa-reply"></i>`;
+                                return `
+                                    <button type="button" onclick="selectSubMacro(${idx})" id="subMacroBtn_${idx}" class="sub-macro-pill ${isSelected ? 'active-sub-macro' : ''}" style="background: ${bg}; border: 1.5px solid ${border}; color: ${color}; font-weight: ${weight}; padding: 7px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; ${glow}">
+                                        ${icon} <span>${sm.title_arabic}</span>
+                                    </button>
+                                `;
+                            }).join('')}
                         </div>
                     </div>
                 `;
