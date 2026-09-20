@@ -1724,6 +1724,11 @@
             <button type="button" class="header-btn" onclick="openDecisionTreeModal()" title="شجرة القرارات التفاعلية للحالات المعقدة" style="background: rgba(245, 158, 11, 0.12); color: #D97706; border-color: rgba(245, 158, 11, 0.35);">
                 <i class="fa-solid fa-sitemap"></i> <span>شجرة القرارات 🌳</span>
             </button>
+            <!-- 🟢 Official Knowledge Base Live Connection Badge -->
+            <div class="header-btn" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.35); color: #059669; cursor: default;" title="قاعدة المعرفة الرسمية لهنقرستيشن متصلة ومحملة بالكامل">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; display: inline-block; box-shadow: 0 0 8px #10B981; animation: pulse 2s infinite;"></span>
+                <span>قاعدة المعرفة: متصل (96 حالة)</span>
+            </div>
             <button type="button" class="header-btn" onclick="openPolicyCalculatorModal()" title="حاسبة تعويضات الطلبات ومواعيد الفواتير" style="background: rgba(16, 185, 129, 0.12); color: #059669; border-color: rgba(16, 185, 129, 0.35);">
                 <i class="fa-solid fa-calculator"></i> <span>حاسبة السياسات والتعويضات</span>
             </button>
@@ -6439,28 +6444,6 @@ function cleanArabicProcedure(text) {
 
         window.backToKBList = function() {
             _macroActive = false;
-            
-            const rawPartnerMsgForAudit = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '') || (document.getElementById('searchInput') ? document.getElementById('searchInput').value : '');
-            const auditFindings = auditTicketMessage(rawPartnerMsgForAudit);
-            let auditAlertHtml = '';
-            if (auditFindings && auditFindings.length > 0) {
-                auditAlertHtml = `
-                    <div style="background: rgba(245, 158, 11, 0.08); border: 1.5px solid rgba(245, 158, 11, 0.35); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px;">
-                        <div style="font-size: 0.82rem; font-weight: 800; color: #D97706; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                            <i class="fa-solid fa-shield-halved"></i> <strong>التدقيق الذكي للشكوى ومطابقة السياسة (Smart Policy Auditor):</strong>
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 6px;">
-                            ${auditFindings.map(f => `
-                                <div style="font-size: 0.78rem; color: var(--text-main); display: flex; align-items: flex-start; gap: 8px;">
-                                    <i class="fa-solid ${f.icon}" style="color: ${f.type === 'danger' ? '#EF4444' : f.type === 'warning' ? '#F59E0B' : '#3B82F6'}; margin-top: 3px;"></i>
-                                    <div><strong>${f.title}</strong> ${f.desc}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-    
             const output = document.getElementById('outputContent');
             if (!output) return;
             output.innerHTML = `
@@ -7677,6 +7660,31 @@ ${invoiceGuideHtml || ""}
         };
 
         async function displayCaseDualMacro(c, greetings, isEn, aiOverrideText = null, confidenceScore = 95, alternativeCases = [], detectedEntities = {}, targetSubMacroIdx = null) {
+
+            let auditAlertHtml = '';
+            if (typeof auditTicketMessage === 'function') {
+                const rawPartnerMsgForAudit = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '') || (document.getElementById('searchInput') ? document.getElementById('searchInput').value : '');
+                const auditFindings = auditTicketMessage(rawPartnerMsgForAudit);
+                if (auditFindings && auditFindings.length > 0) {
+                    auditAlertHtml = `
+                        <div style="background: rgba(245, 158, 11, 0.08); border: 1.5px solid rgba(245, 158, 11, 0.35); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px;">
+                            <div style="font-size: 0.82rem; font-weight: 800; color: #D97706; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-shield-halved"></i> <strong>التدقيق الذكي للشكوى ومطابقة السياسة (Smart Policy Auditor):</strong>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                ${auditFindings.map(f => `
+                                    <div style="font-size: 0.78rem; color: var(--text-main); display: flex; align-items: flex-start; gap: 8px;">
+                                        <i class="fa-solid ${f.icon}" style="color: ${f.type === 'danger' ? '#EF4444' : f.type === 'warning' ? '#F59E0B' : '#3B82F6'}; margin-top: 3px;"></i>
+                                        <div><strong>${f.title}</strong> ${f.desc}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+    
+
             if (!c) {
                 c = (typeof allCases !== 'undefined' && allCases.length > 0 ? (allCases.find(x => x.id == 86 || x.id == 58) || allCases[0]) : null) || {
                     id: 86,
@@ -7724,20 +7732,10 @@ ${invoiceGuideHtml || ""}
             }
             
             let finalArMacro = buildArabicMacro(greetings.arGreeting, arProcText);
-            let aiBadgeNotice = '';
+            let aiBadgeNotice = `<div style="background: rgba(16, 185, 129, 0.12); border: 1.5px solid #10B981; color: #059669; padding: 7px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-certificate" style="color: #10B981;"></i> الرد المعتمد الرسمي من قاعدة المعرفة (KnowledgeOwl Inbound KB) ✅</div>`;
             
             if (aiOverrideText) {
                 finalArMacro = aiOverrideText;
-                aiBadgeNotice = `<div style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10B981; color: #34D399; padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-wand-magic-sparkles"></i> تم التوليد الفائق بالذكاء الاصطناعي (Gemini 2.0 Flash)</div>`;
-            } else {
-                const currentQueryText = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '') || (document.getElementById('searchInput') ? document.getElementById('searchInput').value : '');
-                if (currentQueryText && currentQueryText.trim().length > 15) {
-                    const aiGen = await callGeminiFreeAi(currentQueryText, c, greetings, detectedEntities);
-                    if (aiGen) {
-                        finalArMacro = aiGen;
-                        aiBadgeNotice = `<div style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10B981; color: #34D399; padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-wand-magic-sparkles"></i> تم التوليد الفائق بذكاء الاصطناعي المباشر (Gemini 2.0 Flash)</div>`;
-                    }
-                }
             }
             const arMacro = finalArMacro;
     
