@@ -9272,7 +9272,7 @@ function extractImageUrls(text) {
     while ((match = urlRegex.exec(str)) !== null) {
         const u = match[0];
         if (u && (u.includes('drive.google.com') || u.includes('dropbox.com') || u.includes('onedrive') || 
-            u.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i) || u.includes('photos.app.goo.gl')) {
+            u.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i) || u.includes('photos.app.goo.gl'))) {
             urls.push(u);
         }
     }
@@ -9718,7 +9718,10 @@ function processVendorMenuWorkbook(workbook) {
         let groupIdCounter = 1;
 
         rawRows.forEach((row, idx) => {
-            const rawCat = row['Category'] || row['category'] || row['القسم'] || row['الفئة'] || row['مجموعة'] || row['Group'] || 'Main Menu';
+            const r = {};
+            Object.keys(row).forEach(k => { if (k) r[String(k).trim()] = row[k]; });
+
+            const rawCat = r['القسم'] || r['التصنيف'] || r['قسم'] || r['الفئة'] || r['مجموعة'] || r['Category'] || r['category'] || r['Group'] || 'Main Menu';
             const cleanCatAr = cleanProperTrim(String(rawCat));
             const cleanCatEn = toEnglishProper(String(rawCat));
 
@@ -9729,19 +9732,19 @@ function processVendorMenuWorkbook(workbook) {
                     ar_name: cleanCatAr,
                     name_en: cleanCatEn,
                     name_ar: cleanCatAr,
-                    en_type: 'General',
-                    ar_type: 'عام',
+                    en_type: 'Breakfast',
+                    ar_type: 'الإفطار',
                     order: groupsMap.size + 1
                 });
             }
             const groupObj = groupsMap.get(cleanCatEn);
 
-            const nameAr = row['Arabic Name'] || row['الاسم بالعربي'] || row['اسم الصنف'] || row['Name Ar'] || row['Name'] || row['الاسم'] || `صنف ${idx+1}`;
-            const nameEn = row['English Name'] || row['الاسم بالإنجليزي'] || row['Name En'] || row['Item Name'] || row['Name'] || row['Item'] || autoTranslateMenuText(nameAr, 'EN');
-            const price = parseFloat(row['Price'] || row['price'] || row['السعر'] || row['price*'] || 15);
-            const kcal = parseInt(row['Calories'] || row['calories'] || row['Kcal'] || row['kcal'] || row['السعرات'] || 0, 10);
-            const descAr = cleanProperTrim(String(row['Arabic Description'] || row['الوصف بالعربي'] || row['الوصف'] || row['Description'] || ''));
-            const descEn = cleanProperTrim(String(row['English Description'] || row['الوصف بالإنجليزي'] || row['Description En'] || row['Description'] || ''));
+            const nameAr = r['اسم المنتج بالعربي'] || r['الاسم بالعربي'] || r['الاسم عربي'] || r['اسم الصنف'] || r['Arabic Name'] || r['Name Ar'] || r['Name'] || r['الاسم'] || ('صنف ' + (idx + 1));
+            const nameEn = r['اسم المنتج بالانجليزي'] || r['اسم المنتج بالإنجليزي'] || r['الاسم بالإنجليزي'] || r['الاسم انجليزي'] || r['English Name'] || r['Name En'] || r['Item Name'] || r['Item'] || autoTranslateMenuText(nameAr, 'EN');
+            const price = parseFloat(r['السعر'] || r['Price'] || r['price'] || r['price*'] || 15);
+            const kcal = parseInt(r['السعرات'] || r['سعرات'] || r['Calories'] || r['calories'] || r['Kcal'] || r['kcal'] || 0, 10);
+            const descAr = cleanProperTrim(String(r['الوصف بالعربي'] || r['وصف عربي'] || r['Arabic Description'] || r['الوصف'] || r['Description'] || ''));
+            const descEn = cleanProperTrim(String(r['الوصف بالانجليزي'] || r['الوصف بالإنجليزي'] || r['وصف انجليزي'] || r['English Description'] || r['Description En'] || ''));
 
             items.push({
                 id: idx + 1,
@@ -9764,7 +9767,7 @@ function processVendorMenuWorkbook(workbook) {
                 kcal: isNaN(kcal) ? 0 : kcal,
                 calories: isNaN(kcal) ? 0 : kcal,
                 modifier_groups: '',
-                vendor_id: `P${idx + 1}`,
+                vendor_id: 'P' + (idx + 1),
                 allergens: 'No Allergens'
             });
         });
