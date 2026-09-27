@@ -9270,8 +9270,8 @@ function extractImageUrls(text) {
     let match;
     const str = String(text);
     while ((match = urlRegex.exec(str)) !== null) {
-        const u = match[1];
-        if (u.includes('drive.google.com') || u.includes('dropbox.com') || u.includes('onedrive') || 
+        const u = match[0];
+        if (u && (u.includes('drive.google.com') || u.includes('dropbox.com') || u.includes('onedrive') || 
             u.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i) || u.includes('photos.app.goo.gl')) {
             urls.push(u);
         }
@@ -9594,8 +9594,8 @@ function processVendorMenuWorkbook(workbook) {
                 const gid = parseInt(grow['#'] || idx + 1, 10);
                 const enName = grow['english name *'] || grow['English Name'] || grow['name_en'] || '';
                 const arName = grow['arabic name *'] || grow['Arabic Name'] || grow['name_ar'] || '';
-                const enType = grow['english category type'] || 'General';
-                const arType = grow['arabic category type'] || 'عام';
+                const enType = grow['english category type'] || 'Breakfast';
+                const arType = grow['arabic category type'] || 'الإفطار';
 
                 if (enName || arName) {
                     groups.push({
@@ -9887,8 +9887,8 @@ function createOfficialMenuWorkbook() {
             g.id,
             toEnglishProper(g.en_name || g.name_en),
             cleanProperTrim(g.ar_name || g.name_ar),
-            toEnglishProper(g.en_type || 'General'),
-            cleanProperTrim(g.ar_type || 'عام')
+            toEnglishProper(g.en_type || 'Breakfast'),
+            cleanProperTrim(g.ar_type || 'الإفطار')
         ]);
     });
     for (let r = groups.length + 1; r <= 15; r++) {
@@ -9932,8 +9932,8 @@ function createOfficialMenuWorkbook() {
         ]
     ];
     items.forEach((it, idx) => {
-        const pEn = toEnglishProper(it.prod_en || it.item_en || it.name_en);
-        const pAr = cleanProperTrim(it.prod_ar || it.item_ar || it.name_ar);
+        const pEn = (it.prod_en && it.prod_en !== '-') ? toEnglishProper(it.prod_en) : '-';
+        const pAr = (it.prod_ar && it.prod_ar !== '-') ? cleanProperTrim(it.prod_ar) : '-';
         ws3_data.push([
             idx + 1,
             Number(it.group_id) || 1,
