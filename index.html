@@ -77,6 +77,55 @@
     </script>
 
     <style>
+
+        /* 🖥️ Compact Dock / Split-Screen Mode */
+        body.dock-mode {
+            max-width: 480px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            font-size: 0.88rem;
+        }
+        body.dock-mode .main-header {
+            padding: 8px 12px !important;
+        }
+        body.dock-mode .logo-title p,
+        body.dock-mode .header-controls .header-btn:not(#dockToggleBtn):not(#hotkeysBtn) {
+            display: none !important;
+        }
+        body.dock-mode .workspace-bar {
+            padding: 4px 8px !important;
+            gap: 4px !important;
+        }
+        body.dock-mode .ws-tab-btn {
+            padding: 6px 10px !important;
+            font-size: 0.75rem !important;
+        }
+        body.dock-mode main,
+        body.dock-mode #menuStudioWorkspace {
+            padding: 8px !important;
+            margin: 0 !important;
+        }
+        body.dock-mode .main-grid {
+            grid-template-columns: 1fr !important;
+            gap: 10px !important;
+        }
+        body.dock-mode .dock-hide {
+            display: none !important;
+        }
+        
+        /* ⌨️ Hotkey Badge */
+        .hotkey-badge {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #FCD34D;
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-right: 6px;
+        }
+
         :root {
             /* ☀️ Sunny, Vibrant & Cheerful Modern Theme (DEFAULT) */
             --bg-body: #F4F7FC;
@@ -2002,8 +2051,20 @@
                 <i class="fa-solid fa-crop-simple"></i> <span>محرر الصور</span>
             </button>
 
+            <button type="button" class="header-btn" onclick="openShiftReportModal()" style="background: rgba(16, 185, 129, 0.15); color: #34D399; border-color: rgba(16, 185, 129, 0.4);" title="تقرير إنجاز نهاية الشفت">
+                <i class="fa-solid fa-chart-pie"></i> <span>تقرير الشفت</span>
+            </button>
+            <button type="button" class="header-btn" onclick="openTeamSyncModal()" style="background: rgba(139, 92, 246, 0.15); color: #C4B5FD; border-color: rgba(139, 92, 246, 0.4);" title="مزامنة وتصدير تحديثات الفريق">
+                <i class="fa-solid fa-arrows-rotate"></i> <span>مزامنة التيم</span>
+            </button>
+            <button type="button" class="header-btn" onclick="openHotkeysModal()" id="hotkeysBtn" style="color: #FCD34D;" title="اختصارات لوحة المفاتيح (Alt+1, Alt+2, Alt+C)">
+                <i class="fa-solid fa-keyboard"></i> <span>الاختصارات</span>
+            </button>
+            <button type="button" class="header-btn" onclick="toggleDockMode()" id="dockToggleBtn" style="color: #38BDF8;" title="وضع نصف الشاشة بجانب نظام التذاكر">
+                <i class="fa-solid fa-table-columns"></i> <span id="dockToggleText">دوك</span>
+            </button>
             <button type="button" class="header-btn" onclick="downloadStandaloneFile()" style="background: rgba(59, 130, 246, 0.2); color: #93C5FD; border-color: rgba(59, 130, 246, 0.4);">
-                <i class="fa-solid fa-download"></i> <span>تنزيل أوفلاين</span>
+                <i class="fa-solid fa-download"></i> <span>أوفلاين</span>
             </button>
         </div>
     </header>
@@ -10141,6 +10202,287 @@ async function downloadAllMenuImagesZip640x480() {
 
 
 
+
+// =========================================================================
+// 🚀 NEXT-GEN AGENT SUITE UPGRADE MODULES
+// Hotkeys, Entity Auto-Fill, Multi-Intent, SLA Alerts, Shift Report & Team Sync
+// =========================================================================
+
+// ── 1. GLOBAL KEYBOARD SHORTCUTS ──────────────────────────────────────────
+window.addEventListener('keydown', function(e) {
+    // Only trigger if Alt key is pressed (or Option on Mac)
+    if (e.altKey) {
+        if (e.code === 'Digit1') {
+            e.preventDefault();
+            // Alt + 1: Copy Arabic Macro
+            const btn = document.getElementById('copyArMacroBtn') || document.querySelector('.btn-copy-ar');
+            if (btn) btn.click();
+            else if (typeof copyArabicMacro === 'function') copyArabicMacro();
+            else showToast('⚠️ لا يوجد رد عربي جاهز للنسخ');
+        } else if (e.code === 'Digit2') {
+            e.preventDefault();
+            // Alt + 2: Copy English Macro
+            const btn = document.getElementById('copyEnMacroBtn') || document.querySelector('.btn-copy-en');
+            if (btn) btn.click();
+            else if (typeof copyEnglishMacro === 'function') copyEnglishMacro();
+            else showToast('⚠️ لا يوجد رد إنجليزي جاهز للنسخ');
+        } else if (e.code === 'KeyC') {
+            e.preventDefault();
+            // Alt + C: Copy CCR Code
+            const ccrBadge = document.getElementById('outputCcrCode') || document.querySelector('.ccr-badge');
+            if (ccrBadge) {
+                const ccrText = ccrBadge.innerText.replace('CCR:', '').trim();
+                navigator.clipboard.writeText(ccrText);
+                showToast(`📋 تم نسخ كود الـ CCR: ${ccrText}`);
+            }
+        } else if (e.code === 'KeyS') {
+            e.preventDefault();
+            // Alt + S: Focus Search Input
+            const si = document.getElementById('partnerMessage') || document.getElementById('searchInput');
+            if (si) si.focus();
+        } else if (e.code === 'KeyD') {
+            e.preventDefault();
+            // Alt + D: Toggle Dock Split-screen
+            toggleDockMode();
+        } else if (e.code === 'KeyM') {
+            e.preventDefault();
+            // Alt + M: Toggle Menu Studio
+            const ws = (typeof currentMainWorkspace !== 'undefined' && currentMainWorkspace === 'MENU_STUDIO') ? 'TICKETS' : 'MENU_STUDIO';
+            switchMainWorkspace(ws);
+        }
+    }
+});
+
+// ── 2. DOCK / SPLIT-SCREEN MODE ───────────────────────────────────────────
+function toggleDockMode() {
+    const isDock = document.body.classList.toggle('dock-mode');
+    const badge = document.getElementById('dockToggleText');
+    if (badge) badge.innerText = isDock ? 'شاشة كاملة' : 'دوك';
+    localStorage.setItem('hs_dock_mode', isDock ? '1' : '0');
+    showToast(isDock ? '🖥️ تم تفعيل وضع الدوك الصغير لمجاورة Zendesk/Portal' : '🖥️ تم الرجوع للشاشة الكاملة');
+}
+
+if (localStorage.getItem('hs_dock_mode') === '1') {
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.classList.add('dock-mode');
+        const badge = document.getElementById('dockToggleText');
+        if (badge) badge.innerText = 'شاشة كاملة';
+    });
+}
+
+// ── 3. SENTIMENT & ANGER DETECTION SHIELD ──────────────────────────────────
+function detectPartnerSentiment(text) {
+    if (!text) return { isAngry: false, keywords: [] };
+    const angryPatterns = [
+        'فسخ العقد', 'الغاء العقد', 'إلغاء العقد', 'رفع شكوى', 'شكوى رسمية',
+        'محامي', 'وزارة التجارة', 'الشرطة', 'نصب', 'سرقة', 'حسبي الله',
+        'مهزلة', 'تأخير غير مقبول', 'تطنيش', 'معاملة سيئة', 'استهتار',
+        'اغلاق الحساب', 'تعويض مالي', 'إهمال'
+    ];
+    const found = [];
+    const norm = normalizeArabic(text);
+    angryPatterns.forEach(k => {
+        if (norm.includes(normalizeArabic(k))) found.push(k);
+    });
+    return {
+        isAngry: found.length > 0,
+        keywords: found
+    };
+}
+
+// ── 4. MULTI-INTENT DETECTION & MERGER ─────────────────────────────────────
+function detectMultiIntents(text) {
+    if (!text || text.length < 25) return [];
+    const norm = normalizeArabic(text);
+    const intentCategories = [
+        { cat: 'INVOICE', label: 'الفواتير والعمولات', keys: ['فاتورة', 'عمولة', 'استقطاع', 'تحويل', 'مستحقات', 'كشف حساب', 'ايبان'], caseId: 54 },
+        { cat: 'DEVICE', label: 'جهاز الـ POS والطابعة', keys: ['جهاز', 'طابعة', 'بوس', 'ديفايس', 'شريحة', 'ورق رول', 'تحديث جهاز'], caseId: 4 },
+        { cat: 'MENU', label: 'تعديل أسعار أو أصناف المنيو', keys: ['منيو', 'اصناف', 'صنف', 'اسعار', 'سعر', 'اضافة منتج'], caseId: 40 },
+        { cat: 'BRANCH', label: 'حالة الفرع والظهور بالبرنامج', keys: ['مغلق', 'مقفل', 'ظهور', 'غير متاح', 'ساعات العمل', 'الدوام'], caseId: 18 },
+        { cat: 'ORDER', label: 'شكوى طلب أو إلغاء', keys: ['الغاء طلب', 'خصم طلب', 'تعويض طلب', 'مندوب تأخر', 'عميل'], caseId: 45 }
+    ];
+
+    const detected = [];
+    intentCategories.forEach(ic => {
+        const match = ic.keys.some(k => norm.includes(normalizeArabic(k)));
+        if (match) detected.push(ic);
+    });
+    return detected.length >= 2 ? detected : [];
+}
+
+function mergeMultiIntentMacros(intentA, intentB) {
+    const caseA = allCases.find(c => c.id === intentA.caseId);
+    const caseB = allCases.find(c => c.id === intentB.caseId);
+    if (!caseA || !caseB) return;
+
+    const mergedAr = `أهلاً بك عزيزي الشريك،\n\nبخصوص استفسارك الأول عن (${intentA.label}):\n${caseA.procedure_arabic}\n\nوبخصوص (${intentB.label}):\n${caseB.procedure_arabic}\n\nدمتم برعاية الله وحفظه،\nفريق دعم الشركاء | هنقرستيشن`;
+    const mergedEn = `Dear Partner,\n\nRegarding your first inquiry about (${intentA.label}):\n${caseA.procedure_english}\n\nRegarding (${intentB.label}):\n${caseB.procedure_english}\n\nBest regards,\nVendor Support Team | Hungerstation`;
+
+    displayCaseDualMacro(caseA, { arGreeting: '', enGreeting: '' }, false, mergedAr);
+    showToast(`✨ تم دمج ردي (${intentA.label} + ${intentB.label}) في ماكرو واحد منسق!`);
+}
+
+// ── 5. SLA AUDIO & DESKTOP NOTIFICATIONS FOR PENDING VAULT ────────────────
+function requestNotificationPermission() {
+    if ('Notification' in window && Notification.permission !== 'granted') {
+        Notification.requestPermission();
+    }
+}
+
+function checkPendingVaultSLATimers() {
+    const list = JSON.parse(localStorage.getItem('hs_pending_vault') || '[]');
+    const now = Date.now();
+    let hasAlert = false;
+
+    list.forEach(t => {
+        if (!t.resolved && t.deadline && now >= t.deadline && !t.notified) {
+            t.notified = true;
+            hasAlert = true;
+            playPleasantAlert();
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('⏰ تذكير تذكرة معلقة - هنقرستيشن', {
+                    body: `حان موعد متابعة التذكرة: ${t.title || 'طلب شريك'}`,
+                    icon: 'https://hungerstation.com/favicon.ico'
+                });
+            }
+        }
+    });
+
+    if (hasAlert) {
+        localStorage.setItem('hs_pending_vault', JSON.stringify(list));
+        updatePendingVaultBadge();
+    }
+}
+setInterval(checkPendingVaultSLATimers, 45000);
+
+function playPleasantAlert() {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.5);
+    } catch(e) {}
+}
+
+// ── 6. END-OF-SHIFT REPORT GENERATOR ──────────────────────────────────────
+function generateShiftReportText() {
+    const agent = getAgentArabicName() || 'الموظف';
+    const history = JSON.parse(localStorage.getItem('hs_history_log') || '[]');
+    const pending = JSON.parse(localStorage.getItem('hs_pending_vault') || '[]').filter(p => !p.resolved);
+    const dateStr = new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+    // Group resolved by case title
+    const freqMap = {};
+    history.forEach(h => {
+        const t = (h.title || 'أخرى').split('|')[0].trim();
+        freqMap[t] = (freqMap[t] || 0) + 1;
+    });
+
+    const topCases = Object.entries(freqMap)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([k, v], i) => `  ${i + 1}. ${k}: (${v} تذكرة)`)
+        .join('\n');
+
+    return `📊 تقرير إنجاز الشفت اليومي | Hungerstation Vendor Support
+──────────────────────────────
+👤 الموظف: ${agent}
+📅 التاريخ: ${dateStr}
+⏱️ إجمالي التذاكر المنجزة: ${history.length} تذكرة
+📌 التذاكر المعلقة للمتابعة: ${pending.length} تذكرة
+──────────────────────────────
+🔥 أكثر الحالات تكراراً في الشفت:
+${topCases || '  لا توجد تذاكر مسجلة بعد'}
+──────────────────────────────
+تم الإنجاز بالكامل عبر المنصة الذكية لدعم الشركاء 🚀`;
+}
+
+function openShiftReportModal() {
+    const modal = document.getElementById('shiftReportModal');
+    const ta = document.getElementById('shiftReportTextarea');
+    if (ta) ta.value = generateShiftReportText();
+    if (modal) modal.style.display = 'flex';
+}
+
+function copyShiftReport() {
+    const ta = document.getElementById('shiftReportTextarea');
+    if (ta) {
+        navigator.clipboard.writeText(ta.value);
+        showToast('📋 تم نسخ تقرير الشفت للحافظة بنجاح!');
+        playSuccessChime();
+    }
+}
+
+// ── 7. TEAM SYNC & CONFIG EXPORT/IMPORT ───────────────────────────────────
+function exportTeamConfigJson() {
+    const learned = JSON.parse(localStorage.getItem('hs_learned_rules') || '[]');
+    const snippets = JSON.parse(localStorage.getItem('hs_quick_snippets') || '[]');
+    const overrides = JSON.parse(localStorage.getItem('hs_kb_custom_overrides') || '{}');
+
+    const config = {
+        app: 'Hungerstation Vendor Support Suite',
+        version: '3.5',
+        exportedAt: new Date().toISOString(),
+        exportedBy: getAgentArabicName(),
+        learnedRules: learned,
+        quickSnippets: snippets,
+        kbOverrides: overrides
+    };
+
+    const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `HS_Team_KB_Config_${Date.now()}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    showToast('💾 تم تصدير ملف إعدادات الفريق للمشاركة!');
+}
+
+function importTeamConfigJson(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (data.learnedRules && Array.isArray(data.learnedRules)) {
+                localStorage.setItem('hs_learned_rules', JSON.stringify(data.learnedRules));
+            }
+            if (data.quickSnippets && Array.isArray(data.quickSnippets)) {
+                localStorage.setItem('hs_quick_snippets', JSON.stringify(data.quickSnippets));
+            }
+            if (data.kbOverrides) {
+                localStorage.setItem('hs_kb_custom_overrides', JSON.stringify(data.kbOverrides));
+            }
+            playSuccessChime();
+            showToast('✅ تم استيراد ومزامنة إعدادات الفريق بنجاح!');
+            setTimeout(() => location.reload(), 1500);
+        } catch(err) {
+            alert('ملف غير صالح! تأكد من اختيار ملف JSON صحيح.');
+        }
+    };
+    reader.readAsText(file);
+}
+
+function openTeamSyncModal() {
+    const m = document.getElementById('teamSyncModal');
+    if (m) m.style.display = 'flex';
+}
+
+function openHotkeysModal() {
+    const m = document.getElementById('hotkeysModal');
+    if (m) m.style.display = 'flex';
+}
+
+
 function createOfficialMenuWorkbook() {
     const { groups, items, modifiers } = window.menuBuilderData;
     const wb = XLSX.utils.book_new();
@@ -14274,6 +14616,31 @@ if (typeof window !== 'undefined') {
             </div>
         </div>
     </div>
+
+
+    <!-- PWA & Offline Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    const CACHE_NAME = 'hs-vendor-suite-v3.5';
+                    self.addEventListener('install', (e) => self.skipWaiting());
+                    self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+                    self.addEventListener('fetch', (e) => {
+                        if (e.request.method !== 'GET') return;
+                        e.respondWith(
+                            fetch(e.request).catch(() => caches.match(e.request))
+                        );
+                    });
+                `;
+                try {
+                    const blob = new Blob([swCode], { type: 'application/javascript' });
+                    const swUrl = URL.createObjectURL(blob);
+                    navigator.serviceWorker.register(swUrl).catch(() => {});
+                } catch(e) {}
+            });
+        }
+    </script>
 
 </body>
 </html>
