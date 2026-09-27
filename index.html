@@ -9224,8 +9224,15 @@ function showMenuPreviewTab(tab) {
 
 function cleanProperTrim(str) {
     if (!str && str !== 0) return '';
-    return String(str)
-        .replace(/[&%@\/\|~*]/g, ' ')
+    let s = String(str);
+    if (s.trim() === '-') return '-';
+    return s
+        // Remove all emojis and pictorial symbols
+        .replace(/[\u{1F300}-\u{1F9FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1FA00}-\u{1FAFF}\u{1F1E0}-\u{1F1FF}\u{FE00}-\u{FE0F}]/gu, '')
+        // Remove forbidden symbols per Guide Slide 20: (& % @ - / # $ ^ + = < > ? [ ] { } \ ; : " ! ~ |)
+        .replace(/[&%@\/\\|~*#$^+=<>?\[\]{};:"!]/g, ' ')
+        .replace(/-/g, ' ')
+        // Normalize whitespace and trim (=TRIM())
         .replace(/\s+/g, ' ')
         .trim();
 }
@@ -9233,7 +9240,11 @@ function cleanProperTrim(str) {
 function toEnglishProper(str) {
     if (!str && str !== 0) return '';
     let cleaned = cleanProperTrim(str);
-    return cleaned.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+    if (cleaned === '-') return '-';
+    // Excel =PROPER(): capitalize first letter of each English word, lowercase rest
+    return cleaned.replace(/[a-zA-Z]+/g, (word) => {
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    });
 }
 
 function autoTranslateMenuText(text, targetLang = 'EN') {
@@ -9877,6 +9888,38 @@ function handleStudioDroppedFiles(event) {
 }
 
 
+function getEnglishCategory(cat) {
+    if (!cat) return 'General';
+    let s = String(cat).trim();
+    if (/^[a-zA-Z\s&-]+$/.test(s)) return toEnglishProper(s);
+    const map = {
+        'طقوم ساعات': 'Watch Sets', 'طقم ساعات': 'Watch Sets', 'ساعات': 'Watches',
+        'هدايا': 'Gifts', 'ورد': 'Flowers', 'زهور': 'Flowers', 'باقات': 'Bouquets',
+        'اكسسوارات': 'Accessories', 'إكسسوارات': 'Accessories',
+        'عطور': 'Perfumes', 'عطورات': 'Perfumes', 'بخور': 'Incense',
+        'قهوة': 'Coffee', 'قهوه': 'Coffee', 'كافيه': 'Coffee', 'شاي': 'Tea',
+        'مشروبات ساخنة': 'Hot Drinks', 'مشروبات باردة': 'Cold Drinks', 'مشروبات': 'Beverages', 'عصائر': 'Juices',
+        'برجر': 'Burgers', 'برقر': 'Burgers', 'ساندوتش': 'Sandwiches', 'ساندوتشات': 'Sandwiches', 'شطائر': 'Sandwiches',
+        'بيتزا': 'Pizza', 'شاورما': 'Shawarma', 'مشويات': 'Grills', 'مشاوي': 'Grills', 'كباب': 'Grills',
+        'دجاج': 'Chicken', 'بروستد': 'Broasted', 'فرايد تشيكن': 'Fried Chicken',
+        'مأكولات بحرية': 'Seafood', 'سمك': 'Seafood', 'بحريات': 'Seafood',
+        'باستا': 'Pasta', 'مكرونة': 'Pasta', 'معكرونة': 'Pasta',
+        'رز': 'Rice Dishes', 'برياني': 'Biryani', 'كبسة': 'Kabsa',
+        'مقبلات': 'Appetizers', 'سناك': 'Snacks', 'سلطات': 'Salads', 'سلطة': 'Salads',
+        'شوربة': 'Soups', 'شوربات': 'Soups',
+        'حلويات': 'Desserts', 'حلى': 'Desserts', 'كيك': 'Cakes', 'مخبوزات': 'Bakery', 'معجنات': 'Pastries', 'فطائر': 'Pies',
+        'صوصات': 'Sauces', 'صلصات': 'Sauces', 'إضافات': 'Add-ons', 'اضافات': 'Add-ons', 'خيارات': 'Options',
+        'بوكسات': 'Boxes', 'عروض': 'Special Offers', 'وجبات': 'Meals', 'اطباق رئيسية': 'Main Courses',
+        'فطور': 'Breakfast', 'إفطار': 'Breakfast', 'وجبات أطفال': 'Kids Meals'
+    };
+    const sortedKeys = Object.keys(map).sort((a, b) => b.length - a.length);
+    for (let k of sortedKeys) {
+        if (s.includes(k)) return map[k];
+    }
+    const fallback = toEnglishProper(s.replace(/[\u0600-\u06FF]/g, ''));
+    return fallback && fallback.length > 1 ? fallback : 'Special Items';
+}
+
 function createOfficialMenuWorkbook() {
     const { groups, items, modifiers } = window.menuBuilderData;
     const wb = XLSX.utils.book_new();
@@ -9885,43 +9928,46 @@ function createOfficialMenuWorkbook() {
     const ws1_data = [
         ['#', 'english name *', 'arabic name *', 'english category type', 'arabic category type']
     ];
-    groups.forEach(g => {
+    groups.forEach((g, idx) => {
+        const arName = cleanProperTrim(g.ar_name || g.name_ar || g.name_en || 'قسم');
+        let enName = g.en_name || g.name_en;
+        if (!enName || /[\u0600-\u06FF]/.test(enName)) {
+            enName = getEnglishCategory(arName);
+        } else {
+            enName = toEnglishProper(enName);
+        }
         ws1_data.push([
-            g.id,
-            toEnglishProper(g.en_name || g.name_en),
-            cleanProperTrim(g.ar_name || g.name_ar),
-            toEnglishProper(g.en_type || 'Breakfast'),
-            cleanProperTrim(g.ar_type || 'الإفطار')
+            idx + 1,
+            enName,
+            arName,
+            'Breakfast',
+            'الإفطار'
         ]);
     });
-    for (let r = groups.length + 1; r <= 15; r++) {
-        ws1_data.push([r, '', '', '', '']);
-    }
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws1_data), 'menu group');
 
     // 2. Sheet: Modifier groupsmodifiers
     const ws2_data = [
         ['#', 'Group. english name *', 'Group. arabic name *', 'max limit ', 'min limit *', 'Modifier en name *', 'Modifier ar name *', 'price *', 'kcal ', 'Vendor ID']
     ];
-    let lastGroupEn = null;
-    modifiers.forEach((m, idx) => {
-        const isNewGroup = m.group_en !== lastGroupEn;
-        ws2_data.push([
-            idx + 1,
-            isNewGroup ? toEnglishProper(m.group_en || m.group_name) : '',
-            isNewGroup ? cleanProperTrim(m.group_ar || m.group_name) : '',
-            isNewGroup ? (m.max_limit !== '' ? Number(m.max_limit) : 3) : '',
-            isNewGroup ? (m.min_limit !== '' ? Number(m.min_limit) : 0) : '',
-            toEnglishProper(m.mod_en || m.option_en || m.name_en),
-            cleanProperTrim(m.mod_ar || m.option_ar || m.name_ar),
-            Number(m.price) || 0,
-            parseInt(m.kcal || 0, 10),
-            m.vendor_id || `M${idx + 1}`
-        ]);
-        if (isNewGroup) lastGroupEn = m.group_en;
-    });
-    for (let r = modifiers.length + 1; r <= 15; r++) {
-        ws2_data.push([r, '', '', '', '', '', '', '', '', '']);
+    if (modifiers && modifiers.length > 0) {
+        let lastGroupEn = null;
+        modifiers.forEach((m, idx) => {
+            const isNewGroup = m.group_en !== lastGroupEn;
+            ws2_data.push([
+                idx + 1,
+                isNewGroup ? toEnglishProper(m.group_en || m.group_name) : '',
+                isNewGroup ? cleanProperTrim(m.group_ar || m.group_name) : '',
+                isNewGroup ? (m.max_limit !== '' ? Number(m.max_limit) : 3) : '',
+                isNewGroup ? (m.min_limit !== '' ? Number(m.min_limit) : 0) : '',
+                toEnglishProper(m.mod_en || m.option_en || m.name_en),
+                cleanProperTrim(m.mod_ar || m.option_ar || m.name_ar),
+                Number(m.price) || 0,
+                parseInt(m.kcal || 0, 10),
+                m.vendor_id || ('M' + (idx + 1))
+            ]);
+            if (isNewGroup) lastGroupEn = m.group_en;
+        });
     }
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws2_data), 'Modifier groupsmodifiers');
 
@@ -9937,6 +9983,7 @@ function createOfficialMenuWorkbook() {
     items.forEach((it, idx) => {
         const pEn = (it.prod_en && it.prod_en !== '-') ? toEnglishProper(it.prod_en) : '-';
         const pAr = (it.prod_ar && it.prod_ar !== '-') ? cleanProperTrim(it.prod_ar) : '-';
+        const numPrice = Number(it.price) || 0;
         ws3_data.push([
             idx + 1,
             Number(it.group_id) || 1,
@@ -9946,20 +9993,17 @@ function createOfficialMenuWorkbook() {
             cleanProperTrim(it.prod_ar_desc || ''),
             toEnglishProper(it.item_en || it.name_en || pEn),
             cleanProperTrim(it.item_ar || it.name_ar || pAr),
-            cleanProperTrim(it.item_en_desc || ''),
-            cleanProperTrim(it.item_ar_desc || ''),
-            Number(it.price) || 0,
-            it.pickup_price ? Number(it.pickup_price) : Number(it.price) || '',
+            cleanProperTrim(it.item_en_desc || it.desc_en || ''),
+            cleanProperTrim(it.item_ar_desc || it.desc_ar || ''),
+            numPrice,
+            it.pickup_price ? Number(it.pickup_price) : numPrice,
             parseInt(it.kcal || it.calories || 0, 10),
             String(it.modifier_groups || ''),
-            it.vendor_id || `P${idx + 1}`,
+            it.vendor_id || ('P' + (idx + 1)),
             it.allergens || 'No Allergens',
             '', '', '', '', '', '', '', '', '', '', '', '', ''
         ]);
     });
-    for (let r = items.length + 1; r <= 15; r++) {
-        ws3_data.push([r, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']);
-    }
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws3_data), 'Menu productsitems');
 
     // 4. Sheet: Valid Allergens
