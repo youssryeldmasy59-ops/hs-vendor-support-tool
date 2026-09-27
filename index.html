@@ -9934,12 +9934,31 @@ function convertToDirectImageUrl(rawUrl) {
     return u;
 }
 
-function fetchAndResizeImageTo640x480(directUrl) {
+function fetchAndProcessImage640x480(directUrl) {
     return new Promise((resolve, reject) => {
         const img = new Image();
         img.crossOrigin = 'anonymous';
         img.onload = () => {
             try {
+                // If already exactly 640x480: preserve original image bytes without re-compression!
+                if (img.naturalWidth === 640 && img.naturalHeight === 480) {
+                    fetch(directUrl)
+                        .then(res => {
+                            if (!res.ok) throw new Error('Fetch failed');
+                            return res.blob();
+                        })
+                        .then(blob => resolve({ blob: blob, wasResized: false }))
+                        .catch(() => {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = 640;
+                            canvas.height = 480;
+                            canvas.getContext('2d').drawImage(img, 0, 0);
+                            canvas.toBlob(b => resolve({ blob: b, wasResized: false }), 'image/jpeg', 0.98);
+                        });
+                    return;
+                }
+
+                // If dimensions differ: resize cleanly to 640x480 with centered letterbox
                 const canvas = document.createElement('canvas');
                 canvas.width = 640;
                 canvas.height = 480;
@@ -9947,11 +9966,9 @@ function fetchAndResizeImageTo640x480(directUrl) {
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = 'high';
 
-                // Fill clean white background
                 ctx.fillStyle = '#FFFFFF';
                 ctx.fillRect(0, 0, 640, 480);
 
-                // Aspect ratio fit (Letterbox / Center)
                 const scale = Math.min(640 / img.naturalWidth, 480 / img.naturalHeight);
                 const w = img.naturalWidth * scale;
                 const h = img.naturalHeight * scale;
@@ -9961,9 +9978,9 @@ function fetchAndResizeImageTo640x480(directUrl) {
                 ctx.drawImage(img, x, y, w, h);
 
                 canvas.toBlob((blob) => {
-                    if (blob) resolve(blob);
+                    if (blob) resolve({ blob: blob, wasResized: true });
                     else reject(new Error('Canvas toBlob failed'));
-                }, 'image/jpeg', 0.92);
+                }, 'image/jpeg', 0.95);
             } catch (err) {
                 reject(err);
             }
@@ -9975,6 +9992,19 @@ function fetchAndResizeImageTo640x480(directUrl) {
             fallbackImg.crossOrigin = 'anonymous';
             fallbackImg.onload = () => {
                 try {
+                    if (fallbackImg.naturalWidth === 640 && fallbackImg.naturalHeight === 480) {
+                        fetch(proxyUrl)
+                            .then(res => res.blob())
+                            .then(blob => resolve({ blob: blob, wasResized: false }))
+                            .catch(() => {
+                                const canvas = document.createElement('canvas');
+                                canvas.width = 640;
+                                canvas.height = 480;
+                                canvas.getContext('2d').drawImage(fallbackImg, 0, 0);
+                                canvas.toBlob(b => resolve({ blob: b, wasResized: false }), 'image/jpeg', 0.98);
+                            });
+                        return;
+                    }
                     const canvas = document.createElement('canvas');
                     canvas.width = 640;
                     canvas.height = 480;
@@ -9986,9 +10016,9 @@ function fetchAndResizeImageTo640x480(directUrl) {
                     const h = fallbackImg.naturalHeight * scale;
                     ctx.drawImage(fallbackImg, Math.round((640 - w) / 2), Math.round((480 - h) / 2), w, h);
                     canvas.toBlob((blob) => {
-                        if (blob) resolve(blob);
+                        if (blob) resolve({ blob: blob, wasResized: true });
                         else reject(new Error('Fallback blob failed'));
-                    }, 'image/jpeg', 0.92);
+                    }, 'image/jpeg', 0.95);
                 } catch(e) { reject(e); }
             };
             fallbackImg.onerror = (e) => reject(new Error('Image failed to load: ' + directUrl));
@@ -10004,19 +10034,28 @@ async function downloadAllMenuImagesZip640x480() {
         await new Promise(r => setTimeout(r, 1000));
     }
 
-    const { items, imageLinks } = window.menuBuilderData || {};
+    const { items, groups, imageLinks } = window.menuBuilderData || {};
     if (!items || !items.length) {
         showToast('⚠️ لا توجد أصناف في المنيو لمعالجة صورها!');
         return;
     }
 
-    // Match each item with its image link
+    // Match each item with its image link and category in exact menu sequence
     const targetItems = [];
     items.forEach((it, idx) => {
         let rawLink = it.image_url || it.img_url || (imageLinks && imageLinks[idx]) || '';
         if (rawLink && (rawLink.includes('http') || rawLink.includes('drive.google.com'))) {
+            let catName = 'عام';
+            if (it.group_name) {
+                catName = String(it.group_name).split('/')[0].trim();
+            } else if (it.group_id && groups && groups.length) {
+                const grp = groups.find(g => g.id === it.group_id);
+                if (grp) catName = grp.ar_name || grp.en_name || 'قسم';
+            }
+
             targetItems.push({
                 index: idx + 1,
+                category: catName,
                 name_ar: it.item_ar || it.name_ar || ('صنف_' + (idx + 1)),
                 name_en: it.item_en || it.name_en || ('Item_' + (idx + 1)),
                 url: rawLink
@@ -10030,29 +10069,46 @@ async function downloadAllMenuImagesZip640x480() {
     }
 
     const total = targetItems.length;
-    showToast('🚀 بدأ معالجة وتنزيل ' + total + ' صورة بمقاس 640×480 أوتوماتيكياً...');
+    showToast(`🚀 جاري فحص ومعالجة ${total} صورة مرتبة حسب المنيو والتصنيف...`);
 
     const zip = new JSZip();
-    const folder = zip.folder('Menu_Images_640x480');
+    const rootFolder = zip.folder('Menu_Images_Sorted_640x480');
+    const categoryFolder = zip.folder('Menu_Images_By_Category');
 
     let completed = 0;
     let failed = 0;
+    let untouchedCount = 0;
 
     for (let i = 0; i < targetItems.length; i++) {
         const item = targetItems[i];
         const directUrl = convertToDirectImageUrl(item.url);
         
-        showToast('🖼️ جاري معالجة صورة ' + (i + 1) + '/' + total + ': ' + item.name_ar + ' (640×480)...');
+        showToast(`🖼️ صورة ${i + 1}/${total} [${item.category}] : ${item.name_ar}...`);
 
         try {
-            const blob = await fetchAndResizeImageTo640x480(directUrl);
-            const cleanName = (item.name_ar || item.name_en || 'item')
+            const res = await fetchAndProcessImage640x480(directUrl);
+            if (!res.wasResized) untouchedCount++;
+
+            const safeCat = (item.category || 'عام')
+                .replace(/[^\u0600-\u06FFa-zA-Z0-9_-]/g, '_')
+                .replace(/_+/g, '_')
+                .slice(0, 20);
+            const safeName = (item.name_ar || item.name_en || 'صنف')
                 .replace(/[^\u0600-\u06FFa-zA-Z0-9_-]/g, '_')
                 .replace(/_+/g, '_')
                 .slice(0, 35);
+            
+            // Sequential number: 01, 02, 03... (First image is first item in menu)
             const numStr = String(item.index).padStart(2, '0');
-            const fileName = numStr + '_' + cleanName + '_640x480.jpg';
-            folder.file(fileName, blob);
+            const fileName = `${numStr}_[${safeCat}]_${safeName}.jpg`;
+
+            // 1. In root folder (strictly sorted 01 to N)
+            rootFolder.file(fileName, res.blob);
+
+            // 2. In category subfolder
+            const subCatFolder = categoryFolder.folder(safeCat);
+            subCatFolder.file(`${numStr}_${safeName}.jpg`, res.blob);
+
             completed++;
         } catch (e) {
             console.warn('Image download warning for', item, e);
@@ -10061,16 +10117,16 @@ async function downloadAllMenuImagesZip640x480() {
     }
 
     if (completed === 0) {
-        showToast('❌ تعذر تحميل الصور عبر المتصفح بسبب حماية الروابط.');
+        showToast('❌ تعذر تحميل الصور عبر المتصفح بسبب أذونات الحماية على الروابط.');
         return;
     }
 
-    showToast('📦 جاري ضغط ' + completed + ' صورة بمقاس 640×480 في ملف ZIP...');
+    showToast(`📦 جاري تجميع ${completed} صورة في ملف ZIP مرتب بالتصنيف والتسلسل...`);
     const content = await zip.generateAsync({ type: 'blob' });
     const url = URL.createObjectURL(content);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'Hungerstation_Images_640x480.zip';
+    a.download = `Hungerstation_Images_640x480.zip`;
     document.body.appendChild(a);
     a.click();
     setTimeout(() => {
@@ -10079,8 +10135,10 @@ async function downloadAllMenuImagesZip640x480() {
     }, 10000);
 
     playSuccessChime();
-    showToast('✅ تم تنزيل ' + completed + ' صورة بمقاس 640×480 بنجاح في ملف ZIP مسمى ومنظم!');
+    const note = untouchedCount > 0 ? ` (${untouchedCount} صورة كانت جاهزة 640×480 ولم يتم تعديلها)` : '';
+    showToast(`✅ تم تنزيل ${completed} صورة مرتبة ومسماة بالتصنيف ورقم الصنف بنجاح!${note}`);
 }
+
 
 
 function createOfficialMenuWorkbook() {

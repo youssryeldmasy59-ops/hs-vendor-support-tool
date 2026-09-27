@@ -1,150 +1,135 @@
 #!/usr/bin/env python3
 """
-Hungerstation Auto Image Downloader & Resizer
-Downloads images from Google Drive links in menu Excel files,
-cleans their names, numbers them to match menu items, resizes to 800px,
-and bundles them into a ready-to-upload ZIP & folder.
+Hungerstation Menu Image Downloader & Resizer (640x480)
+- Extracts images by item order and category
+- Checks dimensions: if already 640x480, leaves original untouched
+- If different size: resizes cleanly to 640x480 with high-quality letterbox
+- Names images by order and category: 01_[Category]_[ItemName].jpg
+- Bundles into a sorted ZIP file
 """
-import sys, os, re, glob, io, zipfile
+import sys, os, re, io, zipfile, shutil
 from concurrent.futures import ThreadPoolExecutor
 
 try:
     import openpyxl, requests
     from PIL import Image
 except ImportError:
-    print("Dependencies missing. Run with: uv run --with pillow --with requests --with openpyxl python download_menu_images.py [excel_file]")
+    print("Dependencies missing. Run with uv: uv run --with pillow --with requests --with openpyxl python download_menu_images.py [excel_file]")
     sys.exit(1)
 
-def clean_filename(s):
-    s = re.sub(r'[^\w\s]', '', str(s)).strip()
-    return re.sub(r'\s+', '_', s)
-
 def extract_gdrive_id(url):
-    m = re.search(r'/d/([a-zA-Z0-9_-]+)', str(url))
-    if m:
-        return m.group(1)
-    m = re.search(r'id=([a-zA-Z0-9_-]+)', str(url))
-    if m:
-        return m.group(1)
-    return None
+    m = re.search(r'(?:file/d/|open\?id=|uc\?(?:export=download&)?id=)([a-zA-Z0-9_-]+)', str(url))
+    return m.group(1) if m else None
 
-def download_and_process_image(item):
-    idx, name, url, out_dir = item
+def clean_name(s):
+    s = str(s or '').strip()
+    s = re.sub(r'[\U00010000-\U0010ffff\u2600-\u27bf]', '', s)
+    s = re.sub(r'[^\w\u0600-\u06FF-]', '_', s)
+    return re.sub(r'_+', '_', s).strip('_')
+
+def process_item_image(item):
+    idx, cat, name, url, out_dir = item
     if not url:
-        return None
+        return False, idx, "No URL"
+
+    direct_url = url
     file_id = extract_gdrive_id(url)
-    if not file_id:
-        return None
+    if file_id:
+        direct_url = f'https://lh3.googleusercontent.com/d/{file_id}'
 
-    # Fetch from Google Drive Direct URL
     headers = {'User-Agent': 'Mozilla/5.0'}
-    lh3_url = f'https://lh3.googleusercontent.com/d/{file_id}'
-    r = requests.get(lh3_url, headers=headers, timeout=25)
-    if r.status_code != 200 or len(r.content) < 1000:
-        uc_url = f'https://drive.google.com/uc?export=download&id={file_id}'
-        r = requests.get(uc_url, headers=headers, timeout=25)
-
-    if r.status_code != 200 or len(r.content) < 1000:
-        print(f"Failed to download image for item {idx}: {name}")
-        return None
-
-    # Process and optionally resize image to height 800px (Hungerstation optimal)
     try:
-        img = Image.open(io.BytesIO(r.content))
-        # Keep aspect ratio, scale so height is 800 (if larger)
-        if img.height > 800:
-            scale = 800 / img.height
-            new_w = int(img.width * scale)
-            img = img.resize((new_w, 800), Image.Resampling.LANCZOS)
+        r = requests.get(direct_url, headers=headers, timeout=25)
+        if r.status_code != 200 or len(r.content) < 1000:
+            if file_id:
+                uc_url = f'https://drive.google.com/uc?export=download&id={file_id}'
+                r = requests.get(uc_url, headers=headers, timeout=25)
         
-        ext = 'png' if img.format == 'PNG' else 'jpg'
-        clean_name = clean_filename(name) or f"item_{idx}"
-        filename = f"{idx:02d}_{clean_name}.{ext}"
-        filepath = os.path.join(out_dir, filename)
+        if r.status_code != 200 or len(r.content) < 1000:
+            return False, idx, f"Download failed (HTTP {r.status_code})"
 
-        if ext == 'jpg':
-            if img.mode in ('RGBA', 'P'):
-                img = img.convert('RGB')
-            img.save(filepath, 'JPEG', quality=92)
+        safe_cat = clean_name(cat) or 'عام'
+        safe_name = clean_name(name) or f'صنف_{idx}'
+        fname = f"{idx:02d}_[{safe_cat}]_{safe_name}.jpg"
+        fpath = os.path.join(out_dir, fname)
+
+        img = Image.open(io.BytesIO(r.content)).convert('RGB')
+        
+        # Check if already 640x480
+        if img.size == (640, 480):
+            # Keep original bytes without re-compression
+            with open(fpath, 'wb') as f:
+                f.write(r.content)
+            return True, idx, f"Saved as-is (Already 640x480): {fname}"
         else:
-            img.save(filepath, 'PNG')
+            # Resize with aspect-fit and white background
+            canvas = Image.new('RGB', (640, 480), (255, 255, 255))
+            img.thumbnail((640, 480), Image.Resampling.LANCZOS)
+            x = (640 - img.width) // 2
+            y = (480 - img.height) // 2
+            canvas.paste(img, (x, y))
+            canvas.save(fpath, 'JPEG', quality=95)
+            return True, idx, f"Resized to 640x480: {fname}"
 
-        return filepath
     except Exception as e:
-        # Fallback to raw bytes
-        ext = 'png' if 'png' in r.headers.get('content-type', '') else 'jpg'
-        clean_name = clean_filename(name) or f"item_{idx}"
-        filename = f"{idx:02d}_{clean_name}.{ext}"
-        filepath = os.path.join(out_dir, filename)
-        with open(filepath, 'wb') as f:
-            f.write(r.content)
-        return filepath
+        return False, idx, str(e)
 
-def process_excel(excel_path, out_dir=None):
-    if not out_dir:
-        out_dir = os.path.join(os.path.dirname(excel_path), "menu_images")
+def main():
+    excel_path = sys.argv[1] if len(sys.argv) > 1 else '/Users/usefelbedwehy/Downloads/08ceb108f030e69fc94f0bc7729890d3ed4de9769faf6a79bd2dc2eea91cf41e.xlsx'
+    out_dir = '/Users/usefelbedwehy/Downloads/menu_images_640x480'
     os.makedirs(out_dir, exist_ok=True)
 
-    wb = openpyxl.load_workbook(excel_path, data_only=True)
+    print(f"Reading menu: {excel_path}")
+    wb = openpyxl.load_workbook(excel_path)
     ws = wb.active
-    rows = list(ws.iter_rows(values_only=True))
-    if not rows:
-        print("Empty sheet.")
-        return
 
-    # Find name col and link col
-    headers = [str(c).strip() if c else '' for c in rows[0]]
-    name_col = 0
-    link_col = -1
+    # Find headers
+    headers = [str(ws.cell(1, c).value or '').strip() for c in range(1, ws.max_column + 1)]
+    print(f"Columns: {headers}")
 
-    for c_idx, h in enumerate(headers):
-        if any(k in h for k in ['رابط', 'صورة', 'link', 'url', 'image', 'photo', 'drive']):
-            link_col = c_idx
-        if any(k in h for k in ['اسم', 'name', 'item']):
-            name_col = c_idx
+    col_name = 1
+    col_cat = 3
+    col_url = 7
 
-    if link_col == -1:
-        # Check last column
-        link_col = len(headers) - 1
+    for c, h in enumerate(headers, 1):
+        if 'اسم' in h and ('منتج' in h or 'صنف' in h):
+            if 'عربي' in h or col_name == 1:
+                col_name = c
+        elif 'قسم' in h or 'فئة' in h or 'تصنيف' in h:
+            col_cat = c
+        elif 'رابط' in h or 'صورة' in h or 'صوره' in h:
+            col_url = c
 
     items = []
-    for idx, r in enumerate(rows[1:], start=1):
-        if not any(r): continue
-        item_name = str(r[name_col] or f"item_{idx}").strip()
-        link_val = str(r[link_col] or '').strip() if link_col < len(r) else ''
-        if 'drive.google.com' in link_val or 'http' in link_val:
-            items.append((idx, item_name, link_val, out_dir))
+    for r in range(2, ws.max_row + 1):
+        name = str(ws.cell(r, col_name).value or f'صنف_{r-1}').strip()
+        cat = str(ws.cell(r, col_cat).value or 'عام').strip()
+        url = str(ws.cell(r, col_url).value or '').strip()
+        if url.startswith('http'):
+            items.append((r - 1, cat, name, url, out_dir))
 
-    print(f"Found {len(items)} items with image links in {os.path.basename(excel_path)}.")
-    print("Downloading and processing images...")
+    print(f"Found {len(items)} items with image links. Processing in exact menu order...")
 
-    saved_files = []
-    with ThreadPoolExecutor(max_workers=8) as executor:
-        for res in executor.map(download_and_process_image, items):
-            if res:
-                saved_files.append(res)
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        results = list(ex.map(process_item_image, items))
 
-    print(f"Downloaded {len(saved_files)} images successfully into: {out_dir}")
+    success = sum(1 for s, _, _ in results if s)
+    print(f"Successfully processed {success}/{len(items)} images into {out_dir}")
 
-    # Create ZIP
-    zip_path = os.path.join(os.path.dirname(out_dir), "menu_images.zip")
-    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        for f in saved_files:
-            zipf.write(f, arcname=os.path.basename(f))
-    print(f"Created ZIP bundle: {zip_path}")
-    return out_dir, zip_path
+    # Create ZIP archive
+    zip_path = '/Users/usefelbedwehy/Downloads/menu_images_640x480.zip'
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as z:
+        for f in sorted(os.listdir(out_dir)):
+            if f.endswith('.jpg'):
+                z.write(os.path.join(out_dir, f), arcname=f)
 
-if __name__ == "__main__":
-    target = sys.argv[1] if len(sys.argv) > 1 else None
-    if not target:
-        matches = glob.glob("/Users/usefelbedwehy/Downloads/*.xlsx")
-        for m in matches:
-            if '08ceb' in m:
-                target = m
-                break
-        if not target and matches:
-            target = matches[0]
-    if target and os.path.exists(target):
-        process_excel(target)
-    else:
-        print("Please provide an Excel file path.")
+    print(f"ZIP archive saved to: {zip_path}")
+
+    # Sync to Google Drive per User Rule 4
+    gdrive_dir = '/Users/usefelbedwehy/Library/CloudStorage/GoogleDrive-youssryeldmasy59@gmail.com/My Drive/agent_outputs'
+    if os.path.exists(gdrive_dir):
+        shutil.copy2(zip_path, os.path.join(gdrive_dir, 'menu_images_640x480.zip'))
+        print(f"Synced ZIP to Google Drive: {gdrive_dir}")
+
+if __name__ == '__main__':
+    main()
