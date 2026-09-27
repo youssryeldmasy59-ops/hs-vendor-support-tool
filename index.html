@@ -89,6 +89,9 @@
             padding: 8px 12px !important;
         }
         body.dock-mode .logo-title p,
+        body.dock-mode .tools-dropdown-wrapper,
+        body.dock-mode .theme-toggle-btn,
+        body.dock-mode .agent-chip,
         body.dock-mode .header-controls .header-btn:not(#dockToggleBtn):not(#hotkeysBtn) {
             display: none !important;
         }
@@ -369,6 +372,115 @@
         [data-theme="dark"] .header-btn:hover {
             background: rgba(255, 255, 255, 0.14);
             color: #FFF;
+        }
+
+        /* ⚡ Consolidated Tools Dropdown Menu */
+        .tools-dropdown-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tools-dropdown-btn {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.1)) !important;
+            border: 1.5px solid rgba(245, 158, 11, 0.4) !important;
+            color: #F59E0B !important;
+            font-weight: 800 !important;
+        }
+        .tools-dropdown-btn:hover {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.2)) !important;
+            border-color: #F59E0B !important;
+            color: #FCD34D !important;
+            transform: translateY(-1px);
+        }
+        [data-theme="dark"] .tools-dropdown-btn {
+            background: rgba(245, 158, 11, 0.12) !important;
+            border-color: rgba(245, 158, 11, 0.35) !important;
+            color: #FBBF24 !important;
+        }
+
+        .tools-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            min-width: 290px;
+            max-height: 480px;
+            overflow-y: auto;
+            background: var(--bg-card);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+            padding: 8px 6px;
+            z-index: 1050;
+            text-align: right;
+            direction: rtl;
+        }
+        .tools-dropdown-menu.show {
+            display: block;
+            animation: dropdownFadeIn 0.18s ease-out;
+        }
+        @keyframes dropdownFadeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tools-dropdown-group-title {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            padding: 6px 10px 4px 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tools-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            border: 1px solid transparent;
+        }
+        .tools-dropdown-item:hover {
+            background: rgba(255, 196, 0, 0.12);
+            color: var(--primary);
+            border-color: rgba(255, 196, 0, 0.25);
+            transform: translateX(-2px);
+        }
+        [data-theme="dark"] .tools-dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #FFF;
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .tools-dropdown-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 6px 4px;
+        }
+
+        .tools-item-badge {
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 6px;
+            background: rgba(245, 158, 11, 0.15);
+            color: #F59E0B;
+        }
+
+        .tools-item-tag {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: rgba(16, 185, 129, 0.15);
+            color: #10B981;
         }
 
         /* 🚀 Motivational Productivity Hero Bar */
@@ -1961,110 +2073,119 @@
         </div>
 
         <div class="header-controls">
-            <!-- ☀️ Theme Switcher -->
-            <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" id="themeToggleBtn" title="تبديل مظهر الواجهة">
-                <i class="fa-solid fa-sun" style="color: #F59E0B;" id="themeToggleIcon"></i>
-                <span id="themeToggleText">الوضع المبهج ☀️</span>
-            </button>
-
-            <!-- 📊 Policy Calculator Button -->
-            <!-- 🤖 Vendor Support Copilot Trigger -->
-            <!-- 🛸 Floating Glass HUD Toggle Button -->
-            
-            <!-- ⏳ Pending Ticket Vault & SLA Follow-up Trigger -->
-            <button type="button" class="header-btn" onclick="openPendingVaultModal()" title="حافظة التذاكر المعلقة وتفادي كسر الـ SLA" style="background: rgba(245, 158, 11, 0.12); color: #F59E0B; border-color: rgba(245, 158, 11, 0.35);">
-                <i class="fa-solid fa-clock-rotate-left"></i> <span id="pendingVaultHeaderBadge">معلقة (0)</span>
-            </button>
-
-            <!-- ⚡ Zero-Click Clipboard Auto-Solver Trigger -->
-            <button type="button" class="header-btn" onclick="toggleZeroClickSolver()" id="zeroClickToggleBtn" title="تفعيل الحل التلقائي بمجرد نسخ شكوى التاجر من Zendesk" style="background: rgba(16, 185, 129, 0.12); color: #10B981; border-color: rgba(16, 185, 129, 0.35);">
-                <i class="fa-solid fa-bolt-lightning"></i> <span id="zeroClickBadgeText">⚡ حل تلقائي (معطّل)</span>
-            </button>
-
-            <!-- 🧾 Vendor Invoice & Deduction Diff Explainer -->
-            <button type="button" class="header-btn" onclick="openInvoiceExplainerModal()" title="مفكك الفواتير والعمولات وتفصيل الصافي للتاجر" style="background: rgba(14, 165, 233, 0.12); color: #0EA5E9; border-color: rgba(14, 165, 233, 0.35);">
-                <i class="fa-solid fa-receipt"></i> <span>مفكك الفواتير 🧾</span>
-            </button>
-
-            <!-- 📑 Batch Multi-Ticket Mode -->
-            <button type="button" class="header-btn" onclick="openBatchTicketsModal()" title="توليد ردود مجمعة لعدة طلبات دفعة واحدة في وقت الذروة" style="background: rgba(168, 85, 247, 0.12); color: #A855F7; border-color: rgba(168, 85, 247, 0.35);">
-                <i class="fa-solid fa-layer-group"></i> <span>رد مجمع 📑</span>
-            </button>
-
-            <!-- ⌨️ Power-User Global Hotkeys Cheat Sheet -->
-            <button type="button" class="header-btn" onclick="openHotkeysModal()" title="اختصارات لوحة المفاتيح الاحترافية (Cmd+K)">
-                <i class="fa-solid fa-keyboard"></i> <span>الاختصارات ⌨️</span>
-            </button>
-
-            <!-- 💻 PWA Desktop App Install -->
-            <button type="button" class="header-btn" onclick="installDesktopPwa()" id="pwaInstallBtn" title="تثبيت الأداة كتطبيق مكتبي مستقل على جهازك" style="background: rgba(236, 72, 153, 0.15); color: #EC4899; border-color: rgba(236, 72, 153, 0.35);">
-                <i class="fa-solid fa-laptop-code"></i> <span>تثبيت مكتبي 💻</span>
-            </button>
-
-            <button type="button" class="header-btn" onclick="toggleFloatingGlassHud()" title="تفعيل النافذة العائمة الشبحية فوق Zendesk">
-                <i class="fa-solid fa-layer-group" style="color: #38BDF8;"></i> <span>نافذة عائمة 🛸</span>
-            </button>
-            <button type="button" class="header-btn" onclick="openCopilotModal()" title="المساعد الذكي التفاعلي المباشر" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(99, 102, 241, 0.15)); color: #8B5CF6; border-color: rgba(139, 92, 246, 0.35);">
-                <i class="fa-solid fa-robot"></i> <span>كابيلوت الدعم 🤖</span>
-            </button>
-
-            <!-- 🌳 Interactive Decision Tree Trigger -->
-            <button type="button" class="header-btn" onclick="openDecisionTreeModal()" title="شجرة القرارات التفاعلية للحالات المعقدة" style="background: rgba(245, 158, 11, 0.12); color: #D97706; border-color: rgba(245, 158, 11, 0.35);">
-                <i class="fa-solid fa-sitemap"></i> <span>شجرة القرارات 🌳</span>
-            </button>
-            <!-- 🟢 Official Knowledge Base Live Connection Badge -->
-            <div class="header-btn" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.35); color: #059669; cursor: default;" title="قاعدة المعرفة الرسمية لهنقرستيشن متصلة ومحملة بالكامل">
-                <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; display: inline-block; box-shadow: 0 0 8px #10B981; "></span>
-                <span>قاعدة المعرفة: متصل (96 حالة)</span>
-            </div>
-            <button type="button" class="header-btn" onclick="openPolicyCalculatorModal()" title="حاسبة تعويضات الطلبات ومواعيد الفواتير" style="background: rgba(16, 185, 129, 0.12); color: #059669; border-color: rgba(16, 185, 129, 0.35);">
-                <i class="fa-solid fa-calculator"></i> <span>حاسبة السياسات والتعويضات</span>
-            </button>
-
-            <!-- 🗂️ Compact Sidebar Toggle Button -->
-            <button type="button" class="header-btn" onclick="toggleCompactSidebarMode()" id="compactModeBtn" title="وضع الشاشة المزدوجة للعمل بجانب نظام التذاكر">
-                <i class="fa-solid fa-table-columns" style="color: #0284C7;"></i> <span id="compactModeText">شاشة مزدوجة</span>
-            </button>
+            <!-- 👤 Agent Profile Chip -->
             <div class="agent-chip" onclick="promptChangeName()" title="تعديل اسم الموظف">
                 <i class="fa-solid fa-circle-user"></i>
                 <span id="displayAgentName">الموظف: عمر</span>
                 <i class="fa-solid fa-pen" style="font-size: 0.68rem; opacity: 0.6;"></i>
             </div>
 
-            <button type="button" class="header-btn" onclick="toggleVoiceAiDrawer()" id="voiceAiTriggerBtn" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFF; border: none;">
+            <!-- 🎙️ Voice Assistant -->
+            <button type="button" class="header-btn" onclick="toggleVoiceAiDrawer()" id="voiceAiTriggerBtn" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFF; border: none;" title="المساعد الصوتي الذكي (AR+EN)">
                 <i class="fa-solid fa-microphone"></i> <span id="voiceBadgeText">🎙️ صوتي</span>
             </button>
 
-            <button type="button" class="header-btn" onclick="openAiSettingsModal()" id="aiStatusBadge">
+            <!-- ⚡ AI Copilot / Settings -->
+            <button type="button" class="header-btn" onclick="openAiSettingsModal()" id="aiStatusBadge" title="إعدادات الذكاء الاصطناعي والموديل">
                 <i class="fa-solid fa-wand-magic-sparkles" style="color: #A78BFA;"></i> <span>⚡ AI</span>
             </button>
 
-            <button type="button" class="header-btn" onclick="showLearningModal()" style="color: #34D399;">
-                <i class="fa-solid fa-brain"></i> <span id="learnedRulesCountBadge">ذاكرة (5)</span>
+            <!-- 🖥️ Dock Mode Toggle -->
+            <button type="button" class="header-btn" onclick="toggleDockMode()" id="dockToggleBtn" style="color: #38BDF8;" title="وضع نصف الشاشة للعمل بجانب Zendesk (Alt+D)">
+                <i class="fa-solid fa-table-columns"></i> <span id="dockToggleText">دوك 🖥️</span>
             </button>
 
-            <button type="button" class="header-btn" onclick="showHistoryModal()">
-                <i class="fa-solid fa-clock-rotate-left"></i> <span id="historyCountBadge">السجل (9)</span>
+            <!-- ⌨️ Hotkeys Cheat Sheet -->
+            <button type="button" class="header-btn" onclick="openHotkeysModal()" id="hotkeysBtn" style="color: #FCD34D;" title="اختصارات لوحة المفاتيح السريعة (Alt+1, Alt+2, Alt+C)">
+                <i class="fa-solid fa-keyboard"></i> <span>الاختصارات ⌨️</span>
             </button>
 
-            <button type="button" class="header-btn" onclick="showResizerModal()">
-                <i class="fa-solid fa-crop-simple"></i> <span>محرر الصور</span>
-            </button>
+            <!-- ⚡ Consolidated Enterprise Tools Dropdown -->
+            <div class="tools-dropdown-wrapper" id="toolsDropdownWrapper">
+                <button type="button" class="header-btn tools-dropdown-btn" onclick="toggleToolsMenu(event)" id="toolsMenuBtn" title="جميع الأدوات والخدمات المساعدة">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>⚡ الأدوات ▾</span>
+                </button>
+                <div class="tools-dropdown-menu" id="toolsDropdownMenu">
+                    <!-- Category 1: Tickets & Operations -->
+                    <div class="tools-dropdown-group-title">🎯 التذاكر والعمليات اليومية</div>
+                    <div class="tools-dropdown-item" onclick="openPendingVaultModal(); closeToolsMenu();" title="حافظة التذاكر المعلقة وتفادي كسر الـ SLA">
+                        <i class="fa-solid fa-clock-rotate-left" style="color: #F59E0B;"></i>
+                        <span style="flex: 1;">حافظة التذاكر المعلقة</span>
+                        <span class="tools-item-badge" id="pendingVaultHeaderBadge">معلقة (0)</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="openShiftReportModal(); closeToolsMenu();" title="تقرير إنجاز نهاية الشفت">
+                        <i class="fa-solid fa-chart-pie" style="color: #10B981;"></i>
+                        <span style="flex: 1;">تقرير إنجاز الشفت</span>
+                        <span class="tools-item-tag">تقرير</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="openBatchTicketsModal(); closeToolsMenu();" title="توليد ردود مجمعة لعدة طلبات دفعة واحدة">
+                        <i class="fa-solid fa-layer-group" style="color: #A855F7;"></i>
+                        <span style="flex: 1;">الرد المجمع (Batch Mode)</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="openDecisionTreeModal(); closeToolsMenu();" title="شجرة القرارات التفاعلية للحالات المعقدة">
+                        <i class="fa-solid fa-sitemap" style="color: #EC4899;"></i>
+                        <span style="flex: 1;">شجرة القرارات التفاعلية</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="openPolicyCalculatorModal(); closeToolsMenu();" title="حاسبة تعويضات الطلبات ومواعيد الفواتير">
+                        <i class="fa-solid fa-calculator" style="color: #10B981;"></i>
+                        <span style="flex: 1;">حاسبة السياسات والتعويضات</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="openInvoiceExplainerModal(); closeToolsMenu();" title="مفكك الفواتير والعمولات وتفصيل الصافي للتاجر">
+                        <i class="fa-solid fa-receipt" style="color: #0EA5E9;"></i>
+                        <span style="flex: 1;">مفكك الفواتير والخصومات</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="toggleZeroClickSolver(); closeToolsMenu();" id="zeroClickToggleBtn" title="تفعيل الحل التلقائي بمجرد نسخ شكوى التاجر">
+                        <i class="fa-solid fa-bolt-lightning" style="color: #10B981;"></i>
+                        <span style="flex: 1;" id="zeroClickBadgeText">حل تلقائي للحافظة (معطّل)</span>
+                    </div>
 
-            <button type="button" class="header-btn" onclick="openShiftReportModal()" style="background: rgba(16, 185, 129, 0.15); color: #34D399; border-color: rgba(16, 185, 129, 0.4);" title="تقرير إنجاز نهاية الشفت">
-                <i class="fa-solid fa-chart-pie"></i> <span>تقرير الشفت</span>
-            </button>
-            <button type="button" class="header-btn" onclick="openTeamSyncModal()" style="background: rgba(139, 92, 246, 0.15); color: #C4B5FD; border-color: rgba(139, 92, 246, 0.4);" title="مزامنة وتصدير تحديثات الفريق">
-                <i class="fa-solid fa-arrows-rotate"></i> <span>مزامنة التيم</span>
-            </button>
-            <button type="button" class="header-btn" onclick="openHotkeysModal()" id="hotkeysBtn" style="color: #FCD34D;" title="اختصارات لوحة المفاتيح (Alt+1, Alt+2, Alt+C)">
-                <i class="fa-solid fa-keyboard"></i> <span>الاختصارات</span>
-            </button>
-            <button type="button" class="header-btn" onclick="toggleDockMode()" id="dockToggleBtn" style="color: #38BDF8;" title="وضع نصف الشاشة بجانب نظام التذاكر">
-                <i class="fa-solid fa-table-columns"></i> <span id="dockToggleText">دوك</span>
-            </button>
-            <button type="button" class="header-btn" onclick="downloadStandaloneFile()" style="background: rgba(59, 130, 246, 0.2); color: #93C5FD; border-color: rgba(59, 130, 246, 0.4);">
-                <i class="fa-solid fa-download"></i> <span>أوفلاين</span>
+                    <div class="tools-dropdown-divider"></div>
+
+                    <!-- Category 2: Sync & System Tools -->
+                    <div class="tools-dropdown-group-title">⚙️ المزامنة والأدوات المساعدة</div>
+                    <div class="tools-dropdown-item" onclick="openTeamSyncModal(); closeToolsMenu();" title="مزامنة وتصدير تحديثات الفريق">
+                        <i class="fa-solid fa-arrows-rotate" style="color: #8B5CF6;"></i>
+                        <span style="flex: 1;">مزامنة تحديثات الفريق (JSON)</span>
+                        <span class="tools-item-tag" style="background: rgba(139, 92, 246, 0.2); color: #C4B5FD;">جديد</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="showLearningModal(); closeToolsMenu();" title="قواعد الذاكرة المكتسبة">
+                        <i class="fa-solid fa-brain" style="color: #34D399;"></i>
+                        <span style="flex: 1;">ذاكرة القواعد المكتسبة</span>
+                        <span class="tools-item-badge" id="learnedRulesCountBadge" style="background: rgba(52, 211, 153, 0.15); color: #34D399;">ذاكرة (5)</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="showHistoryModal(); closeToolsMenu();" title="سجل التذاكر المستعلم عنها">
+                        <i class="fa-solid fa-clock-rotate-left" style="color: #60A5FA;"></i>
+                        <span style="flex: 1;">سجل التذاكر اليومي</span>
+                        <span class="tools-item-badge" id="historyCountBadge" style="background: rgba(96, 165, 250, 0.15); color: #60A5FA;">السجل (9)</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="showResizerModal(); closeToolsMenu();" title="محرر ومحول أبعاد الصور">
+                        <i class="fa-solid fa-crop-simple" style="color: #F43F5E;"></i>
+                        <span style="flex: 1;">محرر وقاص الصور</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="toggleFloatingGlassHud(); closeToolsMenu();" title="النافذة العائمة فوق Zendesk">
+                        <i class="fa-solid fa-window-restore" style="color: #38BDF8;"></i>
+                        <span style="flex: 1;">نافذة عائمة شبحية (HUD)</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="openCopilotModal(); closeToolsMenu();" title="كابيلوت الدعم التفاعلي">
+                        <i class="fa-solid fa-robot" style="color: #A78BFA;"></i>
+                        <span style="flex: 1;">كابيلوت الدعم الذكي</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="downloadStandaloneFile(); closeToolsMenu();" title="تنزيل نسخة أوفلاين">
+                        <i class="fa-solid fa-cloud-arrow-down" style="color: #38BDF8;"></i>
+                        <span style="flex: 1;">تحميل نسخة أوفلاين كاملة</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="installDesktopPwa(); closeToolsMenu();" id="pwaInstallBtn" title="تثبيت التطبيق على جهاز الكمبيوتر">
+                        <i class="fa-solid fa-laptop-code" style="color: #EC4899;"></i>
+                        <span style="flex: 1;">تثبيت كتطبيق مكتبي مستقل</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ☀️ Theme Switcher -->
+            <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" id="themeToggleBtn" title="تبديل مظهر الواجهة">
+                <i class="fa-solid fa-sun" style="color: #F59E0B;" id="themeToggleIcon"></i>
+                <span id="themeToggleText">الوضع المبهج ☀️</span>
             </button>
         </div>
     </header>
@@ -8492,10 +8613,12 @@ ${invoiceGuideHtml || ""}
                     <!-- Language Switcher Tabs -->
                     <div class="lang-switcher-bar">
                         <button class="lang-tab ${!isEn ? 'active-ar' : ''}" id="tabBtnAr" onclick="switchLangTab('AR')">
-                            🇸🇦 الماكرو العربي (اسم الموظف: ${arAgentName})
+                            <span>🇸🇦 الماكرو العربي (${arAgentName})</span>
+                            <kbd style="font-family: monospace; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; padding: 1px 6px; font-size: 0.7rem; color: #FCD34D;">Alt+1</kbd>
                         </button>
                         <button class="lang-tab ${isEn ? 'active-en' : ''}" id="tabBtnEn" onclick="switchLangTab('EN')">
-                            🇬🇧 English Macro (Agent: ${enAgentName})
+                            <span>🇬🇧 English Macro (${enAgentName})</span>
+                            <kbd style="font-family: monospace; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; padding: 1px 6px; font-size: 0.7rem; color: #93C5FD;">Alt+2</kbd>
                         </button>
                     </div>
 
@@ -8515,7 +8638,11 @@ ${invoiceGuideHtml || ""}
                         <div class="response-box" id="arMacroText" contenteditable="true" oninput="checkLegalBlacklist()" style="border-color: rgba(255, 196, 0, 0.3); background: rgba(255, 196, 0, 0.05); color: #FFF; font-weight: 600; margin-bottom: 10px;" title="يمكنك تعديل أي كلمة هنا بالداخل مباشرة">${arMacro}</div>
                         
                         <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
-                            <button class="btn-copy" onclick="copyText('arMacroText')" style="flex: 2;"><i class="fa-solid fa-copy"></i> نسخ الماكرو العربي الجاهز (باسم ${arAgentName}) 🚀</button>
+                            <button class="btn-copy" onclick="copyText('arMacroText')" style="flex: 2; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="fa-solid fa-copy"></i>
+                                <span>نسخ الماكرو العربي الجاهز (باسم ${arAgentName}) 🚀</span>
+                                <kbd style="font-family: monospace; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; padding: 1px 6px; font-size: 0.7rem; color: #FFF;">Alt+C</kbd>
+                            </button>
                             <button class="btn-learn" onclick="openTeleprompterModal()" style="background: linear-gradient(135deg, rgba(236,72,153,0.15), rgba(139,92,246,0.15)); color: #EC4899; border-color: rgba(236,72,153,0.35);" title="تحويل الماكرو لنقاط تحدث شفوية لمكالمة هاتفية مع الشريك">
                                 <i class="fa-solid fa-phone-volume"></i> ملقن المكالمة 🎙️
                             </button>
@@ -8542,7 +8669,11 @@ ${invoiceGuideHtml || ""}
                         <div class="response-box" id="enMacroText" contenteditable="true" dir="ltr" style="border-color: rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.05); color: #FFF; font-weight: 600; text-align: left; margin-bottom: 10px;" title="You can edit text directly">${enMacro}</div>
                         
                         <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
-                            <button class="btn-copy-en" onclick="copyText('enMacroText')" style="flex: 2;"><i class="fa-solid fa-copy"></i> Copy English Macro (${enAgentName}) 🚀</button>
+                            <button class="btn-copy-en" onclick="copyText('enMacroText')" style="flex: 2; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="fa-solid fa-copy"></i>
+                                <span>Copy English Macro (${enAgentName}) 🚀</span>
+                                <kbd style="font-family: monospace; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; padding: 1px 6px; font-size: 0.7rem; color: #FFF;">Alt+C</kbd>
+                            </button>
                             <button class="btn-learn" onclick="openTeleprompterModal()" style="background: linear-gradient(135deg, rgba(236,72,153,0.15), rgba(139,92,246,0.15)); color: #EC4899; border-color: rgba(236,72,153,0.35);" title="تحويل الماكرو لنقاط تحدث شفوية لمكالمة هاتفية مع الشريك">
                                 <i class="fa-solid fa-phone-volume"></i> ملقن المكالمة 🎙️
                             </button>
@@ -10250,6 +10381,38 @@ window.addEventListener('keydown', function(e) {
             const ws = (typeof currentMainWorkspace !== 'undefined' && currentMainWorkspace === 'MENU_STUDIO') ? 'TICKETS' : 'MENU_STUDIO';
             switchMainWorkspace(ws);
         }
+    }
+});
+
+// ── CONSOLIDATED TOOLS DROPDOWN CONTROLLER ───────────────────────────────
+window.toggleToolsMenu = function(e) {
+    if (e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+    const menu = document.getElementById('toolsDropdownMenu');
+    if (menu) {
+        menu.classList.toggle('show');
+    }
+};
+
+window.closeToolsMenu = function() {
+    const menu = document.getElementById('toolsDropdownMenu');
+    if (menu) {
+        menu.classList.remove('show');
+    }
+};
+
+document.addEventListener('click', function(e) {
+    const wrapper = document.getElementById('toolsDropdownWrapper');
+    if (wrapper && !wrapper.contains(e.target)) {
+        window.closeToolsMenu();
+    }
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        window.closeToolsMenu();
     }
 });
 
@@ -12357,8 +12520,19 @@ function updatePendingVaultBadge() {
     const b = document.getElementById('pendingVaultHeaderBadge');
     if (b) {
         b.innerText = `معلقة (${pendingTicketsVault.length})`;
-        if (pendingTicketsVault.length > 0 && b.parentElement) {
-            b.parentElement.style.borderColor = 'rgba(245, 158, 11, 0.6)';
+    }
+    const toolsBtn = document.getElementById('toolsMenuBtn');
+    if (toolsBtn) {
+        let dot = document.getElementById('toolsMenuVaultDot');
+        if (pendingTicketsVault.length > 0) {
+            if (!dot) {
+                dot = document.createElement('span');
+                dot.id = 'toolsMenuVaultDot';
+                dot.style.cssText = 'width: 8px; height: 8px; border-radius: 50%; background: #EF4444; display: inline-block; box-shadow: 0 0 6px #EF4444; margin-left: 4px;';
+                toolsBtn.appendChild(dot);
+            }
+        } else if (dot) {
+            dot.remove();
         }
     }
 }
