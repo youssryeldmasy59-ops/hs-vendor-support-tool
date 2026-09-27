@@ -6657,7 +6657,216 @@ async function loadKBData() {
             const amountMatch = rawText.match(/(\d+(?:\.\d{1,2})?)\s*(?:ريال|SAR|ر\.س|SR)/i);
             if (amountMatch) entities.amount = amountMatch[1];
 
+            // 7. Saudi IBAN
+            const ibanMatch = rawText.match(/\bSA\s*(?:\d\s*){22}\b/i) || rawText.match(/SA\d{22}/i);
+            if (ibanMatch) {
+                const cleanedIban = ibanMatch[0].replace(/\s+/g, '').toUpperCase();
+                entities.iban = cleanedIban;
+                entities.ibanValidation = validateSaudiIban(cleanedIban);
+            }
+
             return entities;
+        }
+
+        // ── 🏦 SAUDI IBAN & CENTRAL BANK VALIDATION ENGINE ────────────────
+        const SAUDI_BANKS = {
+            '80': 'مصرف الراجحي (Al Rajhi Bank)',
+            '10': 'البنك الأهلي السعودي (SNB)',
+            '05': 'مصرف الإنماء (Alinma Bank)',
+            '20': 'بنك الرياض (Riyad Bank)',
+            '50': 'البنك السعودي الأول (SAB)',
+            '15': 'بنك البلاد (Bank Albilad)',
+            '45': 'البنك السعودي الفرنسي (BSF)',
+            '65': 'البنك العربي الوطني (ANB)',
+            '55': 'البنك السعودي للاستثمار (SAIB)',
+            '30': 'بنك الجزيرة (Bank AlJazira)',
+            '60': 'بنك الخليج الدولي (Meem)',
+            '76': 'بنك D360'
+        };
+
+        function validateSaudiIban(iban) {
+            if (!iban) return { isValid: false, reason: 'الآيبان مفقود' };
+            const clean = String(iban).replace(/\s+/g, '').toUpperCase();
+            if (!clean.startsWith('SA')) {
+                return { isValid: false, reason: 'يجب أن يبدأ الآيبان بالرمز SA' };
+            }
+            if (clean.length !== 24) {
+                return { isValid: false, reason: `طول الآيبان غير صحيح (${clean.length} حرف، والمطلوب 24 حرف)` };
+            }
+            const bankCode = clean.substring(4, 6);
+            const bankName = SAUDI_BANKS[bankCode] || 'بنك سعودي معتمد';
+
+            try {
+                const rearranged = clean.slice(4) + '2810' + clean.slice(2, 4);
+                const bigVal = BigInt(rearranged);
+                const isValidMod97 = (bigVal % 97n) === 1n;
+                return {
+                    isValid: isValidMod97,
+                    bankCode: bankCode,
+                    bankName: bankName,
+                    cleanIban: clean,
+                    reason: isValidMod97 ? 'الآيبان سليم ومطابق لخوارزمية البنك المركزي السعودي' : 'رقم الآيبان غير صحيح حسابياً (Checksum Failed)'
+                };
+            } catch(e) {
+                return { isValid: true, bankCode: bankCode, bankName: bankName, cleanIban: clean, reason: 'تم التحقق من الصيغة والبنك' };
+            }
+        }
+
+        // ── 🎯 ZENDESK INTERNAL ESCALATION & ROUTING MATRIX ───────────────
+        function getZendeskRoutingMatrix(c) {
+            if (!c) return { group: 'Tier 2 Partner Care', sla: '24 ساعة عمل', priority: 'Normal', action: 'متابعة الإجراء الداخلي المعتمد.' };
+            const cat = c.category || '';
+            const title = (c.case_title || '').toLowerCase();
+            const ccr = (c.ccr || '').toLowerCase();
+
+            if (cat === 'Live Order Inquiries' && (title.includes('مندوب') || title.includes('سائق') || title.includes('توصيل') || ccr.includes('rider') || ccr.includes('driver'))) {
+                return {
+                    group: 'Fleet & Dispatch Operations (فريق عمليات السائقين والمناديب)',
+                    sla: 'ساعتان (2h Urgent SLA)',
+                    priority: 'High',
+                    action: 'تصعيد للتواصل مع السائق أو إعادة إسناد الطلب لأسطول Hungerstation.'
+                };
+            }
+            if (cat === 'Live Order Inquiries' || title.includes('تعويض') || title.includes('إلغاء') || ccr.includes('compensation') || ccr.includes('cancel')) {
+                return {
+                    group: 'Finance Claims & Compensations (فريق المطالبات والتعويضات المالية)',
+                    sla: '24 ساعة عمل',
+                    priority: 'Normal',
+                    action: 'مراجعة وقت الإلغاء واكتمال التجهيز للبت في صرف التعويض المالي للشريك.'
+                };
+            }
+            if (cat === 'Technical Inquiry' || title.includes('جهاز') || title.includes('طابعة') || title.includes('pos') || title.includes('sunmi')) {
+                return {
+                    group: 'Hardware & POS Support (فريق الأجهزة وطابعات نقاط البيع)',
+                    sla: '48 ساعة عمل',
+                    priority: 'Normal',
+                    action: 'إرسال جهاز بديل أو صيانة النظام بعد خصم الرسوم المقررة من الدورة القادمة.'
+                };
+            }
+            if (cat === 'Billing Inquiries' || title.includes('فاتورة') || title.includes('عمولة') || title.includes('حوالة') || title.includes('ضريبة')) {
+                return {
+                    group: 'Vendor Accounting & Payouts (فريق محاسبة وتدقيق الشركاء)',
+                    sla: '24 ساعة عمل',
+                    priority: 'Normal',
+                    action: 'تدقيق كشف الحساب الأسبوعي والفاتورة الضريبية وتوضيح التسويات المستحقة.'
+                };
+            }
+            if (cat === 'Content Update' || title.includes('منيو') || title.includes('صنف') || title.includes('سعر') || title.includes('صورة')) {
+                return {
+                    group: 'Catalog & Menu Operations (فريق محتوى وتحديث قوائم الطعام)',
+                    sla: '24 - 48 ساعة عمل',
+                    priority: 'Low',
+                    action: 'اعتماد ومراجعة تعديلات الأسعار والأصناف الجديدة على تطبيق هنقرستيشن.'
+                };
+            }
+            if (cat === 'Partner Data Update' || title.includes('آيبان') || title.includes('حساب بنكي') || title.includes('سجل تجاري')) {
+                return {
+                    group: 'Onboarding & Compliance (فريق التوثيق والامتثال للبيانات)',
+                    sla: '48 ساعة عمل',
+                    priority: 'Normal',
+                    action: 'مطابقة خطاب الآيبان البنكي المعتمد مع السجل التجاري للشريك وتحديثه بالنظام.'
+                };
+            }
+            if (cat === 'Contract and Sales Inquiries' || title.includes('عقد') || title.includes('تجديد') || title.includes('مبيعات')) {
+                return {
+                    group: 'Commercial Partner Success (فريق إدارة الحسابات وتطوير الشركاء)',
+                    sla: '48 ساعة عمل',
+                    priority: 'Normal',
+                    action: 'مراجعة شروط العقد وبنود العمولات مع مدير حساب الشريك (KAM).'
+                };
+            }
+            return {
+                group: 'Tier 2 Partner Care (الدعم المتقدم للشركاء)',
+                sla: '24 ساعة عمل',
+                priority: 'Normal',
+                action: 'متابعة الإجراء الداخلي المعتمد وفق الـ SOP.'
+            };
+        }
+
+        // ── 🏷️ AUTOMATED ZENDESK TICKET TAGS GENERATOR ─────────────────────
+        function generateZendeskTags(c, detectedEntities = {}, psychAnalysis = null) {
+            if (!c) return ['vendor_support'];
+            const tags = ['vendor_support', 'v_kb'];
+            if (c.category) {
+                tags.push('cat_' + c.category.toLowerCase().replace(/[^a-z0-9]+/g, '_'));
+            }
+            tags.push('case_' + c.id);
+            if (detectedEntities.orderId) tags.push('order_' + detectedEntities.orderId);
+            if (detectedEntities.iban) tags.push('iban_update');
+            if (psychAnalysis && (psychAnalysis.angerScore >= 70 || psychAnalysis.threatDetected)) {
+                tags.push('high_anger', 'partner_at_risk');
+            }
+            if (c.case_title) {
+                const titleLower = c.case_title.toLowerCase();
+                if (titleLower.includes('تعويض') || titleLower.includes('compensation')) tags.push('compensation_claim');
+                if (titleLower.includes('إلغاء') || titleLower.includes('cancel')) tags.push('order_cancellation');
+                if (titleLower.includes('آيبان') || titleLower.includes('iban')) tags.push('bank_iban_change');
+                if (titleLower.includes('طابعة') || titleLower.includes('جهاز') || titleLower.includes('pos')) tags.push('pos_hardware_issue');
+                if (titleLower.includes('منيو') || titleLower.includes('menu')) tags.push('menu_catalog_edit');
+                if (titleLower.includes('سائق') || titleLower.includes('مندوب') || titleLower.includes('rider')) tags.push('fleet_driver_delay');
+            }
+            return [...new Set(tags)];
+        }
+
+        // ── 💰 INLINE FINANCIAL POLICY ACTIONS ─────────────────────────────
+        function applyNetPayoutToMacro(net) {
+            const amtInp = document.getElementById('liveVarAmount');
+            if (amtInp) amtInp.value = net;
+            updateLiveMacroVariables();
+            showToast(`⚡ تم تطبيق التعويض الصافي (${net} ريال) داخل الماكرو بنجاح!`);
+            playSuccessChime();
+        }
+
+        function updateLiveIbanVariable() {
+            const ibanInp = document.getElementById('liveVarIban');
+            if (!ibanInp) return;
+            const rawIban = ibanInp.value.trim().toUpperCase();
+            if (!rawIban) return;
+            const val = validateSaudiIban(rawIban);
+
+            if (!window.currentActiveDetectedEntities) window.currentActiveDetectedEntities = {};
+            window.currentActiveDetectedEntities.iban = val.cleanIban;
+            window.currentActiveDetectedEntities.ibanValidation = val;
+
+            const c = window.currentActiveCaseObj;
+            if (!c) return;
+            const idx = window.currentActiveSubMacroIdx || 0;
+            const sm = (c.sub_macros && c.sub_macros[idx]) ? c.sub_macros[idx] : null;
+            let arProc = (sm && sm.macro_arabic) ? sm.macro_arabic : (c.procedure_arabic || "");
+            let enProc = (sm && sm.macro_english) ? sm.macro_english : (c.procedure_english || "");
+
+            const orderId = (document.getElementById('liveVarOrderId') ? document.getElementById('liveVarOrderId').value.trim() : '');
+            const storeName = (document.getElementById('liveVarStoreName') ? document.getElementById('liveVarStoreName').value.trim() : '');
+            const amount = (document.getElementById('liveVarAmount') ? document.getElementById('liveVarAmount').value.trim() : '');
+
+            if (orderId) { arProc = arProc.replace(/\[رقم الطلب\]|#?\b\d{7,10}\b/g, orderId); enProc = enProc.replace(/\[Order ID\]|#?\b\d{7,10}\b/g, orderId); }
+            if (storeName) { arProc = arProc.replace(/\[اسم المتجر\]|\[اسم الشريك\]/g, storeName); enProc = enProc.replace(/\[Store Name\]|\[Partner Name\]/g, storeName); }
+            if (amount) { arProc = arProc.replace(/\[المبلغ\]/g, amount + ' ريال'); enProc = enProc.replace(/\[Amount\]/g, amount + ' SAR'); }
+
+            arProc = arProc.replace(/\[الآيبان\]|\[رقم الآيبان\]|\[الحساب البنكي\]/g, val.cleanIban);
+            enProc = enProc.replace(/\[IBAN\]|\[Bank Account\]/g, val.cleanIban);
+
+            const greetings = window.currentActiveGreetings || { arGreeting: "", enGreeting: "" };
+            const finalAr = buildArabicMacro(greetings.arGreeting, arProc);
+            const finalEn = buildEnglishMacro(greetings.enGreeting, enProc);
+
+            const arEl = document.getElementById('arMacroText');
+            const enEl = document.getElementById('enMacroText');
+            if (arEl) arEl.innerText = finalAr;
+            if (enEl) enEl.innerText = finalEn;
+
+            const pillsCont = document.getElementById('outputEntitiesPills');
+            if (pillsCont) {
+                let ibanPill = document.getElementById('outputIbanPill');
+                const pillHtml = val.isValid 
+                    ? `<span id="outputIbanPill" style="background: rgba(16,185,129,0.2); border: 1.5px solid #10B981; color: #6EE7B7; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" title="${val.reason}"><i class="fa-solid fa-building-columns"></i> ${val.bankName}: ${val.cleanIban} ✅</span>`
+                    : `<span id="outputIbanPill" style="background: rgba(239,68,68,0.2); border: 1.5px solid #EF4444; color: #FCA5A5; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" title="${val.reason}"><i class="fa-solid fa-triangle-exclamation"></i> تنبيه: ${val.reason} ⚠️</span>`;
+                if (ibanPill) {
+                    ibanPill.outerHTML = pillHtml;
+                } else {
+                    pillsCont.insertAdjacentHTML('beforeend', pillHtml);
+                }
+            }
         }
 
         function cleanInputText(text) {
@@ -7503,8 +7712,10 @@ function cleanArabicProcedure(text) {
                 return;
             }
             if (typeof trackCaseUsage === 'function') trackCaseUsage(id);
-            const greetings = detectGreetings((document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '') || '');
-            displayCaseDualMacro(c, greetings, false, null, 100, [], {}, 0);
+            const rawPartnerMsg = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '') || '';
+            const greetings = detectGreetings(rawPartnerMsg);
+            const detectedEntities = (typeof extractEmailEntities === 'function') ? extractEmailEntities(rawPartnerMsg) : {};
+            displayCaseDualMacro(c, greetings, false, null, 100, [], detectedEntities, 0);
             scrollToOutput();
         }
         window.selectCase = selectCase;
@@ -8499,9 +8710,12 @@ ${invoiceGuideHtml || ""}
             window.currentActiveCaseObj = c;
             window.currentActiveGreetings = greetings || { arGreeting: "", enGreeting: "" };
             window.currentActiveIsEn = !!isEn;
-            window.currentActiveDetectedEntities = detectedEntities || {};
-
             const partnerMsgVal = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '') || (document.getElementById('searchInput') ? document.getElementById('searchInput').value : '');
+            
+            if ((!detectedEntities || Object.keys(detectedEntities).length === 0) && partnerMsgVal && typeof extractEmailEntities === 'function') {
+                detectedEntities = extractEmailEntities(partnerMsgVal);
+            }
+            window.currentActiveDetectedEntities = detectedEntities || {};
             
             let activeSubMacroIdx = 0;
             if (targetSubMacroIdx !== null && targetSubMacroIdx !== undefined) {
@@ -8513,8 +8727,25 @@ ${invoiceGuideHtml || ""}
 
             let activeSubMacro = (c.sub_macros && c.sub_macros[activeSubMacroIdx]) ? c.sub_macros[activeSubMacroIdx] : null;
 
+            // 🧠 Vendor Psychology & Escalation Radar Computation
+            const psychAnalysis = typeof analyzeVendorPsychology === 'function' ? analyzeVendorPsychology(partnerMsgVal) : null;
+
             let arProcText = (activeSubMacro && activeSubMacro.macro_arabic) ? activeSubMacro.macro_arabic : (c.procedure_arabic || "تم استلام طلبكم وجاري متابعته مع الفريق المختص.");
             let enProcText = (activeSubMacro && activeSubMacro.macro_english) ? activeSubMacro.macro_english : (c.procedure_english || "We would like to inform you that your request has been received and is being followed up.");
+
+            // 🛡️ Auto-Empathy De-escalation Bridge for High Churn / Anger
+            let empathyNoticeHtml = '';
+            if (psychAnalysis && (psychAnalysis.angerScore >= 70 || (psychAnalysis.riskLabel && psychAnalysis.riskLabel.includes('High')))) {
+                const empathyBridge = "نقدّر تماماً حرصكم وشعوركم بالإحباط حيال ما حدث، ونؤكد لكم أن رضاكم وشراكتكم معنا محل اهتمامنا البالغ، وحرصاً منا على خدمتكم:\n\n";
+                if (!arProcText.includes('نقدّر تماماً حرصكم')) {
+                    arProcText = empathyBridge + arProcText;
+                    empathyNoticeHtml = `
+                        <div style="background: rgba(239, 68, 68, 0.1); border: 1.5px solid #EF4444; color: #FCA5A5; padding: 7px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-shield-heart" style="color: #EF4444;"></i> تم دمج مقدمة امتصاص الغضب والتهدئة بالماكرو تلقائياً بناءً على رادار الشريك 🛡️
+                        </div>
+                    `;
+                }
+            }
 
             // Inject entities into procedure if placeholders exist
             if (detectedEntities.orderId) {
@@ -8528,6 +8759,10 @@ ${invoiceGuideHtml || ""}
             if (detectedEntities.amount) {
                 arProcText = arProcText.replace(/\[المبلغ\]/g, detectedEntities.amount + ' ريال');
                 enProcText = enProcText.replace(/\[Amount\]/g, detectedEntities.amount + ' SAR');
+            }
+            if (detectedEntities.iban) {
+                arProcText = arProcText.replace(/\[الآيبان\]|\[رقم الآيبان\]|\[الحساب البنكي\]/g, detectedEntities.iban);
+                enProcText = enProcText.replace(/\[IBAN\]|\[Bank Account\]/g, detectedEntities.iban);
             }
             
             let finalArMacro = buildArabicMacro(greetings.arGreeting, arProcText);
@@ -8586,6 +8821,13 @@ ${invoiceGuideHtml || ""}
                 }
                 if (detectedEntities.storeName) pills.push(`<span style="background: rgba(16,185,129,0.2); border: 1px solid #10B981; color: #6EE7B7; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem;"><i class="fa-solid fa-shop"></i> متجر: ${detectedEntities.storeName}</span>`);
                 if (detectedEntities.amount) pills.push(`<span style="background: rgba(245,158,11,0.2); border: 1px solid #F59E0B; color: #FCD34D; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem;"><i class="fa-solid fa-money-bill"></i> ${detectedEntities.amount} ريال</span>`);
+                if (detectedEntities.iban) {
+                    const val = detectedEntities.ibanValidation || validateSaudiIban(detectedEntities.iban);
+                    const pillHtml = val.isValid 
+                        ? `<span id="outputIbanPill" style="background: rgba(16,185,129,0.2); border: 1.5px solid #10B981; color: #6EE7B7; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" title="${val.reason}"><i class="fa-solid fa-building-columns"></i> ${val.bankName}: ${val.cleanIban} ✅</span>`
+                        : `<span id="outputIbanPill" style="background: rgba(239,68,68,0.2); border: 1.5px solid #EF4444; color: #FCA5A5; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;" title="${val.reason}"><i class="fa-solid fa-triangle-exclamation"></i> خطأ بالآيبان: ${val.reason} ⚠️</span>`;
+                    pills.push(pillHtml);
+                }
                 if (pills.length > 0) {
                     entitiesBadgesHtml = `<div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; align-items: center;" id="outputEntitiesPills">${pills.join('')}</div>`;
                 }
@@ -8639,8 +8881,7 @@ ${invoiceGuideHtml || ""}
                 `;
             }
 
-            // 🧠 Vendor Psychology & Escalation Radar Computation
-            const psychAnalysis = typeof analyzeVendorPsychology === 'function' ? analyzeVendorPsychology(partnerMsgVal) : null;
+            // 🧠 Vendor Psychology & Escalation Radar HTML
             let psychRadarHtml = '';
             if (psychAnalysis && partnerMsgVal && partnerMsgVal.trim().length > 6) {
                 psychRadarHtml = `
@@ -8693,6 +8934,73 @@ ${invoiceGuideHtml || ""}
                                 <i class="fa-solid fa-copy"></i> نسخ الرد التالي
                             </button>
                         </div>
+                    </div>
+                `;
+            }
+
+            // 🎯 Zendesk Internal Escalation & Routing
+            const routing = typeof getZendeskRoutingMatrix === 'function' ? getZendeskRoutingMatrix(c) : null;
+            let routingHtml = '';
+            if (routing) {
+                routingHtml = `
+                    <div style="background: rgba(139, 92, 246, 0.08); border: 1.5px solid rgba(139, 92, 246, 0.35); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <div>
+                            <div style="font-size: 0.78rem; font-weight: 800; color: #A78BFA; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-share-nodes"></i> توجيه التذكرة في Zendesk (Internal Escalation & Routing):
+                            </div>
+                            <div style="font-size: 0.85rem; font-weight: 700; color: #FFF; margin-top: 3px;">
+                                ${routing.group}
+                            </div>
+                            <div style="font-size: 0.75rem; color: #C4B5FD; margin-top: 2px;">
+                                <i class="fa-solid fa-clock"></i> المهلة المعتمدة (SLA): <strong>${routing.sla}</strong> • الإجراء: ${routing.action}
+                            </div>
+                        </div>
+                        <button type="button" onclick="navigator.clipboard.writeText('${routing.group.replace(/'/g, "\\'")}'); showToast('📋 تم نسخ اسم الفريق المحول إليه!'); playSuccessChime();" style="background: #8B5CF6; color: #FFF; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                            <i class="fa-solid fa-copy"></i> نسخ اسم الفريق
+                        </button>
+                    </div>
+                `;
+            }
+
+            // 🏷️ Automated Zendesk Tags
+            const zendeskTags = typeof generateZendeskTags === 'function' ? generateZendeskTags(c, detectedEntities, psychAnalysis) : [];
+            let zendeskTagsHtml = '';
+            if (zendeskTags && zendeskTags.length > 0) {
+                const tagsJoined = zendeskTags.join(' ');
+                zendeskTagsHtml = `
+                    <div style="background: rgba(59, 130, 246, 0.08); border: 1px dashed rgba(59, 130, 246, 0.35); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                            <span style="font-size: 0.75rem; font-weight: 800; color: #60A5FA;"><i class="fa-solid fa-tags"></i> وسوم Zendesk المقترحة:</span>
+                            ${zendeskTags.map(t => `<span style="background: rgba(59, 130, 246, 0.2); border: 1px solid #3B82F6; color: #93C5FD; padding: 1px 7px; border-radius: 4px; font-size: 0.72rem; font-family: monospace;">${t}</span>`).join('')}
+                        </div>
+                        <button type="button" onclick="navigator.clipboard.writeText('${tagsJoined}'); showToast('📋 تم نسخ وسوم Zendesk!'); playSuccessChime();" style="background: rgba(59, 130, 246, 0.2); border: 1px solid #3B82F6; color: #93C5FD; padding: 4px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                            <i class="fa-solid fa-copy"></i> نسخ الوسوم (Tags)
+                        </button>
+                    </div>
+                `;
+            }
+
+            // 💰 Dynamic Financial Net Payout Calculator
+            let netPayoutCalculatorHtml = '';
+            const grossAmount = parseFloat(detectedEntities.amount);
+            if (!isNaN(grossAmount) && grossAmount > 0 && (c.category === 'Live Order Inquiries' || (c.case_title && (c.case_title.includes('تعويض') || c.case_title.includes('إلغاء'))))) {
+                const commissionRate = 0.15;
+                const commissionAmt = (grossAmount * commissionRate).toFixed(2);
+                const netPayout = (grossAmount * (1 - commissionRate)).toFixed(2);
+
+                netPayoutCalculatorHtml = `
+                    <div style="background: rgba(16, 185, 129, 0.08); border: 1.5px solid rgba(16, 185, 129, 0.35); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                        <div>
+                            <span style="font-size: 0.8rem; font-weight: 800; color: #10B981; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-calculator"></i> حاسبة التعويض الصافي المعتمد (Net Payout):
+                            </span>
+                            <span style="font-size: 0.78rem; color: var(--text-main); margin-top: 2px; display: block;">
+                                إجمالي الطلب: <strong>${grossAmount} ريال</strong> • خصم العمولة التقديرية (15%): <strong>${commissionAmt} ريال</strong> ➔ الصافي المستحق: <strong style="color: #34D399; font-size: 0.85rem;">${netPayout} ريال</strong>
+                            </span>
+                        </div>
+                        <button type="button" onclick="applyNetPayoutToMacro(${netPayout})" style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #6EE7B7; padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s;" onmouseover="this.style.background='#10B981'; this.style.color='#000';" onmouseout="this.style.background='rgba(16, 185, 129, 0.2)'; this.style.color='#6EE7B7';">
+                            <i class="fa-solid fa-bolt"></i> تعويض الصافي (${netPayout} ريال) بالماكرو
+                        </button>
                     </div>
                 `;
             }
@@ -8756,8 +9064,17 @@ ${invoiceGuideHtml || ""}
                                 <i class="fa-solid fa-user" style="color: #EC4899;"></i>
                                 <input type="text" id="liveVarCustomer" placeholder="اسم العميل / المندوب" value="${detectedEntities.customerName || ''}" oninput="updateLiveMacroVariables()">
                             </div>
+                            <div class="var-chip-box" style="grid-column: 1 / -1;">
+                                <i class="fa-solid fa-building-columns" style="color: #10B981;"></i>
+                                <input type="text" id="liveVarIban" placeholder="رقم الآيبان (SA...)" value="${detectedEntities.iban || ''}" oninput="updateLiveIbanVariable()">
+                            </div>
                         </div>
                     </div>
+
+                    ${empathyNoticeHtml || ''}
+                    ${netPayoutCalculatorHtml || ''}
+                    ${routingHtml || ''}
+                    ${zendeskTagsHtml || ''}
 
                     ${auditAlertHtml || ''}
 
