@@ -1357,19 +1357,36 @@
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(4, 7, 13, 0.7);
-            -webkit-display: flex;
+            background: rgba(4, 7, 13, 0.75);
+            display: none;
             justify-content: center;
             align-items: center;
-            z-index: 2000;
+            z-index: 2500;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.25s ease;
+            transition: opacity 0.2s ease;
         }
 
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
+        .modal-overlay.active,
+        .modal-overlay[style*="display: flex"],
+        .modal-overlay[style*="display:flex"] {
+            display: flex !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        .modal-overlay[style*="display: block"],
+        .modal-overlay[style*="display:block"] {
+            display: block !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        .modal-overlay[style*="display: none"],
+        .modal-overlay[style*="display:none"] {
+            display: none !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
         }
 
         .modal-card {
@@ -6206,11 +6223,19 @@ async function loadKBData() {
         let selectedSourceImage = null;
 
         function showResizerModal() {
-            document.getElementById('resizerModal').classList.add('active');
+            const m = document.getElementById('resizerModal');
+            if (m) {
+                m.style.display = 'flex';
+                m.classList.add('active');
+            }
         }
 
         function closeResizerModal() {
-            document.getElementById('resizerModal').classList.remove('active');
+            const m = document.getElementById('resizerModal');
+            if (m) {
+                m.style.display = 'none';
+                m.classList.remove('active');
+            }
         }
 
         function handleImageSelect(e) {
@@ -6357,11 +6382,18 @@ async function loadKBData() {
                 });
                 container.innerHTML = html;
             }
-            modal.classList.add('active');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+            }
         }
 
         function closeLearningModal() {
-            document.getElementById('learningMemoryModal').classList.remove('active');
+            const m = document.getElementById('learningMemoryModal');
+            if (m) {
+                m.style.display = 'none';
+                m.classList.remove('active');
+            }
         }
 
         function removeLearnedRule(idx) {
@@ -8762,11 +8794,18 @@ ${invoiceGuideHtml || ""}
                 });
                 list.innerHTML = html;
             }
-            modal.classList.add('active');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+            }
         }
 
         function closeHistoryModal() {
-            document.getElementById('historyModal').classList.remove('active');
+            const m = document.getElementById('historyModal');
+            if (m) {
+                m.style.display = 'none';
+                m.classList.remove('active');
+            }
         }
 
         function clearHistory() {
@@ -10408,11 +10447,22 @@ document.addEventListener('click', function(e) {
     if (wrapper && !wrapper.contains(e.target)) {
         window.closeToolsMenu();
     }
+    // Universal click-to-close on modal overlay backdrop
+    if (e.target && e.target.classList.contains('modal-overlay')) {
+        e.target.style.display = 'none';
+        e.target.classList.remove('active');
+    }
 });
 
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         window.closeToolsMenu();
+        document.querySelectorAll('.modal-overlay').forEach(m => {
+            m.style.display = 'none';
+            m.classList.remove('active');
+        });
+        const aiModal = document.getElementById('aiSettingsModal');
+        if (aiModal) aiModal.style.display = 'none';
     }
 });
 
@@ -10571,7 +10621,18 @@ function openShiftReportModal() {
     const modal = document.getElementById('shiftReportModal');
     const ta = document.getElementById('shiftReportTextarea');
     if (ta) ta.value = generateShiftReportText();
-    if (modal) modal.style.display = 'flex';
+    if (modal) {
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+    }
+}
+
+function closeShiftReportModal() {
+    const modal = document.getElementById('shiftReportModal');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('active');
+    }
 }
 
 function copyShiftReport() {
@@ -10637,12 +10698,34 @@ function importTeamConfigJson(event) {
 
 function openTeamSyncModal() {
     const m = document.getElementById('teamSyncModal');
-    if (m) m.style.display = 'flex';
+    if (m) {
+        m.style.display = 'flex';
+        m.classList.add('active');
+    }
+}
+
+function closeTeamSyncModal() {
+    const m = document.getElementById('teamSyncModal');
+    if (m) {
+        m.style.display = 'none';
+        m.classList.remove('active');
+    }
 }
 
 function openHotkeysModal() {
     const m = document.getElementById('hotkeysModal');
-    if (m) m.style.display = 'flex';
+    if (m) {
+        m.style.display = 'flex';
+        m.classList.add('active');
+    }
+}
+
+function closeHotkeysModal() {
+    const m = document.getElementById('hotkeysModal');
+    if (m) {
+        m.style.display = 'none';
+        m.classList.remove('active');
+    }
 }
 
 
@@ -11120,7 +11203,10 @@ function downloadOfficialMenuExcel() {
         // ── 📊 4. SLA & POLICY CALCULATOR ENGINE ──────────────────
         function openPolicyCalculatorModal() {
             const modal = document.getElementById('policyCalculatorModal');
-            if (modal) modal.classList.add('active');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+            }
             calculateCompensationVerdict();
             initBillingDateDefault();
             calculateBillingSchedule();
@@ -11128,7 +11214,10 @@ function downloadOfficialMenuExcel() {
 
         function closePolicyCalculatorModal() {
             const modal = document.getElementById('policyCalculatorModal');
-            if (modal) modal.classList.remove('active');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('active');
+            }
         }
 
         function switchCalcTab(tab) {
@@ -11623,13 +11712,17 @@ function downloadOfficialMenuExcel() {
             const m = document.getElementById('decisionTreeModal');
             if (m) {
                 m.style.display = 'flex';
+                m.classList.add('active');
                 dtRenderCancelVerdict();
             }
         }
 
         function closeDecisionTreeModal() {
             const m = document.getElementById('decisionTreeModal');
-            if (m) m.style.display = 'none';
+            if (m) {
+                m.style.display = 'none';
+                m.classList.remove('active');
+            }
         }
 
         function switchDecisionFlow(flow) {
@@ -11791,6 +11884,7 @@ function downloadOfficialMenuExcel() {
             const m = document.getElementById('copilotModal');
             if (m) {
                 m.style.display = 'flex';
+                m.classList.add('active');
                 const input = document.getElementById('copilotInput');
                 if (input) setTimeout(() => input.focus(), 150);
             }
@@ -11798,7 +11892,10 @@ function downloadOfficialMenuExcel() {
 
         function closeCopilotModal() {
             const m = document.getElementById('copilotModal');
-            if (m) m.style.display = 'none';
+            if (m) {
+                m.style.display = 'none';
+                m.classList.remove('active');
+            }
         }
 
         function askCopilot(query) {
@@ -12144,6 +12241,7 @@ function downloadOfficialMenuExcel() {
             const m = document.getElementById('teleprompterModal');
             if (!m) return;
             m.style.display = 'flex';
+            m.classList.add('active');
 
             const c = window.currentActiveCaseObj || { id: 1, case_title: 'استفسار الشريك' };
             const agentName = getAgentArabicName();
@@ -12198,7 +12296,10 @@ function downloadOfficialMenuExcel() {
 
         function closeTeleprompterModal() {
             const m = document.getElementById('teleprompterModal');
-            if (m) m.style.display = 'none';
+            if (m) {
+                m.style.display = 'none';
+                m.classList.remove('active');
+            }
             if (_callTimerInterval) {
                 clearInterval(_callTimerInterval);
                 _callTimerInterval = null;
@@ -12307,12 +12408,18 @@ try {
 function openPendingVaultModal() {
     renderPendingTicketsList();
     const m = document.getElementById('pendingVaultModal');
-    if (m) m.style.display = 'flex';
+    if (m) {
+        m.style.display = 'flex';
+        m.classList.add('active');
+    }
 }
 
 function closePendingVaultModal() {
     const m = document.getElementById('pendingVaultModal');
-    if (m) m.style.display = 'none';
+    if (m) {
+        m.style.display = 'none';
+        m.classList.remove('active');
+    }
 }
 
 function addNewPendingTicketFromVault() {
@@ -12552,12 +12659,18 @@ let currentSanityIssues = [];
 
 function openMenuSanityModal() {
     const m = document.getElementById('menuSanityModal');
-    if (m) m.style.display = 'flex';
+    if (m) {
+        m.style.display = 'flex';
+        m.classList.add('active');
+    }
 }
 
 function closeMenuSanityModal() {
     const m = document.getElementById('menuSanityModal');
-    if (m) m.style.display = 'none';
+    if (m) {
+        m.style.display = 'none';
+        m.classList.remove('active');
+    }
 }
 
 function runMenuPreflightSanityCheck() {
@@ -12814,12 +12927,18 @@ function insertSnippetTextDecoded(enc) {
 
 function openAddSnippetModal() {
     const m = document.getElementById('addSnippetModal');
-    if (m) m.style.display = 'flex';
+    if (m) {
+        m.style.display = 'flex';
+        m.classList.add('active');
+    }
 }
 
 function closeAddSnippetModal() {
     const m = document.getElementById('addSnippetModal');
-    if (m) m.style.display = 'none';
+    if (m) {
+        m.style.display = 'none';
+        m.classList.remove('active');
+    }
 }
 
 function saveNewCustomSnippet() {
@@ -12849,12 +12968,18 @@ function saveNewCustomSnippet() {
 // ─────────────────────────────────────────────────────────────────────────
 function openHotkeysModal() {
     const m = document.getElementById('hotkeysModal');
-    if (m) m.style.display = 'flex';
+    if (m) {
+        m.style.display = 'flex';
+        m.classList.add('active');
+    }
 }
 
 function closeHotkeysModal() {
     const m = document.getElementById('hotkeysModal');
-    if (m) m.style.display = 'none';
+    if (m) {
+        m.style.display = 'none';
+        m.classList.remove('active');
+    }
 }
 
 window.addEventListener('keydown', (e) => {
@@ -13078,13 +13203,19 @@ function installDesktopPwa() {
         });
     } else {
         const m = document.getElementById('pwaInstallModal');
-        if (m) m.style.display = 'flex';
+        if (m) {
+            m.style.display = 'flex';
+            m.classList.add('active');
+        }
     }
 }
 
 function closePwaInstallModal() {
     const m = document.getElementById('pwaInstallModal');
-    if (m) m.style.display = 'none';
+    if (m) {
+        m.style.display = 'none';
+        m.classList.remove('active');
+    }
 }
 
 function triggerPwaPromptDirect() {
@@ -13240,12 +13371,18 @@ window.renderStudioMenuPreviewTables = function() {
 function openInvoiceExplainerModal() {
     calculateInvoiceDiff();
     const m = document.getElementById('invoiceExplainerModal');
-    if (m) m.style.display = 'flex';
+    if (m) {
+        m.style.display = 'flex';
+        m.classList.add('active');
+    }
 }
 
 function closeInvoiceExplainerModal() {
     const m = document.getElementById('invoiceExplainerModal');
-    if (m) m.style.display = 'none';
+    if (m) {
+        m.style.display = 'none';
+        m.classList.remove('active');
+    }
 }
 
 let lastCalculatedInvoice = {};
@@ -13345,12 +13482,18 @@ function copyInvoiceTextDirect() {
 // ─────────────────────────────────────────────────────────────────────────
 function openBatchTicketsModal() {
     const m = document.getElementById('batchTicketsModal');
-    if (m) m.style.display = 'flex';
+    if (m) {
+        m.style.display = 'flex';
+        m.classList.add('active');
+    }
 }
 
 function closeBatchTicketsModal() {
     const m = document.getElementById('batchTicketsModal');
-    if (m) m.style.display = 'none';
+    if (m) {
+        m.style.display = 'none';
+        m.classList.remove('active');
+    }
 }
 
 let generatedBatchResponses = [];
@@ -14787,6 +14930,76 @@ if (typeof window !== 'undefined') {
                     <i class="fa-solid fa-download"></i> تثبيت التطبيق الآن ⚡
                 </button>
                 <button class="btn-learn" onclick="closePwaInstallModal()" style="width: auto; padding: 6px 16px;">فهمت، إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📊 8. SHIFT REPORT MODAL -->
+    <div class="modal-overlay" id="shiftReportModal" style="display: none;">
+        <div class="modal-card" style="max-width: 650px; text-align: right;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #10B981, #059669); color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; color: var(--text-main); font-size: 1.15rem; font-weight: 800;">تقرير إنجاز نهاية الشفت (Shift Report)</h3>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">تقرير جاهز للنسخ والإرسال في جروب التيم يوضح إنجاز اليوم</span>
+                    </div>
+                </div>
+                <button onclick="closeShiftReportModal()" style="background: none; border: none; color: var(--text-main); font-size: 1.3rem; cursor: pointer;">✕</button>
+            </div>
+            <textarea id="shiftReportTextarea" style="width: 100%; height: 260px; background: rgba(0,0,0,0.3); border: 1.5px solid var(--border); border-radius: 10px; color: var(--text-main); padding: 12px; font-family: monospace; font-size: 0.82rem; line-height: 1.6; resize: vertical;" readonly></textarea>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px;">
+                <button type="button" class="btn-copy" onclick="copyShiftReport()" style="flex: 2; background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; font-weight: 800;">
+                    <i class="fa-solid fa-copy"></i> نسخ تقرير الشفت للحافظة 📋
+                </button>
+                <button type="button" class="btn-learn" onclick="closeShiftReportModal()" style="flex: 1;">
+                    إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔄 9. TEAM SYNC & CONFIG EXPORT/IMPORT MODAL -->
+    <div class="modal-overlay" id="teamSyncModal" style="display: none;">
+        <div class="modal-card" style="max-width: 600px; text-align: right;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #8B5CF6, #6366F1); color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; color: var(--text-main); font-size: 1.15rem; font-weight: 800;">مزامنة وتصدير تحديثات الفريق (Team Sync)</h3>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">مشاركة قواعد الذاكرة والقوالب مع الزملاء بملف JSON فوري</span>
+                    </div>
+                </div>
+                <button onclick="closeTeamSyncModal()" style="background: none; border: none; color: var(--text-main); font-size: 1.3rem; cursor: pointer;">✕</button>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 14px; margin: 10px 0;">
+                <div style="background: rgba(139, 92, 246, 0.08); border: 1.5px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 14px; text-align: right;">
+                    <h4 style="margin: 0 0 6px 0; color: #C4B5FD; font-size: 0.92rem;"><i class="fa-solid fa-file-export"></i> 1. تصدير إعداداتك لمشاركتها:</h4>
+                    <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;">تحميل ملف JSON يحتوي على قواعد الذاكرة والقوالب لإرسالها لزملائك في الشفت.</p>
+                    <button type="button" onclick="exportTeamConfigJson()" style="background: linear-gradient(135deg, #8B5CF6, #6366F1); color: #FFF; border: none; padding: 8px 18px; border-radius: 8px; font-weight: 800; font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-download"></i> تصدير ملف الإعدادات (.JSON)
+                    </button>
+                </div>
+
+                <div style="background: rgba(16, 185, 129, 0.08); border: 1.5px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 14px; text-align: right;">
+                    <h4 style="margin: 0 0 6px 0; color: #34D399; font-size: 0.92rem;"><i class="fa-solid fa-file-import"></i> 2. استيراد إعدادات من زميل:</h4>
+                    <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;">اختر ملف الـ JSON الذي تم استلامه من المشرف أو الزميل لدمج القواعد فوراً.</p>
+                    <input type="file" id="teamConfigFileInput" accept=".json" onchange="importTeamConfigJson(event)" style="display: none;">
+                    <button type="button" onclick="document.getElementById('teamConfigFileInput').click()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 8px 18px; border-radius: 8px; font-weight: 800; font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-upload"></i> اختيار ملف JSON للاستيراد
+                    </button>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
+                <button type="button" class="btn-learn" onclick="closeTeamSyncModal()" style="width: 100px;">
+                    إغلاق
+                </button>
             </div>
         </div>
     </div>
