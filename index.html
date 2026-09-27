@@ -6850,10 +6850,25 @@ async function loadKBData() {
             const finalAr = buildArabicMacro(greetings.arGreeting, arProc);
             const finalEn = buildEnglishMacro(greetings.enGreeting, enProc);
 
+            // Recompute deep analysis and dynamic macro with new live variables
+            const partnerMsg = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '') || '';
+            const deepAnalysis = (typeof deepAnalyzeVendorInquiry === 'function')
+                ? deepAnalyzeVendorInquiry(partnerMsg, c, window.currentAgentExtraInstruction || '')
+                : null;
+            if (deepAnalysis) {
+                deepAnalysis.entities = window.currentActiveDetectedEntities;
+                const tailored = synthesizeDynamicTailoredMacro(c, deepAnalysis, 'original', 'AR', getAgentArabicName());
+                window.currentDynamicArMacro = tailored.arMacro;
+                window.currentDynamicEnMacro = tailored.enMacro;
+            }
+            window.currentStandardArMacro = finalAr;
+            window.currentStandardEnMacro = finalEn;
+
             const arEl = document.getElementById('arMacroText');
             const enEl = document.getElementById('enMacroText');
-            if (arEl) arEl.innerText = finalAr;
-            if (enEl) enEl.innerText = finalEn;
+            const activeMode = window.currentActiveMacroMode || 'dynamic';
+            if (arEl) arEl.innerText = (activeMode === 'dynamic' && window.currentDynamicArMacro) ? window.currentDynamicArMacro : finalAr;
+            if (enEl) enEl.innerText = (activeMode === 'dynamic' && window.currentDynamicEnMacro) ? window.currentDynamicEnMacro : finalEn;
 
             const pillsCont = document.getElementById('outputEntitiesPills');
             if (pillsCont) {
@@ -6867,6 +6882,333 @@ async function loadKBData() {
                     pillsCont.insertAdjacentHTML('beforeend', pillHtml);
                 }
             }
+        }
+
+        
+        // ── 🧠 DEEP AI INQUIRY COMPREHENSION & DYNAMIC TAILORED MACRO ENGINE ──
+        window.currentActiveMacroMode = window.currentActiveMacroMode || 'dynamic';
+        window.currentAgentExtraInstruction = window.currentAgentExtraInstruction || '';
+
+        function deepAnalyzeVendorInquiry(partnerMsg, caseObj, agentNote = '') {
+            if (!partnerMsg) partnerMsg = '';
+            const normText = partnerMsg.toLowerCase();
+            const entities = (typeof extractEmailEntities === 'function') ? extractEmailEntities(partnerMsg) : {};
+
+            // 1. Identify multiple core intents
+            const intents = [];
+            if (/سائق|مندوب|كابتن|rider|driver|توصيل|تاخير|تأخر|ما وصل|وين السائق|استلام/i.test(normText)) {
+                intents.push({ id: 'driver', label: 'تأخر أو مشكلة السائق', icon: 'fa-motorcycle' });
+            }
+            if (/تعويض|مبلغ|ريال|فلوس|استرجاع|compensation|refund|خصم|تالف|خربان|أكل بارد/i.test(normText)) {
+                intents.push({ id: 'compensation', label: 'مطالبة بتعويض مالي', icon: 'fa-money-bill-wave' });
+            }
+            if (/جهاز|طابعة|تابلت|شاحن|شريحة|sim|tablet|printer|pos|sunmi|عطلان|طافي|ما يشتغل/i.test(normText)) {
+                intents.push({ id: 'device', label: 'عطل أو استبدال التابلت', icon: 'fa-tablet-screen-button' });
+            }
+            if (/اغلاق|إغلاق|قفل|مطر|سيول|امطار|كهرباء|صيانة|طوارئ|حريق|مغلق|close|emergency/i.test(normText)) {
+                intents.push({ id: 'emergency_closure', label: 'إغلاق طارئ / قوى قاهرة', icon: 'fa-store-slash' });
+            }
+            if (/منيو|سعر|اسعار|أسعار|صنف|وجبة|تعديل اسم|إضافة|حذف|menu|price/i.test(normText)) {
+                intents.push({ id: 'menu', label: 'تعديل الأسعار والمنيو', icon: 'fa-utensils' });
+            }
+            if (/فاتورة|مستحقات|تحويل|أسبوعي|عمولة|ضريبة|حساب بنكي|آيبان|iban|invoice|payout/i.test(normText)) {
+                intents.push({ id: 'finance', label: 'استفسار مالي أو فاتورة أو آيبان', icon: 'fa-file-invoice-dollar' });
+            }
+            if (/عميل|زبون|ما استلم|ملغي|الغاء|إلغاء|customer|cancel/i.test(normText)) {
+                intents.push({ id: 'cancellation', label: 'إلغاء طلب واعتراض', icon: 'fa-ban' });
+            }
+
+            if (intents.length === 0 && caseObj) {
+                intents.push({ id: 'general', label: caseObj.case_title || 'استفسار عام', icon: 'fa-circle-question' });
+            }
+
+            // 2. Surgical detection of missing requirements based on case and SOP
+            const missing = [];
+            const cat = caseObj ? (caseObj.category || '') : '';
+            const title = caseObj ? (caseObj.case_title || '') : '';
+
+            // Check Order ID
+            const needsOrder = cat.includes('Live Order') || title.includes('طلب') || title.includes('سائق') || title.includes('تعويض') || title.includes('إلغاء') || intents.some(i => ['driver', 'compensation', 'cancellation'].includes(i.id));
+            if (needsOrder && !entities.orderId) {
+                missing.push({ key: 'orderId', label: 'رقم الطلب المعني (#Order ID)', labelEn: 'Order ID (#)' });
+            }
+
+            // Check preparation proof for compensation claims
+            const isComp = title.includes('تعويض') || title.includes('إلغاء') || intents.some(i => i.id === 'compensation');
+            const hasPhotoProofMention = /صورة|مرفق|إثبات|تجهيز|كاميرا|فاتورة|photo|picture|proof|attach/i.test(normText) || (typeof extractedFileTexts !== 'undefined' && extractedFileTexts.length > 0);
+            if (isComp && !hasPhotoProofMention) {
+                missing.push({ key: 'prepPhoto', label: 'صورة واضحة تثبت اكتمال تجهيز الوجبة بالفرع', labelEn: 'Clear photo proving food was prepared' });
+            }
+
+            // Check IBAN and CR for banking / finance update cases
+            const isBankChange = title.includes('آيبان') || title.includes('حساب بنكي') || title.includes('بنك') || (cat.includes('Financial') && /آيبان|iban|بنك/i.test(normText));
+            if (isBankChange) {
+                if (!entities.iban || (entities.ibanValidation && !entities.ibanValidation.isValid)) {
+                    missing.push({ key: 'iban', label: 'رقم الآيبان البنكي المعتمد (يبدأ بـ SA)', labelEn: 'Valid Saudi IBAN (SA...)' });
+                }
+                if (!/سجل|شهادة|خطاب|cr|certificate/i.test(normText)) {
+                    missing.push({ key: 'cr', label: 'صورة السجل التجاري أو خطاب الحساب البنكي الرسمي', labelEn: 'Commercial Registration (CR) or Bank letter' });
+                }
+            }
+
+            // Check emergency closure reason
+            const isClosure = title.includes('إغلاق') || intents.some(i => i.id === 'emergency_closure');
+            if (isClosure && !/مطر|سيول|كهرباء|صيانة|طوارئ|وفاة|جرد|حريق|إجازة/i.test(normText)) {
+                missing.push({ key: 'closureReason', label: 'توضيح سبب الإغلاق الطارئ والمدة المتوقعة', labelEn: 'Emergency closure reason & estimated duration' });
+            }
+
+            // Check device fee approval
+            const isDevice = title.includes('طابعة') || title.includes('جهاز') || intents.some(i => i.id === 'device');
+            if (isDevice && !/موافق|موافقين|أوافق|اعتمد|اقبل|approve|agree|yes/i.test(normText)) {
+                missing.push({ key: 'deviceApproval', label: 'الموافقة الصريحة على رسوم الاستبدال (500 ريال)', labelEn: 'Explicit approval of replacement fee (500 SAR)' });
+            }
+
+            return {
+                intents,
+                entities,
+                missingRequirements: missing,
+                hasMissing: missing.length > 0,
+                agentNote: agentNote || ''
+            };
+        }
+
+        function synthesizeDynamicTailoredMacro(c, analysis, tone = 'original', lang = 'AR', agentName = '') {
+            if (!c) return { arMacro: '', enMacro: '' };
+            if (!analysis) analysis = deepAnalyzeVendorInquiry('', c);
+
+            const entities = analysis.entities || {};
+            const intents = analysis.intents || [];
+            const missing = analysis.missingRequirements || [];
+            const agentNote = analysis.agentNote || '';
+            const orderId = entities.orderId ? `#${entities.orderId}` : '[رقم الطلب]';
+            const storeName = entities.storeName || '[اسم المتجر]';
+            const amount = entities.amount ? `${entities.amount} ريال` : '[المبلغ]';
+            const amountEn = entities.amount ? `${entities.amount} SAR` : '[Amount]';
+            const iban = entities.iban || '[رقم الآيبان]';
+
+            // ── Arabic Synthesis ──
+            let arSections = [];
+
+            // 1. Context Acknowledgment
+            let summaryOfProblem = '';
+            if (intents.some(i => i.id === 'driver')) {
+                summaryOfProblem = `تأخر كابتن التوصيل عن استلام الطلب ${entities.orderId ? `رقم (${orderId})` : ''} من فرعكم الموقر`;
+            } else if (intents.some(i => i.id === 'compensation')) {
+                summaryOfProblem = `طلب التعويض المالي عن الطلب ${entities.orderId ? `رقم (${orderId})` : ''} بقيمة (${amount})`;
+            } else if (intents.some(i => i.id === 'device')) {
+                summaryOfProblem = 'البلاغ الوارد بشأن عطل أو استبدال جهاز التابلت / الطابعة اللوحية الخاصة بالفرع';
+            } else if (intents.some(i => i.id === 'emergency_closure')) {
+                summaryOfProblem = 'طلبكم المستعجل بخصوص الإغلاق المؤقت للفرع نظراً لظرف طارئ';
+            } else if (intents.some(i => i.id === 'finance')) {
+                summaryOfProblem = 'استفساركم حول تسوية المستحقات المالية وفاتورة المبيعات الدورية';
+            } else {
+                summaryOfProblem = `استفساركم وملاحظتكم الكريمة بخصوص: (${c.case_title || 'خدمة الشركاء'})`;
+            }
+
+            arSections.push(`شريكنا العزيز (${storeName})، نأمل أن تكونوا بأفضل حال.
+نشكر تواصلكم مع هنقرستيشن، ونفيدكم بأننا استلمنا باهتمام طلبكم المتعلق بـ ${summaryOfProblem}.`);
+
+            // 2. Action points addressing the core problems
+            let resPoints = [];
+            if (intents.some(i => i.id === 'driver')) {
+                resPoints.push(`• بخصوص كابتن التوصيل: تم توجيه البلاغ بشكل فوري لعمليات المناديب (Fleet Operations) للتحقق من موقع السائق أو إعادة إسناد الطلب لكابتن بديل لضمان وصول الوجبة بأفضل جودة وسرعة.`);
+            }
+            if (intents.some(i => i.id === 'compensation')) {
+                resPoints.push(`• بخصوص التعويض المالي: وفقاً للائحة سياسة التعويضات المعتمدة، يستحق المتجر التعويض في حال اكتمال تجهيز الوجبة قبل وقت الإلغاء، وجاري رفع الحالة للتدقيق المالي لإيداع المستحق الصافي.`);
+            }
+            if (intents.some(i => i.id === 'device')) {
+                resPoints.push(`• بخصوص جهاز التابلت: نود إحاطتكم بأن رسوم استبدال أو صيانة الجهاز هي (500 ريال) تُخصم تلقائياً من دورة فواتير المبيعات القادمة للفرع دون أي دفع نقدي.`);
+            }
+            if (intents.some(i => i.id === 'emergency_closure')) {
+                resPoints.push(`• بخصوص حالة الفرع: نتفهم تماماً الظرف الطارئ الخارج عن الإرادة، ونرجو إيقاف استقبال الطلبات مؤقتاً عبر تطبيق الشركاء حتى زوال السبب.`);
+            }
+            if (intents.some(i => i.id === 'finance')) {
+                resPoints.push(`• بخصوص المستحقات: يتم تحويل المبيعات الأسبوعية تلقائياً للحساب البنكي المعتمد (${iban}) كل أسبوع عمل فور اكتمال المطابقة المحاسبية.`);
+            }
+
+            if (resPoints.length > 0) {
+                arSections.push(`وحول الإجراءات المتخذة لمعالجة طلبكم:
+${resPoints.join('\n')}`);
+            } else {
+                const sopProc = c.procedure_arabic || "تم استلام الطلب ومتابعته مع الفريق المختص.";
+                arSections.push(`وحول الإجراء المعتمد لطلبكم:
+${sopProc}`);
+            }
+
+            // 3. Conditional Missing Requirements Request (Surgical)
+            if (missing.length > 0) {
+                const missingBullets = missing.map(m => `  - ${m.label}`).join('\n');
+                arSections.push(`ولسرعة إتمام وتنفيذ طلبكم دون أي تأخير، نرجو التكرم بالرد وتزويدنا بالآتي فقط:\n${missingBullets}`);
+            } else {
+                arSections.push(`ونود طمأنتكم بأن جميع البيانات المطلوبة مكتملة لدينا حالياً، وجاري متابعة الإجراء دون الحاجة لأي متطلبات إضافية من جانبكم.`);
+            }
+
+            // 4. Agent Custom Note / Dictation
+            if (agentNote && agentNote.trim()) {
+                arSections.push(`ملاحظة إضافية من فريق الدعم:\n${agentNote.trim()}`);
+            }
+
+            // 5. Next Step
+            let nextStep = '';
+            if (missing.length > 0) {
+                nextStep = 'الرد المباشر على هذه التذكرة بالمتطلبات الموضحة أعلاه ليتم إغلاق البلاغ واعتماده فوراً.';
+            } else if (intents.some(i => i.id === 'driver')) {
+                nextStep = 'إبقاء الوجبة مغلفة بحالة جيدة لحين وصول الكابتن البديل أو إشعاركم بالإجراء النهائي.';
+            } else {
+                nextStep = 'لا يتطلب من طرفكم أي إجراء حالياً، وسنوافيكم بأي تحديث عبر البريد وبوابة الشركاء.';
+            }
+            arSections.push(`الخطوة التالية المطلوبة:\n${nextStep}`);
+
+            // 6. Sign-off
+            const agentNameAr = agentName || (typeof getAgentArabicName === 'function' ? getAgentArabicName() : 'فريق دعم الشركاء');
+            arSections.push(`شاكرين ومقدرين حسن تعاونكم الدائم معنا،\n\n${agentNameAr}\nفريق دعم الشركاء | هنقرستيشن\nقنوات التواصل المباشرة: 920033935`);
+
+            // ── English Synthesis ──
+            let enSections = [];
+            let summaryEn = '';
+            if (intents.some(i => i.id === 'driver')) {
+                summaryEn = `the driver delay in picking up order ${entities.orderId ? `(${orderId})` : ''} from your branch`;
+            } else if (intents.some(i => i.id === 'compensation')) {
+                summaryEn = `your financial compensation claim for order ${entities.orderId ? `(${orderId})` : ''} of amount (${amountEn})`;
+            } else if (intents.some(i => i.id === 'device')) {
+                summaryEn = 'your report regarding the tablet/transmission device issue';
+            } else {
+                summaryEn = `your inquiry regarding (${c.case_title || 'Partner Care Inquiry'})`;
+            }
+
+            enSections.push(`Dear Valued Partner (${storeName}),\nThank you for contacting Hungerstation. We have carefully received your inquiry regarding ${summaryEn}.`);
+
+            let resEnPoints = [];
+            if (intents.some(i => i.id === 'driver')) {
+                resEnPoints.push(`• Regarding the Driver: The issue has been urgently escalated to our Fleet Operations team to track the driver or reassign the order to ensure swift delivery.`);
+            }
+            if (intents.some(i => i.id === 'compensation')) {
+                resEnPoints.push(`• Regarding Compensation: Under Hungerstation policy, prepared orders prior to cancellation qualify for financial compensation, and the case has been routed to Finance for review.`);
+            }
+            if (intents.some(i => i.id === 'device')) {
+                resEnPoints.push(`• Regarding the Tablet: Replacement or repair fee is 500 SAR, which is automatically deducted from the next weekly invoice cycle with no cash required.`);
+            }
+            if (resEnPoints.length > 0) {
+                enSections.push(`Actions taken regarding your case:\n${resEnPoints.join('\n')}`);
+            } else {
+                enSections.push(c.procedure_english || "Your request is currently being handled according to our standard operating procedures.");
+            }
+
+            if (missing.length > 0) {
+                const missingBulletsEn = missing.map(m => `  - ${m.labelEn || m.label}`).join('\n');
+                enSections.push(`To finalize and approve your request without delay, kindly reply with the following only:\n${missingBulletsEn}`);
+            } else {
+                enSections.push(`Please rest assured that all required details are complete on our end, and no further action is needed from your side.`);
+            }
+
+            if (agentNote && agentNote.trim()) {
+                enSections.push(`Additional Note from Support:\n${agentNote.trim()}`);
+            }
+
+            let nextStepEn = missing.length > 0 ? 'Kindly reply directly to this ticket with the requested information above.' : 'No further action is required from you at this time.';
+            enSections.push(`Next Steps:\n${nextStepEn}`);
+
+            const agentNameEn = (typeof getAgentEnglishName === 'function' ? getAgentEnglishName() : 'Partner Support Team');
+            enSections.push(`Thank you for your valued partnership,\n\n${agentNameEn}\nPartner Support Team | Hungerstation\nDirect Line: 920033935`);
+
+            return {
+                arMacro: arSections.join('\n\n'),
+                enMacro: enSections.join('\n\n'),
+                analysis
+            };
+        }
+
+        function toggleAiTailoredMacro(mode) {
+            window.currentActiveMacroMode = mode;
+            const arEl = document.getElementById('arMacroText');
+            const enEl = document.getElementById('enMacroText');
+            const btnDyn = document.getElementById('btnModeDynamic');
+            const btnStd = document.getElementById('btnModeStandard');
+
+            if (mode === 'dynamic') {
+                if (arEl && window.currentDynamicArMacro) arEl.innerText = window.currentDynamicArMacro;
+                if (enEl && window.currentDynamicEnMacro) enEl.innerText = window.currentDynamicEnMacro;
+                if (btnDyn) {
+                    btnDyn.style.background = 'linear-gradient(135deg, #8B5CF6, #6366F1)';
+                    btnDyn.style.borderColor = '#8B5CF6';
+                }
+                if (btnStd) {
+                    btnStd.style.background = 'var(--bg-card)';
+                    btnStd.style.borderColor = 'var(--border)';
+                }
+                showToast('🪄 تم تفعيل الرد الذكي المتكيف المولد بالذكاء الاصطناعي!');
+            } else {
+                if (arEl && window.currentStandardArMacro) arEl.innerText = window.currentStandardArMacro;
+                if (enEl && window.currentStandardEnMacro) enEl.innerText = window.currentStandardEnMacro;
+                if (btnStd) {
+                    btnStd.style.background = 'linear-gradient(135deg, #3B82F6, #1D4ED8)';
+                    btnStd.style.borderColor = '#3B82F6';
+                }
+                if (btnDyn) {
+                    btnDyn.style.background = 'var(--bg-card)';
+                    btnDyn.style.borderColor = 'var(--border)';
+                }
+                showToast('📄 تم العودة للماكرو القياسي المعتمد من قاعدة المعرفة.');
+            }
+        }
+
+        function applyAgentExtraInstruction() {
+            const inp = document.getElementById('agentExtraInstructionInput');
+            const text = inp ? inp.value.trim() : '';
+            window.currentAgentExtraInstruction = text;
+
+            const c = window.currentActiveCaseObj;
+            if (!c) return;
+
+            const partnerMsg = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '') || '';
+            const deepAnalysis = deepAnalyzeVendorInquiry(partnerMsg, c, text);
+            window.currentDeepAnalysis = deepAnalysis;
+
+            const arAgentName = typeof getAgentArabicName === 'function' ? getAgentArabicName() : '';
+            const tailored = synthesizeDynamicTailoredMacro(c, deepAnalysis, 'original', 'AR', arAgentName);
+            window.currentDynamicArMacro = tailored.arMacro;
+            window.currentDynamicEnMacro = tailored.enMacro;
+
+            if (window.currentActiveMacroMode === 'dynamic') {
+                const arEl = document.getElementById('arMacroText');
+                const enEl = document.getElementById('enMacroText');
+                if (arEl) arEl.innerText = tailored.arMacro;
+                if (enEl) enEl.innerText = tailored.enMacro;
+            }
+
+            showToast('⚡ تم تحديث الصياغة ودمج توجيهك في الرد بنجاح!');
+            if (typeof playSuccessChime === 'function') playSuccessChime();
+        }
+
+        function startAgentInstructionVoice() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert('عذراً، متصفحك لا يدعم الإملاء الصوتي المباشر. يمكنك الكتابة في الحقل مباشرة.');
+                return;
+            }
+            const micIcon = document.getElementById('agentInstructionMicIcon');
+            const inp = document.getElementById('agentExtraInstructionInput');
+            const rec = new SpeechRecognition();
+            rec.lang = 'ar-SA';
+            rec.continuous = false;
+            rec.interimResults = false;
+
+            if (micIcon) { micIcon.classList.remove('fa-microphone'); micIcon.classList.add('fa-spinner', 'fa-spin'); }
+
+            rec.onresult = function(e) {
+                const transcript = e.results[0][0].transcript;
+                if (inp) {
+                    inp.value = (inp.value ? inp.value + ' ' : '') + transcript;
+                    applyAgentExtraInstruction();
+                }
+            };
+            rec.onerror = function() {
+                if (micIcon) { micIcon.classList.remove('fa-spinner', 'fa-spin'); micIcon.classList.add('fa-microphone'); }
+            };
+            rec.onend = function() {
+                if (micIcon) { micIcon.classList.remove('fa-spinner', 'fa-spin'); micIcon.classList.add('fa-microphone'); }
+            };
+            rec.start();
         }
 
         function cleanInputText(text) {
@@ -8559,7 +8901,7 @@ function cleanArabicProcedure(text) {
             saveToHistory(scen.title, scen.ccr);
             const arAgentName = getAgentArabicName();
             const enAgentName = getAgentEnglishName();
-            const output = document.getElementById('outputContent');
+                        const output = document.getElementById('outputContent');
 
             let attachmentHtml = '';
             if (extractedFileTexts.length > 0) {
@@ -8776,6 +9118,26 @@ ${invoiceGuideHtml || ""}
             const enMacro = buildEnglishMacro(greetings.enGreeting, enProcText);
             const arAgentName = getAgentArabicName();
             const enAgentName = getAgentEnglishName();
+
+            // 🧠 Deep AI Inquiry Comprehension & Dynamic Tailored Synthesis
+            const deepAnalysis = (typeof deepAnalyzeVendorInquiry === 'function') 
+                ? deepAnalyzeVendorInquiry(partnerMsgVal, c, window.currentAgentExtraInstruction || '')
+                : null;
+            window.currentDeepAnalysis = deepAnalysis;
+
+            let tailoredMacros = { arMacro: finalArMacro, enMacro: enMacro };
+            if (deepAnalysis && typeof synthesizeDynamicTailoredMacro === 'function') {
+                tailoredMacros = synthesizeDynamicTailoredMacro(c, deepAnalysis, 'original', 'AR', arAgentName);
+            }
+
+            window.currentDynamicArMacro = tailoredMacros.arMacro;
+            window.currentDynamicEnMacro = tailoredMacros.enMacro;
+            window.currentStandardArMacro = finalArMacro;
+            window.currentStandardEnMacro = enMacro;
+
+            const activeMacroMode = window.currentActiveMacroMode || 'dynamic';
+            const initialArMacroDisplay = (activeMacroMode === 'dynamic') ? tailoredMacros.arMacro : finalArMacro;
+            const initialEnMacroDisplay = (activeMacroMode === 'dynamic') ? tailoredMacros.enMacro : enMacro;
             
             saveToHistory(c.case_title, c.ccr);
             autoRecordInteraction(c.case_title, c.case_title, arMacro);
@@ -9005,6 +9367,80 @@ ${invoiceGuideHtml || ""}
                 `;
             }
 
+            // 🧠 Deep Comprehension HUD HTML
+            let deepComprehensionHtml = '';
+            if (deepAnalysis) {
+                const missingBadges = deepAnalysis.missingRequirements.map(m => `
+                    <span style="background: rgba(245, 158, 11, 0.2); border: 1px dashed #F59E0B; color: #FDE68A; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 700;">
+                        <i class="fa-solid fa-circle-exclamation"></i> ${m.label}
+                    </span>
+                `).join('');
+
+                const intentsBadges = deepAnalysis.intents.map(it => `
+                    <span style="background: rgba(139, 92, 246, 0.15); border: 1px solid #8B5CF6; color: #C4B5FD; padding: 2px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                        <i class="fa-solid ${it.icon}"></i> ${it.label}
+                    </span>
+                `).join('');
+
+                deepComprehensionHtml = `
+                    <div class="deep-comprehension-box" style="background: rgba(139, 92, 246, 0.05); border: 1.5px solid rgba(139, 92, 246, 0.3); border-radius: 10px; padding: 12px; margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+                            <div style="font-size: 0.82rem; font-weight: 800; color: #A78BFA; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-brain"></i> الفهم العميق للطلب والنواقص (Deep AI Inquiry Comprehension):
+                            </div>
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                ${intentsBadges}
+                            </div>
+                        </div>
+
+                        <!-- Requirements Status -->
+                        <div style="margin-bottom: 10px;">
+                            ${deepAnalysis.hasMissing ? `
+                                <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; padding: 8px 10px; font-size: 0.76rem; color: #FCD34D;">
+                                    <div style="font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                                        <i class="fa-solid fa-triangle-exclamation" style="color: #F59E0B;"></i> نواقص مطلوبة من الشريك لاعتماد المعاملة (تم تضمينها بالرد حصراً):
+                                    </div>
+                                    <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;">
+                                        ${missingBadges}
+                                    </div>
+                                </div>
+                            ` : `
+                                <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 6px 10px; font-size: 0.76rem; color: #6EE7B7; display: flex; align-items: center; gap: 6px;">
+                                    <i class="fa-solid fa-circle-check" style="color: #10B981;"></i>
+                                    <span><strong>كافة المتطلبات والبيانات مكتملة ✅:</strong> الرد لا يطلب أي نواقص من الشريك ومُهيأ للمتابعة الفورية المباشرة.</span>
+                                </div>
+                            `}
+                        </div>
+
+                        <!-- Mode Switcher Tabs & Agent Custom Instruction Bar -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;">
+                            <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                                <span style="font-size: 0.74rem; color: var(--text-muted); font-weight: 700;">طبيعة الرد:</span>
+                                <button type="button" id="btnModeDynamic" onclick="toggleAiTailoredMacro('dynamic')" style="background: ${activeMacroMode === 'dynamic' ? 'linear-gradient(135deg, #8B5CF6, #6366F1)' : 'var(--bg-card)'}; color: #FFF; border: 1px solid ${activeMacroMode === 'dynamic' ? '#8B5CF6' : 'var(--border)'}; padding: 4px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> رد ذكي متكيف (AI Tailored) ✨
+                                </button>
+                                <button type="button" id="btnModeStandard" onclick="toggleAiTailoredMacro('standard')" style="background: ${activeMacroMode === 'standard' ? 'linear-gradient(135deg, #3B82F6, #1D4ED8)' : 'var(--bg-card)'}; color: #FFF; border: 1px solid ${activeMacroMode === 'standard' ? '#3B82F6' : 'var(--border)'}; padding: 4px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                                    <i class="fa-solid fa-file-lines"></i> الماكرو القياسي (KB Standard)
+                                </button>
+                            </div>
+
+                            <!-- Agent Voice / Custom Note input -->
+                            <div style="display: flex; gap: 6px; align-items: center; flex: 1; max-width: 480px; min-width: 260px;">
+                                <div style="position: relative; width: 100%;">
+                                    <input type="text" id="agentExtraInstructionInput" placeholder="أضف ملاحظة أو توجيه خاص لصياغته داخل الرد..." value="${window.currentAgentExtraInstruction || ''}" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 5px 30px 5px 8px; color: var(--text-main); font-size: 0.74rem;" onkeydown="if(event.key==='Enter') applyAgentExtraInstruction()">
+                                    <button type="button" onclick="startAgentInstructionVoice()" title="إملاء صوتي بالمايك" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #EC4899; cursor: pointer; font-size: 0.82rem;">
+                                        <i class="fa-solid fa-microphone" id="agentInstructionMicIcon"></i>
+                                    </button>
+                                </div>
+                                <button type="button" onclick="applyAgentExtraInstruction()" style="background: #10B981; color: #000; border: none; border-radius: 6px; padding: 5px 10px; font-size: 0.74rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
+                                    تحديث ⚡
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
             const output = document.getElementById('outputContent');
             output.innerHTML = `
                 <div class="result-card">
@@ -9071,6 +9507,7 @@ ${invoiceGuideHtml || ""}
                         </div>
                     </div>
 
+                    ${deepComprehensionHtml || ''}
                     ${empathyNoticeHtml || ''}
                     ${netPayoutCalculatorHtml || ''}
                     ${routingHtml || ''}
@@ -9124,7 +9561,7 @@ ${invoiceGuideHtml || ""}
                             </button>
                         </div>
 
-                        <div class="response-box" id="arMacroText" contenteditable="true" oninput="checkLegalBlacklist()" style="border-color: rgba(255, 196, 0, 0.3); background: rgba(255, 196, 0, 0.05); color: #FFF; font-weight: 600; margin-bottom: 10px;" title="يمكنك تعديل أي كلمة هنا بالداخل مباشرة">${arMacro}</div>
+                        <div class="response-box" id="arMacroText" contenteditable="true" oninput="checkLegalBlacklist()" style="border-color: rgba(255, 196, 0, 0.3); background: rgba(255, 196, 0, 0.05); color: #FFF; font-weight: 600; margin-bottom: 10px;" title="يمكنك تعديل أي كلمة هنا بالداخل مباشرة">${initialArMacroDisplay}</div>
                         
                         <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
                             <button class="btn-copy" onclick="copyText('arMacroText')" style="flex: 2; display: flex; align-items: center; justify-content: center; gap: 8px;">
@@ -9155,7 +9592,7 @@ ${invoiceGuideHtml || ""}
                             </button>
                         </div>
 
-                        <div class="response-box" id="enMacroText" contenteditable="true" dir="ltr" style="border-color: rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.05); color: #FFF; font-weight: 600; text-align: left; margin-bottom: 10px;" title="You can edit text directly">${enMacro}</div>
+                        <div class="response-box" id="enMacroText" contenteditable="true" dir="ltr" style="border-color: rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.05); color: #FFF; font-weight: 600; text-align: left; margin-bottom: 10px;" title="You can edit text directly">${initialEnMacroDisplay}</div>
                         
                         <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
                             <button class="btn-copy-en" onclick="copyText('enMacroText')" style="flex: 2; display: flex; align-items: center; justify-content: center; gap: 8px;">
