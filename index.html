@@ -2897,11 +2897,51 @@ function renderStudioMenuPreviewTables() { window.renderStudioMenuPreviewTables(
             imageLinks: []
         };
 
+        function safeJsonParse(key, fallback) {
+            try {
+                const val = localStorage.getItem(key);
+                return val ? JSON.parse(val) : fallback;
+            } catch (e) {
+                console.warn(`[SafeStorage] Failed parsing "${key}", using fallback.`, e);
+                return fallback;
+            }
+        }
+
+        function fallbackCopyText(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); } catch(e){}
+            document.body.removeChild(ta);
+        }
+
+        window.copyEncodedText = function(enc, msg) {
+            try {
+                const text = decodeURIComponent(enc);
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        showToast(msg || 'تم النسخ بنجاح! 📋');
+                    }).catch(() => {
+                        fallbackCopyText(text);
+                        showToast(msg || 'تم النسخ بنجاح! 📋');
+                    });
+                } else {
+                    fallbackCopyText(text);
+                    showToast(msg || 'تم النسخ بنجاح! 📋');
+                }
+            } catch (e) {
+                console.error('Failed copying encoded text:', e);
+            }
+        };
+
 var allCases = window.allCases = [];
         let currentFilter = 'ALL';
         let currentAgentName = localStorage.getItem('hs_agent_name') || 'أحمد';
-        let historyLog = JSON.parse(localStorage.getItem('hs_history_log') || '[]');
-        let learnedRules = JSON.parse(localStorage.getItem('hs_learned_rules') || '[]');
+        let historyLog = safeJsonParse('hs_history_log', []);
+        let learnedRules = safeJsonParse('hs_learned_rules', []);
         let activeLangTab = 'AR';
         let uploadedFiles = [];
         let extractedFileTexts = [];
@@ -3404,7 +3444,7 @@ function calculateMenuHealthScore() {
 // ============================================================
         // 🧠 AI SELF-LEARNING ENGINE v2 — Arabic Normalization + Fuzzy + Gemini
         // ============================================================
-        let caseUsageData = JSON.parse(localStorage.getItem('hs_case_usage') || '{}');
+        let caseUsageData = safeJsonParse('hs_case_usage', {});
 
         // Arabic synonym map for smart search (Dialect + KB terms)
         const arabicSynonyms = {
@@ -3620,7 +3660,7 @@ ${titles}
         }
 
         // ── 4. FEEDBACK ENGINE — learn from mistakes automatically ────────
-        let _feedbackStore = JSON.parse(localStorage.getItem('hs_feedback') || '{}');
+        let _feedbackStore = safeJsonParse('hs_feedback', {});
         function recordFeedback(query, caseId, isPositive) {
             const key = normalizeArabic(query).slice(0, 80);
             if (!_feedbackStore[key]) _feedbackStore[key] = {};
@@ -7088,7 +7128,7 @@ function cleanArabicProcedure(text) {
                             <button type="button" onclick="applyNextMoveToWorkspace('${nextMove.id}')" style="background: linear-gradient(135deg, #8B5CF6, #6366F1); color: #FFF; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.76rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px;">
                                 <i class="fa-solid fa-bolt"></i> تجهيز هذا الرد للخطوة القادمة فوراً ⚡
                             </button>
-                            <button type="button" onclick="navigator.clipboard.writeText('${nextMove.macroText.replace(/'/g, "\'")}'); showToast('تم نسخ رد الخطوة التالية! 📋');" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">
+                            <button type="button" onclick="window.copyEncodedText('${encodeURIComponent(nextMove.macroText)}', 'تم نسخ رد الخطوة التالية! 📋');" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">
                                 <i class="fa-solid fa-copy"></i> نسخ الرد التالي
                             </button>
                         </div>
@@ -7399,7 +7439,7 @@ function cleanArabicProcedure(text) {
             const normQ = normalizeArabic(query.toLowerCase().strip ? query.toLowerCase().strip() : query.toLowerCase().trim());
             
             // 1. Check user local storage learned memory first
-            const userLearned = JSON.parse(localStorage.getItem('hs_built_in_learning') || '{}');
+            const userLearned = safeJsonParse('hs_built_in_learning', {});
             if (userLearned[normQ]) return userLearned[normQ];
 
             // 2. Check preloaded synapses
@@ -7414,7 +7454,7 @@ function cleanArabicProcedure(text) {
         function trainBuiltInIntent(query, caseId) {
             if (!query || !caseId) return;
             const normQ = normalizeArabic(query.toLowerCase().trim());
-            const userLearned = JSON.parse(localStorage.getItem('hs_built_in_learning') || '{}');
+            const userLearned = safeJsonParse('hs_built_in_learning', {});
             userLearned[normQ] = parseInt(caseId);
             localStorage.setItem('hs_built_in_learning', JSON.stringify(userLearned));
             showToast(`🧠 تم تدريب ذاكرة النظام التكيفية: "${query}" ➔ حالة #${caseId}`);
@@ -8549,7 +8589,7 @@ ${invoiceGuideHtml || ""}
                             <button type="button" onclick="applyNextMoveToWorkspace('${nextMove.id}')" style="background: linear-gradient(135deg, #8B5CF6, #6366F1); color: #FFF; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.76rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px;">
                                 <i class="fa-solid fa-bolt"></i> تجهيز هذا الرد للخطوة القادمة فوراً ⚡
                             </button>
-                            <button type="button" onclick="navigator.clipboard.writeText('${nextMove.macroText.replace(/'/g, "\'")}'); showToast('تم نسخ رد الخطوة التالية! 📋');" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">
+                            <button type="button" onclick="window.copyEncodedText('${encodeURIComponent(nextMove.macroText)}', 'تم نسخ رد الخطوة التالية! 📋');" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">
                                 <i class="fa-solid fa-copy"></i> نسخ الرد التالي
                             </button>
                         </div>
@@ -10543,18 +10583,20 @@ function requestNotificationPermission() {
 }
 
 function checkPendingVaultSLATimers() {
-    const list = JSON.parse(localStorage.getItem('hs_pending_vault') || '[]');
+    const list = safeJsonParse('hs_pending_tickets', safeJsonParse('hs_pending_vault', []));
     const now = Date.now();
     let hasAlert = false;
 
     list.forEach(t => {
-        if (!t.resolved && t.deadline && now >= t.deadline && !t.notified) {
+        const isPending = t.status === 'ACTIVE' || (!t.resolved && t.status !== 'RESOLVED');
+        const due = t.dueAt || t.deadline;
+        if (isPending && due && now >= due && !t.notified) {
             t.notified = true;
             hasAlert = true;
             playPleasantAlert();
             if ('Notification' in window && Notification.permission === 'granted') {
                 new Notification('⏰ تذكير تذكرة معلقة - هنقرستيشن', {
-                    body: `حان موعد متابعة التذكرة: ${t.title || 'طلب شريك'}`,
+                    body: `حان موعد متابعة التذكرة: ${t.ticketId ? ('#' + t.ticketId) : (t.title || 'طلب شريك')}`,
                     icon: 'https://hungerstation.com/favicon.ico'
                 });
             }
@@ -10562,8 +10604,9 @@ function checkPendingVaultSLATimers() {
     });
 
     if (hasAlert) {
-        localStorage.setItem('hs_pending_vault', JSON.stringify(list));
-        updatePendingVaultBadge();
+        localStorage.setItem('hs_pending_tickets', JSON.stringify(list));
+        if (typeof renderPendingTicketsList === 'function') renderPendingTicketsList();
+        if (typeof updatePendingVaultBadge === 'function') updatePendingVaultBadge();
     }
 }
 setInterval(checkPendingVaultSLATimers, 45000);
@@ -10571,6 +10614,9 @@ setInterval(checkPendingVaultSLATimers, 45000);
 function playPleasantAlert() {
     try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.connect(gain);
@@ -10587,8 +10633,9 @@ function playPleasantAlert() {
 // ── 6. END-OF-SHIFT REPORT GENERATOR ──────────────────────────────────────
 function generateShiftReportText() {
     const agent = getAgentArabicName() || 'الموظف';
-    const history = JSON.parse(localStorage.getItem('hs_history_log') || '[]');
-    const pending = JSON.parse(localStorage.getItem('hs_pending_vault') || '[]').filter(p => !p.resolved);
+    const history = safeJsonParse('hs_history_log', []);
+    const rawPending = safeJsonParse('hs_pending_tickets', safeJsonParse('hs_pending_vault', []));
+    const pending = rawPending.filter(p => p.status === 'ACTIVE' || (!p.resolved && p.status !== 'RESOLVED'));
     const dateStr = new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
     // Group resolved by case title
@@ -10646,18 +10693,20 @@ function copyShiftReport() {
 
 // ── 7. TEAM SYNC & CONFIG EXPORT/IMPORT ───────────────────────────────────
 function exportTeamConfigJson() {
-    const learned = JSON.parse(localStorage.getItem('hs_learned_rules') || '[]');
-    const snippets = JSON.parse(localStorage.getItem('hs_quick_snippets') || '[]');
-    const overrides = JSON.parse(localStorage.getItem('hs_kb_custom_overrides') || '{}');
+    const learned = safeJsonParse('hs_learned_rules', []);
+    const snippets = safeJsonParse('hs_user_snippets', safeJsonParse('hs_quick_snippets', []));
+    const overrides = safeJsonParse('hs_kb_custom_overrides', {});
+    const adaptive = safeJsonParse('hs_built_in_learning', {});
 
     const config = {
         app: 'Hungerstation Vendor Support Suite',
-        version: '3.5',
+        version: '3.6',
         exportedAt: new Date().toISOString(),
         exportedBy: getAgentArabicName(),
         learnedRules: learned,
         quickSnippets: snippets,
-        kbOverrides: overrides
+        kbOverrides: overrides,
+        adaptiveLearning: adaptive
     };
 
     const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
@@ -10681,10 +10730,14 @@ function importTeamConfigJson(event) {
                 localStorage.setItem('hs_learned_rules', JSON.stringify(data.learnedRules));
             }
             if (data.quickSnippets && Array.isArray(data.quickSnippets)) {
+                localStorage.setItem('hs_user_snippets', JSON.stringify(data.quickSnippets));
                 localStorage.setItem('hs_quick_snippets', JSON.stringify(data.quickSnippets));
             }
             if (data.kbOverrides) {
                 localStorage.setItem('hs_kb_custom_overrides', JSON.stringify(data.kbOverrides));
+            }
+            if (data.adaptiveLearning) {
+                localStorage.setItem('hs_built_in_learning', JSON.stringify(data.adaptiveLearning));
             }
             playSuccessChime();
             showToast('✅ تم استيراد ومزامنة إعدادات الفريق بنجاح!');
@@ -11986,7 +12039,7 @@ function downloadOfficialMenuExcel() {
                         <button type="button" onclick="copilotApplyToWorkspace(${bestCase.id})" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 5px;">
                             <i class="fa-solid fa-bolt"></i> فتح وتطبيق في مساحة العمل
                         </button>
-                        <button type="button" onclick="navigator.clipboard.writeText('${macroText.replace(/'/g, "\'")}'); showToast('تم نسخ الرد بنجاح! 🚀');" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;">
+                        <button type="button" onclick="window.copyEncodedText('${encodeURIComponent(macroText)}', 'تم نسخ الرد بنجاح! 🚀');" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;">
                             <i class="fa-solid fa-copy"></i> نسخ الرد
                         </button>
                     </div>
