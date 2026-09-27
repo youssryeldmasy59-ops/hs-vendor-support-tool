@@ -2117,6 +2117,16 @@
                 <i class="fa-solid fa-keyboard"></i> <span>الاختصارات ⌨️</span>
             </button>
 
+            <!-- 📋 Auto-Copy Toggle -->
+            <button type="button" class="header-btn" onclick="toggleAutoCopy()" id="autoCopyToggleBtn" title="تفعيل/تعطيل النسخ التلقائي للماكرو فور اختياره">
+                <i class="fa-solid fa-clipboard-check"></i> <span id="autoCopyToggleText">نسخ فوري ⚡</span>
+            </button>
+
+            <!-- 🔊 Sound FX Mute Toggle -->
+            <button type="button" class="header-btn" onclick="toggleSoundMute()" id="soundToggleBtn" title="كتم/تشغيل التنبيهات والمؤثرات الصوتية">
+                <i class="fa-solid fa-volume-high" style="color: #10B981;"></i> <span id="soundToggleText">صوت 🔊</span>
+            </button>
+
             <!-- ⚡ Consolidated Enterprise Tools Dropdown -->
             <div class="tools-dropdown-wrapper" id="toolsDropdownWrapper">
                 <button type="button" class="header-btn tools-dropdown-btn" onclick="toggleToolsMenu(event)" id="toolsMenuBtn" title="جميع الأدوات والخدمات المساعدة">
@@ -2195,6 +2205,14 @@
                     <div class="tools-dropdown-item" onclick="installDesktopPwa(); closeToolsMenu();" id="pwaInstallBtn" title="تثبيت التطبيق على جهاز الكمبيوتر">
                         <i class="fa-solid fa-laptop-code" style="color: #EC4899;"></i>
                         <span style="flex: 1;">تثبيت كتطبيق مكتبي مستقل</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="toggleAutoCopy(); closeToolsMenu();" id="autoCopyMenuItem" title="تفعيل النسخ الفوري للماكرو المعتمد فور اختياره">
+                        <i class="fa-solid fa-clipboard-check" style="color: #10B981;"></i>
+                        <span style="flex: 1;" id="autoCopyMenuText">النسخ التلقائي فور التحديد (معطّل)</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="toggleSoundMute(); closeToolsMenu();" id="soundMuteMenuItem" title="كتم أو تشغيل أصوات النجاح والتنبيهات">
+                        <i class="fa-solid fa-volume-high" style="color: #10B981;"></i>
+                        <span style="flex: 1;" id="soundMuteMenuText">التنبيهات الصوتية (مفعلة 🔊)</span>
                     </div>
                 </div>
             </div>
@@ -2708,16 +2726,16 @@
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
 
-                <!-- Category Tabs Carousel -->
+                <!-- Category Tabs Carousel (Quick Filter Pills) -->
                 <div class="category-tabs" id="categoryTabs">
-                    <button class="tab-btn active" onclick="filterCategory('ALL')">🌟 الكل</button>
-                    <button class="tab-btn" onclick="filterCategory('Technical Inquiry')">🛠️ فني</button>
-                    <button class="tab-btn" onclick="filterCategory('Partner Data Update')">🏢 بيانات</button>
-                    <button class="tab-btn" onclick="filterCategory('Content Update')">🍔 منيو</button>
-                    <button class="tab-btn" onclick="filterCategory('Live Order Inquiries')">🛵 طلبات</button>
-                    <button class="tab-btn" onclick="filterCategory('Billing Inquiries')">💰 فواتير</button>
-                    <button class="tab-btn" onclick="filterCategory('Contract and Sales Inquiries')">📝 عقود</button>
-                    <button class="tab-btn" onclick="filterCategory('Partner Feedback')">💬 تقييمات</button>
+                    <button type="button" class="tab-btn active" onclick="filterCategory('ALL', event)">🌟 الكل</button>
+                    <button type="button" class="tab-btn" onclick="filterCategory('Technical Inquiry', event)">🖨️ أجهزة وطابعات</button>
+                    <button type="button" class="tab-btn" onclick="filterCategory('Live Order Inquiries', event)">🛵 طلبات وإلغاءات</button>
+                    <button type="button" class="tab-btn" onclick="filterCategory('Billing Inquiries', event)">💰 فواتير وعمولات</button>
+                    <button type="button" class="tab-btn" onclick="filterCategory('Content Update', event)">🍔 منيو وأصناف</button>
+                    <button type="button" class="tab-btn" onclick="filterCategory('Partner Data Update', event)">🏢 بيانات وآيبان</button>
+                    <button type="button" class="tab-btn" onclick="filterCategory('Contract and Sales Inquiries', event)">📝 عقود ومبيعات</button>
+                    <button type="button" class="tab-btn" onclick="filterCategory('Partner Feedback', event)">💬 تقييمات وشكاوى</button>
                 </div>
 
                 <!-- 3-Level Quick Hierarchy Dropdowns -->
@@ -3145,6 +3163,7 @@ var allCases = window.allCases = [];
 
 // 🎵 Built-in Web Audio Sound FX for Instant Feedback
 function playSuccessChime() {
+    if (localStorage.getItem('hs_sound_muted') === '1') return;
     try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = ctx.createOscillator();
@@ -3159,6 +3178,56 @@ function playSuccessChime() {
         osc.start();
         osc.stop(ctx.currentTime + 0.35);
     } catch(e) {}
+}
+
+function toggleSoundMute() {
+    const isMuted = localStorage.getItem('hs_sound_muted') === '1';
+    const nextVal = isMuted ? '0' : '1';
+    localStorage.setItem('hs_sound_muted', nextVal);
+    updateSoundToggleUI();
+    showToast(nextVal === '1' ? '🔇 تم كتم التنبيهات الصوتية' : '🔊 تم تفعيل التنبيهات الصوتية');
+    if (nextVal === '0') playSuccessChime();
+}
+
+function updateSoundToggleUI() {
+    const isMuted = localStorage.getItem('hs_sound_muted') === '1';
+    const btn = document.getElementById('soundToggleBtn');
+    if (btn) {
+        btn.innerHTML = isMuted 
+            ? '<i class="fa-solid fa-volume-xmark" style="color: #EF4444;"></i> <span id="soundToggleText">صامت 🔇</span>' 
+            : '<i class="fa-solid fa-volume-high" style="color: #10B981;"></i> <span id="soundToggleText">صوت 🔊</span>';
+        btn.title = isMuted ? 'الصوت مكتوم - اضغط للتشغيل' : 'الصوت يعمل - اضغط للكتم';
+    }
+    const menuTxt = document.getElementById('soundMuteMenuText');
+    if (menuTxt) {
+        menuTxt.innerText = isMuted ? 'التنبيهات الصوتية (مكتومة 🔇)' : 'التنبيهات الصوتية (مفعلة 🔊)';
+    }
+}
+
+function toggleAutoCopy() {
+    const isAuto = localStorage.getItem('hs_auto_copy') === '1';
+    const nextVal = isAuto ? '0' : '1';
+    localStorage.setItem('hs_auto_copy', nextVal);
+    updateAutoCopyUI();
+    showToast(nextVal === '1' ? '⚡ تم تفعيل النسخ التلقائي فور اختيار الماكرو!' : '📋 تم إلغاء النسخ التلقائي');
+    playSuccessChime();
+}
+
+function updateAutoCopyUI() {
+    const isAuto = localStorage.getItem('hs_auto_copy') === '1';
+    const btn = document.getElementById('autoCopyToggleBtn');
+    if (btn) {
+        btn.innerHTML = isAuto 
+            ? '<i class="fa-solid fa-clipboard-check" style="color: #10B981;"></i> <span id="autoCopyToggleText">نسخ فوري ⚡</span>' 
+            : '<i class="fa-solid fa-clipboard" style="color: #94A3B8;"></i> <span id="autoCopyToggleText">نسخ يدوي 📋</span>';
+        btn.style.borderColor = isAuto ? '#10B981' : 'var(--border)';
+        btn.style.background = isAuto ? 'rgba(16, 185, 129, 0.12)' : 'var(--bg-card)';
+        btn.title = isAuto ? 'النسخ التلقائي مفعّل (الماكرو ينسخ للحافظة فور التحديد)' : 'النسخ التلقائي معطّل - اضغط للتفعيل';
+    }
+    const menuTxt = document.getElementById('autoCopyMenuText');
+    if (menuTxt) {
+        menuTxt.innerText = isAuto ? 'النسخ التلقائي فور التحديد (مفعّل ⚡)' : 'النسخ التلقائي فور التحديد (معطّل)';
+    }
 }
 
 
@@ -3793,6 +3862,8 @@ ${titles}
             initTheme();
             initDailyStreak();
             initCompactSidebarMode();
+            updateSoundToggleUI();
+            updateAutoCopyUI();
         }
 
         function saveAgentName() {
@@ -6466,10 +6537,35 @@ async function loadKBData() {
             return null;
         }
 
-        function filterCategory(cat) {
+        function filterCategory(cat, ev) {
             currentFilter = cat;
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+            let targetBtn = null;
+            if (ev && ev.currentTarget) {
+                targetBtn = ev.currentTarget;
+            } else if (typeof event !== 'undefined' && event && event.currentTarget) {
+                targetBtn = event.currentTarget;
+            } else if (typeof event !== 'undefined' && event && event.target) {
+                targetBtn = event.target;
+            }
+            if (targetBtn && targetBtn.classList) {
+                targetBtn.classList.add('active');
+            } else {
+                const allTabBtns = document.querySelectorAll('.tab-btn');
+                allTabBtns.forEach(b => {
+                    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(cat)) {
+                        b.classList.add('active');
+                    }
+                });
+            }
+
+            const l1Sel = document.getElementById('level1Select');
+            if (l1Sel && l1Sel.value !== cat) {
+                l1Sel.value = cat;
+                if (typeof populateLevel2Options === 'function') {
+                    populateLevel2Options(cat);
+                }
+            }
             searchCases();
         }
 
@@ -8483,11 +8579,15 @@ ${invoiceGuideHtml || ""}
             let entitiesBadgesHtml = '';
             if (Object.keys(detectedEntities).length > 0) {
                 let pills = [];
-                if (detectedEntities.orderId) pills.push(`<span style="background: rgba(59,130,246,0.2); border: 1px solid #3B82F6; color: #93C5FD; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem;"><i class="fa-solid fa-receipt"></i> طلب: #${detectedEntities.orderId}</span>`);
+                if (detectedEntities.orderId) {
+                    pills.push(`<span style="background: rgba(59,130,246,0.2); border: 1.5px solid #3B82F6; color: #93C5FD; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-receipt"></i> طلب: #${detectedEntities.orderId}</span>`);
+                    pills.push(`<a href="https://partner.hungerstation.com/orders/${detectedEntities.orderId}" target="_blank" rel="noopener noreferrer" style="background: rgba(245, 158, 11, 0.15); border: 1.5px solid #F59E0B; color: #FCD34D; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="فتح الطلب مباشرة في بوابة الشركاء"><i class="fa-solid fa-arrow-up-right-from-square"></i> بوابة الشركاء 🏬</a>`);
+                    pills.push(`<a href="https://hungerstation.zendesk.com/agent/search/1?type=ticket&q=${detectedEntities.orderId}" target="_blank" rel="noopener noreferrer" style="background: rgba(16, 185, 129, 0.15); border: 1.5px solid #10B981; color: #6EE7B7; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="بحث عن تذاكر الطلب في Zendesk"><i class="fa-solid fa-headset"></i> Zendesk 🔍</a>`);
+                }
                 if (detectedEntities.storeName) pills.push(`<span style="background: rgba(16,185,129,0.2); border: 1px solid #10B981; color: #6EE7B7; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem;"><i class="fa-solid fa-shop"></i> متجر: ${detectedEntities.storeName}</span>`);
                 if (detectedEntities.amount) pills.push(`<span style="background: rgba(245,158,11,0.2); border: 1px solid #F59E0B; color: #FCD34D; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem;"><i class="fa-solid fa-money-bill"></i> ${detectedEntities.amount} ريال</span>`);
                 if (pills.length > 0) {
-                    entitiesBadgesHtml = `<div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">${pills.join('')}</div>`;
+                    entitiesBadgesHtml = `<div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; align-items: center;" id="outputEntitiesPills">${pills.join('')}</div>`;
                 }
             }
 
@@ -8774,6 +8874,17 @@ ${invoiceGuideHtml || ""}
                 </div>
             `;
             scrollToOutput();
+
+            // ⚡ Auto-Copy on select if enabled
+            if (localStorage.getItem('hs_auto_copy') === '1') {
+                const autoText = isEn ? enMacro : arMacro;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(autoText).then(() => {
+                        showToast(isEn ? '⚡ تم النسخ التلقائي للماكرو الإنجليزي!' : '⚡ تم النسخ التلقائي للماكرو العربي!');
+                        playSuccessChime();
+                    }).catch(() => {});
+                }
+            }
         }
 
 
@@ -10612,6 +10723,7 @@ function checkPendingVaultSLATimers() {
 setInterval(checkPendingVaultSLATimers, 45000);
 
 function playPleasantAlert() {
+    if (localStorage.getItem('hs_sound_muted') === '1') return;
     try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') {
@@ -11145,7 +11257,7 @@ function downloadOfficialMenuExcel() {
             const items = e.clipboardData.items;
             let imageItem = null;
             for (let i = 0; i < items.length; i++) {
-                if (items[i].type.indexOf('image') !== -1) {
+                if (items[i].type && items[i].type.indexOf('image') !== -1) {
                     imageItem = items[i];
                     break;
                 }
@@ -11160,25 +11272,95 @@ function downloadOfficialMenuExcel() {
                     processFilesArray([imageFile]);
                     showToast("📸 تم لصق السكرين شوت بنجاح! جاري فحصه وتوليد الماكرو... ⚡");
 
+                    const plainText = e.clipboardData.getData('text/plain') || '';
+
                     // Read image data and scan for numbers
                     const reader = new FileReader();
                     reader.onload = function(evt) {
-                        analyzePastedScreenshot(evt.target.result, fileName);
+                        analyzePastedScreenshot(evt.target.result, fileName, plainText);
                     };
                     reader.readAsDataURL(file);
                 }
             }
         });
 
-        function analyzePastedScreenshot(dataUrl, fileName) {
-            // Check if user typed orderId or store in search
-            const matchOrder = fileName.match(/(\d{6,10})/);
+        async function analyzePastedScreenshot(dataUrl, fileName, plainText = '') {
+            let extractedOrderId = null;
+            let extractedAmount = null;
+            let extractedStore = null;
+
+            // 1. Check clipboard text or filename for Order ID & Amount
+            const textToScan = (fileName + ' ' + (plainText || '')).trim();
+            const matchOrder = textToScan.match(/\b\d{7,10}\b/);
             if (matchOrder) {
-                const orderIdInput = document.getElementById('liveVarOrderId');
-                if (orderIdInput) {
-                    orderIdInput.value = matchOrder[1];
-                    updateLiveMacroVariables();
+                extractedOrderId = matchOrder[0];
+            }
+            const matchAmount = textToScan.match(/(\d+(?:\.\d+)?)\s*(?:ريال|sar|rs)/i);
+            if (matchAmount) {
+                extractedAmount = matchAmount[1];
+            }
+
+            // 2. Multimodal AI Vision OCR if Gemini API key configured
+            const apiKey = localStorage.getItem('gemini_api_key') || (typeof GEMINI_KEY !== 'undefined' ? GEMINI_KEY : '');
+            if (apiKey && dataUrl && dataUrl.startsWith('data:image')) {
+                try {
+                    const base64Data = dataUrl.split(',')[1];
+                    const mimeType = dataUrl.split(';')[0].replace('data:', '') || 'image/png';
+                    const activeModel = localStorage.getItem('gemini_model_name') || 'gemini-1.5-flash';
+                    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent?key=${apiKey}`;
+                    
+                    const res = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [
+                                    { text: "Extract any Hungerstation Order ID (7-10 digits), Amount in SAR, and Store name from this screenshot. Return ONLY JSON: {\"orderId\": \"...\", \"amount\": \"...\", \"storeName\": \"...\"}. If not found, use empty strings." },
+                                    { inlineData: { mimeType: mimeType, data: base64Data } }
+                                ]
+                            }],
+                            generationConfig: { temperature: 0.1, responseMimeType: "application/json" }
+                        })
+                    });
+                    if (res.ok) {
+                        const jsonRes = await res.json();
+                        const rawAi = jsonRes.candidates?.[0]?.content?.parts?.[0]?.text;
+                        if (rawAi) {
+                            const parsed = JSON.parse(rawAi);
+                            if (parsed.orderId && !extractedOrderId) extractedOrderId = String(parsed.orderId).trim();
+                            if (parsed.amount && !extractedAmount) extractedAmount = String(parsed.amount).trim();
+                            if (parsed.storeName && !extractedStore) extractedStore = String(parsed.storeName).trim();
+                        }
+                    }
+                } catch(e) {
+                    console.warn("Screenshot AI vision OCR failed:", e);
                 }
+            }
+
+            // Apply extracted values to inputs
+            let updatedAny = false;
+            if (extractedOrderId) {
+                const orderIdInput = document.getElementById('liveVarOrderId');
+                if (orderIdInput) orderIdInput.value = extractedOrderId;
+                const searchInp = document.getElementById('searchInput');
+                if (searchInp && !searchInp.value) searchInp.value = extractedOrderId;
+                updatedAny = true;
+            }
+            if (extractedAmount) {
+                const amtInput = document.getElementById('liveVarAmount');
+                if (amtInput) amtInput.value = extractedAmount;
+                updatedAny = true;
+            }
+            if (extractedStore) {
+                const storeInput = document.getElementById('liveVarStoreName');
+                if (storeInput) storeInput.value = extractedStore;
+                updatedAny = true;
+            }
+
+            if (updatedAny) {
+                updateLiveMacroVariables();
+                showToast(`🎯 تم استخراج بيانات لقطة الشاشة: ${extractedOrderId ? ('طلب #' + extractedOrderId) : ''} ${extractedAmount ? ('مبلغ ' + extractedAmount + ' ريال') : ''}`);
+                playSuccessChime();
             }
         }
 
@@ -11230,6 +11412,15 @@ function downloadOfficialMenuExcel() {
             const enEl = document.getElementById('enMacroText');
             if (arEl) arEl.innerText = finalAr;
             if (enEl) enEl.innerText = finalEn;
+
+            // Dynamically update deep links in entities bar
+            const pillsCont = document.getElementById('outputEntitiesPills');
+            if (pillsCont && orderId) {
+                let portalLink = pillsCont.querySelector('a[href*="partner.hungerstation.com"]');
+                let zdLink = pillsCont.querySelector('a[href*="hungerstation.zendesk.com"]');
+                if (portalLink) portalLink.href = `https://partner.hungerstation.com/orders/${orderId}`;
+                if (zdLink) zdLink.href = `https://hungerstation.zendesk.com/agent/search/1?type=ticket&q=${orderId}`;
+            }
         }
 
         // ── 🗂️ 3. COMPACT SIDEBAR MODE (وضع الشاشة المزدوجة) ───────
