@@ -2084,7 +2084,7 @@
             </div>
             <div class="logo-title">
                 <h1>Hungerstation Vendor Support Suite</h1>
-                <p>المنصة المعتمدة للردود التلقائية، المنيو، وقاعدة المعرفة (96 حالة)</p>
+                <p>المنصة المعتمدة للردود التلقائية، المنيو، وقاعدة المعرفة (102 حالة معتمدة)</p>
             </div>
             <span class="version-badge">v3.0 Ultra ✨</span>
         </div>
@@ -2120,6 +2120,11 @@
             <!-- 📋 Auto-Copy Toggle -->
             <button type="button" class="header-btn" onclick="toggleAutoCopy()" id="autoCopyToggleBtn" title="تفعيل/تعطيل النسخ التلقائي للماكرو فور اختياره">
                 <i class="fa-solid fa-clipboard-check"></i> <span id="autoCopyToggleText">نسخ فوري ⚡</span>
+            </button>
+
+            <!-- 🔄 Force Refresh / Cache Purge -->
+            <button type="button" class="header-btn" onclick="forcePurgeAndReload()" style="color: #10B981; border-color: rgba(16,185,129,0.3);" title="تحديث فوري وحذف الكاش القديم (v8)">
+                <i class="fa-solid fa-rotate"></i> <span>تحديث v8 🔄</span>
             </button>
 
             <!-- 🔊 Sound FX Mute Toggle -->
@@ -2229,7 +2234,7 @@
     <div class="workspace-bar">
         <button id="viewBtnTickets" onclick="switchMainWorkspace('TICKETS')" class="ws-tab-btn active">
             <i class="fa-solid fa-comment-dots" style="color: #60A5FA;"></i>
-            <span>💬 مولد ردود التذاكر وقاعدة المعرفة (96 حالة معتمدة)</span>
+            <span>💬 مولد ردود التذاكر وقاعدة المعرفة (102 حالة معتمدة)</span>
         </button>
         <button id="viewBtnMenu" onclick="switchMainWorkspace('MENU_STUDIO')" class="ws-tab-btn menu-tab">
             <i class="fa-solid fa-file-excel" style="color: #34D399;"></i>
@@ -2769,7 +2774,7 @@
                             <i class="fa-solid fa-folder-tree"></i> شجرة الأقسام الـ 7
                         </button>
                         <button type="button" onclick="toggleKBViewMode('list')" id="viewModeListBtn" style="background: rgba(255,255,255,0.06); color: #FFF; border: 1px solid rgba(255,255,255,0.15); font-weight: 700; font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
-                            <i class="fa-solid fa-list"></i> جميع الحالات (96)
+                            <i class="fa-solid fa-list"></i> جميع الحالات (102)
                         </button>
                     </div>
                 </div>
@@ -2802,6 +2807,30 @@
     </div>
 
     <script>
+
+
+window.forcePurgeAndReload = function() {
+    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v8)...');
+    if ('caches' in window) {
+        caches.keys().then(names => {
+            return Promise.all(names.map(name => caches.delete(name)));
+        }).then(() => {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(regs => {
+                    for (let r of regs) r.unregister();
+                    setTimeout(() => { window.location.href = window.location.pathname + '?nocache=' + Date.now(); }, 200);
+                });
+            } else {
+                window.location.href = window.location.pathname + '?nocache=' + Date.now();
+            }
+        });
+    } else {
+        window.location.href = window.location.pathname + '?nocache=' + Date.now();
+    }
+};
+
+window.addEventListener('dragover', (e) => e.preventDefault());
+window.addEventListener('drop', (e) => e.preventDefault());
 
 window.renderStudioMenuPreviewTables = function() {
     const data = window.menuBuilderData || { groups: [], items: [], modifiers: [], imageLinks: [] };
@@ -8036,7 +8065,7 @@ function cleanArabicProcedure(text) {
                             <i class="fa-solid fa-folder-tree"></i> شجرة الأقسام الـ 7
                         </button>
                         <button type="button" onclick="toggleKBViewMode('list')" id="viewModeListBtn" style="background: ${kbViewMode === 'list' ? 'var(--primary)' : 'rgba(255,255,255,0.06)'}; color: ${kbViewMode === 'list' ? '#000' : '#FFF'}; border: 1px solid rgba(255,255,255,0.15); font-weight: 700; font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
-                            <i class="fa-solid fa-list"></i> جميع الحالات (96)
+                            <i class="fa-solid fa-list"></i> جميع الحالات (102)
                         </button>
                     </div>
                 </div>
@@ -11420,7 +11449,9 @@ function handleFileDirectly(file) {
             processVendorMenuWorkbook(workbook);
             playSuccessChime();
             const count = window.menuBuilderData.items.length;
-            showToast(`✅ تم قراءة وتحليل المنيو بنجاح! عدد الأصناف: (${count}) صنف.`);
+            const grpCount = window.menuBuilderData.groups ? window.menuBuilderData.groups.length : 0;
+            const modCount = window.menuBuilderData.modifiers ? window.menuBuilderData.modifiers.length : 0;
+            showToast(`✅ تم تفكيك المنيو بنجاح! (${count}) صنف | (${grpCount}) أقسام | (${modCount}) إضافات.`);
         } catch(err) {
             console.error("Error reading file:", err);
             console.error("Excel read error:", err); showToast("⚠️ تعذر قراءة بعض الحقول: " + err.message);
@@ -11432,11 +11463,13 @@ function handleFileDirectly(file) {
 function handleRawMenuFileUpload(event) {
     const file = event.target.files ? event.target.files[0] : null;
     if (file) handleFileDirectly(file);
+    if (event.target) event.target.value = '';
 }
 
 function handleStudioRawMenuFileUpload(event) {
     const file = event.target.files ? event.target.files[0] : null;
     if (file) handleFileDirectly(file);
+    if (event.target) event.target.value = '';
 }
 
 function handleBatchMultiMenuUpload(event) {
@@ -11444,6 +11477,7 @@ function handleBatchMultiMenuUpload(event) {
     if (!files.length) return;
     if (files.length === 1) {
         handleFileDirectly(files[0]);
+        if (event.target) event.target.value = '';
         return;
     }
 
@@ -14655,7 +14689,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
+        navigator.serviceWorker.register('./sw.js?v=8')
             .then(() => console.log('✓ Service Worker Registered successfully.'))
             .catch(err => console.log('SW registration error:', err));
     });
@@ -14826,6 +14860,30 @@ function updateMobileMockup() {
 
 // Hook updateMobileMockup inside renderStudioMenuPreviewTables
 const originalRenderStudioTables = window.renderStudioMenuPreviewTables;
+
+window.forcePurgeAndReload = function() {
+    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v8)...');
+    if ('caches' in window) {
+        caches.keys().then(names => {
+            return Promise.all(names.map(name => caches.delete(name)));
+        }).then(() => {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(regs => {
+                    for (let r of regs) r.unregister();
+                    setTimeout(() => { window.location.href = window.location.pathname + '?nocache=' + Date.now(); }, 200);
+                });
+            } else {
+                window.location.href = window.location.pathname + '?nocache=' + Date.now();
+            }
+        });
+    } else {
+        window.location.href = window.location.pathname + '?nocache=' + Date.now();
+    }
+};
+
+window.addEventListener('dragover', (e) => e.preventDefault());
+window.addEventListener('drop', (e) => e.preventDefault());
+
 window.renderStudioMenuPreviewTables = function() {
     if (typeof originalRenderStudioTables === 'function') {
         originalRenderStudioTables();
@@ -15977,7 +16035,7 @@ if (typeof window !== 'undefined') {
                     <div style="font-weight: 800; color: #8B5CF6; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
                         <i class="fa-solid fa-robot"></i> كابيلوت هنقرستيشن:
                     </div>
-                    أهلاً بك يا بطل! 👋 أنا مساعدك الذكي المتخصص في سياسات وإجراءات <strong>Hungerstation Vendor Support</strong> (96 حالة معتمدة).<br>
+                    أهلاً بك يا بطل! 👋 أنا مساعدك الذكي المتخصص في سياسات وإجراءات <strong>Hungerstation Vendor Support</strong> (102 حالة معتمدة).<br>
                     اكتب لي استفسار الشريك أو اسألني كيف تتصرف في أي موقف، وسأعطيك التشخيص الدقيق وحكم اللائحة والرد المعتمد لنسخه فوراً. 🚀
                 </div>
             </div>
@@ -16010,7 +16068,7 @@ if (typeof window !== 'undefined') {
                 </div>
             </div>
             <div style="padding-top: 10px; display: flex; flex-direction: column; gap: 8px;">
-                <input type="text" id="hudSearchInput" placeholder="بحث سريع في الـ 96 حالة..." oninput="handleHudSearch(this.value)" style="width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: #FFF; font-size: 0.78rem; outline: none;">
+                <input type="text" id="hudSearchInput" placeholder="بحث سريع في الـ 102 حالة..." oninput="handleHudSearch(this.value)" style="width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: #FFF; font-size: 0.78rem; outline: none;">
                 <div id="hudResultsList" style="max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;"></div>
                 <div id="hudActiveMacroBox" style="background: rgba(255,196,0,0.08); border: 1px solid rgba(255,196,0,0.25); border-radius: 6px; padding: 8px; font-size: 0.74rem; color: #E2E8F0; max-height: 90px; overflow-y: auto; display: none;"></div>
                 <button type="button" id="hudCopyBtn" onclick="copyHudActiveMacro()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 800; cursor: pointer; display: none; align-items: center; justify-content: center; gap: 6px;">
@@ -16306,7 +16364,7 @@ if (typeof window !== 'undefined') {
 
             <div style="display: flex; flex-direction: column; gap: 8px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--border);">
-                    <span style="font-size: 0.85rem; color: var(--text-main);"><i class="fa-solid fa-magnifying-glass" style="color: #FFC400;"></i> البحث السريع في الـ 96 حالة</span>
+                    <span style="font-size: 0.85rem; color: var(--text-main);"><i class="fa-solid fa-magnifying-glass" style="color: #FFC400;"></i> البحث السريع في الـ 102 حالة</span>
                     <div style="display: flex; gap: 4px;"><span class="hotkey-badge">Cmd</span> + <span class="hotkey-badge">K</span> أو <span class="hotkey-badge">Ctrl+K</span></div>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--border);">
@@ -16474,29 +16532,7 @@ if (typeof window !== 'undefined') {
     </div>
 
 
-    <!-- PWA & Offline Service Worker -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                const swCode = `
-                    const CACHE_NAME = 'hs-vendor-suite-v3.5';
-                    self.addEventListener('install', (e) => self.skipWaiting());
-                    self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
-                    self.addEventListener('fetch', (e) => {
-                        if (e.request.method !== 'GET') return;
-                        e.respondWith(
-                            fetch(e.request).catch(() => caches.match(e.request))
-                        );
-                    });
-                `;
-                try {
-                    const blob = new Blob([swCode], { type: 'application/javascript' });
-                    const swUrl = URL.createObjectURL(blob);
-                    navigator.serviceWorker.register(swUrl).catch(() => {});
-                } catch(e) {}
-            });
-        }
-    </script>
+    <!-- PWA Service Worker handled by sw.js?v=8 -->
 
 </body>
 </html>
