@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hs-vendor-suite-v13-official-policies-hub';
+const CACHE_NAME = 'hs-vendor-suite-v14-smart-policy-gate';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.webmanifest'

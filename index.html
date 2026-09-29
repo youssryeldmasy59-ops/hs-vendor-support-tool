@@ -9500,6 +9500,8 @@ ${invoiceGuideHtml || ""}
 
         async function displayCaseDualMacro(c, greetings, isEn, aiOverrideText = null, confidenceScore = 95, alternativeCases = [], detectedEntities = {}, targetSubMacroIdx = null) {
 
+                        let smartPolicyGateHtml = typeof generateSmartPolicyGateHtml === 'function' ? generateSmartPolicyGateHtml(c, partnerMsgVal, detectedEntities) : '';
+
             let auditAlertHtml = '';
             if (typeof auditTicketMessage === 'function') {
                 const rawPartnerMsgForAudit = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '') || (document.getElementById('searchInput') ? document.getElementById('searchInput').value : '');
@@ -16547,6 +16549,374 @@ if (typeof window !== 'undefined') {
                 nextBtn.style.opacity = currentQrStep === 6 ? '0.4' : '1';
                 nextBtn.textContent = isEn ? 'Next ➡️' : 'التالي ➡️';
             }
+        }
+
+
+        // =====================================================================
+        // ⚡ SMART POLICY GATE ENGINE (INTERACTIVE DECISION TREE & COMPLIANCE)
+        // =====================================================================
+        window.currentSelectedPolicyOption = null;
+
+        function getCasePolicyType(c, partnerMsg) {
+            if (!c) return null;
+            const title = (c.case_title || '').toLowerCase();
+            const ccr = (c.ccr || '').toLowerCase();
+            const msg = (partnerMsg || '').toLowerCase();
+            const text = title + ' ' + ccr + ' ' + msg;
+
+            if (c.id === 58 || text.includes('تعويض') || text.includes('خصم') || text.includes('dispute') || text.includes('compensation') || text.includes('نزاع')) {
+                return 'COMPENSATION';
+            }
+            if (c.id === 10 || text.includes('وقت وصول') || text.includes('تأخر المندوب') || text.includes('eta') || text.includes('استعجال المندوب') || text.includes('مندوب تأخر')) {
+                return 'RIDER_ETA';
+            }
+            if (c.id === 45 || (text.includes('إلغاء') && (text.includes('عميل') || text.includes('طلب') || text.includes('cancellation')))) {
+                return 'CUSTOMER_CANCELLATION';
+            }
+            if (c.id === 54 || text.includes('مدير الحساب') || text.includes('account manager') || text.includes('تغيير مدير')) {
+                return 'CHANGE_AM';
+            }
+            if (c.id === 11 || text.includes('شكوى مندوب') || text.includes('سلوك السائق') || text.includes('rider complaint') || text.includes('rider-related')) {
+                return 'RIDER_COMPLAINT';
+            }
+            if (c.id === 67 || text.includes('تغيير العنوان') || text.includes('address change') || text.includes('موقع الفرع') || text.includes('نقل الفرع')) {
+                return 'ADDRESS_CHANGE';
+            }
+            if (c.id === 8 || text.includes('مندوب خاطئ') || text.includes('wrong rider') || text.includes('استلام خاطئ') || text.includes('أخذ الطلب')) {
+                return 'WRONG_RIDER';
+            }
+            if (c.id === 20 || text.includes('ورق طابعة') || text.includes('paper roll') || text.includes('رول ورق') || text.includes('ورق المكينة')) {
+                return 'PAPER_ROLL';
+            }
+            if (text.includes('onboarding') || text.includes('تدريب الشريك') || text.includes('ربط الفرع')) {
+                return 'ONBOARDING';
+            }
+            if (text.includes('qr') || text.includes('رمز qr') || text.includes('مسح الرمز') || text.includes('استلام qr')) {
+                return 'QR_PICKUP';
+            }
+            return null;
+        }
+
+        function generateSmartPolicyGateHtml(c, partnerMsg, detectedEntities) {
+            const policyType = getCasePolicyType(c, partnerMsg);
+            if (!policyType) return '';
+
+            const orderIdStr = detectedEntities && detectedEntities.orderId ? `#${detectedEntities.orderId}` : 'الطلب';
+            let contentHtml = '';
+
+            if (policyType === 'COMPENSATION') {
+                contentHtml = `
+                    <div class="policy-gate-card" id="policyGateBox" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(220, 38, 38, 0.12) 100%); border: 1.5px solid #EF4444; border-radius: 12px; padding: 14px 18px; margin-bottom: 14px; box-shadow: 0 4px 16px rgba(239, 68, 68, 0.15);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 1.3rem;">⚖️</span>
+                                <strong style="font-size: 0.92rem; color: #FCA5A5;">بوابة فحص سياسة التعويضات (Order Disputes & D-Sats Gate)</strong>
+                                <span style="font-size: 0.72rem; background: #EF4444; color: #FFF; padding: 2px 7px; border-radius: 6px; font-weight: 800;">إلزامي للحساب</span>
+                            </div>
+                            <a href="https://disputes.hungerstation.com" target="_blank" rel="noopener noreferrer" style="background: rgba(255,255,255,0.1); color: #FFF; border: 1px solid rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> فتح رابط Order Disputes
+                            </a>
+                        </div>
+                        <p style="margin: 0 0 10px 0; font-size: 0.82rem; color: #CBD5E1; line-height: 1.5;">
+                            ⚠️ <strong>تنبيه الترينر الصارم:</strong> لوحظ تكرار إرسال خطوات التعويض لشركاء قدّموا مسبقاً مما يسبب D-Sats. <strong>ما هي حالة الطلب في الرابط؟</strong>
+                        </p>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button type="button" onclick="applyPolicyBranch('COMPENSATION_REJECTED')" class="policy-opt-btn" id="btnPolicyCompRejected" style="background: rgba(239,68,68,0.2); border: 1.5px solid #EF4444; color: #FCA5A5; padding: 7px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                                ❌ مرفوضة (Rejected) ➔ اعتذار فقط دون إعادة خطوات
+                            </button>
+                            <button type="button" onclick="applyPolicyBranch('COMPENSATION_EVIDENCE')" class="policy-opt-btn" id="btnPolicyCompEvidence" style="background: rgba(245,158,11,0.2); border: 1.5px solid #F59E0B; color: #FCD34D; padding: 7px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                                📎 تتطلب أدلة (Require Evidence) ➔ طلب الإثباتات + قالب النزاع
+                            </button>
+                            <button type="button" onclick="applyPolicyBranch('COMPENSATION_STANDARD')" class="policy-opt-btn" id="btnPolicyCompStandard" style="background: rgba(16,185,129,0.2); border: 1.5px solid #10B981; color: #6EE7B7; padding: 7px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                                ⏳ لم يقدم بعد ➔ خطوات الرفع بالبوابة (48 ساعة)
+                            </button>
+                        </div>
+                        <div id="policyGateFeedback" style="margin-top: 10px; display: none;"></div>
+                    </div>
+                `;
+            } else if (policyType === 'RIDER_ETA') {
+                contentHtml = `
+                    <div class="policy-gate-card" id="policyGateBox" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.12) 100%); border: 1.5px solid #3B82F6; border-radius: 12px; padding: 14px 18px; margin-bottom: 14px; box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 1.3rem;">⏱️</span>
+                                <strong style="font-size: 0.92rem; color: #93C5FD;">بوابة فحص وقت وصول المندوب (1VU Rider ETA Gate)</strong>
+                                <span style="font-size: 0.72rem; background: #3B82F6; color: #FFF; padding: 2px 7px; border-radius: 6px; font-weight: 800;">شجرة قرار 1VU</span>
+                            </div>
+                        </div>
+                        <p style="margin: 0 0 10px 0; font-size: 0.82rem; color: #CBD5E1; line-height: 1.5;">
+                            🛵 <strong>قاعدة الـ SOP:</strong> اتصل بالمندوب. إذا لم يرد، افحص نظام 1VU (ممنوع إخبار الشريك بعدم رد المندوب). <strong>ما نتيجة الفحص؟</strong>
+                        </p>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button type="button" onclick="applyPolicyBranch('ETA_ANSWERED')" class="policy-opt-btn" id="btnPolicyEtaAnswered" style="background: rgba(16,185,129,0.2); border: 1.5px solid #10B981; color: #6EE7B7; padding: 7px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                                📞 رد المندوب ➔ تأكيد الوصول بالدقائق للشريك
+                            </button>
+                            <button type="button" onclick="applyPolicyBranch('ETA_UNDER_1KM')" class="policy-opt-btn" id="btnPolicyEtaUnder" style="background: rgba(59,130,246,0.2); border: 1.5px solid #3B82F6; color: #93C5FD; padding: 7px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                                🚗 لم يرد - مسافته أقل من 1 كم ➔ قريب وبالطريق (ممنوع Re-dispatch)
+                            </button>
+                            <button type="button" onclick="applyPolicyBranch('ETA_OVER_1KM')" class="policy-opt-btn" id="btnPolicyEtaOver" style="background: rgba(239,68,68,0.2); border: 1.5px solid #EF4444; color: #FCA5A5; padding: 7px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                                🔄 لم يرد - مسافته أكثر من 1 كم ➔ إعادة توجيه فورية (Re-dispatch)
+                            </button>
+                        </div>
+                        <div id="policyGateFeedback" style="margin-top: 10px; display: none;"></div>
+                    </div>
+                `;
+            } else if (policyType === 'CUSTOMER_CANCELLATION') {
+                contentHtml = `
+                    <div class="policy-gate-card" id="policyGateBox" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.08) 0%, rgba(219, 39, 119, 0.12) 100%); border: 1.5px solid #EC4899; border-radius: 12px; padding: 14px 18px; margin-bottom: 14px; box-shadow: 0 4px 16px rgba(236, 72, 153, 0.15);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 1.3rem;">❌</span>
+                                <strong style="font-size: 0.92rem; color: #F472B6;">سياسة إلغاء العميل المحدثة (Customer Cancellation Policy)</strong>
+                                <span style="font-size: 0.72rem; background: #EC4899; color: #FFF; padding: 2px 7px; border-radius: 6px; font-weight: 800;">خاص بالشات</span>
+                            </div>
+                        </div>
+                        <p style="margin: 0 0 10px 0; font-size: 0.82rem; color: #CBD5E1; line-height: 1.5;">
+                            🚫 <strong>تنبيه حاسم:</strong> ممنوع إرسال الخطوات القديمة في محادثات الشات نهائياً. <strong>ما هي قناة التواصل الحالية؟</strong>
+                        </p>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button type="button" onclick="applyPolicyBranch('CANC_LIVE_CHAT')" class="policy-opt-btn" id="btnPolicyCancChat" style="background: rgba(236,72,153,0.25); border: 1.5px solid #EC4899; color: #FBCFE8; padding: 7px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                                💬 محادثة شات مباشر ➔ ماكرو الاعتذار السريع بالسبب ورقم الطلب
+                            </button>
+                            <button type="button" onclick="applyPolicyBranch('CANC_CASE')" class="policy-opt-btn" id="btnPolicyCancCase" style="background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.2); color: #CBD5E1; padding: 7px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                                📩 تذكرة بريد (Case) ➔ إجراءات التحقق والتصعيد المعتمدة
+                            </button>
+                        </div>
+                        <div id="policyGateFeedback" style="margin-top: 10px; display: none;"></div>
+                    </div>
+                `;
+            } else if (policyType === 'CHANGE_AM') {
+                contentHtml = `
+                    <div class="policy-gate-card" id="policyGateBox" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(124, 58, 237, 0.12) 100%); border: 1.5px solid #A855F7; border-radius: 12px; padding: 14px 18px; margin-bottom: 14px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span style="font-size: 1.3rem;">👔</span>
+                            <strong style="font-size: 0.92rem; color: #C084FC;">سياسة تغيير مدير الحساب (Area Manager SOP)</strong>
+                            <span style="font-size: 0.72rem; background: #9333EA; color: #FFF; padding: 2px 7px; border-radius: 6px; font-weight: 800;">SLA: 3 أيام عمل</span>
+                        </div>
+                        <p style="margin: 0 0 10px 0; font-size: 0.82rem; color: #CBD5E1; line-height: 1.5;">
+                            📌 <strong>شرط الاعتماد:</strong> يتم توجيه الطلب إلى <strong>مدير المنطقة (Area Manager)</strong> حصراً وليس مدير الحساب، ومدة الـ SLA هي 3 أيام عمل باستثناء الجمعة والسبت.
+                        </p>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" onclick="applyPolicyBranch('AM_AREA_MANAGER')" class="policy-opt-btn" style="background: #9333EA; color: #FFF; border: none; padding: 7px 14px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                                ✅ تطبيق ماكرو مدير المنطقة المعتمد رسمياً
+                            </button>
+                        </div>
+                        <div id="policyGateFeedback" style="margin-top: 10px; display: none;"></div>
+                    </div>
+                `;
+            } else if (policyType === 'RIDER_COMPLAINT') {
+                contentHtml = `
+                    <div class="policy-gate-card" id="policyGateBox" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(217, 119, 6, 0.12) 100%); border: 1.5px solid #F59E0B; border-radius: 12px; padding: 14px 18px; margin-bottom: 14px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span style="font-size: 1.3rem;">🛵</span>
+                            <strong style="font-size: 0.92rem; color: #FCD34D;">سياسة شكاوى ومشاكل المناديب (Rider Complaint SOP)</strong>
+                            <span style="font-size: 0.72rem; background: #D97706; color: #000; padding: 2px 7px; border-radius: 6px; font-weight: 800;">ممنوع الفورم والـ SLA</span>
+                        </div>
+                        <p style="margin: 0 0 10px 0; font-size: 0.82rem; color: #CBD5E1; line-height: 1.5;">
+                            ⚠️ <strong>تحديث الترينر الصارم:</strong> (1) لا تعبئة لأي فورم، (2) لا تذكر أي SLA زمني، (3) لا تصعد لـ Non-Live. الرد فوري بالماكرو المعتمد وإغلاق المحادثة.
+                        </p>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" onclick="applyPolicyBranch('RIDER_COMPLAINT_STRICT')" class="policy-opt-btn" style="background: #D97706; color: #000; border: none; padding: 7px 14px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                                ✅ تطبيق ماكرو الشكوى الحاسم المتوافق 100%
+                            </button>
+                        </div>
+                        <div id="policyGateFeedback" style="margin-top: 10px; display: none;"></div>
+                    </div>
+                `;
+            } else if (policyType === 'ADDRESS_CHANGE') {
+                contentHtml = `
+                    <div class="policy-gate-card" id="policyGateBox" style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(2, 132, 199, 0.12) 100%); border: 1.5px solid #0EA5E9; border-radius: 12px; padding: 14px 18px; margin-bottom: 14px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span style="font-size: 1.3rem;">📍</span>
+                            <strong style="font-size: 0.92rem; color: #7DD3FC;">سياسة تغيير العنوان في الشات (Google Maps Link SOP)</strong>
+                            <span style="font-size: 0.72rem; background: #0284C7; color: #FFF; padding: 2px 7px; border-radius: 6px; font-weight: 800;">إلزامي قبل التصعيد</span>
+                        </div>
+                        <p style="margin: 0 0 10px 0; font-size: 0.82rem; color: #CBD5E1; line-height: 1.5;">
+                            🗺️ <strong>الشرط الإلزامي:</strong> يجب طلب رابط خرائط جوجل أو الإحداثيات (Lat & Long) قبل التصعيد لفريق Non-Live.
+                        </p>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button type="button" onclick="applyPolicyBranch('ADDR_REQUEST_LINK')" class="policy-opt-btn" style="background: rgba(14,165,233,0.25); border: 1.5px solid #0EA5E9; color: #BAE6FD; padding: 7px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                                📍 طلب الرابط والإحداثيات أولاً بالماكرو
+                            </button>
+                            <button type="button" onclick="applyPolicyBranch('ADDR_ESCALATE_PROVIDED')" class="policy-opt-btn" style="background: rgba(16,185,129,0.2); border: 1.5px solid #10B981; color: #6EE7B7; padding: 7px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                                ✅ زوّدنا بالرابط ➔ قالب تصعيد Non-Live
+                            </button>
+                            <button type="button" onclick="applyPolicyBranch('ADDR_ESCALATE_DIRECT')" class="policy-opt-btn" style="background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.2); color: #CBD5E1; padding: 7px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                                ⚠️ لا يعرف استخراجها ➔ تصعيد مباشر للـ Non-Live
+                            </button>
+                        </div>
+                        <div id="policyGateFeedback" style="margin-top: 10px; display: none;"></div>
+                    </div>
+                `;
+            } else if (policyType === 'WRONG_RIDER') {
+                contentHtml = `
+                    <div class="policy-gate-card" id="policyGateBox" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(220, 38, 38, 0.12) 100%); border: 1.5px solid #EF4444; border-radius: 12px; padding: 14px 18px; margin-bottom: 14px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span style="font-size: 1.3rem;">⚠️</span>
+                            <strong style="font-size: 0.92rem; color: #FCA5A5;">سياسة استلام مندوب خاطئ (Wrong Rider Pickup Gate)</strong>
+                        </div>
+                        <p style="margin: 0 0 10px 0; font-size: 0.82rem; color: #CBD5E1; line-height: 1.5;">
+                            🛵 <strong>سيناريوهات التعامل المعتمدة:</strong> ما هو سيناريو المناديب للطلب؟
+                        </p>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button type="button" onclick="applyPolicyBranch('WRONG_ONE_RIDER')" class="policy-opt-btn" style="background: rgba(239,68,68,0.2); border: 1.5px solid #EF4444; color: #FCA5A5; padding: 7px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                                1️⃣ مندوب واحد ➔ اتصال بالمندوب المعين، إذا لم يرد إلغاء الطلب (Cancel)
+                            </button>
+                            <button type="button" onclick="applyPolicyBranch('WRONG_MULTI_RIDERS')" class="policy-opt-btn" style="background: rgba(245,158,11,0.2); border: 1.5px solid #F59E0B; color: #FCD34D; padding: 7px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                                👥 عدة مناديب ➔ اتصال بالتسلسل، ومن لا يرد إعادة تعيين (Reassign) إليه
+                            </button>
+                        </div>
+                        <div id="policyGateFeedback" style="margin-top: 10px; display: none;"></div>
+                    </div>
+                `;
+            } else if (policyType === 'PAPER_ROLL') {
+                contentHtml = `
+                    <div class="policy-gate-card" id="policyGateBox" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.12) 100%); border: 1.5px solid #10B981; border-radius: 12px; padding: 14px 18px; margin-bottom: 14px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span style="font-size: 1.3rem;">🧻</span>
+                            <strong style="font-size: 0.92rem; color: #6EE7B7;">سياسة طلب ورق الطابعة (Printer Paper Roll SOP)</strong>
+                            <span style="font-size: 0.72rem; background: #059669; color: #FFF; padding: 2px 7px; border-radius: 6px; font-weight: 800;">توجيه محلي</span>
+                        </div>
+                        <p style="margin: 0 0 10px 0; font-size: 0.82rem; color: #CBD5E1; line-height: 1.5;">
+                            🏪 <strong>السياسة الثابتة:</strong> لا يتم رفع تذاكر شحن ورق. يوجه الشريك لشرائه من أي متجر تجزئة أو قرطاسية محلياً.
+                        </p>
+                        <button type="button" onclick="applyPolicyBranch('PAPER_ROLL_RETAIL')" class="policy-opt-btn" style="background: #059669; color: #FFF; border: none; padding: 7px 14px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                            ✅ تطبيق ماكرو التوجيه للشراء المحلي
+                        </button>
+                        <div id="policyGateFeedback" style="margin-top: 10px; display: none;"></div>
+                    </div>
+                `;
+            } else if (policyType === 'ONBOARDING') {
+                contentHtml = `
+                    <div class="policy-gate-card" id="policyGateBox" style="background: linear-gradient(135deg, rgba(147, 51, 234, 0.08) 0%, rgba(126, 34, 206, 0.12) 100%); border: 1.5px solid #9333EA; border-radius: 12px; padding: 14px 18px; margin-bottom: 14px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span style="font-size: 1.3rem;">🚀</span>
+                            <strong style="font-size: 0.92rem; color: #D8B4FE;">إجراءات تذاكر الـ Onboarding الإلزامية</strong>
+                            <span style="font-size: 0.72rem; background: #7E22CE; color: #FFF; padding: 2px 7px; border-radius: 6px; font-weight: 800;">شرط إيميل إلزامي</span>
+                        </div>
+                        <p style="margin: 0 0 10px 0; font-size: 0.82rem; color: #CBD5E1; line-height: 1.5;">
+                            ⚠️ <strong>تنبيه حاسم:</strong> يجب استخراج إيميل الشريك من Operation Portal وإضافته في الرد + كتابة الـ Ticket ID في نهاية الماكرو وإلا فلن يصل الرد للتاجر نهائياً!
+                        </p>
+                        <button type="button" onclick="applyPolicyBranch('ONBOARDING_OFFICIAL')" class="policy-opt-btn" style="background: #7E22CE; color: #FFF; border: none; padding: 7px 14px; border-radius: 8px; font-size: 0.78rem; font-weight: 800; cursor: pointer;">
+                            ✅ تطبيق ماكرو أونبوردينغ المعتمد مع الـ Ticket ID
+                        </button>
+                        <div id="policyGateFeedback" style="margin-top: 10px; display: none;"></div>
+                    </div>
+                `;
+            }
+
+            return contentHtml;
+        }
+
+        function applyPolicyBranch(branchKey) {
+            window.currentSelectedPolicyOption = branchKey;
+            const c = window.currentActiveCaseObj;
+            const greetings = window.currentActiveGreetings || { arGreeting: "", enGreeting: "" };
+            const detected = window.currentActiveDetectedEntities || {};
+            const storeName = detected.storeName || '';
+            const orderId = detected.orderId || '×××';
+            const feedbackBox = document.getElementById('policyGateFeedback');
+
+            let newArProc = '';
+            let newEnProc = '';
+            let complianceBadge = '';
+            let escalationTpl = '';
+
+            if (branchKey === 'COMPENSATION_REJECTED') {
+                newArProc = `نعتذر لك عن أي إزعاج بخصوص طلب التعويض للطلب رقم ${orderId}. نود إفادتكم بأنه بعد مراجعة الفريق المختص لحالة الطلب، تبيّن عدم استيفاء الشروط المعتمدة لقبول التعويض، ونأسف لعدم التمكن من تعويضكم عن هذا الطلب. شاكرين تفهمكم الدائم.`;
+                newEnProc = `We apologize for any inconvenience regarding your compensation claim for order #${orderId}. After review by the specialized disputes team, we regret to inform you that the order does not meet compensation criteria. Thank you for your understanding.`;
+                complianceBadge = '✅ تم تطبيق سياسة الترينر: الاعتذار المعتمد وحجب خطوات التعويض لتجنب الـ D-Sats';
+            } else if (branchKey === 'COMPENSATION_EVIDENCE') {
+                newArProc = `بخصوص طلب التعويض للطلب رقم ${orderId}، وتأكيداً على حرصنا لحفظ كامل حقوقكم، يرجى تزويدنا بالفواتير وصور التلف أو الإثباتات المؤيدة لنتمكن من تصعيد التذكرة مباشرة ومتابعتها مع فريق النزاعات (Dispute Team).`;
+                newEnProc = `Regarding compensation for order #${orderId}, kindly provide supporting invoices, receipts, or photos so we can escalate your case directly to the Dispute Team.`;
+                complianceBadge = '✅ تم تطبيق سياسة الترينر: طلب الإثباتات وتجهيز قالب تصعيد فريق النزاعات';
+                escalationTpl = `Vendor request: Partner provided compensation evidence for order #${orderId}\nCase ID: ${c ? c.id : ''}\nAttachments: Yes\nReason for escalation: Dispute Team Evidence Review`;
+            } else if (branchKey === 'COMPENSATION_STANDARD') {
+                newArProc = (c && c.procedure_arabic) ? c.procedure_arabic : 'يمكنكم تقديم طلب التعويض مباشرة عبر بوابة الشركاء خلال 48 ساعة من تاريخ الطلب.';
+                newEnProc = (c && c.procedure_english) ? c.procedure_english : 'You can submit your compensation claim directly via Vendor Portal within 48 hours.';
+                complianceBadge = '✅ تم تطبيق ماكرو خطوات التعويض الرسمية للبوابة';
+            } else if (branchKey === 'ETA_ANSWERED') {
+                newArProc = `نود إفادتكم بأنه تم التواصل هاتفياً مع كابتن التوصيل المعين للطلب رقم ${orderId}، وأكد تواجده لديكم لاستلام الطلب خلال دقائق معدودة. شاكرين حسن تعاونكم وصبركم.`;
+                newEnProc = `We have contacted the driver directly for order #${orderId}, and he confirmed arrival at your branch within a few minutes to collect the order. Thank you for your patience.`;
+                complianceBadge = '✅ تم تطبيق سياسة الترينر: تأكيد وقت الوصول بالدقائق للشريك';
+            } else if (branchKey === 'ETA_UNDER_1KM') {
+                newArProc = `تم التحقق من مسار كابتن التوصيل للطلب رقم ${orderId} عبر النظام، ونود إبلاغكم بأنه على بُعد مسافة قريبة جداً (أقل من 1 كم) وسيقوم باستلام الطلب في أقرب وقت ممكن. نرجو منكم عدم القلق والطلب قيد المتابعة الدقيقة.`;
+                newEnProc = `We verified the driver's location for order #${orderId} on the system and he is less than 1KM away. He will arrive shortly for pickup. Rest assured the order is closely monitored.`;
+                complianceBadge = '✅ تم تطبيق سياسة 1VU: المندوب أقل من 1 كم (يُمنع Re-dispatch)';
+            } else if (branchKey === 'ETA_OVER_1KM') {
+                newArProc = `تم التحقق من حالة الطلب رقم ${orderId} والمسافة، وحرصاً على سرعة وصول الوجبة ساخنة وطازجة لعميلكم، قمنا بإعادة توجيه الطلب فوراً إلى كابتن توصيل أقرب لمطعمكم، وسيكون متواجداً لديكم خلال دقائق معدودة لاستلام الطلب.`;
+                newEnProc = `The order #${orderId} status and distance have been checked. To ensure prompt pickup, the order has been immediately re-dispatched to a closer driver who will arrive in a few minutes.`;
+                complianceBadge = '✅ تم تطبيق سياسة 1VU: إعادة توجيه فورية (Re-dispatch) لكابتن أقرب';
+            } else if (branchKey === 'CANC_LIVE_CHAT') {
+                newArProc = `نعتذر لك عن أي إزعاج بخصوص إلغاء الطلب رقم ${orderId}.\nتم إلغاء الطلب بناءً على تحديث النظام.\nشاكرين ومقدرين تفهمك وتعاونك الدائم معنا.`;
+                newEnProc = `We apologize for any inconvenience regarding the cancellation of order #${orderId}.\nThe order was cancelled as per system update.\nThank you for your understanding and cooperation.`;
+                complianceBadge = '✅ تم تطبيق سياسة إلغاء الشات الجديدة (4 خطوات معتمدة ومنع الخطوات القديمة)';
+            } else if (branchKey === 'CANC_CASE') {
+                newArProc = (c && c.procedure_arabic) ? c.procedure_arabic : 'بخصوص طلب الإلغاء، يرجى تزويدنا بسبب الإلغاء ورقم الطلب للمتابعة.';
+                newEnProc = (c && c.procedure_english) ? c.procedure_english : 'Regarding the cancellation request, please provide order ID and reason.';
+                complianceBadge = '✅ تم تطبيق إجراءات تذاكر الإلغاء المعتمدة';
+            } else if (branchKey === 'AM_AREA_MANAGER') {
+                newArProc = `لقد تم تحويل طلبكم إلى مدير المنطقه حيث سيقوم مدير المنطقه بمتابعة طلبكم وسوف يتم التواصل معكم خلال 3 أيام عمل باستثناء يومي الجمعة والسبت في حال وجود أي استفسارات.`;
+                newEnProc = `Your request has been forwarded to the Area Manager who will follow up on your request. You will be contacted within 3 business days (excluding Friday and Saturday) if there are any inquiries.`;
+                complianceBadge = '✅ متوافق 100% مع سياسة تغيير مدير الحساب (Area Manager + SLA 3 أيام عمل)';
+            } else if (branchKey === 'RIDER_COMPLAINT_STRICT') {
+                newArProc = `نشكرك على إبلاغنا وحرصك الدائم على جودة الخدمة. نعتذر عن أي تصرف غير ملائم من قبل مندوب التوصيل، ونود إفادتك بأنه تم تسجيل ملاحظاتك وتمريرها مباشرة إلى الفريق المختص لمتابعة سلوك المندوب واتخاذ الإجراءات النظامية اللازمة.`;
+                newEnProc = `Thank you for notifying us. We apologize for any inappropriate behavior from the driver. Please be assured that your feedback has been recorded and submitted directly to the specialized team for necessary disciplinary action.`;
+                complianceBadge = '✅ متوافق 100% مع سياسة شكاوى المناديب (بدون فورم - بدون SLA - إغلاق مباشر)';
+            } else if (branchKey === 'ADDR_REQUEST_LINK') {
+                newArProc = `يسعدنا خدمتك شريكنا العزيز. لتحديث وتعديل عنوان الفرع بدقة وسرعة على خريطة التطبيق، يُرجى تزويدنا برابط موقع الفرع على خرائط جوجل (Google Maps link) أو إحداثيات الموقع الجغرافي (Latitude & Longitude) لنتمكن من اعتماد الموقع فوراً.`;
+                newEnProc = `To update your branch location accurately on the app map, kindly share your branch Google Maps link or coordinates (Latitude & Longitude) so we can proceed with updating the location.`;
+                complianceBadge = '✅ تم تطبيق سياسة طلب رابط خرائط جوجل أولاً';
+            } else if (branchKey === 'ADDR_ESCALATE_PROVIDED' || branchKey === 'ADDR_ESCALATE_DIRECT') {
+                newArProc = `شريكنا العزيز، تم استلام بيانات العنوان الجديد وجاري المتابعة والتنسيق مع الفريق التقني لاعتماد وتحديث الموقع على الخريطة خلال وقت قياسي.`;
+                newEnProc = `Dear Partner, the updated address details have been received and are being processed with the technical team to update the location on the map promptly.`;
+                complianceBadge = '✅ تم تجهيز قالب تصعيد فريق الـ Non-Live لتغيير العنوان';
+                escalationTpl = `Vendor request: Partner requested branch address change\nCase ID: ${c ? c.id : ''}\nAttachments: Yes\nReason for escalation: Non-Live address update coordinates attached`;
+            } else if (branchKey === 'WRONG_ONE_RIDER') {
+                newArProc = `تم التحقق من حالة الطلب رقم ${orderId}، وتبيّن استلامه من قِبل سائق آخر. حرصاً على حقكم وعدم تعطيلكم، قمنا باتخاذ الإجراء الفوري بإلغاء الطلب لتسجيل التعويض النظامي. ونرجو منكم دائماً مطابقة رقم الطلب وجهاز الاستقبال قبل التسليم.`;
+                newEnProc = `Order #${orderId} was checked and verified picked up by another rider. We have cancelled the order to safeguard your rights. Please always verify the order ID on the device prior to meal handover.`;
+                complianceBadge = '✅ تم تطبيق سياسة المندوب الخاطئ (سيناريو 1: مندوب واحد ➔ Cancel)';
+            } else if (branchKey === 'WRONG_MULTI_RIDERS') {
+                newArProc = `تم فحص بيانات الطلب رقم ${orderId} ومتابعة المناديب المتواجدين بالقرب من المطعم، وتمت إعادة تعيين الطلب رسمياً لضمان حقوقكم وحق العميل. نرجو منكم التحقق الدائم من هوية الكابتن المسجل لدى هنقرستيشن.`;
+                newEnProc = `Order #${orderId} riders trace was checked, and the order has been reassigned to ensure all rights. Kindly ensure verifying registered rider identity on your device prior to delivery.`;
+                complianceBadge = '✅ تم تطبيق سياسة المندوب الخاطئ (سيناريو 2: عدة مناديب ➔ Reassign)';
+            } else if (branchKey === 'PAPER_ROLL_RETAIL') {
+                newArProc = `نود إفادتكم بأنه يمكنكم توفير رول ورق الطابعة الحراري المتوافق مع جهاز الاستقبال من أي متجر قرطاسية أو منافذ بيع الأدوات المكتبية والتجزئة، حيث يعمل الجهاز بمقاس الرول الحراري القياسي المتوفر في الأسواق المحلية.`;
+                newEnProc = `We would like to inform you that thermal printer paper rolls compatible with your Hungerstation device can be readily purchased from any local stationery or retail store.`;
+                complianceBadge = '✅ متوافق 100% مع سياسة توجيه ورق الطابعة للشراء المحلي';
+            } else if (branchKey === 'ONBOARDING_OFFICIAL') {
+                newArProc = `شريكنا العزيز، تم التواصل معكم بخصوص إتمام متطلبات الانضمام وتفعيل حسابكم لدى هنقرستيشن، وفي حال وجود أي استفسارات أو رغبة في استكمال البيانات، يُرجى الرد على هذه التذكرة برقم التذكرة: #${c ? c.id : 'XXXX'}.\nدمتم بصحة وعافية.`;
+                newEnProc = `Dear Partner, we attempted to contact you regarding completing onboarding requirements. If you have any inquiries, please reply to this ticket referencing Ticket ID: #${c ? c.id : 'XXXX'}.`;
+                complianceBadge = '✅ متوافق 100% مع سياسة Onboarding (تذكير: أضف إيميل الشريك من Operation Portal)';
+            }
+
+            // Build full macro with greetings & official template
+            const finalAr = buildArabicMacro(greetings.arGreeting, newArProc, storeName);
+            const finalEn = buildEnglishMacro(greetings.enGreeting, newEnProc, storeName);
+
+            // Update DOM text boxes
+            const arBox = document.getElementById('arabicMacroText');
+            const enBox = document.getElementById('englishMacroText');
+            if (arBox) arBox.innerText = finalAr;
+            if (enBox) enBox.innerText = finalEn;
+
+            // Update feedback box in the gate
+            if (feedbackBox) {
+                feedbackBox.style.display = 'block';
+                feedbackBox.innerHTML = `
+                    <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10B981; color: #6EE7B7; padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                        <span><i class="fa-solid fa-circle-check"></i> ${complianceBadge}</span>
+                        ${escalationTpl ? `
+                            <button type="button" onclick="navigator.clipboard.writeText('${escalationTpl.replace(/\n/g, '\\n')}'); showToast('📋 تم نسخ قالب التصعيد المعتمد!'); playSuccessChime();" style="background: #10B981; color: #000; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; cursor: pointer;">
+                                <i class="fa-solid fa-copy"></i> نسخ قالب التصعيد
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+            }
+
+            showToast(complianceBadge);
+            if (typeof playSuccessChime === 'function') playSuccessChime();
         }
 
 </script>
