@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hs-vendor-suite-v11-unified-template';
+const CACHE_NAME = 'hs-vendor-suite-v12-clean-macros';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.webmanifest'
