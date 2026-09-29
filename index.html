@@ -5071,22 +5071,31 @@ ${titles}
         "id": 50,
         "category": "Live Order Inquiries",
         "sub_category": "Delivery inquiries |  الاستفسار عن التوصيل",
-        "case_title": "Delivery late | Rider ETA | تأخر في التوصيل والوقت المتوقع للوصول",
+        "case_title": "Request Rider ETA to Pickup | وقت وصول المندوب للاستلام",
         "url": "https://hungerstation.knowledgeowl.com/home/delivery-inquiries-",
         "ccr": "Live Order Inquiries -> Delivery inquiries |  الاستفسار عن التوصيل -> Delivery late / Rider ETA | تأخر في التوصيل / الوقت المتوقع للوصول",
-        "procedure_arabic": "نحيطكم علماً بأنه تم التحقق من الطلب ومتابعة موقع المندوب والوقت المتوقع للوصول (Rider ETA)، وتم توصيل الطلب إلى العميل بنجاح.",
-        "procedure_english": "Please be informed that we have verified the order and checked the Rider ETA location, and the order has been successfully delivered to the customer.",
-        "full_content": "Delivery late | تأخر في التوصيل\nProcedure (English)\nIf the partner inquires about the order and the delivery driver has not arrived to pick up the order:\n*Check the order status, and the order status will be marked as complete (in all cases).\n-The partner is informed about the order status, and condition, and provided with sufficient information based on what is visible on the order page.\nUse the below macro and edit it due to the order situation .\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\nProcedure (Arabic)\n-في حال كان الشريك يستفسر عن الطلب و المندوب لم يأتي لاستلام الطلب\n*يتم التحقق من حالة الطلب و ستكون حالة الطلب مكتملة ( في كل الاحوال )\n-يتم اخبار الشريك بوضع الطلب و حالته وتزويده بالمعلومات الكافية حسب ماهو ظاهر في ( صفحة الطلب )\nيتم استخدام الرد ادناه و تعديله حسب مقتضى الحال و وضع الطلب  .\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nWe inform you that the order has been checked and the order has been successfully delivered to the customer.\nWe would like to inform you that you will receive an automated survey for this ticket.\nFive Star rating means you are very satisfactory.\nOne Star rating means you are not satisfactory.\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا (اسم الشريك) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nنحيطكم علماً بأنه تم التحقق من الطلب تم توصيل الطلب الى العميل بنجاح .\nنحيطكم علماً بأنه سوف يصلكم إستبيان تلقائي لهذه التذكرة.\nخمس نجوم تعني أنك راضٍ\nنجمة واحدة تعني أنك غير راضٍ\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample\n302286095 rider eta request rider eta eta driver eta rider location delivery eta",
+        "procedure_arabic": "نعتذر لك عن التأخير 💛\nحرصًا منا على سرعة وصول الطلب، تم تحويله إلى مندوب أقرب لموقعك.\nبإذن الله يوصلك في أسرع وقت ممكن.",
+        "procedure_english": "Apologies for the delay 💛\nTo ensure faster delivery, the order has been reassigned to a closer rider.\nThey will arrive at your branch as soon as possible.",
+        "full_content": "Request Rider ETA to Pickup Policy and Macro",
         "sub_macros": [
             {
                 "id": 1,
-                "title_arabic": "الرد الرسمي المعتمد",
-                "title_english": "Primary Official Macro",
-                "macro_arabic": "نحيطكم علماً بأنه تم التحقق من الطلب ومتابعة موقع المندوب والوقت المتوقع للوصول (Rider ETA)، وتم توصيل الطلب إلى العميل بنجاح.",
-                "macro_english": "Please be informed that we have verified the order and checked the Rider ETA location, and the order has been successfully delivered to the customer.",
-                "keywords": []
+                "title_arabic": "الرد الرسمي المعتمد: إعادة تعيين المندوب والأقرب للموقع",
+                "title_english": "Official Macro: Reassigned to Closer Rider",
+                "macro_arabic": "نعتذر لك عن التأخير 💛\nحرصًا منا على سرعة وصول الطلب، تم تحويله إلى مندوب أقرب لموقعك.\nبإذن الله يوصلك في أسرع وقت ممكن.",
+                "macro_english": "Apologies for the delay 💛\nTo ensure faster delivery, the order has been reassigned to a closer rider.\nThey will arrive at your branch as soon as possible.",
+                "keywords": [
+                    "eta",
+                    "تأخر",
+                    "وصول",
+                    "مندوب",
+                    "سائق",
+                    "delay",
+                    "وقت وصول"
+                ]
             }
-        ]
+        ],
+        "internal_sop": "إجراء وقت وصول المندوب للاستلام (Rider ETA):\n1. التواصل مع المندوب المعين هاتفياً:\n- في حال الرد: التأكد من وقت الوصول المتوقع (ETA)، وتحديث التاجر بالوقت المتوقع بالدقائق.\n- في حال عدم الرد: يُمنع نهائياً إبلاغ الشريك بأننا تواصلنا مع المندوب ولم يرد! يتم فوراً تحويل الطلب لمندوب أقرب وإرسال ماكرو الاعتذار والتحويل."
     },
     {
         "id": 51,
@@ -5170,7 +5179,8 @@ ${titles}
                 "macro_english": "Dear Valued Partner,\nPlease find attached the official invoice explanation guide along with the summary of your invoice details.\nBest regards,\nHungerstation Support",
                 "keywords": []
             }
-        ]
+        ],
+        "internal_sop": "دليل مطابقة الفاتورة والإكسيل (W-O-N-U-Y):\n1. لحساب مبيعات المطعم ومطابقتها بدقة من شيت الإكسيل، اجمع الأعمدة الخمسة:\n   - W: إجمالي المبيعات الإلكترونية للمطعم.\n   - O: العمولات المستحقة للمنصة.\n   - N: الخصومات وتعويضات العملاء.\n   - U: ضريبة القيمة المضافة (VAT).\n   - Y: صافي المستحقات (الحوالة النهائية).\n2. البوابة vs الفاتورة: الشريك يرى في بوابة الشركاء (الرقم الإجمالي المبدئي للمبيعات) بينما الفاتورة توضح (الرقم الصافي النهائي بعد خصم العمولات والضرائب والتعويضات). يجب توضيح الفرق بأسلوب هادئ ومهني."
     },
     {
         "id": 55,
@@ -5242,19 +5252,41 @@ ${titles}
         "case_title": "Compensation | تعويض",
         "url": "https://hungerstation.knowledgeowl.com/home/invoice-inquiries-",
         "ccr": "Billing Inquiries -> Invoice inquiries | الاستعلام عن الفاتوره -> Compensation | تعويض",
-        "procedure_arabic": "يرجى إدخال رقم الطلب وتوفير التفاصيل المطلوبة وإرفاق المستندات الداعمة، وسيتم مراجعة الطلب وحلّه خلال 3 أيام عمل.",
-        "procedure_english": "You can submit a compensation request through the Partner Portal by following these steps:\nHelp → New Inquiry → Payments / Billing / Bank details update → Order Dispute.\nPlease enter the order number, provide the required details, attach the supporting documents, and click \"Submit\".\nYour request will either e resolved automatically or forwarded to the relevant team for review.\nPlease note that the review process may take up to 3 business days . You will be notified once the review has been completed.\nThank you for your cooperation.\nProcedure\n(Arabic)\ncanned response\nYour request has been forwarded to the support team and they will respond to you within twenty four hours\nExample\n300027022",
-        "full_content": "Compensation | تعويض\nProcedure (English)\nDear Partner,\nThank you for contacting HungerStation.\nYou can submit a compensation request through the Partner Portal by following these steps:\nHelp → New Inquiry → Payments / Billing / Bank details update → Order Dispute.\nPlease enter the order number, provide the required details, attach the supporting documents, and click \"Submit\".\nYour request will either e resolved automatically or forwarded to the relevant team for review.\nPlease note that the review process may take up to 3 business days . You will be notified once the review has been completed.\nThank you for your cooperation.\nHungerStation\nProcedure\n(Arabic)\nشريكنا العزيز،\nشكراً لتواصلك مع هنقرستيشن.\nيمكنك تقديم طلب تعويض عبر بوابة الشركاء من خلال:\nمساعدة (Help) ← استفسار جديد ← استفسارات تتعلق بالفواتير و المدفوعات ← طلب تعويض.\nيرجى إدخال رقم الطلب، تفاصيل الطلب، وإرفاق المستندات المطلوبة ثم الضغط على \"إرسال\".\nسيتم إما حل الطلب تلقائياً أو إنشاء تذكرة لمراجعته من قبل الدعم الفني.\nيرجى العلم أن مراجعة الطلب قد تستغرق حتى 3 أيام عمل، وسيتم إشعاركم بالنتيجة فور الانتهاء من المراجعة.\nشكراً لتعاونكم.\nهنقرستيشن\ncanned response\nالرد الموحد\nYour request has been forwarded to the support team and they will respond to you within twenty four hours\nولا يهمك سيتم تحويل طلبك إلى فريق الدعم لدينا، وسيتم التواصل معك خلال 24 ساعة\nExample\n300027022 اعتراض على طلب يعترض على طلب تعويض العميل خصم طلب تظلم طلب تظلم تعويضات order dispute compensation refund اعتراض على طلب يعترض على طلب تعويض العميل خصم طلب تظلم طلب تظلم تعويضات order dispute compensation refund",
+        "procedure_arabic": "شكرًا لتواصلك معنا بخصوص طلب التعويض. يرجى تزويدنا بالأدلة الداعمة (لقطات شاشة، مستندات، أو أي إثبات) حتى نتمكن من معالجة طلبك.",
+        "procedure_english": "Thank you for reaching out regarding your compensation request. Kindly provide supporting evidence (screenshots, documents, or any proof) so we can process your request.",
+        "full_content": "Compensation Cases Verification and Handling SOP",
         "sub_macros": [
             {
                 "id": 1,
-                "title_arabic": "الرد الرسمي المعتمد",
-                "title_english": "Primary Official Macro",
-                "macro_arabic": "يرجى إدخال رقم الطلب وتوفير التفاصيل المطلوبة وإرفاق المستندات الداعمة، وسيتم مراجعة الطلب وحلّه خلال 3 أيام عمل.",
-                "macro_english": "You can submit a compensation request through the Partner Portal by following these steps:\nHelp → New Inquiry → Payments / Billing / Bank details update → Order Dispute.\nPlease enter the order number, provide the required details, attach the supporting documents, and click \"Submit\".\nYour request will either e resolved automatically or forwarded to the relevant team for review.\nPlease note that the review process may take up to 3 business days . You will be notified once the review has been completed.\nThank you for your cooperation.\nProcedure\n(Arabic)\ncanned response\nYour request has been forwarded to the support team and they will respond to you within twenty four hours\nExample\n300027022",
-                "keywords": []
+                "title_arabic": "ماكرو طلب الأدلة الداعمة (Require Evidence)",
+                "title_english": "Request Supporting Evidence Macro",
+                "macro_arabic": "شكرًا لتواصلك معنا بخصوص طلب التعويض. يرجى تزويدنا بالأدلة الداعمة (لقطات شاشة، مستندات، أو أي إثبات) حتى نتمكن من معالجة طلبك.",
+                "macro_english": "Thank you for reaching out regarding your compensation request. Kindly provide supporting evidence (screenshots, documents, or any proof) so we can process your request.",
+                "keywords": [
+                    "أدلة",
+                    "اثبات",
+                    "صور",
+                    "مستندات",
+                    "evidence",
+                    "proof"
+                ]
+            },
+            {
+                "id": 2,
+                "title_arabic": "ماكرو تحويل الطلب لفريق النزاعات (Escalate to Disputes)",
+                "title_english": "Forwarded to Dispute Team Macro",
+                "macro_arabic": "تم تحويل طلبك إلى قسم التحقق من التعويضات وسوف يتم الرد عليك في أقرب وقت ممكن.",
+                "macro_english": "Your request has been forwarded to the Dispute Team, and you will receive a response as soon as possible.",
+                "keywords": [
+                    "تحويل",
+                    "نزاعات",
+                    "فريق التعويضات",
+                    "forwarded",
+                    "dispute"
+                ]
             }
-        ]
+        ],
+        "internal_sop": "إجراءات التعامل مع طلبات التعويض (تحديث لتجنب الـ D-Sats):\n1. التحقق أولاً من حالة الطلب عبر رابط النزاعات (Order Disputes) برقم الطلب قبل إرسال أي خطوات للشريك.\n2. إذا كانت الحالة (Rejected): يتم الاعتذار للشريك مع توضيح سبب الرفض، ويُمنع منعاً باتاً إعادة إرسال خطوات التقديم أو نفس الماكرو.\n3. إذا كانت الحالة (Require Evidence): اطلب المستندات الداعمة باستخدام ماكرو طلب الأدلة ثم صعد التذكرة لفريق النزاعات.\n4. إذا تم تقديم الأدلة: استخدم ماكرو التحويل لقسم النزاعات."
     },
     {
         "id": 59,
@@ -5598,19 +5630,25 @@ ${titles}
         "case_title": "Account management feedback on existing issue required | تقديم ملاحظات على ادارة الحسابات بسبب مشكلة حالية",
         "url": "https://hungerstation.knowledgeowl.com/home/account-management-",
         "ccr": "Contract and Sales Inquiries -> Account management  |  ادارة  الحساب -> Account management feedback on existing issue required | تقديم ملاحظات على ادارة الحسابات بسبب مشكلة حالية",
-        "procedure_arabic": "نعتذر لكم وبشدة عن أي تأخير أو عدم رد من قبل مدير الحساب المخصص لفرعكم.\nنفيدكم بأنه تم رفع وتصعيد ملاحظاتكم وشكواكم مباشرة إلى مدير المنطقة (Area Manager) للتحقق والمتابعة الفورية والتواصل معكم خلال أقرب وقت ممكن معتذرين عن أي إزعاج.",
-        "procedure_english": "We sincerely apologize for any delay or lack of response from your assigned Account Manager.\nPlease be informed that your feedback has been directly escalated to the Area Manager for immediate review and follow-up. They will get in touch with you shortly.",
-        "full_content": "Account management feedback on existing issue required | تقديم ملاحظات على ادارة الحسابات بسبب مشكلة حالية\nProcedure (English)\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\nProcedure (Arabic)\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nنعتذر لكم وبشدة عن أي تقصير أو تأخير قد واجهتموه في التعامل مع مدير الحساب. نود إبلاغكم بأنه تم تصعيد طلبكم وشكواكم مباشرة إلى (مدير المنطقة - Area Manager) لمتابعة الحالة بشكل عاجل، وسيتم التواصل معكم من قبله خلال 3 أيام عمل لتقديم الدعم المطلوب وحل المشكلة.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample مدير الحساب مدير المنطقة لا يرد ما يرد يتجاهل يتصل التصلت بمدير الحساب ما يجاوب شكوى مدير الحساب تصعيد لمدير المنطقة account manager area manager no response",
+        "procedure_arabic": "لقد تم تحويل طلبكم إلى مدير المنطقه حيث سيقوم مدير المنطقه بمتابعة طلبكم وسوف يتم التواصل معكم خلال 3 أيام عمل باستثناء يومي الجمعة والسبت في حال وجود أي استفسارات.",
+        "procedure_english": "Your request has been forwarded to the Area Manager. He/she will assist in resolving the request and contact you within 3 business days excluding Friday and Saturday.",
+        "full_content": "Change Account Manager Policy - Escalate to Area Manager within 3 business days",
         "sub_macros": [
             {
                 "id": 1,
-                "title_arabic": "الرد الرسمي المعتمد",
-                "title_english": "Primary Official Macro",
-                "macro_arabic": "نعتذر لكم وبشدة عن أي تأخير أو عدم رد من قبل مدير الحساب المخصص لفرعكم.\nنفيدكم بأنه تم رفع وتصعيد ملاحظاتكم وشكواكم مباشرة إلى مدير المنطقة (Area Manager) للتحقق والمتابعة الفورية والتواصل معكم خلال أقرب وقت ممكن معتذرين عن أي إزعاج.",
-                "macro_english": "We sincerely apologize for any delay or lack of response from your assigned Account Manager.\nPlease be informed that your feedback has been directly escalated to the Area Manager for immediate review and follow-up. They will get in touch with you shortly.",
-                "keywords": []
+                "title_arabic": "الرد الرسمي: تحويل لمدير المنطقة (Area Manager)",
+                "title_english": "Forwarded to Area Manager Macro",
+                "macro_arabic": "لقد تم تحويل طلبكم إلى مدير المنطقه حيث سيقوم مدير المنطقه بمتابعة طلبكم وسوف يتم التواصل معكم خلال 3 أيام عمل باستثناء يومي الجمعة والسبت في حال وجود أي استفسارات.",
+                "macro_english": "Your request has been forwarded to the Area Manager. He/she will assist in resolving the request and contact you within 3 business days excluding Friday and Saturday.",
+                "keywords": [
+                    "تغيير مدير الحساب",
+                    "مدير المنطقة",
+                    "area manager",
+                    "change am"
+                ]
             }
-        ]
+        ],
+        "internal_sop": "سياسة تغيير مدير الحساب (Change AM): عند طلب الشريك تغيير مدير الحساب، يتم تصعيد الحالة لمدير المنطقة (Area Manager) وليس مدير الحساب، والـ SLA هو 3 أيام عمل باستثناء الجمعة والسبت."
     },
     {
         "id": 74,
@@ -5619,19 +5657,29 @@ ${titles}
         "case_title": "Premium Listing interest | الاهتمام في الترويج المميز",
         "url": "https://hungerstation.knowledgeowl.com/home/premium-features-and-promotional-",
         "ccr": "Contract and Sales Inquiries -> Premium features and Promotional  |  الميزات الخاصة والصفقات الترويجية -> Premium Listing interest | الاهتمام في الترويج المميز",
-        "procedure_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب  حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاث أيام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
-        "procedure_english": "If the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\n(English)\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935",
-        "full_content": "Premium Listing interest | الاهتمام في الترويج المميز\nProcedure (English)\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\nProcedure (Arabic)\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nلقد تم تحويل طلبكم إلى مدير الحساب  حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاث أيام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample",
+        "procedure_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
+        "procedure_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+        "full_content": "AM Offers and Deals 10 Business Days SLA Policy",
         "sub_macros": [
             {
                 "id": 1,
-                "title_arabic": "الرد الرسمي المعتمد",
-                "title_english": "Primary Official Macro",
-                "macro_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب  حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاث أيام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
-                "macro_english": "If the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\n(English)\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935",
-                "keywords": []
+                "title_arabic": "الرد الرسمي المعتمد (10 أيام عمل وفق اتفاقية العروض)",
+                "title_english": "Official AM Offers Macro (10 Business Days)",
+                "macro_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
+                "macro_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+                "keywords": [
+                    "عروض",
+                    "صفقة",
+                    "ترويج",
+                    "مدير الحساب",
+                    "10 ايام",
+                    "offers",
+                    "deal",
+                    "am"
+                ]
             }
-        ]
+        ],
+        "internal_sop": "تحديث الـ SLA لمدراء الحسابات (AM - العروض): يطبق على حالات العروض والصفقات والترويج المميز. مدة الاستجابة 10 أيام عمل باستثناء الجمعة والسبت وفق اتفاقية العروض الموقعة."
     },
     {
         "id": 75,
@@ -5640,19 +5688,29 @@ ${titles}
         "case_title": "Premium listing performance issue | مشكلة أداء القائمة المميزة",
         "url": "https://hungerstation.knowledgeowl.com/home/premium-features-and-promotional-",
         "ccr": "Contract and Sales Inquiries -> Premium features and Promotional  |  الميزات الخاصة والصفقات الترويجية -> Premium listing performance issue | مشكلة أداء القائمة المميزة",
-        "procedure_arabic": "لقد تم تحويل طلبكم إلى قسم مدير الحساب حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاث ايام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
-        "procedure_english": "Premium listing performance issue | مشكلة أداء القائمة المميزة\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\n(English)\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935",
-        "full_content": "Premium listing performance issue | مشكلة أداء القائمة المميزة\nProcedure (English)\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\nProcedure (Arabic)\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nلقد تم تحويل طلبكم إلى قسم مدير الحساب حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاث ايام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample",
+        "procedure_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
+        "procedure_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+        "full_content": "AM Offers and Deals 10 Business Days SLA Policy",
         "sub_macros": [
             {
                 "id": 1,
-                "title_arabic": "الرد الرسمي المعتمد",
-                "title_english": "Primary Official Macro",
-                "macro_arabic": "لقد تم تحويل طلبكم إلى قسم مدير الحساب حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاث ايام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
-                "macro_english": "Premium listing performance issue | مشكلة أداء القائمة المميزة\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\n(English)\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935",
-                "keywords": []
+                "title_arabic": "الرد الرسمي المعتمد (10 أيام عمل وفق اتفاقية العروض)",
+                "title_english": "Official AM Offers Macro (10 Business Days)",
+                "macro_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
+                "macro_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+                "keywords": [
+                    "عروض",
+                    "صفقة",
+                    "ترويج",
+                    "مدير الحساب",
+                    "10 ايام",
+                    "offers",
+                    "deal",
+                    "am"
+                ]
             }
-        ]
+        ],
+        "internal_sop": "تحديث الـ SLA لمدراء الحسابات (AM - العروض): يطبق على حالات العروض والصفقات والترويج المميز. مدة الاستجابة 10 أيام عمل باستثناء الجمعة والسبت وفق اتفاقية العروض الموقعة."
     },
     {
         "id": 76,
@@ -5701,19 +5759,29 @@ ${titles}
         "case_title": "Special campaign participation interest | الاهتمام في الحملات التسويقية",
         "url": "https://hungerstation.knowledgeowl.com/home/premium-features-and-promotional-",
         "ccr": "Contract and Sales Inquiries -> Premium features and Promotional  |  الميزات الخاصة والصفقات الترويجية -> Special campaign participation interest | الاهتمام في الحملات التسويقية",
-        "procedure_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاث ايام  عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
-        "procedure_english": "Special campaign participation interest | الاهتمام في الحملات التسويقية\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\n(English)\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935",
-        "full_content": "Special campaign participation interest | الاهتمام في الحملات التسويقية\nProcedure (English)\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\nProcedure (Arabic)\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nلقد تم تحويل طلبكم إلى مدير الحساب حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاث ايام  عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample",
+        "procedure_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
+        "procedure_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+        "full_content": "AM Offers and Deals 10 Business Days SLA Policy",
         "sub_macros": [
             {
                 "id": 1,
-                "title_arabic": "الرد الرسمي المعتمد",
-                "title_english": "Primary Official Macro",
-                "macro_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاث ايام  عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
-                "macro_english": "Special campaign participation interest | الاهتمام في الحملات التسويقية\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\n(English)\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935",
-                "keywords": []
+                "title_arabic": "الرد الرسمي المعتمد (10 أيام عمل وفق اتفاقية العروض)",
+                "title_english": "Official AM Offers Macro (10 Business Days)",
+                "macro_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
+                "macro_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+                "keywords": [
+                    "عروض",
+                    "صفقة",
+                    "ترويج",
+                    "مدير الحساب",
+                    "10 ايام",
+                    "offers",
+                    "deal",
+                    "am"
+                ]
             }
-        ]
+        ],
+        "internal_sop": "تحديث الـ SLA لمدراء الحسابات (AM - العروض): يطبق على حالات العروض والصفقات والترويج المميز. مدة الاستجابة 10 أيام عمل باستثناء الجمعة والسبت وفق اتفاقية العروض الموقعة."
     },
     {
         "id": 78,
@@ -5722,19 +5790,29 @@ ${titles}
         "case_title": "Termination of premium listing | إنهاء الإدراج المتميز",
         "url": "https://hungerstation.knowledgeowl.com/home/premium-features-and-promotional-",
         "ccr": "Contract and Sales Inquiries -> Premium features and Promotional  |  الميزات الخاصة والصفقات الترويجية -> Termination of premium listing | إنهاء الإدراج المتميز",
-        "procedure_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب  حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاث أيام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
-        "procedure_english": "Termination of premium listing | إنهاء الإدراج المتميز\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\n(English)\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935",
-        "full_content": "Termination of premium listing | إنهاء الإدراج المتميز\nProcedure (English)\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\nProcedure (Arabic)\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nلقد تم تحويل طلبكم إلى مدير الحساب  حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاث أيام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample",
+        "procedure_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
+        "procedure_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+        "full_content": "AM Offers and Deals 10 Business Days SLA Policy",
         "sub_macros": [
             {
                 "id": 1,
-                "title_arabic": "الرد الرسمي المعتمد",
-                "title_english": "Primary Official Macro",
-                "macro_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب  حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاث أيام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
-                "macro_english": "Termination of premium listing | إنهاء الإدراج المتميز\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\n(English)\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935",
-                "keywords": []
+                "title_arabic": "الرد الرسمي المعتمد (10 أيام عمل وفق اتفاقية العروض)",
+                "title_english": "Official AM Offers Macro (10 Business Days)",
+                "macro_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
+                "macro_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+                "keywords": [
+                    "عروض",
+                    "صفقة",
+                    "ترويج",
+                    "مدير الحساب",
+                    "10 ايام",
+                    "offers",
+                    "deal",
+                    "am"
+                ]
             }
-        ]
+        ],
+        "internal_sop": "تحديث الـ SLA لمدراء الحسابات (AM - العروض): يطبق على حالات العروض والصفقات والترويج المميز. مدة الاستجابة 10 أيام عمل باستثناء الجمعة والسبت وفق اتفاقية العروض الموقعة."
     },
     {
         "id": 79,
@@ -5743,19 +5821,29 @@ ${titles}
         "case_title": "Interest in a deal | مهتم بصفقة",
         "url": "https://hungerstation.knowledgeowl.com/home/premium-features-and-promotional-",
         "ccr": "Contract and Sales Inquiries -> Premium features and Promotional  |  الميزات الخاصة والصفقات الترويجية -> Interest in a deal | مهتم بصفقة",
-        "procedure_arabic": ": شركة لوجستية\nيسعدنا اهتمامكم ورغبتكم في الانضمام لعائلة شركاء هنقرستيشن. برجاء إرسال طلبكم إلى فريقنا للدعم اللوجستي عبر البريد الإلكتروني (\n) حيث سيقوم الفريق بدعمكم بأفضل طريقة ممكنه.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nالتحويل الى قسم آخر  :\nبخصوص طلبكم, لقد تم تحويله إلى قسم (أسم القسم) و سيتم الرد عليكم خلال يومين عمل.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
-        "procedure_english": "Interest in a deal | مهتم بصفقة\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again\n(English)\n(Arabic)\nlogistic company:\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nWe are excited to know about your interest to partner with Hungerstation. Kindly send your request to our logistics team on\n3pl.registration@hungerstation.com\nand they will assist you in the best way possible.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nTransfer to Other Section :\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to the (name of department) and they shall revert to you within two working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\n3pl.registration@hungerstation.com",
-        "full_content": "Interest in a deal | مهتم بصفقة\nProcedure (English)\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again\nProcedure (Arabic)\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nlogistic company:\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nWe are excited to know about your interest to partner with Hungerstation. Kindly send your request to our logistics team on\n3pl.registration@hungerstation.com\nand they will assist you in the best way possible.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\n--------------------------------------------------------------------------\nTransfer to Other Section :\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to the (name of department) and they shall revert to you within two working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\n: شركة لوجستية\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nيسعدنا اهتمامكم ورغبتكم في الانضمام لعائلة شركاء هنقرستيشن. برجاء إرسال طلبكم إلى فريقنا للدعم اللوجستي عبر البريد الإلكتروني (\n3pl.registration@hungerstation.com\n) حيث سيقوم الفريق بدعمكم بأفضل طريقة ممكنه.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\n--------------------------------------------------------------------------\nالتحويل الى قسم آخر  :\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nبخصوص طلبكم, لقد تم تحويله إلى قسم (أسم القسم) و سيتم الرد عليكم خلال يومين عمل.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample",
+        "procedure_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
+        "procedure_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+        "full_content": "AM Offers and Deals 10 Business Days SLA Policy",
         "sub_macros": [
             {
                 "id": 1,
-                "title_arabic": "الرد الرسمي المعتمد",
-                "title_english": "Primary Official Macro",
-                "macro_arabic": ": شركة لوجستية\nيسعدنا اهتمامكم ورغبتكم في الانضمام لعائلة شركاء هنقرستيشن. برجاء إرسال طلبكم إلى فريقنا للدعم اللوجستي عبر البريد الإلكتروني (\n) حيث سيقوم الفريق بدعمكم بأفضل طريقة ممكنه.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nالتحويل الى قسم آخر  :\nبخصوص طلبكم, لقد تم تحويله إلى قسم (أسم القسم) و سيتم الرد عليكم خلال يومين عمل.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
-                "macro_english": "Interest in a deal | مهتم بصفقة\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again\n(English)\n(Arabic)\nlogistic company:\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nWe are excited to know about your interest to partner with Hungerstation. Kindly send your request to our logistics team on\n3pl.registration@hungerstation.com\nand they will assist you in the best way possible.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nTransfer to Other Section :\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to the (name of department) and they shall revert to you within two working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\n3pl.registration@hungerstation.com",
-                "keywords": []
+                "title_arabic": "الرد الرسمي المعتمد (10 أيام عمل وفق اتفاقية العروض)",
+                "title_english": "Official AM Offers Macro (10 Business Days)",
+                "macro_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
+                "macro_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+                "keywords": [
+                    "عروض",
+                    "صفقة",
+                    "ترويج",
+                    "مدير الحساب",
+                    "10 ايام",
+                    "offers",
+                    "deal",
+                    "am"
+                ]
             }
-        ]
+        ],
+        "internal_sop": "تحديث الـ SLA لمدراء الحسابات (AM - العروض): يطبق على حالات العروض والصفقات والترويج المميز. مدة الاستجابة 10 أيام عمل باستثناء الجمعة والسبت وفق اتفاقية العروض الموقعة."
     },
     {
         "id": 80,
@@ -5764,40 +5852,59 @@ ${titles}
         "case_title": "Termination of a deal | إنهاء الصفقة",
         "url": "https://hungerstation.knowledgeowl.com/home/premium-features-and-promotional-",
         "ccr": "Contract and Sales Inquiries -> Premium features and Promotional  |  الميزات الخاصة والصفقات الترويجية -> Termination of a deal | إنهاء الصفقة",
-        "procedure_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاثة أيام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
-        "procedure_english": "Termination of a deal | إنهاء الصفقة\n(English)\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935",
-        "full_content": "Termination of a deal | إنهاء الصفقة\nProcedure (English)\nProcedure (Arabic)\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nلقد تم تحويل طلبكم إلى مدير الحساب حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاثة أيام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample\n302265857",
+        "procedure_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
+        "procedure_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+        "full_content": "AM Offers and Deals 10 Business Days SLA Policy",
         "sub_macros": [
             {
                 "id": 1,
-                "title_arabic": "الرد الرسمي المعتمد",
-                "title_english": "Primary Official Macro",
-                "macro_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاثة أيام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
-                "macro_english": "Termination of a deal | إنهاء الصفقة\n(English)\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935",
-                "keywords": []
+                "title_arabic": "الرد الرسمي المعتمد (10 أيام عمل وفق اتفاقية العروض)",
+                "title_english": "Official AM Offers Macro (10 Business Days)",
+                "macro_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
+                "macro_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+                "keywords": [
+                    "عروض",
+                    "صفقة",
+                    "ترويج",
+                    "مدير الحساب",
+                    "10 ايام",
+                    "offers",
+                    "deal",
+                    "am"
+                ]
             }
-        ]
+        ],
+        "internal_sop": "تحديث الـ SLA لمدراء الحسابات (AM - العروض): يطبق على حالات العروض والصفقات والترويج المميز. مدة الاستجابة 10 أيام عمل باستثناء الجمعة والسبت وفق اتفاقية العروض الموقعة."
     },
     {
         "id": 82,
         "category": "Partner Feedback",
         "sub_category": "Negative Positive partner feedback | تعليقات الشريك السلبية والايجابية",
-        "case_title": "Rider related | متعلقة بالمندوب",
+        "case_title": "Rider-Related Complaints | الشكاوى المتعلقة بالسائق وملاحظات السلوك",
         "url": "https://hungerstation.knowledgeowl.com/home/negative-positive-partner-feedback-",
         "ccr": "Partner Feedback -> Negative Positive partner feedback | تعليقات الشريك السلبية والايجابية -> Rider related | متعلقة بالمندوب",
-        "procedure_arabic": "لقد تم تحويل طلبكم إلى القسم الخاص بالمناديب  حيث سيقوم القسم  بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاثة أيام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
-        "procedure_english": "(English)\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to the logistic department and they shall revert to you within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935",
-        "full_content": "Rider related | متعلقة بالمندوب\nProcedure (English)\nProcedure (Arabic)\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to the logistic department and they shall revert to you within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nلقد تم تحويل طلبكم إلى القسم الخاص بالمناديب  حيث سيقوم القسم  بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاثة أيام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample",
+        "procedure_arabic": "نتفهم قلقك ونأسف على التجربة التي حصلت. نؤكد لك بأنه تم اتخاذ الإجراء اللازم مع السائق لتفادي تكرار هذه المشكلة مستقبلاً. ملاحظاتك محل تقدير دائم ومساعدتك تهمنا لنضمن أفضل تجربة ممكنة.",
+        "procedure_english": "We truly understand your concern and we’re sorry for the experience. Please rest assured that we’ve taken the necessary action with the rider to prevent this from happening again. Your feedback is always appreciated.",
+        "full_content": "Rider-Related Complaints Strict Handling SOP",
         "sub_macros": [
             {
                 "id": 1,
-                "title_arabic": "الرد الرسمي المعتمد",
-                "title_english": "Primary Official Macro",
-                "macro_arabic": "لقد تم تحويل طلبكم إلى القسم الخاص بالمناديب  حيث سيقوم القسم  بمتابعة طلبكم وسيتم التواصل معكم خلال ثلاثة أيام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
-                "macro_english": "(English)\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to the logistic department and they shall revert to you within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935",
-                "keywords": []
+                "title_arabic": "الرد الرسمي المعتمد لشكاوى السائقين",
+                "title_english": "Official Rider Complaint Macro",
+                "macro_arabic": "نتفهم قلقك ونأسف على التجربة التي حصلت. نؤكد لك بأنه تم اتخاذ الإجراء اللازم مع السائق لتفادي تكرار هذه المشكلة مستقبلاً. ملاحظاتك محل تقدير دائم ومساعدتك تهمنا لنضمن أفضل تجربة ممكنة.",
+                "macro_english": "We truly understand your concern and we’re sorry for the experience. Please rest assured that we’ve taken the necessary action with the rider to prevent this from happening again. Your feedback is always appreciated.",
+                "keywords": [
+                    "شكوى",
+                    "سائق",
+                    "مندوب",
+                    "سلوك",
+                    "rider",
+                    "complaint",
+                    "driver"
+                ]
             }
-        ]
+        ],
+        "internal_sop": "تحديث سياسة شكاوى السائقين المعتمدة:\n1. استخدام الماكرو المعتمد المباشر أعلاه.\n2. يُمنع منعاً باتاً تعبئة أي نموذج (Form).\n3. يُمنع ذكر أي مدة زمنية للحل (No SLA).\n4. يُمنع تصعيد التذكرة إلى (Non-live) مرة أخرى لهذا التصنيف."
     },
     {
         "id": 83,
@@ -6202,6 +6309,144 @@ ${titles}
                 "keywords": []
             }
         ]
+    },
+    {
+        "id": 98,
+        "category": "Live Order Inquiries",
+        "sub_category": "Issue with order | مشكلة في الطلب",
+        "case_title": "QR Code Pickup Feature | ميزة استلام الطلب برمز QR",
+        "url": "https://hungerstation.knowledgeowl.com/home/qr-code-pickup",
+        "ccr": "Live Order Inquiries -> Issue with order | مشكلة في الطلب -> QR Code Pickup Feature | ميزة استلام الطلب برمز QR",
+        "procedure_arabic": "عزيزي الشريك، بخصوص عملية استلام الطلب عبر رمز QR، يرجى اتباع الخطوات التالية:\n1. الإيصال أولاً: دع السائق يمسح رمز الاستلام المطبوع على الإيصال، أو يدخل أول حرفين من الرمز في جهازه إذا تعذر المسح.\n2. من الطابعة: في حال عدم توفر الإيصال، افتح تفاصيل الطلب من قائمة \"الطلبات النشطة\" واضغط على زر \"عرض رمز QR\" ليمسحه السائق.\n3. تأكيد الاستلام: يرجى عدم تسليم الطلب للسائق إلا بعد ظهور عبارة \"تم استلام الطلب\" (Order Picked Up) على جهاز السائق لضمان توثيق الاستلام بنجاح.",
+        "procedure_english": "Dear Partner, regarding QR code pickup, please guide the staff to follow these steps:\n1. Receipt First: Let the rider scan the QR code printed on the receipt, or input the 2-character PIN from the receipt if scanning fails.\n2. From the Printer: If receipt is unavailable, open the order under \"Active Orders\" and tap \"Show QR Code\" for the rider to scan.\n3. Handover Check: Do not hand over the order until \"Order Picked Up\" is displayed on the rider's device to ensure proper documentation.",
+        "full_content": "QR Code Pickup Feature Procedure and Verification Steps",
+        "internal_sop": "خطوات استلام الطلب برمز QR المحدثة:\n1. الإيصال هو الأساس (ابدأ هنا): التأكد من صحة الطلب في القائمة والبحث عن الإيصال المطبوع.\n2. مسح السائق للرمز: (أ) السائق يمسح الرمز من الإيصال. (ب) إذا فشل المسح، يقوم السائق بإدخال رمز مكون من حرفين (PIN) من الإيصال (استخدم أول حرفين).\n3. فتح تفاصيل الطلب من قائمة الطلبات النشطة على الطابعة (في حال لم يتوفر إيصال).\n4. الضغط على زر \"عرض رمز QR\" من الشاشة.\n5. عرض الرمز للسائق ليقوم بالمسح مباشرة من شاشة الطابعة.\n6. التحقق من استلام المتجر: انتظر تأكيد السائق، ويجب أن تظهر عبارة \"تم استلام الطلب\" على جهاز السائق قبل تسليمه الطلب.",
+        "sub_macros": [
+            {
+                "id": 1,
+                "title_arabic": "خطوات استلام QR للبائع",
+                "title_english": "Vendor QR Pickup Steps",
+                "macro_arabic": "نود إرشادكم بالخطوات الصحيحة لاستلام الطلب عبر QR: دع السائق يمسح الرمز المطبوع على الإيصال أولاً، وفي حال تعذر ذلك افتح تفاصيل الطلب من الطلبات النشطة واضغط 'عرض رمز QR' ليمسحه السائق من الشاشة.",
+                "macro_english": "Kindly follow the correct QR pickup steps: let the rider scan the receipt code first. If unavailable, open Active Orders and click 'Show QR Code' on the printer screen for the rider to scan.",
+                "keywords": [
+                    "qr",
+                    "مسح",
+                    "باركود",
+                    "رمز",
+                    "استلام",
+                    "طابعة"
+                ]
+            },
+            {
+                "id": 2,
+                "title_arabic": "إدخال حرفين PIN عند فشل المسح",
+                "title_english": "Input 2-char PIN from Receipt",
+                "macro_arabic": "في حال تعذر مسح الرمز، يمكن للسائق إدخال أول حرفين من رمز الاستلام المطبوع على الإيصال كرمز PIN لإتمام عملية الاستلام بنجاح.",
+                "macro_english": "In case scanning fails, the rider can input the first 2 characters from the receipt pickup code as a PIN to complete the pickup successfully.",
+                "keywords": [
+                    "pin",
+                    "رمز حرفين",
+                    "فشل المسح",
+                    "تعذر المسح"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 99,
+        "category": "Live Order Inquiries",
+        "sub_category": "Issue with order | مشكلة في الطلب",
+        "case_title": "Order Picked by Wrong Rider | استلام الطلب من قبل مندوب خاطئ",
+        "url": "https://hungerstation.knowledgeowl.com/home/wrong-rider-pickup",
+        "ccr": "Live Order Inquiries -> Issue with order | مشكلة في الطلب -> Order picked by wrong rider | استلام مندوب خاطئ",
+        "procedure_arabic": "عزيزي الشريك، نعتذر عن هذا الموقف بخصوص استلام الطلب من قبل مندوب غير معتمد.\nيجري حالياً التحقق والتواصل مع المناديب لاتخاذ الإجراء الفوري، ونحيطكم علماً بأنه في حال وجود أي شك في هوية المندوب مستقبلاً، يجب التأكد من رقم حساب المندوب (Rider ID) وتسجيله لديكم قبل تسليم الطلب.",
+        "procedure_english": "Dear Partner, we apologize for the inconvenience regarding the order pickup by an unauthorized rider.\nWe are currently verifying and contacting the riders to take immediate action. Please ensure verifying and noting down the Rider ID before handing over any order in the future.",
+        "full_content": "Handling Order Picked by Wrong Rider",
+        "internal_sop": "إجراء استلام الطلب من مندوب خاطئ:\n1. سيناريو مندوب واحد: الاتصال بالمندوب المعين (Assigned Rider). إذا لم يرد، يتم إلغاء الطلب (Cancel the order).\n2. سيناريو عدة مناديب: الاتصال بجميع المناديب القريبين من موقع الاستلام (Near pickup) بالتسلسل. المندوب الذي لا يرد، يتم إجراء إعادة تعيين (Reassign) للطلب إليه.\n3. إجراءات التحقق: طلب الرقم التعريفي للمندوب (ID number) المسجل لدى هنقرستيشن أو صورته أو بياناته لمساعدتنا في تحديده.",
+        "sub_macros": [
+            {
+                "id": 1,
+                "title_arabic": "تأكيد ID المندوب عند الشك",
+                "title_english": "Verify Rider ID Macro",
+                "macro_arabic": "في حال كان هنالك شك من قبلك بالمندوب لابد من التأكد من رقم حساب المندوب تسجيله لديكم.",
+                "macro_english": "In case you have any doubts about the rider, you must take from the rider his id.",
+                "keywords": [
+                    "شك",
+                    "مندوب خاطئ",
+                    "سائق غلط",
+                    "wrong rider",
+                    "id"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 100,
+        "category": "Technical Inquiry",
+        "sub_category": "Transmission Device  | الطابعات",
+        "case_title": "Paper Roll Request | طلب ورق الطابعة والماكينة",
+        "url": "https://hungerstation.knowledgeowl.com/home/paper-roll",
+        "ccr": "Technical Inquiry -> Transmission Device  | الطابعات -> Paper Roll Request | طلب ورق الطابعة",
+        "procedure_arabic": "نحيطكم علماً بأنه بإمكانكم الحصول على الأوراق الخاصة بالطابعة من أي من منافذ البيع والمكتبات التجارية.",
+        "procedure_english": "We would like to inform you that you can purchase the printer paper rolls directly from any commercial stationery or retail store.",
+        "full_content": "Paper roll request policy for partner printers",
+        "internal_sop": "إجراء طلب ورق الطابعة: إبلاغ الشريك بأنه يمكنه الحصول على رولات الورق الخاصة بالطابعة من أي منفذ بيع تجاري محلي.",
+        "sub_macros": [
+            {
+                "id": 1,
+                "title_arabic": "الرد الرسمي المعتمد",
+                "title_english": "Primary Official Macro",
+                "macro_arabic": "نحيطكم علماً بأنه بإمكانكم الحصول على الأوراق الخاصة بالطابعة من أي من منافذ البيع والمكتبات التجارية.",
+                "macro_english": "We would like to inform you that you can purchase the printer paper rolls directly from any commercial stationery or retail store.",
+                "keywords": [
+                    "ورق",
+                    "طابعة",
+                    "رول",
+                    "ماكينة",
+                    "paper",
+                    "roll"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 101,
+        "category": "Partner Data Update",
+        "sub_category": "Bank and Legal Update | الحسابات البنكية والأوراق الرسمية",
+        "case_title": "Official Escalation Templates | قوالب التصعيد الرسمية (عام / بنك وآيبان / أجهزة)",
+        "url": "https://hungerstation.knowledgeowl.com/home/escalation-templates",
+        "ccr": "Partner Data Update -> Escalation Templates | قوالب التصعيد المعتمدة",
+        "procedure_arabic": "قوالب التصعيد الرسمية المعتمدة لضمان دقة وسرعة الحل:\n1. قالب عام:\nVendor request:\nCase ID:\nAttachments: (Yes/No)\n\n2. قالب الآيبان والبنك:\nVendor request:\nCase ID:\nAttachments: (Yes-No)\n- The IBAN must be included in a company letter (addressed to Hunger Station). (Yes-No)\n- The account holder’s name must match the name registered with the bank. (Yes-No)\n- The letter must contain the company stamp and be certified by the Chamber of Commerce. (Yes-No)\n- The beneficiary’s name must match either the company name or the owner's name as written on the commercial registration. (Yes-No)\n\n3. قالب الأجهزة:\nVendor request:\nCase ID:\nAttachments: (Yes-No)\n1. Device type: (Go-win/Go-Droid)\n2. Device S/N:\n3. User email:\n4. Valid phone number for the branch:",
+        "procedure_english": "Official Escalation Templates:\n1. General Case:\nVendor request:\nCase ID:\nAttachments: (Yes/No)\n\n2. Bank Details / IBAN:\nVendor request:\nCase ID:\nAttachments: (Yes-No)\n- The IBAN must be included in a company letter (addressed to Hunger Station). (Yes-No)\n- The account holder’s name must match the name registered with the bank. (Yes-No)\n- The letter must contain the company stamp and be certified by the Chamber of Commerce. (Yes-No)\n- The beneficiary’s name must match either the company name or the owner's name as written on the commercial registration. (Yes-No)\n\n3. Device Related:\nVendor request:\nCase ID:\nAttachments: (Yes-No)\n1. Device type: (Go-win/Go-Droid)\n2. Device S/N:\n3. User email:\n4. Valid phone number for the branch:",
+        "full_content": "Official Escalation Templates for General, Bank IBAN, and Device cases",
+        "internal_sop": "استخدام القوالب المعتمدة أعلاه لجميع الحالات المصعدة إلى الأقسام المختصة لضمان عدم رفض الحالة.",
+        "sub_macros": []
+    },
+    {
+        "id": 102,
+        "category": "Contract and Sales Inquiries",
+        "sub_category": "Onboarding Support | دعم فريق التدريب والتأهيل",
+        "case_title": "Onboarding Tickets & CCR Categorization | تذاكر فريق Onboarding ودليل تصنيف CCR",
+        "url": "https://hungerstation.knowledgeowl.com/home/onboarding-tickets",
+        "ccr": "Contract and Sales Inquiries -> Onboarding -> Ticket Handling & CCR",
+        "procedure_arabic": "إرشادات تذاكر Onboarding وتصنيف CCR:\n1. التأكد من إدخال Correct Vendor ID الموجود أعلى التذكرة مع الـ Grid واسم الشريك.\n2. الاتصال بالشريك هاتفياً على الرقم المرفق قبل استخدام الماكرو.\n3. تضمين رقم التذكرة (Ticket ID) بوضوح بنهاية الرد.\n4. إلزامية استخراج إيميل الشريك من Operation Portal وتضمينه في الرد (بدونه لن يصل الرد للشريك إطلاقاً).\n5. إيميلات الفريق المعتمدة:\n- malak.alshawabkeh.ext@hungerstation.com\n- kayed.khraisat.ext@hungerstation.com\n- salahaldeen.aldebei.ext@hungerstation.com\n6. قاعدة تصنيف CCR:\n- Functionality Question: تستخدم فقط عندما يسأل الشريك عن طريقة أو خطوات رفع اعتراض أو استفسار استخدام البوابة.\n- Compensation Question: تستخدم عندما يسأل الشريك عن نتيجة تعويض، أو إبلاغ بخصم مطبق، أو مشكلة في تعويض قائم.",
+        "procedure_english": "Onboarding Tickets and CCR Categorization Guidelines:\n1. Ensure Correct Vendor ID is entered (from top of ticket with Grid and Vendor name).\n2. Call the partner on the provided phone number before using macro.\n3. Clearly include the Ticket ID at the end of the reply.\n4. Mandatory: Extract vendor email from Operation Portal and include it in reply.\n5. Approved Team Emails:\n- malak.alshawabkeh.ext@hungerstation.com\n- kayed.khraisat.ext@hungerstation.com\n- salahaldeen.aldebei.ext@hungerstation.com\n6. CCR Rule:\n- Functionality: Only when asking HOW to dispute or portal how-to.\n- Compensation: When asking about dispute result, deduction applied, or existing compensation.",
+        "full_content": "Onboarding Tickets Procedures and CCR Categorization Standards",
+        "internal_sop": "إلزامية إضافة إيميل الشريك والتأكد من التصنيف الدقيق لتفادي إعادة التوجيه الخاطئ.",
+        "sub_macros": []
+    },
+    {
+        "id": 103,
+        "category": "Technical Inquiry",
+        "sub_category": "Branch Status & Connectivity | حالة الفرع والاتصال",
+        "case_title": "Terminal Branch Closed Reasons & Logs | دليل أسباب إغلاق الفروع وسجلات الـ Terminal",
+        "url": "https://hungerstation.knowledgeowl.com/home/terminal-reasons",
+        "ccr": "Technical Inquiry -> Terminal -> Branch Status Verification",
+        "procedure_arabic": "أسباب وحلول إغلاق الفروع الـ 7 عبر سجلات الـ Terminal:\n1. Check-in Required: الشريك لم يقم بعمل Check-in ➔ توعية الشريك بضرورة عمل Check-in لبدء استقبال الطلبات.\n2. Unreachable: الجهاز غير متصل (إنترنت أو كهرباء) ➔ التأكد من الشحن والاتصال بالإنترنت واقتراح بدائل.\n3. Failure Rules: إغلاق تلقائي بسبب تكرار فشل الطلبات.\n4. Delay Rules: إغلاق تلقائي بسبب تأخير متكرر في تجهيز الطلبات.\n5. Closed: الشريك أغلق الفرع بنفسه ➔ توضيحه أنه يمكنه فتحه بنفسه في أي وقت من التطبيق.\n6. Too Busy: الشريك فعّل وضع مشغول ولم يقم بإلغائه.\n7. أسباب أخرى: قائمة طعام فارغة (Empty menu)، وضع مشغول بواسطة الدعم (Busy by support)، أو أسباب تشغيلية.",
+        "procedure_english": "Terminal 7 Branch Closure Reasons & Solutions:\n1. Check-in Required: Partner didn't check-in -> Guide partner to check-in to receive orders.\n2. Unreachable: Device disconnected (power/internet) -> Check battery, connection, suggest alternatives.\n3. Failure Rules: Repeated order failures auto-closure.\n4. Delay Rules: Repeated order delays auto-closure.\n5. Closed: Partner closed branch -> Educate that they can open it anytime from the app.\n6. Too Busy: Partner left busy mode enabled.\n7. Other: Empty menu, busy set by support, etc.",
+        "full_content": "Terminal 7 Branch Closure Reasons and Handling SOP",
+        "internal_sop": "التحقق من سجلات الـ Terminal قبل إعطاء أي توجيه للشريك والتأكد من السبب الحقيقي لإغلاق الفرع.",
+        "sub_macros": []
     }
 ];
 async function loadKBData() {
@@ -10697,78 +10942,109 @@ function parseRawMenuInput() {
 
 
 function processVendorMenuWorkbook(workbook) {
-    console.log("processVendorMenuWorkbook started with sheets:", workbook.SheetNames);
+    console.log("🚀 Universal Menu AI Dissector started with sheets:", workbook.SheetNames);
     let allSheetText = '';
     const sheetNames = workbook.SheetNames;
-    const isOfficialFormat = sheetNames.some(s => s.toLowerCase().includes('menu group') || s.toLowerCase().includes('menu products') || s.toLowerCase().includes('modifier'));
 
-    let groups = [];
-    let items = [];
-    let modifiers = [];
-
-    // Collect all text for image URL extraction
+    // 1. Collect all text across all sheets for image/drive link extraction
     sheetNames.forEach(sname => {
         const s = workbook.Sheets[sname];
         if (s) {
-            const json = XLSX.utils.sheet_to_json(s, { header: 1 });
+            const json = XLSX.utils.sheet_to_json(s, { header: 1, blankrows: false, defval: '' });
             json.forEach(row => {
                 if (Array.isArray(row)) allSheetText += ' ' + row.join(' ');
             });
         }
     });
 
-    if (isOfficialFormat) {
-        // CASE A: Official / Exported Hungerstation Menu
-        const groupSheetName = sheetNames.find(s => s.toLowerCase().includes('group')) || sheetNames[0];
-        const groupSheet = workbook.Sheets[groupSheetName];
-        if (groupSheet) {
-            const rawGroups = XLSX.utils.sheet_to_json(groupSheet);
-            rawGroups.forEach((grow, idx) => {
-                const gid = parseInt(grow['#'] || idx + 1, 10);
-                const enName = grow['english name *'] || grow['English Name'] || grow['name_en'] || '';
-                const arName = grow['arabic name *'] || grow['Arabic Name'] || grow['name_ar'] || '';
-                const enType = grow['english category type'] || 'Breakfast';
-                const arType = grow['arabic category type'] || 'الإفطار';
+    let groups = [];
+    let items = [];
+    let modifiers = [];
 
-                if (enName || arName) {
-                    groups.push({
-                        id: gid,
-                        en_name: toEnglishProper(enName || arName),
-                        ar_name: cleanProperTrim(arName || enName),
-                        name_en: toEnglishProper(enName || arName),
-                        name_ar: cleanProperTrim(arName || enName),
-                        en_type: toEnglishProper(enType),
-                        ar_type: cleanProperTrim(arType),
-                        order: gid
-                    });
-                }
-            });
+    // Helper: Normalize strings & collapse spaces
+    function cleanStr(s) {
+        if (s === null || s === undefined) return '';
+        return String(s).replace(/\s+/g, ' ').trim();
+    }
+
+    // Helper: Category Translation Pairs
+    const CATEGORY_MAP = {
+        'doritos': 'دوريتوس', 'shawarma': 'شاورما', 'chicken': 'دجاج', 'fries': 'بطاطس',
+        'snacks': 'سناك / وجبات خفيفة', 'sauces': 'الصوصات', 'drinks': 'مشروبات',
+        'beverages': 'مشروبات', 'meals': 'وجبات', 'boxes': 'بوكسات', 'burgers': 'برجر',
+        'sandwiches': 'سندوتشات', 'pizza': 'بيتزا', 'desserts': 'حلويات', 'salads': 'سلطات',
+        'appetizers': 'مقبلات', 'breakfast': 'إفطار', 'rice': 'أرز', 'kabsa': 'كبسة',
+        'seafood': 'مأكولات بحرية', 'grills': 'مشويات', 'pasta': 'باستا'
+    };
+
+    function getCategoryPair(rawCat) {
+        const norm = cleanStr(rawCat);
+        if (!norm) return { en: 'General', ar: 'عام' };
+        if (norm.includes('/') || norm.includes(' - ')) {
+            const parts = norm.split(/[\/\-]/).map(p => cleanStr(p));
+            const arPart = parts.find(p => /[\u0600-\u06FF]/.test(p)) || '';
+            const enPart = parts.find(p => /^[a-zA-Z\s&]+$/.test(p)) || '';
+            if (arPart && enPart) return { en: toEnglishProper(enPart), ar: arPart };
         }
+        const isAr = /[\u0600-\u06FF]/.test(norm);
+        if (isAr) {
+            const en = typeof getEnglishCategory === 'function' ? getEnglishCategory(norm) : 'Main Menu';
+            return { en: en, ar: norm };
+        } else {
+            const lower = norm.toLowerCase();
+            const ar = CATEGORY_MAP[lower] || norm;
+            return { en: toEnglishProper(norm), ar: ar };
+        }
+    }
 
-        // Modifiers Sheet
-        const modSheetName = sheetNames.find(s => s.toLowerCase().includes('modifier'));
-        if (modSheetName && workbook.Sheets[modSheetName]) {
-            const modSheet = workbook.Sheets[modSheetName];
-            const rawMods = XLSX.utils.sheet_to_json(modSheet);
+    // Check if Official Hungerstation 3-Sheet Format
+    const isOfficialHungerstation = 
+        sheetNames.some(s => s.toLowerCase().includes('menu group')) &&
+        sheetNames.some(s => s.toLowerCase().includes('product') || s.toLowerCase().includes('item')) &&
+        sheetNames.some(s => s.toLowerCase().includes('modifier'));
+
+    if (isOfficialHungerstation) {
+        // --- CASE A: OFFICIAL HUNGERSTATION TEMPLATE ---
+        console.log("Detected Official 3-Sheet Hungerstation Export template.");
+        
+        // 1. Groups Sheet
+        const gName = sheetNames.find(s => s.toLowerCase().includes('menu group')) || sheetNames[0];
+        const gRows = XLSX.utils.sheet_to_json(workbook.Sheets[gName]);
+        gRows.forEach((r, idx) => {
+            const gid = parseInt(r['#'] || idx + 1, 10);
+            const enName = r['english name *'] || r['English Name'] || r['name_en'] || `Category ${gid}`;
+            const arName = r['arabic name *'] || r['Arabic Name'] || r['name_ar'] || `قسم ${gid}`;
+            groups.push({
+                id: gid,
+                en_name: toEnglishProper(enName),
+                ar_name: cleanProperTrim(arName),
+                name_en: toEnglishProper(enName),
+                name_ar: cleanProperTrim(arName),
+                en_type: toEnglishProper(r['english category type'] || 'General'),
+                ar_type: cleanProperTrim(r['arabic category type'] || 'عام'),
+                order: gid
+            });
+        });
+
+        // 2. Modifiers Sheet
+        const mName = sheetNames.find(s => s.toLowerCase().includes('modifier'));
+        if (mName && workbook.Sheets[mName]) {
+            const mRows = XLSX.utils.sheet_to_json(workbook.Sheets[mName]);
             let curGrpEn = 'Options';
             let curGrpAr = 'الخيارات';
             let curMax = 3;
             let curMin = 0;
-
-            rawMods.forEach((mrow, idx) => {
-                if (mrow['Group. english name *'] || mrow['Group. arabic name *']) {
-                    curGrpEn = toEnglishProper(mrow['Group. english name *'] || '');
-                    curGrpAr = cleanProperTrim(mrow['Group. arabic name *'] || '');
-                    curMax = mrow['max limit '] !== undefined ? mrow['max limit '] : (mrow['max limit'] !== undefined ? mrow['max limit'] : 3);
-                    curMin = mrow['min limit *'] !== undefined ? mrow['min limit *'] : 0;
+            mRows.forEach((r, idx) => {
+                if (r['Group. english name *'] || r['Group. arabic name *']) {
+                    curGrpEn = toEnglishProper(r['Group. english name *'] || '');
+                    curGrpAr = cleanProperTrim(r['Group. arabic name *'] || '');
+                    curMax = r['max limit '] !== undefined ? r['max limit '] : (r['max limit'] !== undefined ? r['max limit'] : 3);
+                    curMin = r['min limit *'] !== undefined ? r['min limit *'] : 0;
                 }
-
-                const optEn = mrow['Modifier en name *'] || mrow['Option English'] || mrow['Modifier En'] || '';
-                const optAr = mrow['Modifier ar name *'] || mrow['Option Arabic'] || mrow['Modifier Ar'] || '';
-                const modPrice = parseFloat(mrow['price *'] || mrow['Price'] || 0);
-                const modKcal = parseInt(mrow['kcal '] || mrow['kcal'] || mrow['Kcal'] || 0, 10);
-                const vendorId = mrow['Vendor ID'] || `M${idx + 1}`;
-
+                const optEn = r['Modifier en name *'] || r['Option English'] || r['Modifier En'] || '';
+                const optAr = r['Modifier ar name *'] || r['Option Arabic'] || r['Modifier Ar'] || '';
+                const p = parseFloat(r['price *'] || r['Price'] || 0);
+                const k = parseInt(r['kcal '] || r['kcal'] || 0, 10);
                 if (optEn || optAr) {
                     modifiers.push({
                         id: idx + 1,
@@ -10779,135 +11055,330 @@ function processVendorMenuWorkbook(workbook) {
                         mod_ar: cleanProperTrim(optAr || optEn),
                         option_en: toEnglishProper(optEn || optAr),
                         option_ar: cleanProperTrim(optAr || optEn),
-                        price: isNaN(modPrice) ? 0 : modPrice,
-                        kcal: isNaN(modKcal) ? 0 : modKcal,
+                        price: isNaN(p) ? 0 : p,
+                        kcal: isNaN(k) ? 0 : k,
                         max_limit: curMax,
                         min_limit: curMin,
-                        vendor_id: vendorId,
+                        vendor_id: r['Vendor ID'] || `M${idx + 1}`,
                         type: curMin > 0 ? 'Mandatory' : 'Optional'
                     });
                 }
             });
         }
 
-        // Products / Items Sheet
-        const itemSheetName = sheetNames.find(s => s.toLowerCase().includes('product') || s.toLowerCase().includes('item'));
-        if (itemSheetName && workbook.Sheets[itemSheetName]) {
-            const itemSheet = workbook.Sheets[itemSheetName];
-            const rawItems = XLSX.utils.sheet_to_json(itemSheet);
-
-            rawItems.forEach((irow, idx) => {
-                const gid = parseInt(irow['menu group # *'] || irow['group_id'] || 1, 10);
-                const prodEn = irow['Product english name *'] || '-';
-                const prodAr = irow['Product arabic name *'] || '-';
-                const itemEn = irow[' item english name *'] || irow['item english name *'] || irow['Item English'] || prodEn;
-                const itemAr = irow[' item arabic name *'] || irow['item arabic name *'] || irow['Item Arabic'] || prodAr;
-                const prodDescEn = irow['Product english desc '] || irow['Product english desc'] || '';
-                const prodDescAr = irow['Product arabic desc '] || irow['Product arabic desc'] || '';
-                const itemDescEn = irow['item english desc '] || irow['item english desc'] || prodDescEn;
-                const itemDescAr = irow['item arabic desc '] || irow['item arabic desc'] || prodDescAr;
-                const price = parseFloat(irow['price*'] || irow['price'] || irow['Price'] || 15);
-                const pickupPrice = irow['pickup_price'] || '';
-                const kcal = parseInt(irow['kcal '] || irow['kcal'] || irow['Kcal'] || 0, 10);
-                const modGroups = irow['modifier groups #'] || '';
-                const vendorId = irow['Vendor ID'] || `P${idx + 1}`;
-                const allergens = irow['Allergens'] || 'No Allergens';
-
-                const matchedGroup = groups.find(g => g.id === gid);
-                const groupName = matchedGroup ? (matchedGroup.ar_name + ' / ' + matchedGroup.en_name) : `Group #${gid}`;
+        // 3. Products/Items Sheet
+        const iName = sheetNames.find(s => s.toLowerCase().includes('product') || s.toLowerCase().includes('item'));
+        if (iName && workbook.Sheets[iName]) {
+            const iRows = XLSX.utils.sheet_to_json(workbook.Sheets[iName]);
+            iRows.forEach((r, idx) => {
+                const gid = parseInt(r['menu group # *'] || r['group_id'] || 1, 10);
+                const prodEn = r['Product english name *'] || '-';
+                const prodAr = r['Product arabic name *'] || '-';
+                const itemEn = cleanStr(r[' item english name *'] || r['item english name *'] || r['Item English'] || (prodEn !== '-' ? prodEn : ''));
+                const itemAr = cleanStr(r[' item arabic name *'] || r['item arabic name *'] || r['Item Arabic'] || (prodAr !== '-' ? prodAr : ''));
+                const descEn = cleanStr(r['item english desc '] || r['item english desc'] || r['Product english desc '] || '');
+                const descAr = cleanStr(r['item arabic desc '] || r['item arabic desc'] || r['Product arabic desc '] || '');
+                const p = parseFloat(r['price*'] || r['price'] || r['Price'] || 15);
+                const k = parseInt(r['kcal '] || r['kcal'] || 0, 10);
+                const grp = groups.find(g => g.id === gid) || { ar_name: `قسم ${gid}`, en_name: `Group ${gid}` };
 
                 items.push({
                     id: idx + 1,
                     group_id: gid,
-                    group_name: groupName,
-                    prod_en: prodEn === '-' ? '-' : toEnglishProper(prodEn),
-                    prod_ar: prodAr === '-' ? '-' : cleanProperTrim(prodAr),
-                    item_en: toEnglishProper(String(itemEn)),
-                    item_ar: cleanProperTrim(String(itemAr)),
-                    name_en: toEnglishProper(String(itemEn)),
-                    name_ar: cleanProperTrim(String(itemAr)),
-                    prod_en_desc: cleanProperTrim(prodDescEn),
-                    prod_ar_desc: cleanProperTrim(prodDescAr),
-                    item_en_desc: cleanProperTrim(itemDescEn),
-                    item_ar_desc: cleanProperTrim(itemDescAr),
-                    desc_en: cleanProperTrim(itemDescEn),
-                    desc_ar: cleanProperTrim(itemDescAr),
-                    price: isNaN(price) ? 15 : price,
-                    pickup_price: pickupPrice,
-                    kcal: isNaN(kcal) ? 0 : kcal,
-                    calories: isNaN(kcal) ? 0 : kcal,
-                    modifier_groups: modGroups ? String(modGroups) : '',
-                    vendor_id: vendorId,
-                    allergens: allergens
+                    group_name: grp.ar_name + ' / ' + grp.en_name,
+                    prod_en: prodEn,
+                    prod_ar: prodAr,
+                    item_en: toEnglishProper(itemEn || itemAr),
+                    item_ar: cleanProperTrim(itemAr || itemEn),
+                    name_en: toEnglishProper(itemEn || itemAr),
+                    name_ar: cleanProperTrim(itemAr || itemEn),
+                    item_en_desc: descEn,
+                    item_ar_desc: descAr,
+                    desc_en: descEn,
+                    desc_ar: descAr,
+                    price: isNaN(p) ? 15 : p,
+                    pickup_price: r['pickup_price'] || '',
+                    kcal: isNaN(k) ? 0 : k,
+                    calories: isNaN(k) ? 0 : k,
+                    modifier_groups: r['modifier groups #'] || '',
+                    vendor_id: r['Vendor ID'] || `P${idx + 1}`,
+                    allergens: r['Allergens'] || 'No Allergens'
                 });
             });
         }
-
     } else {
-        // CASE B: Raw Single Sheet Vendor Excel / CSV
-        const firstSheet = workbook.Sheets[sheetNames[0]];
-        const rawRows = XLSX.utils.sheet_to_json(firstSheet);
+        // --- CASE B: UNIVERSAL MULTI-SHEET / SINGLE-SHEET / AGGREGATOR / POS FORMAT ---
+        console.log("Analyzing sheets with Universal Header Auto-Discovery...");
+
+        const sheetAnalyses = [];
+        sheetNames.forEach(sname => {
+            const ws = workbook.Sheets[sname];
+            if (!ws) return;
+            const rows = XLSX.utils.sheet_to_json(ws, { header: 1, blankrows: false, defval: '' });
+            if (!rows || rows.length === 0) return;
+
+            let bestHeaderRow = -1;
+            let bestScore = 0;
+            let bestHeaders = [];
+
+            for (let r = 0; r < Math.min(15, rows.length); r++) {
+                const rowVals = rows[r].map(v => cleanStr(v).toLowerCase());
+                let score = 0;
+                const keywords = ['name', 'item', 'صنف', 'اسم', 'price', 'سعر', 'category', 'قسم', 'وصف', 'description', 'calories', 'سعرات', 'add', 'إضافات', 'choice', 'size', 'حجم', 'modifier', 'group', 'منتج'];
+                rowVals.forEach(val => {
+                    if (keywords.some(k => val.includes(k))) score++;
+                });
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestHeaderRow = r;
+                    bestHeaders = rows[r].map(v => cleanStr(v));
+                }
+            }
+
+            sheetAnalyses.push({
+                name: sname,
+                totalRows: rows.length,
+                headerRowIndex: bestHeaderRow,
+                score: bestScore,
+                headers: bestHeaders,
+                rows: rows
+            });
+        });
+
+        // Filter and choose primary Items sheet
+        const itemCandidates = sheetAnalyses
+            .filter(s => s.score >= 1 && !s.name.toLowerCase().includes('modifier') && !s.name.toLowerCase().includes('readme') && !s.name.toLowerCase().includes('review'))
+            .sort((a, b) => (b.score * 10 + b.totalRows) - (a.score * 10 + a.totalRows));
+
+        const targetSheet = itemCandidates.length > 0 ? itemCandidates[0] : sheetAnalyses[0];
+        console.log("Primary Menu Items Sheet identified as:", targetSheet.name, "with header at row:", targetSheet.headerRowIndex + 1);
+
+        const colMap = {};
+        targetSheet.headers.forEach((h, idx) => {
+            const hl = h.toLowerCase();
+            if (/name.*(?:item|en|product|english)/i.test(hl) || /item.*(?:en|name|english)/i.test(hl) || /(?:english name|name en)/i.test(hl)) {
+                if (colMap.name_en === undefined) colMap.name_en = idx;
+            } else if (/(?:اسم|صنف|منتج).*(?:عربي|عربية|بالعربي)/i.test(hl) || /(?:arabic name|name ar|اسم الصنف|اسم المنتج)/i.test(hl)) {
+                if (colMap.name_ar === undefined) colMap.name_ar = idx;
+            } else if (/^(?:item|name|product)$/i.test(hl) || /^(?:الصنف|اسم الصنف|اسم المنتج|الاسم|المنتج)$/i.test(hl)) {
+                if (/[\u0600-\u06FF]/.test(h)) {
+                    if (colMap.name_ar === undefined) colMap.name_ar = idx;
+                } else {
+                    if (colMap.name_en === undefined) colMap.name_en = idx;
+                }
+            } else if (/category|قسم|تصنيف|فئة|مجموعة/i.test(hl)) {
+                if (colMap.category === undefined) colMap.category = idx;
+            } else if (/price|سعر|مبلغ|cost|sar/i.test(hl)) {
+                if (/option/i.test(hl)) {
+                    if (colMap.option_price === undefined) colMap.option_price = idx;
+                } else if (/pickup|استلام|محلي/i.test(hl)) {
+                    if (colMap.pickup_price === undefined) colMap.pickup_price = idx;
+                } else {
+                    if (colMap.price === undefined) colMap.price = idx;
+                }
+            } else if (/calories|kcal|سعرات/i.test(hl)) {
+                if (/option/i.test(hl)) {
+                    if (colMap.option_calories === undefined) colMap.option_calories = idx;
+                } else {
+                    if (colMap.calories === undefined) colMap.calories = idx;
+                }
+            } else if (/description|وصف/i.test(hl)) {
+                if (/ar|عربي/i.test(hl)) colMap.desc_ar = idx;
+                else if (/en|english/i.test(hl)) colMap.desc_en = idx;
+                else if (colMap.desc === undefined) colMap.desc = idx;
+            } else if (/add|إضافات|اضافات|extras/i.test(hl)) {
+                if (/ar|عربي/i.test(hl)) colMap.add_ar = idx;
+                else if (colMap.add === undefined) colMap.add = idx;
+            } else if (/choice|خيارات/i.test(hl)) {
+                if (colMap.choice === undefined) colMap.choice = idx;
+            } else if (/size|حجم/i.test(hl)) {
+                if (/ar|عربي/i.test(hl)) colMap.size_ar = idx;
+                else if (colMap.size === undefined) colMap.size = idx;
+            } else if (/image|photo|picture|صورة|صوره|رابط|link|url/i.test(hl)) {
+                if (colMap.image === undefined) colMap.image = idx;
+            }
+        });
+
+        // Fallbacks
+        if (colMap.name_en === undefined && colMap.name_ar !== undefined) colMap.name_en = colMap.name_ar;
+        if (colMap.name_ar === undefined && colMap.name_en !== undefined) colMap.name_ar = colMap.name_en;
+
         const groupsMap = new Map();
         let groupIdCounter = 1;
 
-        rawRows.forEach((row, idx) => {
-            const r = {};
-            Object.keys(row).forEach(k => { if (k) r[String(k).trim()] = row[k]; });
+        const dataRows = targetSheet.rows.slice(targetSheet.headerRowIndex + 1);
+        dataRows.forEach((r, idx) => {
+            let nameEn = colMap.name_en !== undefined ? cleanStr(r[colMap.name_en]) : '';
+            let nameAr = colMap.name_ar !== undefined ? cleanStr(r[colMap.name_ar]) : '';
+            if (!nameEn && !nameAr) return;
 
-            const rawCat = r['القسم'] || r['التصنيف'] || r['قسم'] || r['الفئة'] || r['مجموعة'] || r['Category'] || r['category'] || r['Group'] || 'Main Menu';
-            const cleanCatAr = cleanProperTrim(String(rawCat));
-            const cleanCatEn = toEnglishProper(String(rawCat));
+            if (!nameEn) nameEn = nameAr;
+            if (!nameAr) nameAr = nameEn;
 
-            if (!groupsMap.has(cleanCatEn)) {
-                groupsMap.set(cleanCatEn, {
+            const rawCat = colMap.category !== undefined ? cleanStr(r[colMap.category]) : 'Main Menu';
+            const catPair = getCategoryPair(rawCat);
+
+            if (!groupsMap.has(catPair.en)) {
+                groupsMap.set(catPair.en, {
                     id: groupIdCounter++,
-                    en_name: cleanCatEn,
-                    ar_name: cleanCatAr,
-                    name_en: cleanCatEn,
-                    name_ar: cleanCatAr,
-                    en_type: 'Breakfast',
-                    ar_type: 'الإفطار',
+                    en_name: catPair.en,
+                    ar_name: catPair.ar,
+                    name_en: catPair.en,
+                    name_ar: catPair.ar,
+                    en_type: 'General',
+                    ar_type: 'عام',
                     order: groupsMap.size + 1
                 });
             }
-            const groupObj = groupsMap.get(cleanCatEn);
+            const grp = groupsMap.get(catPair.en);
 
-            const rawImgUrl = r['رابط المنتج'] || r['رابط الصورة'] || r['رابط الصوره'] || r['الصورة'] || r['الصوره'] || r['الرابط'] || r['Image'] || r['Link'] || r['Photo'] || '';
-            const nameAr = r['اسم المنتج بالعربي'] || r['الاسم بالعربي'] || r['الاسم عربي'] || r['اسم الصنف'] || r['Arabic Name'] || r['Name Ar'] || r['Name'] || r['الاسم'] || ('صنف ' + (idx + 1));
-            const nameEn = r['اسم المنتج بالانجليزي'] || r['اسم المنتج بالإنجليزي'] || r['الاسم بالإنجليزي'] || r['الاسم انجليزي'] || r['English Name'] || r['Name En'] || r['Item Name'] || r['Item'] || autoTranslateMenuText(nameAr, 'EN');
-            const price = parseFloat(r['السعر'] || r['Price'] || r['price'] || r['price*'] || 15);
-            const kcal = parseInt(r['السعرات'] || r['سعرات'] || r['Calories'] || r['calories'] || r['Kcal'] || r['kcal'] || 0, 10);
-            const descAr = cleanProperTrim(String(r['الوصف بالعربي'] || r['وصف عربي'] || r['Arabic Description'] || r['الوصف'] || r['Description'] || ''));
-            const descEn = cleanProperTrim(String(r['الوصف بالانجليزي'] || r['الوصف بالإنجليزي'] || r['وصف انجليزي'] || r['English Description'] || r['Description En'] || ''));
+            let p = colMap.price !== undefined ? parseFloat(r[colMap.price]) : 15;
+            if (isNaN(p)) p = 15;
+
+            let k = colMap.calories !== undefined ? parseInt(r[colMap.calories], 10) : 0;
+            if (isNaN(k)) k = 0;
+
+            let descAr = colMap.desc_ar !== undefined ? cleanStr(r[colMap.desc_ar]) : '';
+            let descEn = colMap.desc_en !== undefined ? cleanStr(r[colMap.desc_en]) : '';
+            if (colMap.desc !== undefined && (!descAr || !descEn)) {
+                const rawDesc = cleanStr(r[colMap.desc]);
+                if (rawDesc.includes('/')) {
+                    const parts = rawDesc.split('/').map(pt => cleanStr(pt));
+                    descEn = descEn || parts[0];
+                    descAr = descAr || parts[1];
+                } else {
+                    if (/[\u0600-\u06FF]/.test(rawDesc)) descAr = descAr || rawDesc;
+                    else descEn = descEn || rawDesc;
+                }
+            }
+
+            const sizeEn = colMap.size !== undefined ? cleanStr(r[colMap.size]) : '';
+            const sizeAr = colMap.size_ar !== undefined ? cleanStr(r[colMap.size_ar]) : '';
+            if (sizeEn && sizeEn !== '-' && !nameEn.toLowerCase().includes(sizeEn.toLowerCase())) {
+                nameEn = `${nameEn} (${sizeEn})`;
+            }
+            if (sizeAr && sizeAr !== '-' && !nameAr.includes(sizeAr)) {
+                nameAr = `${nameAr} (${sizeAr})`;
+            }
+
+            const addEn = colMap.add !== undefined ? cleanStr(r[colMap.add]) : '';
+            const addAr = colMap.add_ar !== undefined ? cleanStr(r[colMap.add_ar]) : '';
+            const choiceText = colMap.choice !== undefined ? cleanStr(r[colMap.choice]) : '';
 
             items.push({
-                id: idx + 1,
-                group_id: groupObj.id,
-                group_name: groupObj.ar_name + ' / ' + groupObj.en_name,
-                prod_en: '-',
-                prod_ar: '-',
-                item_en: toEnglishProper(String(nameEn)),
-                item_ar: cleanProperTrim(String(nameAr)),
-                name_en: toEnglishProper(String(nameEn)),
-                name_ar: cleanProperTrim(String(nameAr)),
-                prod_en_desc: '',
-                prod_ar_desc: '',
+                id: items.length + 1,
+                group_id: grp.id,
+                group_name: grp.ar_name + ' / ' + grp.en_name,
+                prod_en: toEnglishProper(nameEn),
+                prod_ar: cleanProperTrim(nameAr),
+                item_en: toEnglishProper(nameEn),
+                item_ar: cleanProperTrim(nameAr),
+                name_en: toEnglishProper(nameEn),
+                name_ar: cleanProperTrim(nameAr),
                 item_en_desc: descEn,
                 item_ar_desc: descAr,
                 desc_en: descEn,
                 desc_ar: descAr,
-                price: isNaN(price) ? 15 : price,
-                pickup_price: '',
-                kcal: isNaN(kcal) ? 0 : kcal,
-                calories: isNaN(kcal) ? 0 : kcal,
+                price: p,
+                pickup_price: colMap.pickup_price !== undefined ? (parseFloat(r[colMap.pickup_price]) || '') : '',
+                kcal: k,
+                calories: k,
                 modifier_groups: '',
-                vendor_id: 'P' + (idx + 1),
-                allergens: 'No Allergens',
-                image_url: String(rawImgUrl || '').trim()
+                vendor_id: 'P' + (items.length + 1),
+                allergens: colMap.allergens !== undefined ? cleanStr(r[colMap.allergens]) : 'No Allergens',
+                image_url: colMap.image !== undefined ? cleanStr(r[colMap.image]) : '',
+                rawAdditionsEn: addEn,
+                rawAdditionsAr: addAr,
+                rawChoices: choiceText
             });
         });
 
         groups = Array.from(groupsMap.values());
+
+        // Parse dedicated modifier sheet if present (e.g. Modifier Rules)
+        const modSheetCandidate = sheetAnalyses.find(s => s.name.toLowerCase().includes('modifier'));
+        if (modSheetCandidate) {
+            console.log("Extracting dedicated Modifier Sheet:", modSheetCandidate.name);
+            const mRows = modSheetCandidate.rows;
+            const mHdr = modSheetCandidate.headers;
+            let mColModEn = mHdr.findIndex(h => /modifier/i.test(h) && !/ar|arabic/i.test(h));
+            let mColModAr = mHdr.findIndex(h => /ar|arabic/i.test(h));
+            let mColPrice = mHdr.findIndex(h => /price|سعر/i.test(h));
+
+            if (mColModEn === -1) mColModEn = 0;
+            if (mColModAr === -1) mColModAr = 1;
+            if (mColPrice === -1) mColPrice = 2;
+
+            let curGroupName = 'Options / إضافات';
+            mRows.slice(modSheetCandidate.headerRowIndex + 1).forEach((mrow) => {
+                const mEn = cleanStr(mrow[mColModEn]);
+                const mAr = cleanStr(mrow[mColModAr]);
+                const pVal = mrow[mColPrice];
+                if (!mEn && !mAr) return;
+
+                if (pVal === 'Price' || (!pVal && !mAr)) {
+                    curGroupName = mEn;
+                    return;
+                }
+
+                const modPrice = parseFloat(pVal) || 0;
+                modifiers.push({
+                    id: modifiers.length + 1,
+                    group_en: toEnglishProper(curGroupName),
+                    group_ar: 'خيارات وإضافات',
+                    group_name: curGroupName,
+                    mod_en: toEnglishProper(mEn || mAr),
+                    mod_ar: cleanProperTrim(mAr || mEn),
+                    option_en: toEnglishProper(mEn || mAr),
+                    option_ar: cleanProperTrim(mAr || mEn),
+                    price: modPrice,
+                    kcal: 0,
+                    max_limit: 3,
+                    min_limit: 0,
+                    vendor_id: 'M' + (modifiers.length + 1),
+                    type: 'Optional'
+                });
+            });
+        }
+
+        // Inline additions dissection
+        if (modifiers.length === 0) {
+            const seenMods = new Set();
+            items.forEach(it => {
+                if (it.rawAdditionsEn || it.rawAdditionsAr) {
+                    const enParts = it.rawAdditionsEn.split(';').map(pt => cleanStr(pt)).filter(Boolean);
+                    const arParts = it.rawAdditionsAr.split(';').map(pt => cleanStr(pt)).filter(Boolean);
+                    for (let i = 0; i < Math.max(enParts.length, arParts.length); i++) {
+                        const enP = enParts[i] || arParts[i] || '';
+                        const arP = arParts[i] || enParts[i] || '';
+                        const pMatch = enP.match(/\(\+(\d+(?:\.\d+)?)\)/) || arP.match(/\(\+(\d+(?:\.\d+)?)\)/);
+                        const modP = pMatch ? parseFloat(pMatch[1]) : 0;
+                        const cleanEn = enP.replace(/\(\+\d+(?:\.\d+)?\)/, '').trim();
+                        const cleanAr = arP.replace(/\(\+\d+(?:\.\d+)?\)/, '').trim();
+                        const key = cleanEn.toLowerCase();
+                        if (!seenMods.has(key) && cleanEn) {
+                            seenMods.add(key);
+                            modifiers.push({
+                                id: modifiers.length + 1,
+                                group_en: 'Additions',
+                                group_ar: 'إضافات',
+                                group_name: 'إضافات / Additions',
+                                mod_en: toEnglishProper(cleanEn),
+                                mod_ar: cleanProperTrim(cleanAr),
+                                option_en: toEnglishProper(cleanEn),
+                                option_ar: cleanProperTrim(cleanAr),
+                                price: modP,
+                                kcal: 0,
+                                max_limit: 5,
+                                min_limit: 0,
+                                vendor_id: 'M' + (modifiers.length + 1),
+                                type: 'Optional'
+                            });
+                        }
+                    }
+                }
+            });
+        }
     }
 
     if (groups.length === 0) {
@@ -10918,19 +11389,19 @@ function processVendorMenuWorkbook(workbook) {
         groups: groups,
         items: items,
         modifiers: modifiers,
-        imageLinks: extractImageUrls(allSheetText)
+        imageLinks: typeof extractImageUrls === 'function' ? extractImageUrls(allSheetText) : []
     };
 
-    console.log("Successfully processed workbook! Total items:", items.length);
+    console.log("🎉 Successfully dissected menu! Total Groups:", groups.length, "| Items:", items.length, "| Modifiers:", modifiers.length);
     const imgCount = items.filter(it => it.image_url && it.image_url.includes('http')).length || (window.menuBuilderData.imageLinks ? window.menuBuilderData.imageLinks.length : 0);
     if (imgCount > 0) {
         const imgBanner = document.getElementById('studioExtractedImagesContainer');
         if (imgBanner) imgBanner.style.display = 'block';
-        showToast('📸 تم استخراج ' + imgCount + ' رابط صورة! اضغط زر تنزيل الصور 640×480 لحفظها كملف ZIP مسمى.');
+        if (typeof showToast === 'function') showToast('📸 تم استخراج ' + imgCount + ' رابط صورة! اضغط زر تنزيل الصور لحفظها كملف ZIP مسمى.');
     }
-    renderStudioMenuPreviewTables();
-    renderMenuPreviewTables();
-    updateStudioHealthRadar();
+    if (typeof renderStudioMenuPreviewTables === 'function') renderStudioMenuPreviewTables();
+    if (typeof renderMenuPreviewTables === 'function') renderMenuPreviewTables();
+    if (typeof updateStudioHealthRadar === 'function') updateStudioHealthRadar();
 }
 
 function handleFileDirectly(file) {
