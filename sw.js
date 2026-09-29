@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hs-vendor-suite-v18-qa-perfection-suite';
+const CACHE_NAME = 'hs-vendor-suite-v19-bulletproof-generator';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.webmanifest'
