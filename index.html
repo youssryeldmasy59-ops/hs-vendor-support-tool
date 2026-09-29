@@ -2124,7 +2124,7 @@
 
             <!-- 🔄 Force Refresh / Cache Purge -->
             <button type="button" class="header-btn" onclick="forcePurgeAndReload()" style="color: #10B981; border-color: rgba(16,185,129,0.3);" title="تحديث فوري وحذف الكاش القديم (v8)">
-                <i class="fa-solid fa-rotate"></i> <span>تحديث v9 🔄</span>
+                <i class="fa-solid fa-rotate"></i> <span>تحديث v10 🔄</span>
             </button>
 
             <!-- 🔊 Sound FX Mute Toggle -->
@@ -2813,7 +2813,7 @@
 
 
 window.forcePurgeAndReload = function() {
-    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v9)...');
+    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v10)...');
     if ('caches' in window) {
         caches.keys().then(names => {
             return Promise.all(names.map(name => caches.delete(name)));
@@ -11030,9 +11030,27 @@ window.normalizeHungerstationAllergens = function(rawVals) {
 };
 
 function processVendorMenuWorkbook(workbook) {
-    console.log("🚀 Omni-Menu AI Dissector v9 started with sheets:", workbook.SheetNames);
+    console.log("🚀 Ultimate Omni-Menu Dissector v10 activated with sheets:", workbook.SheetNames);
     let allSheetText = '';
     const sheetNames = workbook.SheetNames;
+
+    // Helper: Normalize strings & collapse spaces
+    function cleanStr(s) {
+        if (s === null || s === undefined) return '';
+        return String(s).replace(/\s+/g, ' ').trim();
+    }
+
+    // Helper: Clean numbers with currency / comma support
+    function cleanNum(val, defaultVal = 0) {
+        if (val === null || val === undefined || val === '') return defaultVal;
+        const s = String(val).replace(/,/g, '.').replace(/(?:SAR|SR|ريال|ر\.س|kcal|سعرة|cal)/gi, '').trim();
+        const m = s.match(/[-+]?\d*\.?\d+/);
+        if (m) {
+            const parsed = parseFloat(m[0]);
+            return isNaN(parsed) ? defaultVal : parsed;
+        }
+        return defaultVal;
+    }
 
     // 1. Collect all text across all sheets for image/drive link extraction
     sheetNames.forEach(sname => {
@@ -11049,12 +11067,6 @@ function processVendorMenuWorkbook(workbook) {
     let items = [];
     let modifiers = [];
 
-    // Helper: Normalize strings & collapse spaces
-    function cleanStr(s) {
-        if (s === null || s === undefined) return '';
-        return String(s).replace(/\s+/g, ' ').trim();
-    }
-
     // Category Translation Pairs
     const CATEGORY_MAP = {
         'doritos': 'دوريتوس', 'shawarma': 'شاورما', 'chicken': 'دجاج', 'fries': 'بطاطس',
@@ -11062,7 +11074,8 @@ function processVendorMenuWorkbook(workbook) {
         'beverages': 'مشروبات', 'meals': 'وجبات', 'boxes': 'بوكسات', 'burgers': 'برجر',
         'sandwiches': 'سندوتشات', 'pizza': 'بيتزا', 'desserts': 'حلويات', 'salads': 'سلطات',
         'appetizers': 'مقبلات', 'breakfast': 'إفطار', 'rice': 'أرز', 'kabsa': 'كبسة',
-        'seafood': 'مأكولات بحرية', 'grills': 'مشويات', 'pasta': 'باستا'
+        'seafood': 'مأكولات بحرية', 'grills': 'مشويات', 'pasta': 'باستا', 'pastries': 'فطائر',
+        'falafel': 'فلافل', 'gifts': 'هدايا', 'flowers': 'زهور', 'watches': 'ساعات'
     };
 
     function getCategoryPair(rawCat) {
@@ -11126,13 +11139,13 @@ function processVendorMenuWorkbook(workbook) {
                 if (r['Group. english name *'] || r['Group. arabic name *']) {
                     curGrpEn = toEnglishProper(r['Group. english name *'] || '');
                     curGrpAr = cleanProperTrim(r['Group. arabic name *'] || '');
-                    curMax = r['max limit '] !== undefined ? r['max limit '] : (r['max limit'] !== undefined ? r['max limit'] : 3);
-                    curMin = r['min limit *'] !== undefined ? r['min limit *'] : 0;
+                    curMax = r['max limit '] !== undefined ? cleanNum(r['max limit '], 3) : (r['max limit'] !== undefined ? cleanNum(r['max limit'], 3) : 3);
+                    curMin = r['min limit *'] !== undefined ? cleanNum(r['min limit *'], 0) : 0;
                 }
                 const optEn = r['Modifier en name *'] || r['Option English'] || r['Modifier En'] || '';
                 const optAr = r['Modifier ar name *'] || r['Option Arabic'] || r['Modifier Ar'] || '';
-                const p = parseFloat(r['price *'] || r['Price'] || 0);
-                const k = parseInt(r['kcal '] || r['kcal'] || 0, 10);
+                const p = cleanNum(r['price *'] || r['Price'] || 0, 0);
+                const k = Math.round(cleanNum(r['kcal '] || r['kcal'] || 0, 0));
                 if (optEn || optAr) {
                     modifiers.push({
                         id: idx + 1,
@@ -11143,8 +11156,8 @@ function processVendorMenuWorkbook(workbook) {
                         mod_ar: cleanProperTrim(optAr || optEn),
                         option_en: toEnglishProper(optEn || optAr),
                         option_ar: cleanProperTrim(optAr || optEn),
-                        price: isNaN(p) ? 0 : p,
-                        kcal: isNaN(k) ? 0 : k,
+                        price: p,
+                        kcal: k,
                         max_limit: curMax,
                         min_limit: curMin,
                         vendor_id: r['Vendor ID'] || `M${idx + 1}`,
@@ -11166,12 +11179,12 @@ function processVendorMenuWorkbook(workbook) {
                 const itemAr = cleanStr(r[' item arabic name *'] || r['item arabic name *'] || r['Item Arabic'] || (prodAr !== '-' ? prodAr : ''));
                 const descEn = cleanStr(r['item english desc '] || r['item english desc'] || r['Product english desc '] || '');
                 const descAr = cleanStr(r['item arabic desc '] || r['item arabic desc'] || r['Product arabic desc '] || '');
-                const p = parseFloat(r['price*'] || r['price'] || r['Price'] || 15);
-                const k = parseInt(r['kcal '] || r['kcal'] || 0, 10);
+                const p = cleanNum(r['price*'] || r['price'] || r['Price'] || 15, 15);
+                const k = Math.round(cleanNum(r['kcal '] || r['kcal'] || 0, 0));
                 const grp = groups.find(g => g.id === gid) || { ar_name: `قسم ${gid}`, en_name: `Group ${gid}` };
 
                 const rawAl = r['Allergens'] || r['allergens'] || '';
-                const normAllergens = window.normalizeHungerstationAllergens(rawAl);
+                const normAllergens = typeof window.normalizeHungerstationAllergens === 'function' ? window.normalizeHungerstationAllergens(rawAl) : 'No Allergens';
 
                 items.push({
                     id: idx + 1,
@@ -11187,10 +11200,10 @@ function processVendorMenuWorkbook(workbook) {
                     item_ar_desc: descAr,
                     desc_en: descEn,
                     desc_ar: descAr,
-                    price: isNaN(p) ? 15 : p,
-                    pickup_price: r['pickup_price'] || '',
-                    kcal: isNaN(k) ? 0 : k,
-                    calories: isNaN(k) ? 0 : k,
+                    price: p,
+                    pickup_price: r['pickup_price'] ? cleanNum(r['pickup_price'], p) : '',
+                    kcal: k,
+                    calories: k,
                     modifier_groups: r['modifier groups #'] || '',
                     vendor_id: r['Vendor ID'] || `P${idx + 1}`,
                     allergens: normAllergens,
@@ -11211,362 +11224,379 @@ function processVendorMenuWorkbook(workbook) {
             });
         }
     } else {
-        // --- CASE B: UNIVERSAL MULTI-SHEET / AGGREGATOR / POS / CUSTOM FORMAT ---
-        console.log("Analyzing sheets with Universal Omni-Discovery Engine v9...");
+        // --- CASE B: UNIVERSAL OMNI-DISSECTOR FOR ALL VENDOR MENUS ---
+        console.log("Analyzing all sheets with Universal Multi-Sheet Omni-Parser v10...");
 
-        const sheetAnalyses = [];
-        sheetNames.forEach(sname => {
+        // Identify candidate content sheets (ignore readme, launch review, etc.)
+        const contentSheetNames = sheetNames.filter(s => {
+            const low = s.toLowerCase();
+            return !low.includes('readme') && !low.includes('read me') && !low.includes('valid allergen') && !low.includes('launch review') && !low.includes('instructions');
+        });
+
+        // Separate dedicated modifier sheets if any
+        const modifierSheetNames = contentSheetNames.filter(s => s.toLowerCase().includes('modifier') || s.toLowerCase().includes('addon') || s.toLowerCase().includes('إضافات'));
+        const itemSheetNames = contentSheetNames.filter(s => !modifierSheetNames.includes(s));
+
+        const sheetsToProcess = itemSheetNames.length > 0 ? itemSheetNames : (contentSheetNames.length > 0 ? contentSheetNames : sheetNames);
+        console.log("Item sheets to process:", sheetsToProcess, "| Dedicated modifier sheets:", modifierSheetNames);
+
+        const groupsMap = new Map();
+        let groupIdCounter = 1;
+        const inlineModifiersMap = new Map();
+
+        sheetsToProcess.forEach(sname => {
             const ws = workbook.Sheets[sname];
             if (!ws) return;
             const rows = XLSX.utils.sheet_to_json(ws, { header: 1, blankrows: false, defval: '' });
             if (!rows || rows.length === 0) return;
 
-            let bestHeaderRow = -1;
-            let bestScore = 0;
-            let bestHeaders = [];
+            // Header Row Discovery
+            let bestHeaderRow = 0;
+            let bestScore = -1;
+            const keywords = [
+                'name', 'item', 'صنف', 'اسم', 'price', 'سعر', 'category', 'قسم', 'وصف', 'description', 
+                'calories', 'سعرات', 'add', 'إضافات', 'اضافات', 'choice', 'size', 'حجم', 'group', 'منتج', 
+                'allergen', 'حساسية', 'حساسيه', 'allergy', 'protein', 'بروتين', 'sodium', 'fat', 'دهون', 'مسببات'
+            ];
 
             for (let r = 0; r < Math.min(15, rows.length); r++) {
-                const rowVals = rows[r].map(v => cleanStr(v).toLowerCase());
+                const rowStr = rows[r].map(v => cleanStr(v).toLowerCase()).join(' ');
                 let score = 0;
-                const keywords = [
-                    'name', 'item', 'صنف', 'اسم', 'price', 'سعر', 'category', 'قسم', 'وصف', 'description', 
-                    'calories', 'سعرات', 'add', 'إضافات', 'اضافات', 'choice', 'size', 'حجم', 'modifier', 
-                    'group', 'منتج', 'allergen', 'حساسية', 'حساسيه', 'allergy', 'protein', 'بروتين', 'sodium', 'fat', 'دهون'
-                ];
-                rowVals.forEach(val => {
-                    if (keywords.some(k => val.includes(k))) score++;
+                keywords.forEach(kw => {
+                    if (rowStr.includes(kw)) score++;
                 });
-                if (score > bestScore) {
+                if (score > bestScore && score >= 1) {
                     bestScore = score;
                     bestHeaderRow = r;
-                    bestHeaders = rows[r].map(v => cleanStr(v));
                 }
             }
 
-            sheetAnalyses.push({
-                name: sname,
-                totalRows: rows.length,
-                headerRowIndex: bestHeaderRow,
-                score: bestScore,
-                headers: bestHeaders,
-                rows: rows
-            });
-        });
+            const headers = rows[bestHeaderRow].map(v => cleanStr(v));
+            const colMap = { allergen_cols: [], choice_cols: [], add_cols: [] };
 
-        // Filter and choose primary Items sheet
-        const itemCandidates = sheetAnalyses
-            .filter(s => s.score >= 1 && !s.name.toLowerCase().includes('modifier') && !s.name.toLowerCase().includes('readme') && !s.name.toLowerCase().includes('review'))
-            .sort((a, b) => (b.score * 10 + b.totalRows) - (a.score * 10 + a.totalRows));
-
-        const targetSheet = itemCandidates.length > 0 ? itemCandidates[0] : sheetAnalyses[0];
-        console.log("Primary Menu Items Sheet identified as:", targetSheet.name, "with header at row:", targetSheet.headerRowIndex + 1);
-
-        const colMap = {
-            allergen_cols: [],
-            choice_cols: [],
-            add_cols: []
-        };
-
-        targetSheet.headers.forEach((h, idx) => {
-            const hl = h.toLowerCase();
-            if (/name.*(?:item|en|product|english)/i.test(hl) || /item.*(?:en|name|english)/i.test(hl) || /(?:english name|name en|product name \(en\))/i.test(hl)) {
-                if (colMap.name_en === undefined) colMap.name_en = idx;
-            } else if (/(?:اسم|صنف|منتج).*(?:عربي|عربية|بالعربي)/i.test(hl) || /(?:arabic name|name ar|اسم الصنف|اسم المنتج|المنتج \(عربي\))/i.test(hl)) {
-                if (colMap.name_ar === undefined) colMap.name_ar = idx;
-            } else if (/^(?:item|name|product)$/i.test(hl) || /^(?:الصنف|اسم الصنف|اسم المنتج|الاسم|المنتج)$/i.test(hl)) {
-                if (/[\u0600-\u06FF]/.test(h)) {
-                    if (colMap.name_ar === undefined) colMap.name_ar = idx;
-                } else {
+            headers.forEach((h, idx) => {
+                const hl = h.toLowerCase();
+                if (/name.*(?:item|en|product|english)/i.test(hl) || /item.*(?:en|name|english)/i.test(hl) || /(?:english name|name en|product name \(en\))/i.test(hl)) {
                     if (colMap.name_en === undefined) colMap.name_en = idx;
+                } else if (/(?:اسم|صنف|منتج).*(?:عربي|عربية|بالعربي)/i.test(hl) || /(?:arabic name|name ar|اسم الصنف|اسم المنتج|المنتج \(عربي\))/i.test(hl)) {
+                    if (colMap.name_ar === undefined) colMap.name_ar = idx;
+                } else if (/^(?:item|name|product|الاسم|الصنف|المنتج)$/i.test(hl)) {
+                    if (/[\u0600-\u06FF]/.test(h)) {
+                        if (colMap.name_ar === undefined) colMap.name_ar = idx;
+                    } else {
+                        if (colMap.name_en === undefined) colMap.name_en = idx;
+                    }
+                } else if (/category|قسم|تصنيف|فئة|مجموعة|جروب/i.test(hl)) {
+                    if (colMap.category === undefined) colMap.category = idx;
+                } else if (/price|سعر|مبلغ|cost|sar/i.test(hl)) {
+                    if (/option/i.test(hl)) {
+                        colMap.option_price = idx;
+                    } else if (/pickup|استلام|محلي/i.test(hl)) {
+                        colMap.pickup_price = idx;
+                    } else if (/جديد|new/i.test(hl)) {
+                        colMap.price = idx; // prioritize new price
+                    } else if (colMap.price === undefined) {
+                        colMap.price = idx;
+                    }
+                } else if (/calories|kcal|سعرات|السعرات/i.test(hl)) {
+                    if (!/option/i.test(hl) && colMap.calories === undefined) colMap.calories = idx;
+                } else if (/description|وصف/i.test(hl)) {
+                    if (/ar|عربي/i.test(hl)) colMap.desc_ar = idx;
+                    else if (/en|english/i.test(hl)) colMap.desc_en = idx;
+                    else if (colMap.desc === undefined) colMap.desc = idx;
+                } else if (/allergen|حساسية|حساسيه|allergy|allergies|مسببات/i.test(hl)) {
+                    colMap.allergen_cols.push(idx);
+                } else if (/protein|بروتين/i.test(hl)) {
+                    if (colMap.protein === undefined) colMap.protein = idx;
+                } else if (/(?:full\s*fat|^fat|دهون|دسم)/i.test(hl)) {
+                    if (colMap.fat === undefined) colMap.fat = idx;
+                } else if (/sodi(?:um|om)|صوديوم/i.test(hl)) {
+                    if (colMap.sodium === undefined) colMap.sodium = idx;
+                } else if (/carb|كارب|كربوهيدرات/i.test(hl)) {
+                    if (colMap.carbs === undefined) colMap.carbs = idx;
+                } else if (/sugar|سكر/i.test(hl)) {
+                    if (colMap.sugar === undefined) colMap.sugar = idx;
+                } else if (/fiber|ألياف|الياف/i.test(hl)) {
+                    if (colMap.fiber === undefined) colMap.fiber = idx;
+                } else if (/add|إضافات|اضافات|extras/i.test(hl)) {
+                    if (/ar|عربي/i.test(hl)) colMap.add_ar = idx;
+                    else colMap.add_cols.push(idx);
+                } else if (/choice|خيارات|اختيار|نوع|تفضيل/i.test(hl)) {
+                    colMap.choice_cols.push(idx);
+                } else if (/size|حجم/i.test(hl)) {
+                    if (/ar|عربي/i.test(hl)) colMap.size_ar = idx;
+                    else if (colMap.size === undefined) colMap.size = idx;
+                } else if (/image|photo|picture|صورة|صوره|رابط|link|url|drive/i.test(hl)) {
+                    if (colMap.image === undefined) colMap.image = idx;
                 }
-            } else if (/category|قسم|تصنيف|فئة|مجموعة|جروب/i.test(hl)) {
-                if (colMap.category === undefined) colMap.category = idx;
-            } else if (/price|سعر|مبلغ|cost|sar/i.test(hl)) {
-                if (/option/i.test(hl)) {
-                    if (colMap.option_price === undefined) colMap.option_price = idx;
-                } else if (/pickup|استلام|محلي/i.test(hl)) {
-                    if (colMap.pickup_price === undefined) colMap.pickup_price = idx;
-                } else {
-                    if (colMap.price === undefined) colMap.price = idx;
-                }
-            } else if (/calories|kcal|سعرات|السعرات/i.test(hl)) {
-                if (/option/i.test(hl)) {
-                    if (colMap.option_calories === undefined) colMap.option_calories = idx;
-                } else {
-                    if (colMap.calories === undefined) colMap.calories = idx;
-                }
-            } else if (/description|وصف/i.test(hl)) {
-                if (/ar|عربي/i.test(hl)) colMap.desc_ar = idx;
-                else if (/en|english/i.test(hl)) colMap.desc_en = idx;
-                else if (colMap.desc === undefined) colMap.desc = idx;
-            } else if (/allergen|حساسية|حساسيه|allergy|allergies|مسببات/i.test(hl)) {
-                colMap.allergen_cols.push(idx);
-            } else if (/protein|بروتين/i.test(hl)) {
-                if (colMap.protein === undefined) colMap.protein = idx;
-            } else if (/(?:full\s*fat|^fat|دهون|دسم)/i.test(hl)) {
-                if (colMap.fat === undefined) colMap.fat = idx;
-            } else if (/sodi(?:um|om)|صوديوم/i.test(hl)) {
-                if (colMap.sodium === undefined) colMap.sodium = idx;
-            } else if (/carb|كارب|كربوهيدرات/i.test(hl)) {
-                if (colMap.carbs === undefined) colMap.carbs = idx;
-            } else if (/sugar|سكر/i.test(hl)) {
-                if (colMap.sugar === undefined) colMap.sugar = idx;
-            } else if (/fiber|ألياف|الياف/i.test(hl)) {
-                if (colMap.fiber === undefined) colMap.fiber = idx;
-            } else if (/add|إضافات|اضافات|extras/i.test(hl)) {
-                if (/ar|عربي/i.test(hl)) colMap.add_ar = idx;
-                else colMap.add_cols.push(idx);
-            } else if (/choice|خيارات|اختيار|نوع|تفضيل/i.test(hl)) {
-                colMap.choice_cols.push(idx);
-            } else if (/size|حجم/i.test(hl)) {
-                if (/ar|عربي/i.test(hl)) colMap.size_ar = idx;
-                else if (colMap.size === undefined) colMap.size = idx;
-            } else if (/image|photo|picture|صورة|صوره|رابط|link|url|drive/i.test(hl)) {
-                if (colMap.image === undefined) colMap.image = idx;
-            }
-        });
+            });
 
-        // Also check if there are unlabeled adjacent columns after allergen header (common in freeform sheets)
-        if (colMap.allergen_cols.length > 0) {
-            const firstAlCol = colMap.allergen_cols[0];
-            for (let c = firstAlCol + 1; c < Math.min(firstAlCol + 5, targetSheet.headers.length); c++) {
-                if (!targetSheet.headers[c] || targetSheet.headers[c].trim() === '') {
-                    if (!colMap.allergen_cols.includes(c)) colMap.allergen_cols.push(c);
-                }
-            }
-        }
-
-        // Fallbacks
-        if (colMap.name_en === undefined && colMap.name_ar !== undefined) colMap.name_en = colMap.name_ar;
-        if (colMap.name_ar === undefined && colMap.name_en !== undefined) colMap.name_ar = colMap.name_en;
-
-        const groupsMap = new Map();
-        let groupIdCounter = 1;
-        let currentSectionCategory = 'Main Menu';
-
-        const dataRows = targetSheet.rows.slice(targetSheet.headerRowIndex + 1);
-        dataRows.forEach((r, idx) => {
-            // Check for section divider rows (e.g. "القسم: البرجر | Burgers")
-            const joinedRow = r.join(' ').trim();
-            if (joinedRow && (/^القسم[:\s]|category[:\s]/i.test(joinedRow) || (r.filter(Boolean).length === 1 && joinedRow.length < 50 && !/\d/.test(joinedRow)))) {
-                currentSectionCategory = joinedRow.replace(/^(?:القسم|category)[:\s]*/i, '').trim();
-                return;
-            }
-
-            let nameEn = colMap.name_en !== undefined ? cleanStr(r[colMap.name_en]) : '';
-            let nameAr = colMap.name_ar !== undefined ? cleanStr(r[colMap.name_ar]) : '';
-            if (!nameEn && !nameAr) return;
-
-            if (!nameEn) nameEn = nameAr;
-            if (!nameAr) nameAr = nameEn;
-
-            const rawCat = (colMap.category !== undefined && cleanStr(r[colMap.category])) ? cleanStr(r[colMap.category]) : currentSectionCategory;
-            const catPair = getCategoryPair(rawCat);
-
-            if (!groupsMap.has(catPair.en)) {
-                groupsMap.set(catPair.en, {
-                    id: groupIdCounter++,
-                    en_name: catPair.en,
-                    ar_name: catPair.ar,
-                    name_en: catPair.en,
-                    name_ar: catPair.ar,
-                    en_type: 'General',
-                    ar_type: 'عام',
-                    order: groupsMap.size + 1
-                });
-            }
-            const grp = groupsMap.get(catPair.en);
-
-            let p = colMap.price !== undefined ? parseFloat(r[colMap.price]) : 15;
-            if (isNaN(p)) p = 15;
-
-            let k = colMap.calories !== undefined ? parseInt(r[colMap.calories], 10) : 0;
-            if (isNaN(k)) k = 0;
-
-            let descAr = colMap.desc_ar !== undefined ? cleanStr(r[colMap.desc_ar]) : '';
-            let descEn = colMap.desc_en !== undefined ? cleanStr(r[colMap.desc_en]) : '';
-            if (colMap.desc !== undefined && (!descAr || !descEn)) {
-                const rawDesc = cleanStr(r[colMap.desc]);
-                if (rawDesc.includes('/')) {
-                    const parts = rawDesc.split('/').map(pt => cleanStr(pt));
-                    descEn = descEn || parts[0];
-                    descAr = descAr || parts[1];
-                } else {
-                    if (/[\u0600-\u06FF]/.test(rawDesc)) descAr = descAr || rawDesc;
-                    else descEn = descEn || rawDesc;
-                }
-            }
-
-            const sizeEn = colMap.size !== undefined ? cleanStr(r[colMap.size]) : '';
-            const sizeAr = colMap.size_ar !== undefined ? cleanStr(r[colMap.size_ar]) : '';
-            if (sizeEn && sizeEn !== '-' && !nameEn.toLowerCase().includes(sizeEn.toLowerCase())) {
-                nameEn = `${nameEn} (${sizeEn})`;
-            }
-            if (sizeAr && sizeAr !== '-' && !nameAr.includes(sizeAr)) {
-                nameAr = `${nameAr} (${sizeAr})`;
-            }
-
-            // Extract ALL allergens across all detected allergen columns
-            const rawAllergenVals = [];
+            // If adjacent unlabelled columns exist after allergen header (like in منيو 2026.xlsx)
             if (colMap.allergen_cols.length > 0) {
-                colMap.allergen_cols.forEach(cIdx => {
-                    const v = cleanStr(r[cIdx]);
-                    if (v) rawAllergenVals.push(v);
+                const firstAl = colMap.allergen_cols[0];
+                for (let c = firstAl + 1; c < Math.min(firstAl + 6, headers.length); c++) {
+                    if (!headers[c] || headers[c].trim() === '') {
+                        if (!colMap.allergen_cols.includes(c)) colMap.allergen_cols.push(c);
+                    }
+                }
+            }
+
+            // Fallback for names: detect first text column
+            if (colMap.name_en === undefined && colMap.name_ar === undefined) {
+                for (let c = 0; c < headers.length; c++) {
+                    const sample = cleanStr(rows[bestHeaderRow + 1] ? rows[bestHeaderRow + 1][c] : '');
+                    if (sample && !/^[\d\.\s,]+$/.test(sample)) {
+                        if (/[\u0600-\u06FF]/.test(sample)) colMap.name_ar = c;
+                        else colMap.name_en = c;
+                        break;
+                    }
+                }
+            }
+            if (colMap.name_en === undefined && colMap.name_ar !== undefined) colMap.name_en = colMap.name_ar;
+            if (colMap.name_ar === undefined && colMap.name_en !== undefined) colMap.name_ar = colMap.name_en;
+
+            // Sheet category default (e.g. if workbook has sheets "فطائر" and "فلافل")
+            let currentSectionCategory = sheetsToProcess.length > 1 ? sname : 'Main Menu';
+            let lastItemNameEn = '';
+            let lastItemNameAr = '';
+
+            const dataRows = rows.slice(bestHeaderRow + 1);
+            dataRows.forEach((r, rIdx) => {
+                const rowStr = r.join(' ').trim();
+                if (!rowStr) return;
+
+                // Check for section divider rows (e.g. "القسم: البرجر | Burgers")
+                if (/^(?:القسم|category)[:\s]/i.test(rowStr) || (r.filter(Boolean).length === 1 && rowStr.length < 50 && !/\d/.test(rowStr))) {
+                    currentSectionCategory = rowStr.replace(/^(?:القسم|category)[:\s]*/i, '').trim();
+                    return;
+                }
+
+                let nameEn = colMap.name_en !== undefined ? cleanStr(r[colMap.name_en]) : '';
+                let nameAr = colMap.name_ar !== undefined ? cleanStr(r[colMap.name_ar]) : '';
+
+                const p = colMap.price !== undefined ? cleanNum(r[colMap.price], 15) : 15;
+                const sizeEn = colMap.size !== undefined ? cleanStr(r[colMap.size]) : '';
+                const sizeAr = colMap.size_ar !== undefined ? cleanStr(r[colMap.size_ar]) : '';
+                const sizeDesc = sizeAr || sizeEn;
+
+                // Handle Merged cell / Size variation rows (e.g. row has price & size but empty name)
+                if (!nameEn && !nameAr) {
+                    if ((p > 0 || sizeDesc) && (lastItemNameAr || lastItemNameEn)) {
+                        nameAr = lastItemNameAr + (sizeDesc ? ` (${sizeDesc})` : '');
+                        nameEn = lastItemNameEn + (sizeEn || sizeDesc ? ` (${sizeEn || sizeDesc})` : '');
+                    } else {
+                        return; // skip truly empty row
+                    }
+                } else {
+                    lastItemNameEn = nameEn;
+                    lastItemNameAr = nameAr;
+                }
+
+                if (!nameEn) nameEn = nameAr;
+                if (!nameAr) nameAr = nameEn;
+
+                // Category resolution
+                const rawCat = (colMap.category !== undefined && cleanStr(r[colMap.category])) ? cleanStr(r[colMap.category]) : currentSectionCategory;
+                const catPair = getCategoryPair(rawCat);
+
+                if (!groupsMap.has(catPair.en)) {
+                    groupsMap.set(catPair.en, {
+                        id: groupIdCounter++,
+                        en_name: catPair.en,
+                        ar_name: catPair.ar,
+                        name_en: catPair.en,
+                        name_ar: catPair.ar,
+                        en_type: 'General',
+                        ar_type: 'عام',
+                        order: groupsMap.size + 1
+                    });
+                }
+                const grp = groupsMap.get(catPair.en);
+
+                const k = colMap.calories !== undefined ? Math.round(cleanNum(r[colMap.calories], 0)) : 0;
+
+                let descAr = colMap.desc_ar !== undefined ? cleanStr(r[colMap.desc_ar]) : '';
+                let descEn = colMap.desc_en !== undefined ? cleanStr(r[colMap.desc_en]) : '';
+                if (colMap.desc !== undefined && (!descAr || !descEn)) {
+                    const rawDesc = cleanStr(r[colMap.desc]);
+                    if (rawDesc.includes('/')) {
+                        const parts = rawDesc.split('/').map(pt => cleanStr(pt));
+                        descEn = descEn || parts[0];
+                        descAr = descAr || parts[1];
+                    } else {
+                        if (/[\u0600-\u06FF]/.test(rawDesc)) descAr = descAr || rawDesc;
+                        else descEn = descEn || rawDesc;
+                    }
+                }
+
+                // If sizes were not merged in name
+                if (sizeEn && sizeEn !== '-' && !nameEn.toLowerCase().includes(sizeEn.toLowerCase())) {
+                    nameEn = `${nameEn} (${sizeEn})`;
+                }
+                if (sizeAr && sizeAr !== '-' && !nameAr.includes(sizeAr)) {
+                    nameAr = `${nameAr} (${sizeAr})`;
+                }
+
+                // Allergens Extraction
+                const rawAllergenVals = [];
+                if (colMap.allergen_cols.length > 0) {
+                    colMap.allergen_cols.forEach(cIdx => {
+                        const v = cleanStr(r[cIdx]);
+                        if (v) rawAllergenVals.push(v);
+                    });
+                }
+                const normAllergens = typeof window.normalizeHungerstationAllergens === 'function' 
+                    ? window.normalizeHungerstationAllergens(rawAllergenVals) 
+                    : 'No Allergens';
+
+                // Additions & Choices
+                let addEn = '';
+                if (colMap.add_cols.length > 0) {
+                    addEn = colMap.add_cols.map(cIdx => cleanStr(r[cIdx])).filter(Boolean).join('; ');
+                }
+                const addAr = colMap.add_ar !== undefined ? cleanStr(r[colMap.add_ar]) : '';
+                
+                let choiceText = '';
+                if (colMap.choice_cols.length > 0) {
+                    choiceText = colMap.choice_cols.map(cIdx => cleanStr(r[cIdx])).filter(Boolean).join(' | ');
+                }
+
+                // Parse complex multiline modifiers (e.g. "+8 ريال")
+                const fullText = (addEn + ' ' + addAr + ' ' + choiceText);
+                if (fullText.includes('+') || fullText.includes('ريال')) {
+                    const lines = fullText.split(/\n|;|\|/);
+                    lines.forEach(line => {
+                        const mMatch = line.match(/(.+?)\s*\+(\d+(?:\.\d+)?)\s*(?:ريال|SAR|SR)?/i);
+                        if (mMatch) {
+                            const optName = cleanStr(mMatch[1]);
+                            const optPrice = cleanNum(mMatch[2], 0);
+                            if (optName && optName.length > 1 && optName.length < 50) {
+                                const key = optName.toLowerCase();
+                                if (!inlineModifiersMap.has(key)) {
+                                    inlineModifiersMap.set(key, {
+                                        name_en: toEnglishProper(optName),
+                                        name_ar: cleanProperTrim(optName),
+                                        price: optPrice,
+                                        group: optPrice > 5 ? 'Upgrades / ترقيات' : 'Additions / إضافات'
+                                    });
+                                }
+                            }
+                        }
+                    });
+                }
+
+                items.push({
+                    id: items.length + 1,
+                    group_id: grp.id,
+                    group_name: grp.ar_name + ' / ' + grp.en_name,
+                    prod_en: toEnglishProper(nameEn),
+                    prod_ar: cleanProperTrim(nameAr),
+                    item_en: toEnglishProper(nameEn),
+                    item_ar: cleanProperTrim(nameAr),
+                    name_en: toEnglishProper(nameEn),
+                    name_ar: cleanProperTrim(nameAr),
+                    item_en_desc: descEn,
+                    item_ar_desc: descAr,
+                    desc_en: descEn,
+                    desc_ar: descAr,
+                    price: p,
+                    pickup_price: colMap.pickup_price !== undefined ? cleanNum(r[colMap.pickup_price], p) : '',
+                    kcal: k,
+                    calories: k,
+                    modifier_groups: '',
+                    vendor_id: 'P' + (items.length + 1),
+                    allergens: normAllergens,
+                    protein: colMap.protein !== undefined ? cleanStr(r[colMap.protein]) : '',
+                    full_fat: colMap.fat !== undefined ? cleanStr(r[colMap.fat]) : '',
+                    sodium: colMap.sodium !== undefined ? cleanStr(r[colMap.sodium]) : '',
+                    carbs: colMap.carbs !== undefined ? cleanStr(r[colMap.carbs]) : '',
+                    sugars: colMap.sugar !== undefined ? cleanStr(r[colMap.sugar]) : '',
+                    fiber: colMap.fiber !== undefined ? cleanStr(r[colMap.fiber]) : '',
+                    image_url: colMap.image !== undefined ? cleanStr(r[colMap.image]) : '',
+                    rawAdditionsEn: addEn,
+                    rawAdditionsAr: addAr,
+                    rawChoices: choiceText
                 });
-            }
-            const normAllergens = window.normalizeHungerstationAllergens(rawAllergenVals);
-
-            // Extract additions & choices
-            let addEn = '';
-            if (colMap.add_cols.length > 0) {
-                addEn = colMap.add_cols.map(cIdx => cleanStr(r[cIdx])).filter(Boolean).join('; ');
-            }
-            const addAr = colMap.add_ar !== undefined ? cleanStr(r[colMap.add_ar]) : '';
-            
-            let choiceText = '';
-            if (colMap.choice_cols.length > 0) {
-                choiceText = colMap.choice_cols.map(cIdx => cleanStr(r[cIdx])).filter(Boolean).join(' | ');
-            }
-
-            // Extract Nutrition facts
-            const protVal = colMap.protein !== undefined ? cleanStr(r[colMap.protein]) : '';
-            const fatVal = colMap.fat !== undefined ? cleanStr(r[colMap.fat]) : '';
-            const sodVal = colMap.sodium !== undefined ? cleanStr(r[colMap.sodium]) : '';
-            const carbVal = colMap.carbs !== undefined ? cleanStr(r[colMap.carbs]) : '';
-            const sugarVal = colMap.sugar !== undefined ? cleanStr(r[colMap.sugar]) : '';
-            const fiberVal = colMap.fiber !== undefined ? cleanStr(r[colMap.fiber]) : '';
-
-            items.push({
-                id: items.length + 1,
-                group_id: grp.id,
-                group_name: grp.ar_name + ' / ' + grp.en_name,
-                prod_en: toEnglishProper(nameEn),
-                prod_ar: cleanProperTrim(nameAr),
-                item_en: toEnglishProper(nameEn),
-                item_ar: cleanProperTrim(nameAr),
-                name_en: toEnglishProper(nameEn),
-                name_ar: cleanProperTrim(nameAr),
-                item_en_desc: descEn,
-                item_ar_desc: descAr,
-                desc_en: descEn,
-                desc_ar: descAr,
-                price: p,
-                pickup_price: colMap.pickup_price !== undefined ? (parseFloat(r[colMap.pickup_price]) || '') : '',
-                kcal: k,
-                calories: k,
-                modifier_groups: '',
-                vendor_id: 'P' + (items.length + 1),
-                allergens: normAllergens,
-                protein: protVal,
-                full_fat: fatVal,
-                sodium: sodVal,
-                carbs: carbVal,
-                sugars: sugarVal,
-                fiber: fiberVal,
-                image_url: colMap.image !== undefined ? cleanStr(r[colMap.image]) : '',
-                rawAdditionsEn: addEn,
-                rawAdditionsAr: addAr,
-                rawChoices: choiceText
             });
         });
 
         groups = Array.from(groupsMap.values());
 
-        // Parse dedicated modifier sheet if present (e.g. Modifier Rules)
-        const modSheetCandidate = sheetAnalyses.find(s => s.name.toLowerCase().includes('modifier'));
-        if (modSheetCandidate) {
-            console.log("Extracting dedicated Modifier Sheet:", modSheetCandidate.name);
-            const mRows = modSheetCandidate.rows;
-            const mHdr = modSheetCandidate.headers;
-            let mColModEn = mHdr.findIndex(h => /modifier/i.test(h) && !/ar|arabic/i.test(h));
-            let mColModAr = mHdr.findIndex(h => /ar|arabic/i.test(h));
-            let mColPrice = mHdr.findIndex(h => /price|سعر/i.test(h));
+        // Parse dedicated modifier sheet if present
+        if (modifierSheetNames.length > 0) {
+            modifierSheetNames.forEach(mName => {
+                const mWs = workbook.Sheets[mName];
+                if (!mWs) return;
+                const mRows = XLSX.utils.sheet_to_json(mWs, { header: 1, blankrows: false, defval: '' });
+                if (!mRows || mRows.length < 2) return;
 
-            if (mColModEn === -1) mColModEn = 0;
-            if (mColModAr === -1) mColModAr = 1;
-            if (mColPrice === -1) mColPrice = 2;
+                let curGroupNameEn = 'Additions / Extras';
+                let curGroupNameAr = 'إضافات وخيارات';
+                let curMin = 0;
+                let curMax = 5;
 
-            let curGroupNameEn = 'Additions / Extras';
-            let curGroupNameAr = 'إضافات وخيارات';
-            let curMin = 0;
-            let curMax = 5;
+                mRows.forEach((mrow, idx) => {
+                    const rowStr = mrow.join(' ').trim();
+                    if (!rowStr) return;
+                    
+                    const mEn = cleanStr(mrow[0]);
+                    const mAr = cleanStr(mrow[1]);
+                    const pVal = mrow[2];
 
-            mRows.slice(modSheetCandidate.headerRowIndex + 1).forEach((mrow) => {
-                const mEn = cleanStr(mrow[mColModEn]);
-                const mAr = cleanStr(mrow[mColModAr]);
-                const pVal = mrow[mColPrice];
-                if (!mEn && !mAr) return;
+                    if (!mEn && !mAr) return;
+                    if (pVal === 'Price' || (!pVal && !mAr && isNaN(cleanNum(pVal)))) {
+                        curGroupNameEn = mEn;
+                        curGroupNameAr = mAr || mEn;
+                        curMin = /drink|choice|flavor|sauce/i.test(mEn) ? 1 : 0;
+                        curMax = /drink|choice|flavor|sauce/i.test(mEn) ? 1 : 5;
+                        return;
+                    }
 
-                if (pVal === 'Price' || (!pVal && !mAr)) {
-                    curGroupNameEn = mEn;
-                    curGroupNameAr = mAr || mEn;
-                    curMin = /drink|choice|flavor|sauce/i.test(mEn) ? 1 : 0;
-                    curMax = /drink|choice|flavor|sauce/i.test(mEn) ? 1 : 5;
-                    return;
-                }
-
-                const modPrice = parseFloat(pVal) || 0;
-                modifiers.push({
-                    id: modifiers.length + 1,
-                    group_en: toEnglishProper(curGroupNameEn),
-                    group_ar: cleanProperTrim(curGroupNameAr),
-                    group_name: curGroupNameAr + ' / ' + curGroupNameEn,
-                    mod_en: toEnglishProper(mEn || mAr),
-                    mod_ar: cleanProperTrim(mAr || mEn),
-                    option_en: toEnglishProper(mEn || mAr),
-                    option_ar: cleanProperTrim(mAr || mEn),
-                    price: modPrice,
-                    kcal: 0,
-                    max_limit: curMax,
-                    min_limit: curMin,
-                    vendor_id: 'M' + (modifiers.length + 1),
-                    type: curMin > 0 ? 'Mandatory' : 'Optional'
+                    const modPrice = cleanNum(pVal, 0);
+                    modifiers.push({
+                        id: modifiers.length + 1,
+                        group_en: toEnglishProper(curGroupNameEn),
+                        group_ar: cleanProperTrim(curGroupNameAr),
+                        group_name: curGroupNameAr + ' / ' + curGroupNameEn,
+                        mod_en: toEnglishProper(mEn || mAr),
+                        mod_ar: cleanProperTrim(mAr || mEn),
+                        option_en: toEnglishProper(mEn || mAr),
+                        option_ar: cleanProperTrim(mAr || mEn),
+                        price: modPrice,
+                        kcal: 0,
+                        max_limit: curMax,
+                        min_limit: curMin,
+                        vendor_id: 'M' + (modifiers.length + 1),
+                        type: curMin > 0 ? 'Mandatory' : 'Optional'
+                    });
                 });
             });
         }
 
-        // Inline additions dissection (if no modifier sheet or to enrich)
-        if (modifiers.length === 0) {
-            const seenMods = new Set();
-            items.forEach(it => {
-                if (it.rawAdditionsEn || it.rawAdditionsAr) {
-                    const enParts = it.rawAdditionsEn.split(';').map(pt => cleanStr(pt)).filter(Boolean);
-                    const arParts = it.rawAdditionsAr.split(';').map(pt => cleanStr(pt)).filter(Boolean);
-                    for (let i = 0; i < Math.max(enParts.length, arParts.length); i++) {
-                        const enP = enParts[i] || arParts[i] || '';
-                        const arP = arParts[i] || enParts[i] || '';
-                        const pMatch = enP.match(/\(\+(\d+(?:\.\d+)?)\)/) || arP.match(/\(\+(\d+(?:\.\d+)?)\)/);
-                        const modP = pMatch ? parseFloat(pMatch[1]) : 0;
-                        const cleanEn = enP.replace(/\(\+\d+(?:\.\d+)?\)/, '').trim();
-                        const cleanAr = arP.replace(/\(\+\d+(?:\.\d+)?\)/, '').trim();
-                        const key = cleanEn.toLowerCase();
-                        if (!seenMods.has(key) && cleanEn) {
-                            seenMods.add(key);
-                            modifiers.push({
-                                id: modifiers.length + 1,
-                                group_en: 'Additions',
-                                group_ar: 'إضافات',
-                                group_name: 'إضافات / Additions',
-                                mod_en: toEnglishProper(cleanEn),
-                                mod_ar: cleanProperTrim(cleanAr),
-                                option_en: toEnglishProper(cleanEn),
-                                option_ar: cleanProperTrim(cleanAr),
-                                price: modP,
-                                kcal: 0,
-                                max_limit: 5,
-                                min_limit: 0,
-                                vendor_id: 'M' + (modifiers.length + 1),
-                                type: 'Optional'
-                            });
-                        }
-                    }
-                }
+        // Add parsed inline modifiers
+        if (inlineModifiersMap.size > 0 && modifiers.length === 0) {
+            inlineModifiersMap.forEach(itemMod => {
+                modifiers.push({
+                    id: modifiers.length + 1,
+                    group_en: toEnglishProper(itemMod.group),
+                    group_ar: cleanProperTrim(itemMod.group),
+                    group_name: itemMod.group,
+                    mod_en: toEnglishProper(itemMod.name_en),
+                    mod_ar: cleanProperTrim(itemMod.name_ar),
+                    option_en: toEnglishProper(itemMod.name_en),
+                    option_ar: cleanProperTrim(itemMod.name_ar),
+                    price: itemMod.price,
+                    kcal: 0,
+                    max_limit: itemMod.price > 5 ? 1 : 5,
+                    min_limit: 0,
+                    vendor_id: 'M' + (modifiers.length + 1),
+                    type: 'Optional'
+                });
             });
         }
 
-        // Link items to modifier groups
+        // Auto-link items to modifier groups
         if (modifiers.length > 0) {
-            // Map distinct group starting row indices
             const groupStartRows = new Map();
             let lastGrp = null;
             modifiers.forEach((m, idx) => {
@@ -11577,18 +11607,18 @@ function processVendorMenuWorkbook(workbook) {
             });
 
             items.forEach(it => {
-                const assignedGroupIds = [];
+                const assigned = [];
                 groupStartRows.forEach((rowId, grpName) => {
                     if (/additions|extras|إضافات/i.test(grpName) && (it.rawAdditionsEn || it.rawAdditionsAr)) {
-                        assignedGroupIds.push(rowId);
+                        assigned.push(rowId);
                     } else if (/drink|مشروب/i.test(grpName) && (/drink|pepsi|وجبة|meal|box|بكس/i.test(it.rawChoices) || /meal|وجبة|box|بكس/i.test(it.item_en) || /meal|وجبة|box|بكس/i.test(it.item_ar))) {
-                        assignedGroupIds.push(rowId);
+                        assigned.push(rowId);
                     } else if (/flavor|نكهة/i.test(grpName) && (/flavor|doritos|نكهة/i.test(it.rawChoices) || /doritos/i.test(it.item_en))) {
-                        assignedGroupIds.push(rowId);
+                        assigned.push(rowId);
                     }
                 });
-                if (assignedGroupIds.length > 0) {
-                    it.modifier_groups = assignedGroupIds.join(',');
+                if (assigned.length > 0) {
+                    it.modifier_groups = assigned.join(',');
                 } else if (groupStartRows.size > 0 && (it.rawAdditionsEn || it.rawChoices)) {
                     it.modifier_groups = String(Array.from(groupStartRows.values())[0]);
                 }
@@ -11607,7 +11637,7 @@ function processVendorMenuWorkbook(workbook) {
         imageLinks: typeof extractImageUrls === 'function' ? extractImageUrls(allSheetText) : []
     };
 
-    console.log("🎉 Successfully dissected menu v9! Total Groups:", groups.length, "| Items:", items.length, "| Modifiers:", modifiers.length);
+    console.log("🎉 Successfully dissected menu v10! Total Groups:", groups.length, "| Items:", items.length, "| Modifiers:", modifiers.length);
     const allergensCount = items.filter(it => it.allergens && it.allergens !== 'No Allergens').length;
     console.log(`🛡️ Total items with allergens: ${allergensCount}/${items.length}`);
 
@@ -14891,7 +14921,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=9')
+        navigator.serviceWorker.register('./sw.js?v=10')
             .then(() => console.log('✓ Service Worker Registered successfully.'))
             .catch(err => console.log('SW registration error:', err));
     });
@@ -15064,7 +15094,7 @@ function updateMobileMockup() {
 const originalRenderStudioTables = window.renderStudioMenuPreviewTables;
 
 window.forcePurgeAndReload = function() {
-    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v9)...');
+    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v10)...');
     if ('caches' in window) {
         caches.keys().then(names => {
             return Promise.all(names.map(name => caches.delete(name)));
@@ -16734,7 +16764,7 @@ if (typeof window !== 'undefined') {
     </div>
 
 
-    <!-- PWA Service Worker handled by sw.js?v=9 -->
+    <!-- PWA Service Worker handled by sw.js?v=10 -->
 
 </body>
 </html>
