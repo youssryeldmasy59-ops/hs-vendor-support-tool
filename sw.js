@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hs-vendor-suite-v8-universal-dissector';
+const CACHE_NAME = 'hs-vendor-suite-v9-omni-dissector';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.webmanifest'

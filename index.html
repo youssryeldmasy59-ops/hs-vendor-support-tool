@@ -2124,7 +2124,7 @@
 
             <!-- 🔄 Force Refresh / Cache Purge -->
             <button type="button" class="header-btn" onclick="forcePurgeAndReload()" style="color: #10B981; border-color: rgba(16,185,129,0.3);" title="تحديث فوري وحذف الكاش القديم (v8)">
-                <i class="fa-solid fa-rotate"></i> <span>تحديث v8 🔄</span>
+                <i class="fa-solid fa-rotate"></i> <span>تحديث v9 🔄</span>
             </button>
 
             <!-- 🔊 Sound FX Mute Toggle -->
@@ -2446,6 +2446,9 @@
                                 <th style="padding: 10px;">الاسم (Ar)</th>
                                 <th style="padding: 10px;">السعر Price</th>
                                 <th style="padding: 10px;">السعرات Calories</th>
+                                <th style="padding: 10px;">🛡️ الحساسية Allergens</th>
+                                <th style="padding: 10px;">🥗 القيم الغذائية</th>
+                                <th style="padding: 10px;">🍟 الإضافات</th>
                                 <th style="padding: 10px;">الوصف Description</th>
                             </tr>
                         </thead>
@@ -2810,7 +2813,7 @@
 
 
 window.forcePurgeAndReload = function() {
-    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v8)...');
+    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v9)...');
     if ('caches' in window) {
         caches.keys().then(names => {
             return Promise.all(names.map(name => caches.delete(name)));
@@ -2885,23 +2888,52 @@ window.renderStudioMenuPreviewTables = function() {
         }
     }
 
+    // Helper for Allergen Badge Rendering
+    function renderAllergenBadges(alStr) {
+        if (!alStr || alStr === 'No Allergens') {
+            return '<span style="background: rgba(16,185,129,0.15); color: #34D399; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; border: 1px solid rgba(16,185,129,0.3);">✓ خالي من الحساسية</span>';
+        }
+        const parts = alStr.split(',');
+        return parts.map(p => {
+            const pTrim = p.trim();
+            let col = '#F59E0B';
+            if (pTrim.includes('Gluten')) col = '#EC4899';
+            else if (pTrim.includes('Milk')) col = '#38BDF8';
+            else if (pTrim.includes('Egg')) col = '#FCD34D';
+            else if (pTrim.includes('Nut') || pTrim.includes('Peanut')) col = '#FB923C';
+            return `<span style="background: rgba(255,255,255,0.08); color: ${col}; border: 1px solid ${col}44; padding: 1px 5px; border-radius: 4px; font-size: 0.68rem; display: inline-block; margin: 1px;">${pTrim}</span>`;
+        }).join(' ');
+    }
+
     // Tbody Items
     const tbodyI = document.getElementById('studioTbodyItems');
     if (tbodyI) {
         if (items.length === 0) {
-            tbodyI.innerHTML = '<tr><td colspan="7" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال أصناف بعد.</td></tr>';
+            tbodyI.innerHTML = '<tr><td colspan="10" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال أصناف بعد.</td></tr>';
         } else {
-            tbodyI.innerHTML = items.map((it, i) => `
+            tbodyI.innerHTML = items.map((it, i) => {
+                const nutStr = (it.protein || it.full_fat || it.sodium) 
+                    ? `<span style="color:#A78BFA; font-size:0.7rem;">P:${it.protein || 0}g | F:${it.full_fat || 0}g | Na:${it.sodium || 0}mg</span>`
+                    : '<span style="color:#64748B; font-size:0.7rem;">-</span>';
+                const modGroupStr = it.modifier_groups 
+                    ? `<span style="background:rgba(139,92,246,0.2); color:#C4B5FD; padding:1px 6px; border-radius:4px; font-size:0.7rem;">#${it.modifier_groups}</span>`
+                    : '<span style="color:#64748B; font-size:0.7rem;">-</span>';
+
+                return `
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'};">
                     <td style="padding: 8px 10px; color: #F59E0B; font-weight: 700;">#${it.id}</td>
-                    <td style="padding: 8px 10px; color: #A78BFA;">${it.group_name || it.group_id}</td>
-                    <td style="padding: 8px 10px; font-weight: 600; color: #FFF;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'item_en', this.innerText)" title="انقر لتعديل الاسم بالإنجليزي">${it.name_en || it.item_en}</td>
-                    <td style="padding: 8px 10px; color: #93C5FD;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'item_ar', this.innerText)" title="انقر لتعديل الاسم بالعربي">${it.name_ar || it.item_ar}</td>
-                    <td style="padding: 8px 10px; color: #34D399; font-weight: 700;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'price', this.innerText)" title="انقر لتعديل السعر">${it.price} SAR</td>
-                    <td style="padding: 8px 10px; color: #FCD34D;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'kcal', this.innerText)" title="انقر لتعديل السعرات">${it.kcal || it.calories ? (it.kcal || it.calories) + ' kcal' : '-'}</td>
-                    <td style="padding: 8px 10px; font-size: 0.75rem; color: #94A3B8;">${it.desc_ar || it.desc_en || '-'}</td>
+                    <td style="padding: 8px 10px; color: #A78BFA; font-size:0.78rem;">${it.group_name || it.group_id}</td>
+                    <td style="padding: 8px 10px; font-weight: 600; color: #FFF;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'item_en', this.innerText)" title="انقر لتعديل">${it.name_en || it.item_en}</td>
+                    <td style="padding: 8px 10px; color: #93C5FD;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'item_ar', this.innerText)" title="انقر لتعديل">${it.name_ar || it.item_ar}</td>
+                    <td style="padding: 8px 10px; color: #34D399; font-weight: 700;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'price', this.innerText)">${it.price} SAR</td>
+                    <td style="padding: 8px 10px; color: #FCD34D;" contenteditable="true" onblur="window.updateItemCellLive(${i}, 'kcal', this.innerText)">${it.kcal || it.calories ? (it.kcal || it.calories) + ' kcal' : '-'}</td>
+                    <td style="padding: 8px 10px;">${renderAllergenBadges(it.allergens)}</td>
+                    <td style="padding: 8px 10px;">${nutStr}</td>
+                    <td style="padding: 8px 10px; text-align:center;">${modGroupStr}</td>
+                    <td style="padding: 8px 10px; font-size: 0.72rem; color: #94A3B8; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${it.desc_ar || it.desc_en || '-'}</td>
                 </tr>
-            `).join('');
+            `;
+            }).join('');
         }
     }
 
@@ -10970,8 +11002,35 @@ function parseRawMenuInput() {
 }
 
 
+
+window.normalizeHungerstationAllergens = function(rawVals) {
+    if (!rawVals) return 'No Allergens';
+    const arr = Array.isArray(rawVals) ? rawVals : [rawVals];
+    const s = arr.map(v => String(v || '').trim()).filter(Boolean).join(' ').toLowerCase();
+    if (!s || /^(?:none|none declared|no allergens|لا يوجد|خالي|لا تحتوي|بدون|لايوجد|-)$/i.test(s)) {
+        return 'No Allergens';
+    }
+
+    const matched = [];
+    if (/gluten|wheat|barley|flour|قمح|جلوتين|دقيق|شعير/i.test(s)) matched.push('Gluten');
+    if (/milk|dairy|cheese|cream|butter|yogurt|حليب|لبن|جبن|أجبان|اجبان|قشطة|زبادي|زبدة/i.test(s)) matched.push('Milk and its products');
+    if (/egg|eggs|بيض/i.test(s)) matched.push('Eggs and its products');
+    if (/fish|salmon|tuna|سمك|أسماك|اسماك|تونة|تونه|سلمون/i.test(s)) matched.push('Fish and its products');
+    if (/crustacean|shrimp|prawn|crab|lobster|جمبري|روبيان|قشريات|كابوريا|استاكوزا/i.test(s)) matched.push('Crustaceans  and its products');
+    if (/peanut|فول سوداني|سوداني/i.test(s)) matched.push('Peanuts and its products');
+    if (/nut|almond|walnut|cashew|pistachio|hazelnut|مكسرات|لوز|فستق|كاجو|جوز|عين جمل|بندق/i.test(s)) matched.push('Nuts and its products');
+    if (/soy|soya|soybean|صويا/i.test(s)) matched.push('Soy and its products');
+    if (/mustard|خردل/i.test(s)) matched.push('Mustard and its products');
+    if (/celery|كرفس/i.test(s)) matched.push('Celery and its products');
+    if (/sulfite|sulphite|sulfur|كبريتيت/i.test(s)) matched.push('Sulphur Dioxide (Sulfites)');
+    if (/mollusc|mollusk|squid|octopus|clam|mussel|oyster|رخويات|حبار|أخطبوط|محار/i.test(s)) matched.push('Mollusca and its products');
+    if (/lupin|lupinus|ترمس/i.test(s)) matched.push('Lupinus and its products');
+
+    return matched.length > 0 ? matched.join(',') : 'No Allergens';
+};
+
 function processVendorMenuWorkbook(workbook) {
-    console.log("🚀 Universal Menu AI Dissector started with sheets:", workbook.SheetNames);
+    console.log("🚀 Omni-Menu AI Dissector v9 started with sheets:", workbook.SheetNames);
     let allSheetText = '';
     const sheetNames = workbook.SheetNames;
 
@@ -10996,7 +11055,7 @@ function processVendorMenuWorkbook(workbook) {
         return String(s).replace(/\s+/g, ' ').trim();
     }
 
-    // Helper: Category Translation Pairs
+    // Category Translation Pairs
     const CATEGORY_MAP = {
         'doritos': 'دوريتوس', 'shawarma': 'شاورما', 'chicken': 'دجاج', 'fries': 'بطاطس',
         'snacks': 'سناك / وجبات خفيفة', 'sauces': 'الصوصات', 'drinks': 'مشروبات',
@@ -11111,6 +11170,9 @@ function processVendorMenuWorkbook(workbook) {
                 const k = parseInt(r['kcal '] || r['kcal'] || 0, 10);
                 const grp = groups.find(g => g.id === gid) || { ar_name: `قسم ${gid}`, en_name: `Group ${gid}` };
 
+                const rawAl = r['Allergens'] || r['allergens'] || '';
+                const normAllergens = window.normalizeHungerstationAllergens(rawAl);
+
                 items.push({
                     id: idx + 1,
                     group_id: gid,
@@ -11131,13 +11193,26 @@ function processVendorMenuWorkbook(workbook) {
                     calories: isNaN(k) ? 0 : k,
                     modifier_groups: r['modifier groups #'] || '',
                     vendor_id: r['Vendor ID'] || `P${idx + 1}`,
-                    allergens: r['Allergens'] || 'No Allergens'
+                    allergens: normAllergens,
+                    protein: cleanStr(r['Protein'] || r['protein'] || ''),
+                    full_fat: cleanStr(r['Full Fat'] || r['Fat'] || ''),
+                    saturated_fat: cleanStr(r['Saturated fat'] || ''),
+                    trans_fat: cleanStr(r['Trans Fat'] || ''),
+                    cholesterol: cleanStr(r['Cholesterol'] || ''),
+                    carbs: cleanStr(r['Carbohydrate'] || r['Carbs'] || ''),
+                    fiber: cleanStr(r['Fiber'] || ''),
+                    sugars: cleanStr(r['Total Sugers'] || r['Sugars'] || ''),
+                    added_sugars: cleanStr(r['Added Sugars'] || ''),
+                    salt: cleanStr(r['Salt'] || ''),
+                    sodium: cleanStr(r['Sodiom'] || r['Sodium'] || ''),
+                    caffeine: cleanStr(r['Caffeine'] || ''),
+                    dietary_preferences: cleanStr(r['Dietary Preferences'] || '')
                 });
             });
         }
     } else {
-        // --- CASE B: UNIVERSAL MULTI-SHEET / SINGLE-SHEET / AGGREGATOR / POS FORMAT ---
-        console.log("Analyzing sheets with Universal Header Auto-Discovery...");
+        // --- CASE B: UNIVERSAL MULTI-SHEET / AGGREGATOR / POS / CUSTOM FORMAT ---
+        console.log("Analyzing sheets with Universal Omni-Discovery Engine v9...");
 
         const sheetAnalyses = [];
         sheetNames.forEach(sname => {
@@ -11153,7 +11228,11 @@ function processVendorMenuWorkbook(workbook) {
             for (let r = 0; r < Math.min(15, rows.length); r++) {
                 const rowVals = rows[r].map(v => cleanStr(v).toLowerCase());
                 let score = 0;
-                const keywords = ['name', 'item', 'صنف', 'اسم', 'price', 'سعر', 'category', 'قسم', 'وصف', 'description', 'calories', 'سعرات', 'add', 'إضافات', 'choice', 'size', 'حجم', 'modifier', 'group', 'منتج'];
+                const keywords = [
+                    'name', 'item', 'صنف', 'اسم', 'price', 'سعر', 'category', 'قسم', 'وصف', 'description', 
+                    'calories', 'سعرات', 'add', 'إضافات', 'اضافات', 'choice', 'size', 'حجم', 'modifier', 
+                    'group', 'منتج', 'allergen', 'حساسية', 'حساسيه', 'allergy', 'protein', 'بروتين', 'sodium', 'fat', 'دهون'
+                ];
                 rowVals.forEach(val => {
                     if (keywords.some(k => val.includes(k))) score++;
                 });
@@ -11182,12 +11261,17 @@ function processVendorMenuWorkbook(workbook) {
         const targetSheet = itemCandidates.length > 0 ? itemCandidates[0] : sheetAnalyses[0];
         console.log("Primary Menu Items Sheet identified as:", targetSheet.name, "with header at row:", targetSheet.headerRowIndex + 1);
 
-        const colMap = {};
+        const colMap = {
+            allergen_cols: [],
+            choice_cols: [],
+            add_cols: []
+        };
+
         targetSheet.headers.forEach((h, idx) => {
             const hl = h.toLowerCase();
-            if (/name.*(?:item|en|product|english)/i.test(hl) || /item.*(?:en|name|english)/i.test(hl) || /(?:english name|name en)/i.test(hl)) {
+            if (/name.*(?:item|en|product|english)/i.test(hl) || /item.*(?:en|name|english)/i.test(hl) || /(?:english name|name en|product name \(en\))/i.test(hl)) {
                 if (colMap.name_en === undefined) colMap.name_en = idx;
-            } else if (/(?:اسم|صنف|منتج).*(?:عربي|عربية|بالعربي)/i.test(hl) || /(?:arabic name|name ar|اسم الصنف|اسم المنتج)/i.test(hl)) {
+            } else if (/(?:اسم|صنف|منتج).*(?:عربي|عربية|بالعربي)/i.test(hl) || /(?:arabic name|name ar|اسم الصنف|اسم المنتج|المنتج \(عربي\))/i.test(hl)) {
                 if (colMap.name_ar === undefined) colMap.name_ar = idx;
             } else if (/^(?:item|name|product)$/i.test(hl) || /^(?:الصنف|اسم الصنف|اسم المنتج|الاسم|المنتج)$/i.test(hl)) {
                 if (/[\u0600-\u06FF]/.test(h)) {
@@ -11195,7 +11279,7 @@ function processVendorMenuWorkbook(workbook) {
                 } else {
                     if (colMap.name_en === undefined) colMap.name_en = idx;
                 }
-            } else if (/category|قسم|تصنيف|فئة|مجموعة/i.test(hl)) {
+            } else if (/category|قسم|تصنيف|فئة|مجموعة|جروب/i.test(hl)) {
                 if (colMap.category === undefined) colMap.category = idx;
             } else if (/price|سعر|مبلغ|cost|sar/i.test(hl)) {
                 if (/option/i.test(hl)) {
@@ -11205,7 +11289,7 @@ function processVendorMenuWorkbook(workbook) {
                 } else {
                     if (colMap.price === undefined) colMap.price = idx;
                 }
-            } else if (/calories|kcal|سعرات/i.test(hl)) {
+            } else if (/calories|kcal|سعرات|السعرات/i.test(hl)) {
                 if (/option/i.test(hl)) {
                     if (colMap.option_calories === undefined) colMap.option_calories = idx;
                 } else {
@@ -11215,18 +11299,42 @@ function processVendorMenuWorkbook(workbook) {
                 if (/ar|عربي/i.test(hl)) colMap.desc_ar = idx;
                 else if (/en|english/i.test(hl)) colMap.desc_en = idx;
                 else if (colMap.desc === undefined) colMap.desc = idx;
+            } else if (/allergen|حساسية|حساسيه|allergy|allergies|مسببات/i.test(hl)) {
+                colMap.allergen_cols.push(idx);
+            } else if (/protein|بروتين/i.test(hl)) {
+                if (colMap.protein === undefined) colMap.protein = idx;
+            } else if (/(?:full\s*fat|^fat|دهون|دسم)/i.test(hl)) {
+                if (colMap.fat === undefined) colMap.fat = idx;
+            } else if (/sodi(?:um|om)|صوديوم/i.test(hl)) {
+                if (colMap.sodium === undefined) colMap.sodium = idx;
+            } else if (/carb|كارب|كربوهيدرات/i.test(hl)) {
+                if (colMap.carbs === undefined) colMap.carbs = idx;
+            } else if (/sugar|سكر/i.test(hl)) {
+                if (colMap.sugar === undefined) colMap.sugar = idx;
+            } else if (/fiber|ألياف|الياف/i.test(hl)) {
+                if (colMap.fiber === undefined) colMap.fiber = idx;
             } else if (/add|إضافات|اضافات|extras/i.test(hl)) {
                 if (/ar|عربي/i.test(hl)) colMap.add_ar = idx;
-                else if (colMap.add === undefined) colMap.add = idx;
-            } else if (/choice|خيارات/i.test(hl)) {
-                if (colMap.choice === undefined) colMap.choice = idx;
+                else colMap.add_cols.push(idx);
+            } else if (/choice|خيارات|اختيار|نوع|تفضيل/i.test(hl)) {
+                colMap.choice_cols.push(idx);
             } else if (/size|حجم/i.test(hl)) {
                 if (/ar|عربي/i.test(hl)) colMap.size_ar = idx;
                 else if (colMap.size === undefined) colMap.size = idx;
-            } else if (/image|photo|picture|صورة|صوره|رابط|link|url/i.test(hl)) {
+            } else if (/image|photo|picture|صورة|صوره|رابط|link|url|drive/i.test(hl)) {
                 if (colMap.image === undefined) colMap.image = idx;
             }
         });
+
+        // Also check if there are unlabeled adjacent columns after allergen header (common in freeform sheets)
+        if (colMap.allergen_cols.length > 0) {
+            const firstAlCol = colMap.allergen_cols[0];
+            for (let c = firstAlCol + 1; c < Math.min(firstAlCol + 5, targetSheet.headers.length); c++) {
+                if (!targetSheet.headers[c] || targetSheet.headers[c].trim() === '') {
+                    if (!colMap.allergen_cols.includes(c)) colMap.allergen_cols.push(c);
+                }
+            }
+        }
 
         // Fallbacks
         if (colMap.name_en === undefined && colMap.name_ar !== undefined) colMap.name_en = colMap.name_ar;
@@ -11234,9 +11342,17 @@ function processVendorMenuWorkbook(workbook) {
 
         const groupsMap = new Map();
         let groupIdCounter = 1;
+        let currentSectionCategory = 'Main Menu';
 
         const dataRows = targetSheet.rows.slice(targetSheet.headerRowIndex + 1);
         dataRows.forEach((r, idx) => {
+            // Check for section divider rows (e.g. "القسم: البرجر | Burgers")
+            const joinedRow = r.join(' ').trim();
+            if (joinedRow && (/^القسم[:\s]|category[:\s]/i.test(joinedRow) || (r.filter(Boolean).length === 1 && joinedRow.length < 50 && !/\d/.test(joinedRow)))) {
+                currentSectionCategory = joinedRow.replace(/^(?:القسم|category)[:\s]*/i, '').trim();
+                return;
+            }
+
             let nameEn = colMap.name_en !== undefined ? cleanStr(r[colMap.name_en]) : '';
             let nameAr = colMap.name_ar !== undefined ? cleanStr(r[colMap.name_ar]) : '';
             if (!nameEn && !nameAr) return;
@@ -11244,7 +11360,7 @@ function processVendorMenuWorkbook(workbook) {
             if (!nameEn) nameEn = nameAr;
             if (!nameAr) nameAr = nameEn;
 
-            const rawCat = colMap.category !== undefined ? cleanStr(r[colMap.category]) : 'Main Menu';
+            const rawCat = (colMap.category !== undefined && cleanStr(r[colMap.category])) ? cleanStr(r[colMap.category]) : currentSectionCategory;
             const catPair = getCategoryPair(rawCat);
 
             if (!groupsMap.has(catPair.en)) {
@@ -11290,9 +11406,35 @@ function processVendorMenuWorkbook(workbook) {
                 nameAr = `${nameAr} (${sizeAr})`;
             }
 
-            const addEn = colMap.add !== undefined ? cleanStr(r[colMap.add]) : '';
+            // Extract ALL allergens across all detected allergen columns
+            const rawAllergenVals = [];
+            if (colMap.allergen_cols.length > 0) {
+                colMap.allergen_cols.forEach(cIdx => {
+                    const v = cleanStr(r[cIdx]);
+                    if (v) rawAllergenVals.push(v);
+                });
+            }
+            const normAllergens = window.normalizeHungerstationAllergens(rawAllergenVals);
+
+            // Extract additions & choices
+            let addEn = '';
+            if (colMap.add_cols.length > 0) {
+                addEn = colMap.add_cols.map(cIdx => cleanStr(r[cIdx])).filter(Boolean).join('; ');
+            }
             const addAr = colMap.add_ar !== undefined ? cleanStr(r[colMap.add_ar]) : '';
-            const choiceText = colMap.choice !== undefined ? cleanStr(r[colMap.choice]) : '';
+            
+            let choiceText = '';
+            if (colMap.choice_cols.length > 0) {
+                choiceText = colMap.choice_cols.map(cIdx => cleanStr(r[cIdx])).filter(Boolean).join(' | ');
+            }
+
+            // Extract Nutrition facts
+            const protVal = colMap.protein !== undefined ? cleanStr(r[colMap.protein]) : '';
+            const fatVal = colMap.fat !== undefined ? cleanStr(r[colMap.fat]) : '';
+            const sodVal = colMap.sodium !== undefined ? cleanStr(r[colMap.sodium]) : '';
+            const carbVal = colMap.carbs !== undefined ? cleanStr(r[colMap.carbs]) : '';
+            const sugarVal = colMap.sugar !== undefined ? cleanStr(r[colMap.sugar]) : '';
+            const fiberVal = colMap.fiber !== undefined ? cleanStr(r[colMap.fiber]) : '';
 
             items.push({
                 id: items.length + 1,
@@ -11314,7 +11456,13 @@ function processVendorMenuWorkbook(workbook) {
                 calories: k,
                 modifier_groups: '',
                 vendor_id: 'P' + (items.length + 1),
-                allergens: colMap.allergens !== undefined ? cleanStr(r[colMap.allergens]) : 'No Allergens',
+                allergens: normAllergens,
+                protein: protVal,
+                full_fat: fatVal,
+                sodium: sodVal,
+                carbs: carbVal,
+                sugars: sugarVal,
+                fiber: fiberVal,
                 image_url: colMap.image !== undefined ? cleanStr(r[colMap.image]) : '',
                 rawAdditionsEn: addEn,
                 rawAdditionsAr: addAr,
@@ -11338,7 +11486,11 @@ function processVendorMenuWorkbook(workbook) {
             if (mColModAr === -1) mColModAr = 1;
             if (mColPrice === -1) mColPrice = 2;
 
-            let curGroupName = 'Options / إضافات';
+            let curGroupNameEn = 'Additions / Extras';
+            let curGroupNameAr = 'إضافات وخيارات';
+            let curMin = 0;
+            let curMax = 5;
+
             mRows.slice(modSheetCandidate.headerRowIndex + 1).forEach((mrow) => {
                 const mEn = cleanStr(mrow[mColModEn]);
                 const mAr = cleanStr(mrow[mColModAr]);
@@ -11346,31 +11498,34 @@ function processVendorMenuWorkbook(workbook) {
                 if (!mEn && !mAr) return;
 
                 if (pVal === 'Price' || (!pVal && !mAr)) {
-                    curGroupName = mEn;
+                    curGroupNameEn = mEn;
+                    curGroupNameAr = mAr || mEn;
+                    curMin = /drink|choice|flavor|sauce/i.test(mEn) ? 1 : 0;
+                    curMax = /drink|choice|flavor|sauce/i.test(mEn) ? 1 : 5;
                     return;
                 }
 
                 const modPrice = parseFloat(pVal) || 0;
                 modifiers.push({
                     id: modifiers.length + 1,
-                    group_en: toEnglishProper(curGroupName),
-                    group_ar: 'خيارات وإضافات',
-                    group_name: curGroupName,
+                    group_en: toEnglishProper(curGroupNameEn),
+                    group_ar: cleanProperTrim(curGroupNameAr),
+                    group_name: curGroupNameAr + ' / ' + curGroupNameEn,
                     mod_en: toEnglishProper(mEn || mAr),
                     mod_ar: cleanProperTrim(mAr || mEn),
                     option_en: toEnglishProper(mEn || mAr),
                     option_ar: cleanProperTrim(mAr || mEn),
                     price: modPrice,
                     kcal: 0,
-                    max_limit: 3,
-                    min_limit: 0,
+                    max_limit: curMax,
+                    min_limit: curMin,
                     vendor_id: 'M' + (modifiers.length + 1),
-                    type: 'Optional'
+                    type: curMin > 0 ? 'Mandatory' : 'Optional'
                 });
             });
         }
 
-        // Inline additions dissection
+        // Inline additions dissection (if no modifier sheet or to enrich)
         if (modifiers.length === 0) {
             const seenMods = new Set();
             items.forEach(it => {
@@ -11408,6 +11563,37 @@ function processVendorMenuWorkbook(workbook) {
                 }
             });
         }
+
+        // Link items to modifier groups
+        if (modifiers.length > 0) {
+            // Map distinct group starting row indices
+            const groupStartRows = new Map();
+            let lastGrp = null;
+            modifiers.forEach((m, idx) => {
+                if (m.group_en !== lastGrp) {
+                    groupStartRows.set(m.group_en, idx + 1);
+                    lastGrp = m.group_en;
+                }
+            });
+
+            items.forEach(it => {
+                const assignedGroupIds = [];
+                groupStartRows.forEach((rowId, grpName) => {
+                    if (/additions|extras|إضافات/i.test(grpName) && (it.rawAdditionsEn || it.rawAdditionsAr)) {
+                        assignedGroupIds.push(rowId);
+                    } else if (/drink|مشروب/i.test(grpName) && (/drink|pepsi|وجبة|meal|box|بكس/i.test(it.rawChoices) || /meal|وجبة|box|بكس/i.test(it.item_en) || /meal|وجبة|box|بكس/i.test(it.item_ar))) {
+                        assignedGroupIds.push(rowId);
+                    } else if (/flavor|نكهة/i.test(grpName) && (/flavor|doritos|نكهة/i.test(it.rawChoices) || /doritos/i.test(it.item_en))) {
+                        assignedGroupIds.push(rowId);
+                    }
+                });
+                if (assignedGroupIds.length > 0) {
+                    it.modifier_groups = assignedGroupIds.join(',');
+                } else if (groupStartRows.size > 0 && (it.rawAdditionsEn || it.rawChoices)) {
+                    it.modifier_groups = String(Array.from(groupStartRows.values())[0]);
+                }
+            });
+        }
     }
 
     if (groups.length === 0) {
@@ -11421,7 +11607,10 @@ function processVendorMenuWorkbook(workbook) {
         imageLinks: typeof extractImageUrls === 'function' ? extractImageUrls(allSheetText) : []
     };
 
-    console.log("🎉 Successfully dissected menu! Total Groups:", groups.length, "| Items:", items.length, "| Modifiers:", modifiers.length);
+    console.log("🎉 Successfully dissected menu v9! Total Groups:", groups.length, "| Items:", items.length, "| Modifiers:", modifiers.length);
+    const allergensCount = items.filter(it => it.allergens && it.allergens !== 'No Allergens').length;
+    console.log(`🛡️ Total items with allergens: ${allergensCount}/${items.length}`);
+
     const imgCount = items.filter(it => it.image_url && it.image_url.includes('http')).length || (window.menuBuilderData.imageLinks ? window.menuBuilderData.imageLinks.length : 0);
     if (imgCount > 0) {
         const imgBanner = document.getElementById('studioExtractedImagesContainer');
@@ -12162,10 +12351,11 @@ function createOfficialMenuWorkbook() {
         ['#', 'english name *', 'arabic name *', 'english category type', 'arabic category type']
     ];
     groups.forEach((g, idx) => {
-        const arName = cleanProperTrim(g.ar_name || g.name_ar || g.name_en || 'قسم');
-        let enName = g.en_name || g.name_en;
-        if (!enName || /[\u0600-\u06FF]/.test(enName)) {
-            enName = getEnglishCategory(arName);
+        let arName = g.ar_name || g.name_ar || `قسم ${idx + 1}`;
+        let enName = g.en_name || g.name_en || '';
+        arName = cleanProperTrim(arName);
+        if (!enName || enName === '-' || /^[\u0600-\u06FF]/.test(enName)) {
+            enName = typeof getEnglishCategory === 'function' ? getEnglishCategory(arName) : `Category ${idx + 1}`;
         } else {
             enName = toEnglishProper(enName);
         }
@@ -12204,7 +12394,7 @@ function createOfficialMenuWorkbook() {
     }
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws2_data), 'Modifier groupsmodifiers');
 
-    // 3. Sheet: Menu productsitems
+    // 3. Sheet: Menu productsitems (Full 29 Official Hungerstation Columns!)
     const ws3_data = [
         [
             '#', 'menu group # *', 'Product english name *', 'Product arabic name *', 'Product english desc ', 'Product arabic desc ',
@@ -12234,7 +12424,19 @@ function createOfficialMenuWorkbook() {
             String(it.modifier_groups || ''),
             it.vendor_id || ('P' + (idx + 1)),
             it.allergens || 'No Allergens',
-            '', '', '', '', '', '', '', '', '', '', '', '', ''
+            cleanProperTrim(it.protein || ''),
+            cleanProperTrim(it.full_fat || it.fat || ''),
+            cleanProperTrim(it.saturated_fat || ''),
+            cleanProperTrim(it.trans_fat || ''),
+            cleanProperTrim(it.cholesterol || ''),
+            cleanProperTrim(it.carbs || it.carbohydrate || ''),
+            cleanProperTrim(it.fiber || ''),
+            cleanProperTrim(it.sugars || it.total_sugars || ''),
+            cleanProperTrim(it.added_sugars || ''),
+            cleanProperTrim(it.salt || ''),
+            cleanProperTrim(it.sodium || it.sodiom || ''),
+            cleanProperTrim(it.caffeine || ''),
+            cleanProperTrim(it.dietary_preferences || '')
         ]);
     });
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws3_data), 'Menu productsitems');
@@ -14689,7 +14891,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=8')
+        navigator.serviceWorker.register('./sw.js?v=9')
             .then(() => console.log('✓ Service Worker Registered successfully.'))
             .catch(err => console.log('SW registration error:', err));
     });
@@ -14862,7 +15064,7 @@ function updateMobileMockup() {
 const originalRenderStudioTables = window.renderStudioMenuPreviewTables;
 
 window.forcePurgeAndReload = function() {
-    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v8)...');
+    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v9)...');
     if ('caches' in window) {
         caches.keys().then(names => {
             return Promise.all(names.map(name => caches.delete(name)));
@@ -16532,7 +16734,7 @@ if (typeof window !== 'undefined') {
     </div>
 
 
-    <!-- PWA Service Worker handled by sw.js?v=8 -->
+    <!-- PWA Service Worker handled by sw.js?v=9 -->
 
 </body>
 </html>
