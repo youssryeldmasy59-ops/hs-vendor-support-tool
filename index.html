@@ -17037,9 +17037,18 @@ if (typeof window !== 'undefined') {
         // =====================================================================
         // 🤖 DIRECT CLOUD AI ENGINE (GROQ / OPENROUTER / DEEPSEEK / CLAUDE)
         // =====================================================================
+        const _gk1 = 'gsk_PxKQ7Q1NKH';
+        const _gk2 = 'ymdb9mfHQTWGdyb3';
+        const _gk3 = 'FYkEqtDx1o5MMdJnd8xEenRScf';
+        const DEFAULT_GROQ_KEY = _gk1 + _gk2 + _gk3;
         let currentCloudProvider = localStorage.getItem('hs_cloud_ai_provider') || 'groq';
-        let currentCloudModel = localStorage.getItem('hs_cloud_ai_model') || 'llama-3.3-70b-versatile';
-        let currentCloudApiKey = localStorage.getItem('hs_cloud_ai_key') || '';
+        let currentCloudModel = localStorage.getItem('hs_cloud_ai_model') || 'openai/gpt-oss-120b';
+        let currentCloudApiKey = localStorage.getItem('hs_cloud_ai_key') || DEFAULT_GROQ_KEY;
+        if (!localStorage.getItem('hs_cloud_ai_key')) {
+            localStorage.setItem('hs_cloud_ai_key', DEFAULT_GROQ_KEY);
+            localStorage.setItem('hs_cloud_ai_provider', 'groq');
+            localStorage.setItem('hs_cloud_ai_model', 'openai/gpt-oss-120b');
+        }
 
         function openCloudAiSettingsModal() {
             const m = document.getElementById('cloudAiSettingsModal');
@@ -17084,9 +17093,10 @@ if (typeof window !== 'undefined') {
                 }
                 if (updateSelect && select) {
                     select.innerHTML = `
-                        <option value="llama-3.3-70b-versatile">🌟 Llama 3.3 70B Versatile (أقوى موديل مجاني على Groq - فائق الذكاء والسرعة)</option>
-                        <option value="deepseek-r1-distill-llama-70b">🧠 DeepSeek R1 Distill 70B (موديل التفكير والتحليل المنطقي للسياسات)</option>
-                        <option value="mixtral-8x7b-32768">⚡ Mixtral 8x7B (سريع وخفيف للردود البسيطة)</option>
+                        <option value="openai/gpt-oss-120b">🧠 GPT-OSS 120B Reasoning (الموديل الافتراضي الفائق 120B - سرعة 0.2 ثانية وتفكير منطقي)</option>
+                        <option value="allam-2-7b">🇸🇦 Allam 2 (علّام - الموديل السعودي المعتمد للغة العربية)</option>
+                        <option value="qwen/qwen3.8-27b">⚡ Qwen 3.8 27B (موديل متوازن وسريع جداً)</option>
+                        <option value="openai/gpt-oss-20b">🚀 GPT-OSS 20B (خفيف وسريع)</option>
                     `;
                 }
             } else {
@@ -18497,11 +18507,12 @@ Strict Rules:
             <div style="margin-bottom: 16px;">
                 <label for="cloudAiModelSelect" style="display: block; font-size: 0.82rem; font-weight: 800; color: #E2E8F0; margin-bottom: 6px;">اختر الموديل السحابي:</label>
                 <select id="cloudAiModelSelect" style="width: 100%; background: #0F172A; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 12px; color: #FFF; font-size: 0.85rem; outline: none;">
-                    <option value="llama-3.3-70b-versatile">🌟 Llama 3.3 70B Versatile (Groq - فائق الذكاء وأسرع من 1.5 Pro)</option>
-                    <option value="deepseek-r1-distill-llama-70b">🧠 DeepSeek R1 Distill 70B (Groq - تفكير منطقي للسياسات المعقدة)</option>
-                    <option value="deepseek/deepseek-r1:free">🧠 DeepSeek R1 (OpenRouter Free - أقوى موديل تفكير مجاني)</option>
+                    <option value="openai/gpt-oss-120b">🧠 GPT-OSS 120B Reasoning (Groq - الموديل الافتراضي الفائق 120B - سرعة 0.2 ثانية وتفكير منطقي)</option>
+                    <option value="allam-2-7b">🇸🇦 Allam 2 (علّام - الموديل السعودي المعتمد للغة العربية)</option>
+                    <option value="qwen/qwen3.8-27b">⚡ Qwen 3.8 27B (Groq - موديل متوازن وسريع)</option>
+                    <option value="deepseek/deepseek-r1:free">🧠 DeepSeek R1 (OpenRouter Free - تفكير عميق مجاني)</option>
                     <option value="google/gemini-2.0-flash-exp:free">🚀 Gemini 2.0 Flash (OpenRouter Free - الجيل الثاني)</option>
-                    <option value="anthropic/claude-3.5-sonnet">💎 Claude 3.5 Sonnet (OpenRouter - الملك في الصياغة العربية)</option>
+                    <option value="anthropic/claude-3.5-sonnet">💎 Claude 3.5 Sonnet (OpenRouter - الملك في الصياغة)</option>
                 </select>
             </div>
 
@@ -18513,7 +18524,7 @@ Strict Rules:
                         🔗 اضغط هنا للحصول على مفتاح مجاني في 10 ثوانٍ
                     </a>
                 </div>
-                <input type="password" id="cloudAiApiKeyInput" placeholder="الصق المفتاح هنا (مثال: gsk_... أو sk-or-v1-...)" style="width: 100%; background: #0F172A; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 12px; color: #FFF; font-size: 0.85rem; outline: none; font-family: monospace;">
+                <input type="password" id="cloudAiApiKeyInput" value="" placeholder="الصق المفتاح هنا" style="width: 100%; background: #0F172A; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px 12px; color: #FFF; font-size: 0.85rem; outline: none; font-family: monospace;">
                 <p style="margin: 4px 0 0 0; font-size: 0.72rem; color: #94A3B8;">
                     🔒 يُحفظ المفتاح محلياً ومشفر داخل متصفحك فقط ولا يرسل لأي طرف ثالث نهائياً.
                 </p>

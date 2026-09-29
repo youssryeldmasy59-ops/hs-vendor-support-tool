@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hs-vendor-suite-v16-cloud-ai-copilot';
+const CACHE_NAME = 'hs-vendor-suite-v17-cloud-ai-120b-live';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.webmanifest'
