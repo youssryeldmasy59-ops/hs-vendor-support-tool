@@ -7718,17 +7718,20 @@ function cleanArabicProcedure(text) {
             let arGreeting = "";
             let enGreeting = "";
 
-            if (lower.includes("السلام عليكم") || lower.includes("سلام عليكم") || lower.includes("وعليكم السلام") || lower.includes("سلام الله عليكم")) {
+            if (lower.includes("السلام عليكم") || lower.includes("سلام عليكم") || lower.includes("وعليكم السلام") || lower.includes("سلام الله عليكم") || lower.includes("peace be upon you") || lower.includes("salam alaykum") || lower.includes("assalamu alaykum")) {
                 arGreeting = "وعليكم السلام ورحمة الله وبركاته،";
                 enGreeting = "Peace be upon you,";
             } else if (lower.includes("صباح الخير") || lower.includes("صباح النور") || lower.includes("good morning")) {
                 arGreeting = "صباح النور والسرور،";
                 enGreeting = "Good morning,";
-            } else if (lower.includes("مساء الخير") || lower.includes("مساء النور") || lower.includes("good evening")) {
+            } else if (lower.includes("مساء الخير") || lower.includes("مساء النور") || lower.includes("good evening") || lower.includes("good afternoon")) {
                 arGreeting = "مساء النور والسرور،";
                 enGreeting = "Good evening,";
+            } else if (lower.includes("hello") || lower.includes("hi ") || lower.startsWith("hi") || lower.includes("hey") || lower.includes("أهلاً") || lower.includes("اهلا") || lower.includes("مرحبا")) {
+                arGreeting = "أهلاً وسهلاً بك،";
+                enGreeting = "Hello,";
             }
-            // Strict rule: if no greeting in partner inquiry, arGreeting remains empty!
+            // Strict rule: if no greeting in partner inquiry, arGreeting and enGreeting remain empty!
 
             return { arGreeting, enGreeting };
         }
@@ -7758,15 +7761,16 @@ function cleanArabicProcedure(text) {
                 // Strip redundant outer greetings
                 if (/^(?:شريكنا|عزيزنا|مرحبا|أهلا|اهلاً|السلام عليكم|وعليكم السلام|صباح الخير|مساء الخير|Dear Valued Partner|Dear Partner|Hello|Good morning|Good evening)/i.test(s)) continue;
 
-                // Strip duplicate "شكراً لتواصلكم مع هنقرستيشن" but preserve "بخصوص..."
-                if (/^(?:شكراً|شكرا)\s*لتواصلكم\s*مع\s*هنقرستيشن|Thank you for contacting Hungerstation/i.test(s)) {
-                    if (/^(?:شكراً|شكرا)\s*لتواصلكم\s*مع\s*هنقرستيشن[\.\s]*$/i.test(s)) continue;
-                    s = s.replace(/^(?:شكراً|شكرا)\s*لتواصلكم\s*مع\s*هنقرستيشن\s*(?:بخصوص|حول|بشأن)\s*/i, 'بخصوص ').trim();
+                // Strip duplicate "شكراً لتواصلكم مع هنقرستيشن" / "Thank you for contacting HungerStation"
+                if (/^(?:شكراً|شكرا)\s*لتواصلكم\s*مع\s*هنقرستيشن|Thank you for contacting HungerStation|Thank you for contacting Hungerstation/i.test(s)) {
+                    if (/^(?:شكراً|شكرا)\s*لتواصلكم\s*مع\s*هنقرستيشن[\.\s]*$/i.test(s) || /^Thank you for contacting HungerStation[\.\s]*$/i.test(s) || /^Thank you for contacting Hungerstation[\.\s]*$/i.test(s)) continue;
+                    s = s.replace(/^(?:شكراً|شكرا)\s*لتواصلكم\s*مع\s*هنقرستيشن\s*(?:بخصوص|حول|بشأن)\s*/i, 'بخصوص ');
+                    s = s.replace(/^Thank you for contacting HungerStation\s*(?:regarding|about|for)?\s*/i, 'Regarding ').trim();
                 }
 
                 // Strip survey, closings, signatures, contact lines
                 if (/^(?:نود إفادتكم بأنه سيتم إرسال استبيان|تشير نجمة واحدة|ويساعدنا تقييمكم|شكراً لتواصلكم معنا|شكرا لتواصلك معنا|نتمنى لكم الصحة|مع الشكر|هنقرستيشن|تفاصيل التواصل|مشاكل الطلبات|قنوات التواصل|شكاوي تتعلق بالطلبات|تشرفت بمساعدتك|نعتذر عن أي إزعاج)/i.test(s)) continue;
-                if (/^(?:Please be informed that an automated survey|One star indicates|Your feedback helps us|Thank you for contacting us|We wish you|Best regards|Hungerstation|HungerStation|Contact details|Contact Details|Order issues|Order Issues|Issues with Orders|Apologies for any inconvenience|I was honored)/i.test(s)) continue;
+                if (/^(?:We would like to inform you that an automated survey|Please be informed that an automated survey|One star indicates|Your feedback helps us|Your evaluation helps us|Thank you for contacting us|We wish you|Best regards|Hungerstation|HungerStation|Contact details|Contact Details|Order issues|Order Issues|Issues with Orders|Apologies for any inconvenience|I was honored)/i.test(s)) continue;
                 if (/^[⭐\*\s]+$/.test(s) || s.includes('⭐⭐') || /^(?:راضي جدا|راض جدا|محايد|غير راض)/i.test(s)) continue;
                 if (s === arAgent || s === enAgent || s === 'اسم الموظف' || s === 'Employee Name' || s === 'مع السلامه' || s === 'دمتم بخير') continue;
 
@@ -7803,7 +7807,7 @@ function cleanArabicProcedure(text) {
 
             const greetingPrefix = greeting && greeting.trim() ? (greeting.trim() + '\n\n') : '';
 
-            return `${greetingPrefix}${salutation}\n\nThank you for contacting HungerStation.\n\n${coreBody}\n\nWe would like to inform you that an automated survey will be sent regarding this ticket.\nOne star indicates that the service level was unsatisfactory, while five stars indicate that the service level was very satisfactory.\nThank you for contacting us.\nWe wish you good health and well-being.\nBest regards,\n${enAgent}\nHungerStation\nContact Details:\nOrder Issues: 920033935`;
+            return `${greetingPrefix}${salutation}\n\nThank you for contacting HungerStation.\n\n${coreBody}\n\nWe would like to inform you that an automated survey will be sent regarding this ticket.\nOne star indicates that the service level was unsatisfactory, while five stars indicate that the service level was very satisfactory. Your evaluation helps us improve our service quality.\nThank you for contacting us.\nWe wish you good health and well-being.\nBest regards,\n${enAgent}\nHungerStation\nContact Details:\nOrder Issues: 920033935`;
         }
 
         let _macroActive = false;
@@ -13350,8 +13354,9 @@ function downloadOfficialMenuExcel() {
                 finalEn = `Hello Partner 👋\n• Resolution: ${cleanEnglishLinguistics(cleanSingleEn)}\n• Please let us know if you need further assistance.\n${agentEn}`;
             } else {
                 const greetings = window.currentActiveGreetings || { arGreeting: "", enGreeting: "" };
-                finalAr = buildArabicMacro(greetings.arGreeting, coreAr);
-                finalEn = buildEnglishMacro(greetings.enGreeting, coreEn);
+                const pName = (entities && entities.storeName) ? entities.storeName : '';
+                finalAr = buildArabicMacro(greetings.arGreeting, coreAr, pName);
+                finalEn = buildEnglishMacro(greetings.enGreeting, coreEn, pName);
             }
 
             if (arEl) arEl.innerText = finalAr;
