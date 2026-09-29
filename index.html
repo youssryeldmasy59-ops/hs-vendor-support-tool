@@ -2236,7 +2236,12 @@
             <i class="fa-solid fa-comment-dots" style="color: #60A5FA;"></i>
             <span>💬 مولد ردود التذاكر وقاعدة المعرفة (102 حالة معتمدة)</span>
         </button>
-        <button id="viewBtnMenu" onclick="switchMainWorkspace('MENU_STUDIO')" class="ws-tab-btn menu-tab">
+                <button id="viewBtnPolicies" onclick="switchMainWorkspace('POLICIES')" class="ws-tab-btn policy-tab" style="background: rgba(168, 85, 247, 0.12); color: #A855F7; border: 2px solid #A855F7;">
+            <i class="fa-solid fa-book-bookmark" style="color: #C084FC;"></i>
+            <span>📚 سياسات الدعم المعتمدة (Bite Hub Policies - 13 سياسة رسمية)</span>
+        </button>
+
+<button id="viewBtnMenu" onclick="switchMainWorkspace('MENU_STUDIO')" class="ws-tab-btn menu-tab">
             <i class="fa-solid fa-file-excel" style="color: #34D399;"></i>
             <span>🍽️ استوديو إنشاء وتجهيز المنيو الرسمي (_MenuUpload.xlsx)</span>
         </button>
@@ -2556,6 +2561,78 @@
     </div>
 
     <!-- 🚀 Motivational Productivity Hero Bar (تحفيز وإنجاز الشفت) -->
+    
+    <!-- 📚 DEDICATED SUPPORT POLICIES WORKSPACE (BITE HUB SOP & POLICIES) -->
+    <div id="policiesWorkspace" style="display: none; max-width: 1560px; margin: 16px auto; padding: 0 20px;">
+        <div style="background: #1E293B; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 26px; color: #FFF; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+            
+            <!-- Policies Hero Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 18px; margin-bottom: 22px; flex-wrap: wrap; gap: 14px;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #A855F7, #7C3AED); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 14px rgba(168, 85, 247, 0.4);">
+                        📚
+                    </div>
+                    <div>
+                        <h2 style="margin: 0; font-size: 1.35rem; font-weight: 800; color: #F8FAFC; display: flex; align-items: center; gap: 8px;">
+                            سياسات وإجراءات الدعم المعتمدة <span style="font-size: 0.8rem; background: #9333EA; color: #FFF; padding: 3px 9px; border-radius: 8px; font-weight: 700;">Bite Hub Official SOP (13 سياسة)</span>
+                        </h2>
+                        <p style="margin: 4px 0 0 0; font-size: 0.82rem; color: #94A3B8;">
+                            الدليل الإجرائي المعتمد من الترينر لجميع قنوات المحادثات المباشرة (Chats)، التذاكر (Cases)، النزاعات، المناديب، ومدراء الحسابات.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 12px; top: 11px; color: #94A3B8;"></i>
+                        <input type="text" id="policySearchInput" oninput="filterPoliciesList()" placeholder="ابحث في السياسات أو الـ CCR أو الإجراءات..." style="background: #0F172A; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 9px 38px 9px 14px; color: #FFF; font-size: 0.84rem; width: 280px; outline: none; transition: border-color 0.2s;">
+                    </div>
+                    <button type="button" onclick="switchPolicyLang('AR')" id="policyLangBtnAR" style="background: #A855F7; color: #FFF; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; cursor: pointer;">عربي</button>
+                    <button type="button" onclick="switchPolicyLang('EN')" id="policyLangBtnEN" style="background: rgba(255,255,255,0.08); color: #94A3B8; border: 1px solid rgba(255,255,255,0.15); padding: 8px 14px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; cursor: pointer;">English</button>
+                </div>
+            </div>
+
+            <!-- Category Filter Pills -->
+            <div style="display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 6px;" id="policyFilterPills">
+                <button onclick="setPolicyCategory('ALL')" class="policy-cat-pill active" id="catPillALL" style="background: #A855F7; color: #FFF; border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; cursor: pointer; white-space: nowrap;">📌 كل السياسات (13)</button>
+                <button onclick="setPolicyCategory('CHATS')" class="policy-cat-pill" id="catPillCHATS" style="background: rgba(255,255,255,0.06); color: #CBD5E1; border: 1px solid rgba(255,255,255,0.12); padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; cursor: pointer; white-space: nowrap;">💬 محادثات الشات المباشر</button>
+                <button onclick="setPolicyCategory('RIDERS')" class="policy-cat-pill" id="catPillRIDERS" style="background: rgba(255,255,255,0.06); color: #CBD5E1; border: 1px solid rgba(255,255,255,0.12); padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; cursor: pointer; white-space: nowrap;">🛵 التوصيل والمناديب</button>
+                <button onclick="setPolicyCategory('COMPENSATION')" class="policy-cat-pill" id="catPillCOMPENSATION" style="background: rgba(255,255,255,0.06); color: #CBD5E1; border: 1px solid rgba(255,255,255,0.12); padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; cursor: pointer; white-space: nowrap;">⚖️ التعويضات والنزاعات</button>
+                <button onclick="setPolicyCategory('ESCALATION')" class="policy-cat-pill" id="catPillESCALATION" style="background: rgba(255,255,255,0.06); color: #CBD5E1; border: 1px solid rgba(255,255,255,0.12); padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; cursor: pointer; white-space: nowrap;">🚀 التصعيدات والـ AM</button>
+                <button onclick="setPolicyCategory('BILLING')" class="policy-cat-pill" id="catPillBILLING" style="background: rgba(255,255,255,0.06); color: #CBD5E1; border: 1px solid rgba(255,255,255,0.12); padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; cursor: pointer; white-space: nowrap;">🧾 دليل الفواتير الرقمي</button>
+            </div>
+
+            <!-- Policies Grid Container -->
+            <div id="policiesCardsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 18px;">
+                <!-- Cards dynamically populated via renderPoliciesCards() -->
+            </div>
+
+            <!-- Interactive QR Stepper Modal / Drawer -->
+            <div id="policyQrModal" style="display: none; margin-top: 24px; background: #0F172A; border: 1.5px solid #6366F1; border-radius: 14px; padding: 22px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 style="margin: 0; color: #818CF8; font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
+                        <span>📱 خطوات استلام الطلب برمز QR Code التفاعلية (6 خطوات تفصيلية)</span>
+                    </h3>
+                    <button onclick="document.getElementById('policyQrModal').style.display='none'" style="background: transparent; border: none; color: #94A3B8; font-size: 1.2rem; cursor: pointer;">✕</button>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 6px;" id="qrStepsIndicator">
+                    <!-- Step buttons 1 to 6 -->
+                </div>
+                <div id="qrStepContentBox" style="background: #1E293B; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+                    <div id="qrStepEmoji" style="font-size: 3rem; margin-bottom: 10px;">🧾</div>
+                    <h4 id="qrStepTitle" style="font-size: 1.15rem; color: #A5B4FC; margin: 0 0 8px 0;"></h4>
+                    <p id="qrStepDesc" style="font-size: 0.92rem; color: #E2E8F0; margin: 0; max-width: 650px; margin: 0 auto; line-height: 1.6;"></p>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 16px;">
+                    <button onclick="prevQrStep()" id="qrPrevBtn" style="background: rgba(255,255,255,0.08); color: #FFF; border: none; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-weight: 700;">السابق ⬅️</button>
+                    <button onclick="nextQrStep()" id="qrNextBtn" style="background: #6366F1; color: #FFF; border: none; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-weight: 700;">التالي ➡️</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
     <div class="motivation-bar" id="motivationBar">
         <div class="motivation-greeting-card">
             <div class="motivation-avatar">
@@ -3030,8 +3107,43 @@ var allCases = window.allCases = [];
         function switchMainWorkspace(mode) {
             const ticketCont = document.querySelector('.app-container');
             const studioCont = document.getElementById('menuStudioWorkspace');
+            const policiesCont = document.getElementById('policiesWorkspace');
             const btnTicket = document.getElementById('viewBtnTickets');
             const btnMenu = document.getElementById('viewBtnMenu');
+            const btnPolicies = document.getElementById('viewBtnPolicies');
+
+            if (mode === 'POLICIES') {
+                if (ticketCont) ticketCont.style.display = 'none';
+                if (studioCont) studioCont.style.display = 'none';
+                if (policiesCont) policiesCont.style.display = 'block';
+
+                if (btnTicket) {
+                    btnTicket.style.borderColor = 'transparent';
+                    btnTicket.style.background = '#1E293B';
+                    btnTicket.style.color = '#94A3B8';
+                }
+                if (btnMenu) {
+                    btnMenu.style.borderColor = '#10B981';
+                    btnMenu.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.25) 100%)';
+                    btnMenu.style.color = '#A7F3D0';
+                }
+                if (btnPolicies) {
+                    btnPolicies.style.borderColor = '#A855F7';
+                    btnPolicies.style.background = 'linear-gradient(135deg, rgba(168, 85, 247, 0.3) 0%, rgba(124, 58, 237, 0.5) 100%)';
+                    btnPolicies.style.color = '#FFF';
+                    btnPolicies.style.boxShadow = '0 4px 16px rgba(168, 85, 247, 0.4)';
+                }
+                renderPoliciesCards();
+                return;
+            } else if (policiesCont) {
+                policiesCont.style.display = 'none';
+                if (btnPolicies) {
+                    btnPolicies.style.borderColor = '#A855F7';
+                    btnPolicies.style.background = 'rgba(168, 85, 247, 0.12)';
+                    btnPolicies.style.color = '#C084FC';
+                    btnPolicies.style.boxShadow = 'none';
+                }
+            }
 
             if (mode === 'MENU_STUDIO') {
                 if (ticketCont) ticketCont.style.display = 'none';
@@ -15769,7 +15881,675 @@ if (typeof window !== 'undefined') {
     window.stopAndGenerateFromSpeech = stopAndGenerateFromSpeech;
 }
 
-    </script>
+    
+        // =====================================================================
+        // 📚 BITE HUB OFFICIAL POLICIES & SOP ENGINE (13 POLICIES + BILLING)
+        // =====================================================================
+        let currentPolicyLang = 'AR';
+        let currentPolicyCategory = 'ALL';
+        let currentQrStep = 1;
+
+        const biteHubPoliciesData = [
+            {
+                id: 'qr_code_update',
+                category: 'RIDERS',
+                categoryLabelAr: 'استلام الطلبات والمناديب',
+                categoryLabelEn: 'Pickup & Riders',
+                icon: '🔳',
+                badgeAr: 'تحديث جديد 2026',
+                badgeEn: 'New Update 2026',
+                titleAr: 'تحديث ميزة مسح رمز QR للاستلام من المطعم',
+                titleEn: 'New QR Code Scan Feature for Order Pickup',
+                ccr: 'Functionality Question | سؤال وظيفي',
+                channel: 'All Channels (Chats & Cases)',
+                ruleAr: 'ابتداءً من الآن، عند وصول المندوب لاستلام الطلب من المطعم، سيظهر QR Code لدى البائع لإتمام عملية الاستلام. وفي حال واجه المندوب أي مشكلة في مسح الـ QR Code، يُرجى إرشاد البائعين لاتّباع خطوات الاستلام الـ 6.',
+                ruleEn: 'Starting now, when the rider arrives to collect the order from the restaurant, a QR Code will appear on the vendor side to complete pickup. If any issue occurs, guide the vendor through the 6 pickup steps.',
+                keyNotesAr: [
+                    'هذا الإجراء تعليمي وإرشادي للشريك ولا يحتاج إلى الرد بماكرو.',
+                    'الـ CCR الصحيح والوحيد الواجب اختياره: Functionality Question | سؤال وظيفي.',
+                    'الإيصال المطبوع هو الأولوية الأولى للتحقق والمسح قبل الشاشة.'
+                ],
+                keyNotesEn: [
+                    'This procedure is instructional for the partner and does NOT require a macro reply.',
+                    'The only correct CCR to select is: Functionality Question.',
+                    'The printed receipt is the first priority for scanning/PIN before using the screen.'
+                ],
+                hasInteractiveSteps: true,
+                stepsType: 'QR_STEPS'
+            },
+            {
+                id: 'customer_cancellation',
+                category: 'CHATS',
+                categoryLabelAr: 'محادثات الشات المباشر',
+                categoryLabelEn: 'Live Chat Channel',
+                icon: '❌',
+                badgeAr: 'حاسم للشات فقط',
+                badgeEn: 'Chats Channel Only',
+                titleAr: 'سياسة إلغاء العميل في محادثات الشات (Customer Cancellation)',
+                titleEn: 'Customer Cancellation Policy (Chats Channel Only)',
+                ccr: 'Customer Cancellation | إلغاء العميل',
+                channel: 'Chats Channel Only (Not Cases)',
+                ruleAr: 'خاص بمحادثات الشات المباشر فقط! يرجى تجاهل الإجراءات القديمة وعدم إرسال خطوات الإلغاء السابقة في الشات بعد الآن (التذاكر Cases تستمر بالخطوات القديمة طبيعياً). اتبع 4 خطوات جديدة فقط: الترحيب والتعاطف، تأكيد رقم الطلب، توضيح سبب الإلغاء للشريك، ثم إرسال الرد الجاهز المعتمد.',
+                ruleEn: 'Applies to Chats Channel only! Ignore old procedures and do not send old cancellation steps in chats anymore. Follow the 4 new steps: Welcome & empathy, Confirm Order ID, Clarify cancellation reason, then send the official Canned Response.',
+                keyNotesAr: [
+                    'ممنوع منعاً باتاً إرسال خطوات الإلغاء القديمة للشريك في الشات.',
+                    'التذاكر (Cases) تستمر باتباع الخطوات القديمة بشكل طبيعي دون تغيير.',
+                    'الخطوات الـ 4: (1) ترحيب وتعاطف، (2) تأكيد رقم الطلب، (3) توضيح سبب الإلغاء، (4) إرسال الماكرو المعتمد.'
+                ],
+                keyNotesEn: [
+                    'Strictly prohibited to send old cancellation steps to partners in live chat.',
+                    'Regular support tickets (Cases) continue using the old steps normally.',
+                    'The 4 steps: (1) Empathy welcome, (2) Confirm Order ID, (3) Clarify reason, (4) Send official macro.'
+                ],
+                macroAr: 'نعتذر لك عن أي إزعاج بخصوص إلغاء الطلب رقم {ORDER_ID}.\nتم إلغاء الطلب بسبب {REASON}.\nشاكرين ومقدرين تفهمك وتعاونك الدائم معنا.',
+                macroEn: 'We apologize for any inconvenience regarding the cancellation of order #{ORDER_ID}.\nThe order was cancelled due to {REASON}.\nThank you for your understanding and cooperation.'
+            },
+            {
+                id: 'compensation',
+                category: 'COMPENSATION',
+                categoryLabelAr: 'التعويضات والنزاعات',
+                categoryLabelEn: 'Disputes & Compensation',
+                icon: '⚖️',
+                badgeAr: 'إلزامي لتجنب D-Sats',
+                badgeEn: 'Mandatory to avoid D-Sats',
+                titleAr: 'التعامل مع حالات التعويض وفحص النزاعات (Order Disputes)',
+                titleEn: 'Handling Compensation Cases & Order Disputes Link',
+                ccr: 'Compensation | تعويض',
+                channel: 'All Channels',
+                ruleAr: 'لوحظ تكرار إرسال خطوات التعويض لشركاء قدّموا بالفعل مما يسبب D-Sats وإزعاج الشريك. إلزامي مراجعة حالة الطلب أولاً عبر رابط فحص النزاعات (Order Disputes) قبل اتخاذ أي إجراء.',
+                ruleEn: 'Avoid D-Sats: Compensation steps are repeatedly sent to partners who already applied. You MUST check the order status first via the Order Disputes link before taking any action.',
+                keyNotesAr: [
+                    'افتح رابط Order Disputes -> ضع رقم الطلب في الفلاتر -> اضغط Apply Filters.',
+                    'إذا كانت الحالة Rejected: اعتذر للشريك ولا تقم بإعادة إرسال نفس خطوات التعويض نهائياً.',
+                    'إذا كانت الحالة Require Evidence: اطلب الأدلة والإثباتات من الشريك ثم صعد الحالة لفريق النزاعات مرفقاً بالأدلة.'
+                ],
+                keyNotesEn: [
+                    'Open Order Disputes link -> Filter by Order ID -> Click Apply Filters.',
+                    'If Status is Rejected: Apologize to vendor, do NOT resend compensation steps.',
+                    'If Status is Require Evidence: Request proof/evidence from partner and escalate to Dispute Team.'
+                ],
+                actionLink: 'https://disputes.hungerstation.com',
+                actionLinkLabelAr: '🔗 فتح بوابة فحص النزاعات (Order Disputes)',
+                actionLinkLabelEn: '🔗 Open Order Disputes Portal'
+            },
+            {
+                id: 'rider_eta',
+                category: 'RIDERS',
+                categoryLabelAr: 'المناديب والتوصيل',
+                categoryLabelEn: 'Riders & Dispatch',
+                icon: '⏱️',
+                badgeAr: 'شجرة قرار 1VU',
+                badgeEn: '1VU Decision Tree',
+                titleAr: 'طلب معرفة وقت وصول المندوب للاستلام (Rider ETA to Pickup)',
+                titleEn: 'Request Rider ETA to Pickup & 1VU Check',
+                ccr: 'Request rider ETA to pickup | طلب وقت وصول المندوب',
+                channel: 'Live Chats & Dispatch',
+                ruleAr: 'نتصل بالمندوب: إذا ردّ نؤكد وقت الوصول المتوقع بالدقائق ونبلغ التاجر. في حال عدم ردّ المندوب: لا نبلغ التاجر بعدم رد المندوب، بل نفحص نظام 1VU فوراً: إذا كان أقل من 1 كم نبلغ التاجر أنه بالطريق ولا نعيد التوجيه؛ إذا كان أكثر من 1 كم نعيد تعيين الطلب فوراً.',
+                ruleEn: 'Call the rider: If he answers, confirm ETA and tell partner in minutes. If rider does NOT answer: Do NOT tell partner rider did not answer! Check 1VU immediately: If < 1KM away, inform partner he is arriving shortly (DO NOT redispatch); if > 1KM away, immediately Re-dispatch to another rider.',
+                keyNotesAr: [
+                    'في حال عدم الرد: ممنوع تماماً إخبار الشريك أن المندوب لم يرد على الاتصال.',
+                    'المندوب أقل من 1 كم (< 1KM): ممنوع إعادة التعيين، طمئن الشريك أنه قريب.',
+                    'المندوب أكثر من 1 كم (> 1KM): فوراً Re-dispatch لمندوب آخر بالماكرو المعتمد.'
+                ],
+                keyNotesEn: [
+                    'If rider does not answer: NEVER tell partner that the rider did not answer.',
+                    'Rider < 1KM: Strictly DO NOT redispatch. Inform partner rider will arrive shortly.',
+                    'Rider > 1KM: Immediately Re-dispatch to another rider using the official macro.'
+                ],
+                macroAr: 'تم التحقق من حالة الطلب والمسافة، وحرصاً على سرعة وصول الوجبة ساخنة وطازجة لعميلكم، قمنا بإعادة توجيه الطلب إلى كابتن توصيل أقرب لمطعمكم، وسيكون متواجداً لديكم خلال دقائق معدودة لاستلام الطلب.',
+                macroEn: 'The order status and distance have been checked. To ensure prompt pickup and deliver hot fresh food to your customer, the order has been re-dispatched to a closer driver who will arrive in a few minutes.'
+            },
+            {
+                id: 'rider_related',
+                category: 'RIDERS',
+                categoryLabelAr: 'المناديب والتوصيل',
+                categoryLabelEn: 'Riders & Delivery',
+                icon: '🛵',
+                badgeAr: 'تحديث قواعد التعامل',
+                badgeEn: 'Updated Rules',
+                titleAr: 'شكاوى ومشاكل المناديب (Rider-related Complaints)',
+                titleEn: 'Rider-related Complaints & Non-Live Rules',
+                ccr: 'Rider-related | متعلق بالمندوب',
+                channel: 'Live Chats',
+                ruleAr: 'التحديث الجديد الصارم لشكاوى المناديب: (1) استخدم الماكرو المعتمد أدناه، (2) لا تقم بتعبئة أي نموذج أو فورم (No Form)، (3) لا تقدم أو تذكر أي مدة زمنية للحل (No SLA)، (4) لا تقم بتصعيد المحادثة لفريق Non-Live إطلاقاً.',
+                ruleEn: 'Strict new update for rider complaints: (1) Use the official macro below, (2) Do NOT fill any form anymore, (3) Do NOT provide any SLA time for resolution, (4) Do NOT escalate to Non-Live team anymore.',
+                keyNotesAr: [
+                    'ممنوع تعبئة أي فورم أو نموذج داخلي بعد الآن.',
+                    'ممنوع ذكر أي مدة زمنية أو SLA للشريك بخصوص شكوى السائق.',
+                    'ممنوع تصعيد الحالة لـ Non-Live، يتم حل المحادثة مباشرة بالماكرو.'
+                ],
+                keyNotesEn: [
+                    'Do NOT fill any form anymore.',
+                    'Do NOT provide any SLA time for resolution.',
+                    'Do NOT escalate to non-live team for this category.'
+                ],
+                macroAr: 'نشكرك على إبلاغنا وحرصك الدائم على جودة الخدمة. نعتذر عن أي تصرف غير ملائم من قبل مندوب التوصيل، ونود إفادتك بأنه تم تسجيل ملاحظاتك وتمريرها مباشرة إلى الفريق المختص لمتابعة سلوك المندوب واتخاذ الإجراءات النظامية اللازمة.',
+                macroEn: 'Thank you for notifying us. We apologize for any inappropriate behavior from the driver. Please be assured that your feedback has been recorded and submitted directly to the specialized team for necessary disciplinary action.'
+            },
+            {
+                id: 'paper_roll',
+                category: 'CHATS',
+                categoryLabelAr: 'الطلبات العامة والمكائن',
+                categoryLabelEn: 'Hardware & POS',
+                icon: '🧻',
+                badgeAr: 'توجيه محلي',
+                badgeEn: 'Local Retail',
+                titleAr: 'طلب ورق الطابعة للمكينة (Printer Paper Roll Request)',
+                titleEn: 'Printer Paper Roll Request Policy',
+                ccr: 'Paper roll request | طلب ورق طابعة',
+                channel: 'All Channels',
+                ruleAr: 'بدءاً من الآن، إذا طلب الشريك أوراقاً خاصة بالماكينة أو الطابعة، لا يتم رفع طلب شحن، بل يجب إبلاغه بأنه يمكنه الحصول عليها من أي منفذ بيع وتجزئة محلي باستخدام الماكرو المعتمد.',
+                ruleEn: 'Starting now, if a partner requests printer paper rolls, do not raise a shipment ticket. Inform them they can get standard rolls from any local retail store using the official macro.',
+                keyNotesAr: [
+                    'لا يتم رفع طلبات شحن أو إرسال ورق للطابعات من قبل الدعم.',
+                    'المقاس القياسي لأجهزة هنقرستيشن متوفر في المكتبات ومحلات القرطاسية والتجزئة.'
+                ],
+                keyNotesEn: [
+                    'No shipping tickets are dispatched for printer paper rolls.',
+                    'Standard rolls compatible with HungerStation devices are available at local retail stores.'
+                ],
+                macroAr: 'نود إفادتكم بأنه يمكنكم توفير رول ورق الطابعة الحراري المتوافق مع جهاز الاستقبال من أي متجر قرطاسية أو منافذ بيع الأدوات المكتبية والتجزئة، حيث يعمل الجهاز بمقاس الرول الحراري القياسي المتوفر في الأسواق المحلية.',
+                macroEn: 'We would like to inform you that thermal printer paper rolls compatible with your Hungerstation device can be readily purchased from any local stationery or retail store.'
+            },
+            {
+                id: 'escalation_templates',
+                category: 'ESCALATION',
+                categoryLabelAr: 'قوالب التصعيد والفرق',
+                categoryLabelEn: 'Escalations & Teams',
+                icon: '📋',
+                badgeAr: 'قالب إلزامي موحد',
+                badgeEn: 'Standard Escalation Template',
+                titleAr: 'قوالب التصعيد المعتمدة للحالات (Escalation Templates)',
+                titleEn: 'Official Escalation Templates to Specialized Teams',
+                ccr: 'Escalations to Non-Live / Finance / Ops',
+                channel: 'Ticket & Chat Escalations',
+                ruleAr: 'تأكد من استخدام القالب الموحد أدناه عند تصعيد الحالات (Escalating Cases) للفرق المساندة لضمان دقة وسرعة الحل وتجنب ارتداد التذكرة (Ping-Pong).',
+                ruleEn: 'Always use the standard escalation format below when escalating cases to support teams to ensure precision, speed, and avoid rejections.',
+                keyNotesAr: [
+                    'يجب كتابة ملخص طلب الشريك بدقة بدون إطالة.',
+                    'تأكد من كتابة Case ID بشكل صحيح ومطابق.',
+                    'تحديد وجود مرفقات بدقة (Yes / No).'
+                ],
+                keyNotesEn: [
+                    'Write a concise summary of the vendor request.',
+                    'Double check that the Case ID is 100% accurate.',
+                    'Specify whether attachments exist (Yes / No).'
+                ],
+                macroAr: 'Vendor request: {VENDOR_REQUEST}\nCase ID: {CASE_ID}\nAttachments: (Yes/No)\nReason for escalation: {REASON}',
+                macroEn: 'Vendor request: {VENDOR_REQUEST}\nCase ID: {CASE_ID}\nAttachments: (Yes/No)\nReason for escalation: {REASON}'
+            },
+            {
+                id: 'onboarding_tickets',
+                category: 'ESCALATION',
+                categoryLabelAr: 'فريق أونبوردينغ والتذاكر',
+                categoryLabelEn: 'Onboarding Tickets',
+                icon: '🚀',
+                badgeAr: 'شرط إيميل إلزامي',
+                badgeEn: 'Mandatory Vendor Email',
+                titleAr: 'إجراءات تذاكر فريق الـ Onboarding وحلّها',
+                titleEn: 'Onboarding Team Tickets Handling & Vendor Email Rule',
+                ccr: 'Onboarding Tickets | تذاكر التدريب والربط',
+                channel: 'Onboarding Queue',
+                ruleAr: 'خطوات حل تذاكر أونبوردينغ: التحقق من Grid واسم الشريك وإضافة Correct Vendor ID. الاتصال برقم هاتف الشريك، وإذا لم يرد يُحل بالماكرو. تضمين Ticket ID بوضوح. شرط إلزامي قاتل: استخراج إيميل الشريك من Operation Portal وإضافته في الرد وإلا فلن تصله الرسالة نهائياً.',
+                ruleEn: 'Onboarding resolution steps: Check Grid & Vendor Name, add Correct Vendor ID. Call partner phone; if no answer, resolve with macro and include Ticket ID. CRITICAL: Extract vendor email from Operation Portal and include it in your reply; without it, the vendor will never receive your message.',
+                keyNotesAr: [
+                    'أعلى التذكرة ستجد (Grid, Vendor name) - تأكد فوراً من ربط الـ Correct Vendor ID.',
+                    'الاتصال برقم الهاتف إلزامي أولاً قبل الإغلاق.',
+                    'شرط حاسم: استخراج إيميل الشريك من Operation Portal وتضمينه لضمان وصول التذكرة.'
+                ],
+                keyNotesEn: [
+                    'Top of ticket displays Grid & Vendor Name - ensure Correct Vendor ID is set.',
+                    'Calling the partner phone number is mandatory before closing.',
+                    'Crucial: Extract vendor email from Operation Portal and include it in the email thread.'
+                ],
+                macroAr: 'شريكنا العزيز، تم التواصل معكم بخصوص إتمام متطلبات الانضمام وتفعيل حسابكم لدى هنقرستيشن، وفي حال وجود أي استفسارات أو رغبة في استكمال البيانات، يُرجى الرد على هذه التذكرة برقم التذكرة: {TICKET_ID}.\nدمتم بصحة وعافية.',
+                macroEn: 'Dear Partner, we attempted to contact you regarding completing onboarding requirements. If you have any inquiries, please reply to this ticket referencing Ticket ID: #{TICKET_ID}.'
+            },
+            {
+                id: 'ccr_categorization',
+                category: 'COMPENSATION',
+                categoryLabelAr: 'تصنيف الـ CCR والتوجيه',
+                categoryLabelEn: 'CCR Routing Rules',
+                icon: '🎯',
+                badgeAr: 'منع Misrouting',
+                badgeEn: 'Prevent Misrouting',
+                titleAr: 'تصنيف التذاكر: Functionality Question مقابل Compensation',
+                titleEn: 'CCR Categorization: Functionality Question vs Compensation',
+                ccr: 'Functionality Question VS Compensation',
+                channel: 'Ticketing & Routing Matrix',
+                ruleAr: 'لتجنب أي تشتت وتوجيه خاطئ للتذاكر: اختر Functionality Question فقط إذا كان الشريك يسأل عن خطوات تقديم اعتراض أو شكوى أو استفسار عن استخدام البوابة. اختر Compensation إذا كان يسأل عن نتيجة طلب تعويض، خصم تم تطبيقه، أو مشكلة في تعويض قائم.',
+                ruleEn: 'To prevent misrouting: Select Functionality Question ONLY when vendor directly asks about steps to raise a dispute or portal inquiries. Select Compensation when vendor asks about compensation status, an applied deduction, or an existing compensation dispute.',
+                keyNotesAr: [
+                    'Functionality Question: الشريك يسأل "كيف أقدم تعويض؟" أو "كيف أستخدم البوابة؟".',
+                    'Compensation: الشريك يقول "خصمتوا مني وأبي تعويضي" أو "وش صار على طلب التعويض؟".',
+                    'التصنيف الخاطئ يتسبب في ارتداد التذكرة وتأخير حل المشكلة للشريك.'
+                ],
+                keyNotesEn: [
+                    'Functionality Question: Vendor asks "How do I submit a claim?" or portal usage.',
+                    'Compensation: Vendor asks about deduction results or status of an existing claim.',
+                    'Wrong classification results in ticket bouncing and delayed partner support.'
+                ]
+            },
+            {
+                id: 'address_change',
+                category: 'CHATS',
+                categoryLabelAr: 'محادثات الشات والتعديل',
+                categoryLabelEn: 'Address Change SOP',
+                icon: '📍',
+                badgeAr: 'خرائط جوجل أولاً',
+                badgeEn: 'Google Maps First',
+                titleAr: 'إجراءات طلب تغيير العنوان في الشات (Address Change)',
+                titleEn: 'Address Change SOP in Live Chat (Google Maps Requirement)',
+                ccr: 'Address Change | تغيير العنوان',
+                channel: 'Live Chat Channel',
+                ruleAr: 'تنبيه إلزامي: عند طلب الشريك تغيير العنوان من خلال الشات المباشر، يجب أولاً أن تطلب منه تقديم رابط خرائط جوجل (Google Maps link) أو إحداثيات الموقع (Latitude & Longitude) قبل تصعيد الشات إلى فريق الـ Non-Live. إذا أفاد بأنه لا يعرف كيف يستخرجها، يُصعد مباشرة.',
+                ruleEn: 'Mandatory step: In Live Chat, you MUST ask the partner to provide a Google Maps link or coordinates (Lat & Long) BEFORE escalating to Non-Live team. If the partner states they do not know how, proceed with escalation directly.',
+                keyNotesAr: [
+                    'طلب رابط خرائط جوجل أو الإحداثيات خطوة إلزامية قبل التصعيد.',
+                    'في حال عدم معرفة الشريك بطريقة استخراج الإحداثيات، يتم التصعيد لفريق Non-Live مباشرة دون تعطيله.'
+                ],
+                keyNotesEn: [
+                    'Asking for Google Maps link or coordinates is mandatory prior to escalation.',
+                    'If partner does not know how to obtain coordinates, escalate to Non-Live directly.'
+                ],
+                macroAr: 'يسعدنا خدمتك شريكنا العزيز. لتحديث وتعديل عنوان الفرع بدقة وسرعة على خريطة التطبيق، يُرجى تزويدنا برابط موقع الفرع على خرائط جوجل (Google Maps link) أو إحداثيات الموقع الجغرافي (Latitude & Longitude) لنتمكن من اعتماد الموقع فوراً.',
+                macroEn: 'To update your branch location accurately on the app map, kindly share your branch Google Maps link or coordinates (Latitude & Longitude) so we can proceed with updating the location.'
+            },
+            {
+                id: 'am_offers_sla',
+                category: 'ESCALATION',
+                categoryLabelAr: 'مدراء الحسابات والعروض',
+                categoryLabelEn: 'Account Managers & SLA',
+                icon: '👔',
+                badgeAr: 'SLA: 3 أيام عمل',
+                badgeEn: 'SLA: 3 Business Days',
+                titleAr: 'سياسات مدراء الحسابات وطلب تغيير مدير الحساب (Change AM)',
+                titleEn: 'Account Managers (AM) Policies & Change Request SLA',
+                ccr: 'Change Account Manager | تغيير مدير الحساب',
+                channel: 'All Channels',
+                ruleAr: 'عند تصعيد طلب من الشريك لتغيير مدير الحساب الخاص به، يتم تصعيد الحالة كالمعتاد، ولكن يجب التوضيح في الماكرو أنه تم تصعيد الحالة إلى مدير المنطقة (Area Manager) وليس مدير الحساب. مدة الـ SLA المعتمدة: 3 أيام عمل باستثناء الجمعة والسبت.',
+                ruleEn: 'When escalating an AM change request, do it normally, but clarify in the macro that the request was sent to the Area Manager (not Account Manager). Official SLA: 3 business days (excluding Friday & Saturday).',
+                keyNotesAr: [
+                    'يتم التصعيد إلى مدير المنطقة (Area Manager) حصراً.',
+                    'مدة المتابعة المعتمدة (SLA): 3 أيام عمل (باستثناء يومي الجمعة والسبت).',
+                    'استخدم الماكرو المعتمد أدناه بدقة.'
+                ],
+                keyNotesEn: [
+                    'Escalate to Area Manager exclusively (not Account Manager).',
+                    'Official SLA: 3 business days, excluding Friday and Saturday.',
+                    'Use the verified macro below.'
+                ],
+                macroAr: 'لقد تم تحويل طلبكم إلى مدير المنطقه حيث سيقوم مدير المنطقه بمتابعة طلبكم وسوف يتم التواصل معكم خلال 3 أيام عمل باستثناء يومي الجمعة والسبت في حال وجود أي استفسارات.',
+                macroEn: 'Your request has been forwarded to the Area Manager who will follow up on your request. You will be contacted within 3 business days (excluding Friday and Saturday) if there are any inquiries.'
+            },
+            {
+                id: 'order_id_confirmation',
+                category: 'CHATS',
+                categoryLabelAr: 'قواعد محادثات الشات',
+                categoryLabelEn: 'Chat Protocol',
+                icon: '🆔',
+                badgeAr: 'إلغاء التأكيد لحالات محددة',
+                badgeEn: 'Exempted from Order Confirmation',
+                titleAr: 'سياسة عدم طلب تأكيد رقم الطلب في الشات (Order ID Confirmation)',
+                titleEn: 'Order ID Confirmation Exemption Policy in Live Chats',
+                ccr: 'Wrong Rider / Redelivery / ETA',
+                channel: 'Live Chats (GoDroid Only)',
+                ruleAr: 'لتسريع الاستجابة في الشات، لن نقوم بتأكيد رقم الطلب مع الشريك في الحالات التالية: (1) إذا كان الشريك HungerStation Market أو Pelican. (2) تحت CCRs التالية: Order picked by wrong rider / Redelivery required / Request rider ETA to pickup. شرط أساسي: نوع الخدمة GoDroid (يتم التحقق من Vendor Profile -> Devices -> Application Path).',
+                ruleEn: 'To speed up live chat responses, we will NO LONGER confirm the order ID in the following cases: (1) When partner is HungerStation Market or Pelican. (2) When using CCRs: Order picked by wrong rider, Redelivery required, or Request rider ETA to pickup. Mandatory Requirement: Partner service type must be GoDroid (verified via Vendor Profile -> Devices -> Application Path).',
+                keyNotesAr: [
+                    'الحالة 1: الشريك هو HungerStation Market أو Pelican.',
+                    'الحالة 2: تصنيفات (Wrong rider pickup / Redelivery / ETA).',
+                    'شرط إلزامي: التأكد من أن نوع الجهاز والخدمة هو GoDroid من شاشة الأجهزة (Devices).'
+                ],
+                keyNotesEn: [
+                    'Case 1: Partner is HungerStation Market or Pelican.',
+                    'Case 2: Specific CCRs: Wrong rider pickup, Redelivery required, or ETA.',
+                    'Mandatory requirement: Ensure device service type is GoDroid via Vendor Profile -> Devices.'
+                ]
+            },
+            {
+                id: 'wrong_rider_pickup',
+                category: 'RIDERS',
+                categoryLabelAr: 'المناديب والتوصيل',
+                categoryLabelEn: 'Riders & Dispatch',
+                icon: '⚠️',
+                badgeAr: 'سيناريوهات التعامل',
+                badgeEn: 'Handling Scenarios',
+                titleAr: 'استلام الطلب من قِبل مندوب خاطئ (Wrong Rider Pickup)',
+                titleEn: 'Order Picked by Wrong Rider Handling & Dispatch SOP',
+                ccr: 'Order picked by wrong rider | استلام مندوب خاطئ',
+                channel: 'Live Chats',
+                ruleAr: 'يُطبق في الشات عندما يُبلغ الشريك أن هناك مندوباً يطلب استلام طلب تم تسليمه لمندوب آخر. سيناريو 1 (مندوب واحد): الاتصال بالمندوب المعين، إذا لم يرد يتم إلغاء الطلب (Cancel order). سيناريو 2 (عدة مناديب): الاتصال بالمناديب القريبين بالتسلسل، ومن لا يرد يتم Reassign الطلب إليه. خطوات إضافية: طلب رقم هوية السائق أو صورته/اسمه.',
+                ruleEn: 'Applied when partner informs that a rider is asking for an order already picked by someone else. Scenario 1 (1 Rider): Call assigned rider; if no answer, Cancel the order. Scenario 2 (Multiple Riders): Call near riders in sequence; for the one who does not answer, Reassign order to him. Verification: Ask partner for rider ID or photo/name.',
+                keyNotesAr: [
+                    'سيناريو 1: مندوب واحد -> الاتصال به -> إذا لم يرد إلغاء الطلب (Cancel order).',
+                    'سيناريو 2: عدة مناديب -> الاتصال بالقريبين بالتسلسل -> من لا يرد يتم Reassign إليه.',
+                    'خطوة تحقق: طلب رقم الهوية أو الاسم/الصورة المسجلة لدى هنقرستيشن.'
+                ],
+                keyNotesEn: [
+                    'Scenario 1 (One Rider): Call assigned rider -> If no answer, Cancel the order.',
+                    'Scenario 2 (Multiple Riders): Call near riders -> Reassign to rider who does not answer.',
+                    'Verification: Ask for registered rider ID, photo, or name.'
+                ],
+                macroAr: 'يرجى العلم بأنه تم التحقق من بيانات الطلب ومتابعة خط سير المناديب واتخاذ الإجراء اللازم لإعادة توجيه/إلغاء الطلب لضمان حقوقكم وحق العميل. ونرجو منكم دائماً التأكد التام من هوية الكابتن ورقم الطلب عبر جهاز الاستلام قبل تسليم أي وجبة.',
+                macroEn: 'Please be informed that the order details and riders status have been verified and the necessary action has been taken. We kindly remind you to always verify the rider identity and order ID on your receiving device prior to handing over any order.'
+            },
+            {
+                id: 'billing_guide',
+                category: 'BILLING',
+                categoryLabelAr: 'دليل الفواتير الرقمي',
+                categoryLabelEn: 'Digital Billing Guide',
+                icon: '🧾',
+                badgeAr: 'الدليل المالي الشامل',
+                badgeEn: 'Full Financial Guide',
+                titleAr: 'دليل الفواتير الرقمي والمطابقة المالية (Digital Billing Guide)',
+                titleEn: 'Digital Billing Guide & Financial Reconciliation (W-O-N-U-Y)',
+                ccr: 'Invoicing & Payouts | الفواتير والمستحقات',
+                channel: 'Finance & Inbound Support',
+                ruleAr: 'الدليل المحدث لشرح الفواتير ومطابقة مبالغ الشريك: شرح مبيعات الشريك (Gross Sales)، العمولات المستحقة وضريبة القيمة المضافة، الخصومات وكشف الحساب، وتحليل أعمدة شيت الإكسيل الرسمية الخمسة: W (صافي المبيعات)، O (إجمالي الطلبات)، N (عمولة هنقرستيشن)، U (الخصومات والتعويضات)، Y (صافي التحويل للبنك).',
+                ruleEn: 'Comprehensive guide for billing explanation and financial matching: Gross sales, HungerStation commission & VAT, partner discounts & deductions, plus the 5 key Excel columns: W (Net Sales), O (Total Orders), N (Commission), U (Discounts & Deductions), Y (Final Net Payout).',
+                keyNotesAr: [
+                    'العمود W: إجمالي المبيعات شاملاً الضريبة.',
+                    'العمود O: إجمالي عدد الطلبات المكتملة خلال الدورة.',
+                    'العمود N: عمولة هنقرستيشن المتفق عليها في العقد.',
+                    'العمود U: إجمالي الخصومات والتعويضات والتسويات.',
+                    'العمود Y: صافي المبلغ المحول للحساب البنكي المعتمد.'
+                ],
+                keyNotesEn: [
+                    'Column W: Gross sales including VAT.',
+                    'Column O: Total number of completed orders.',
+                    'Column N: HungerStation contractual commission.',
+                    'Column U: Total discounts, compensations, and adjustments.',
+                    'Column Y: Final net payout transferred to bank IBAN.'
+                ]
+            }
+        ];
+
+        // 6 Interactive QR Steps Data
+        const qrStepsData = [
+            {
+                step: 1,
+                emoji: '🧾',
+                titleAr: 'الإيصال هو الأولوية (ابدأ هنا)',
+                titleEn: 'RECEIPT IS PRIMARY (START HERE)',
+                descAr: 'استخدم الإيصال أولاً: تأكد من صحة الطلب في القائمة. ابحث عن الإيصال المطبوع فور وصول المندوب.',
+                descEn: 'USE THE RECEIPT FIRST: Ensure correct order in list. Find printed receipt as soon as rider arrives.'
+            },
+            {
+                step: 2,
+                emoji: '🔍',
+                titleAr: 'مسح السائق للرمز أو إدخال PIN من الإيصال',
+                titleEn: 'RIDER SCAN / PIN FROM RECEIPT',
+                descAr: 'السائق يمسح الرمز: (أ) السائق يمسح الرمز من الإيصال. (ب) إذا فشل المسح، يقوم السائق بإدخال رمز PIN مكون من أول حرفين من الإيصال.',
+                descEn: 'RIDER SCANS CODE: (A) Rider scans receipt code. (B) If scan fails, rider inputs a 2-character PIN from receipt. Use first two characters.'
+            },
+            {
+                step: 3,
+                emoji: '📱',
+                titleAr: 'افتح تفاصيل الطلب من الطلبات النشطة',
+                titleEn: 'OPEN ACTIVE ORDERS',
+                descAr: 'افتح تفاصيل الطلب مباشرة من قائمة الطلبات النشطة (Active Orders) على شاشة الطابعة أو الجهاز.',
+                descEn: 'Open the order details from the Active Orders list directly on your printer or device.'
+            },
+            {
+                step: 4,
+                emoji: '👆',
+                titleAr: 'اضغط على زر "عرض رمز QR"',
+                titleEn: 'PRESS ON SHOW QR CODE',
+                descAr: 'اضغط على زر "إظهار الـ QR Code" أو "Show QR Code" المعروض على الشاشة.',
+                descEn: 'Click on the "Show QR Code" button displayed on the screen.'
+            },
+            {
+                step: 5,
+                emoji: '🤳',
+                titleAr: 'اعرض الرمز للسائق للمسح من الشاشة',
+                titleEn: 'SHOW RIDER TO SCAN',
+                descAr: 'دع السائق يقوم بمسح الرمز المعروض على شاشة جهازك مباشرة باستخدام كاميرا تطبيقه.',
+                descEn: 'Let the rider scan the QR code displayed on your screen using his rider app camera.'
+            },
+            {
+                step: 6,
+                emoji: '🤝',
+                titleAr: 'التحقق من استلام المتجر (الخطوة النهائية)',
+                titleEn: 'VENDOR HANDOVER CHECK (FINAL STEP)',
+                descAr: 'انتظر تأكيد السائق! يجب أن تظهر عبارة "تم استلام الطلب" على جهاز السائق قبل تسليمه وجبة الطلب. مصافحة وتسليم آمن.',
+                descEn: 'WAIT FOR RIDER CONFIRMATION! Order must display "Order Picked Up" on rider device before handing over the meal.'
+            }
+        ];
+
+        function switchPolicyLang(lang) {
+            currentPolicyLang = lang;
+            const btnAr = document.getElementById('policyLangBtnAR');
+            const btnEn = document.getElementById('policyLangBtnEN');
+            if (btnAr && btnEn) {
+                if (lang === 'AR') {
+                    btnAr.style.background = '#A855F7';
+                    btnAr.style.color = '#FFF';
+                    btnEn.style.background = 'rgba(255,255,255,0.08)';
+                    btnEn.style.color = '#94A3B8';
+                } else {
+                    btnEn.style.background = '#A855F7';
+                    btnEn.style.color = '#FFF';
+                    btnAr.style.background = 'rgba(255,255,255,0.08)';
+                    btnAr.style.color = '#94A3B8';
+                }
+            }
+            renderPoliciesCards();
+            updateQrStepContent();
+        }
+
+        function setPolicyCategory(cat) {
+            currentPolicyCategory = cat;
+            document.querySelectorAll('.policy-cat-pill').forEach(btn => {
+                btn.style.background = 'rgba(255,255,255,0.06)';
+                btn.style.color = '#CBD5E1';
+                btn.style.borderColor = 'rgba(255,255,255,0.12)';
+            });
+            const activeBtn = document.getElementById('catPill' + cat);
+            if (activeBtn) {
+                activeBtn.style.background = '#A855F7';
+                activeBtn.style.color = '#FFF';
+                activeBtn.style.borderColor = '#A855F7';
+            }
+            renderPoliciesCards();
+        }
+
+        function filterPoliciesList() {
+            renderPoliciesCards();
+        }
+
+        function renderPoliciesCards() {
+            const container = document.getElementById('policiesCardsGrid');
+            if (!container) return;
+
+            const query = (document.getElementById('policySearchInput') ? document.getElementById('policySearchInput').value : '').toLowerCase().trim();
+            const isEn = currentPolicyLang === 'EN';
+
+            const filtered = biteHubPoliciesData.filter(p => {
+                if (currentPolicyCategory !== 'ALL' && p.category !== currentPolicyCategory) return false;
+                if (!query) return true;
+                const matchAr = (p.titleAr + ' ' + p.ruleAr + ' ' + (p.ccr || '') + ' ' + (p.keyNotesAr || []).join(' ')).toLowerCase();
+                const matchEn = (p.titleEn + ' ' + p.ruleEn + ' ' + (p.ccr || '') + ' ' + (p.keyNotesEn || []).join(' ')).toLowerCase();
+                return matchAr.includes(query) || matchEn.includes(query);
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; padding: 40px; text-align: center; color: #94A3B8; background: #0F172A; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.15);">
+                        <i class="fa-solid fa-magnifying-glass" style="font-size: 2rem; color: #64748B; margin-bottom: 12px; display: block;"></i>
+                        <p style="margin: 0; font-size: 0.95rem; font-weight: 700;">لا توجد سياسات مطابقة لبحثك.</p>
+                        <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: #64748B;">جرب البحث بكلمات أخرى مثل "QR", "تعويض", "1VU", "مندوب", أو "SLA".</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let cardsHtml = '';
+            filtered.forEach(p => {
+                const title = isEn ? p.titleEn : p.titleAr;
+                const rule = isEn ? p.ruleEn : p.ruleAr;
+                const catLabel = isEn ? p.categoryLabelEn : p.categoryLabelAr;
+                const badge = isEn ? p.badgeEn : p.badgeAr;
+                const notes = isEn ? p.keyNotesEn : p.keyNotesAr;
+                const macro = isEn ? (p.macroEn || p.macroAr) : (p.macroAr || p.macroEn);
+
+                cardsHtml += `
+                    <div class="policy-card" style="background: #0F172A; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.25s ease; box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
+                        <div>
+                            <!-- Card Header -->
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: 1.5rem;">${p.icon}</span>
+                                    <span style="font-size: 0.72rem; background: rgba(168, 85, 247, 0.15); color: #C084FC; border: 1px solid rgba(168, 85, 247, 0.3); padding: 3px 8px; border-radius: 6px; font-weight: 700;">${catLabel}</span>
+                                </div>
+                                <span style="font-size: 0.7rem; background: rgba(239, 68, 68, 0.15); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.3); padding: 2px 7px; border-radius: 6px; font-weight: 700;">${badge}</span>
+                            </div>
+
+                            <!-- Title -->
+                            <h3 style="margin: 0 0 10px 0; font-size: 1.05rem; font-weight: 800; color: #F8FAFC; line-height: 1.4;">${title}</h3>
+
+                            <!-- CCR & Channel Meta -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;">
+                                ${p.ccr ? `<span style="font-size: 0.72rem; background: #1E293B; color: #38BDF8; padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(56, 189, 248, 0.2); font-weight: 700;"><i class="fa-solid fa-tag"></i> CCR: ${p.ccr}</span>` : ''}
+                                ${p.channel ? `<span style="font-size: 0.72rem; background: #1E293B; color: #A7F3D0; padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.2);"><i class="fa-solid fa-satellite-dish"></i> ${p.channel}</span>` : ''}
+                            </div>
+
+                            <!-- Rule Text -->
+                            <p style="margin: 0 0 14px 0; font-size: 0.83rem; color: #CBD5E1; line-height: 1.6; background: rgba(255,255,255,0.03); padding: 10px 12px; border-radius: 8px; border-right: 3px solid #A855F7;">
+                                ${rule}
+                            </p>
+
+                            <!-- Key SOP Notes -->
+                            ${notes && notes.length > 0 ? `
+                                <div style="margin-bottom: 14px;">
+                                    <span style="font-size: 0.75rem; font-weight: 800; color: #F59E0B; display: flex; align-items: center; gap: 4px; margin-bottom: 6px;">
+                                        <i class="fa-solid fa-triangle-exclamation"></i> ${isEn ? 'Mandatory Procedures:' : 'شروط وإجراءات إلزامية:'}
+                                    </span>
+                                    <ul style="margin: 0; padding-right: 18px; font-size: 0.78rem; color: #94A3B8; line-height: 1.5;">
+                                        ${notes.map(n => `<li style="margin-bottom: 4px;">${n}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <!-- Card Footer & Actions -->
+                        <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                            ${p.hasInteractiveSteps ? `
+                                <button onclick="openQrStepsModal()" style="background: linear-gradient(135deg, #6366F1, #4F46E5); color: #FFF; border: none; padding: 7px 14px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);">
+                                    <i class="fa-solid fa-mobile-screen"></i> ${isEn ? 'Interactive 6 Steps 📱' : 'خطوات الاستلام التفاعلية 📱'}
+                                </button>
+                            ` : ''}
+
+                            ${p.actionLink ? `
+                                <a href="${p.actionLink}" target="_blank" rel="noopener noreferrer" style="background: rgba(16, 185, 129, 0.15); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 7px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 6px;">
+                                    ${isEn ? p.actionLinkLabelEn : p.actionLinkLabelAr}
+                                </a>
+                            ` : ''}
+
+                            ${macro ? `
+                                <button onclick="copyPolicyMacro('${p.id}')" style="background: rgba(168, 85, 247, 0.15); color: #C084FC; border: 1px solid rgba(168, 85, 247, 0.3); padding: 7px 14px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-right: auto;">
+                                    <i class="fa-solid fa-copy"></i> ${isEn ? 'Copy Macro' : 'نسخ ماكرو السياسة 📋'}
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = cardsHtml;
+        }
+
+        function copyPolicyMacro(id) {
+            const p = biteHubPoliciesData.find(item => item.id === id);
+            if (!p) return;
+            const isEn = currentPolicyLang === 'EN';
+            const text = isEn ? (p.macroEn || p.macroAr) : (p.macroAr || p.macroEn);
+            if (!text) return;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(isEn ? 'Macro copied successfully! 📋' : 'تم نسخ ماكرو السياسة بنجاح! 📋');
+            }).catch(e => {
+                console.error(e);
+            });
+        }
+
+        function openQrStepsModal() {
+            const modal = document.getElementById('policyQrModal');
+            if (modal) {
+                modal.style.display = 'block';
+                currentQrStep = 1;
+                renderQrStepsIndicator();
+                updateQrStepContent();
+                modal.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function renderQrStepsIndicator() {
+            const ind = document.getElementById('qrStepsIndicator');
+            if (!ind) return;
+            let btns = '';
+            for (let i = 1; i <= 6; i++) {
+                const isActive = currentQrStep === i;
+                const isPassed = currentQrStep > i;
+                btns += `
+                    <button onclick="goToQrStep(${i})" style="flex: 1; height: 38px; border-radius: 8px; font-weight: 800; font-size: 0.85rem; cursor: pointer; border: 2px solid ${isActive ? '#818CF8' : isPassed ? '#4F46E5' : 'rgba(255,255,255,0.1)'}; background: ${isActive ? '#6366F1' : isPassed ? '#1E293B' : '#0F172A'}; color: #FFF; transition: all 0.2s;">
+                        ${i} ${isActive ? '📍' : ''}
+                    </button>
+                `;
+            }
+            ind.innerHTML = btns;
+        }
+
+        function goToQrStep(step) {
+            currentQrStep = step;
+            renderQrStepsIndicator();
+            updateQrStepContent();
+        }
+
+        function prevQrStep() {
+            if (currentQrStep > 1) {
+                currentQrStep--;
+                renderQrStepsIndicator();
+                updateQrStepContent();
+            }
+        }
+
+        function nextQrStep() {
+            if (currentQrStep < 6) {
+                currentQrStep++;
+                renderQrStepsIndicator();
+                updateQrStepContent();
+            }
+        }
+
+        function updateQrStepContent() {
+            const data = qrStepsData.find(d => d.step === currentQrStep);
+            if (!data) return;
+            const isEn = currentPolicyLang === 'EN';
+
+            const emojiEl = document.getElementById('qrStepEmoji');
+            const titleEl = document.getElementById('qrStepTitle');
+            const descEl = document.getElementById('qrStepDesc');
+            const prevBtn = document.getElementById('qrPrevBtn');
+            const nextBtn = document.getElementById('qrNextBtn');
+
+            if (emojiEl) emojiEl.textContent = data.emoji;
+            if (titleEl) titleEl.textContent = isEn ? data.titleEn : data.titleAr;
+            if (descEl) descEl.textContent = isEn ? data.descEn : data.descAr;
+
+            if (prevBtn) {
+                prevBtn.disabled = currentQrStep === 1;
+                prevBtn.style.opacity = currentQrStep === 1 ? '0.4' : '1';
+                prevBtn.textContent = isEn ? '⬅️ Prev' : 'السابق ⬅️';
+            }
+            if (nextBtn) {
+                nextBtn.disabled = currentQrStep === 6;
+                nextBtn.style.opacity = currentQrStep === 6 ? '0.4' : '1';
+                nextBtn.textContent = isEn ? 'Next ➡️' : 'التالي ➡️';
+            }
+        }
+
+</script>
 <!-- AI Settings Modal -->
     <div id="aiSettingsModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 99999; align-items: center; justify-content: center; padding: 15px;">
         <div style="background: #1E293B; border: 1px solid var(--border-color); width: 100%; max-width: 520px; border-radius: 16px; padding: 24px; color: #FFF; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">

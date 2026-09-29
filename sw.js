@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hs-vendor-suite-v12-clean-macros';
+const CACHE_NAME = 'hs-vendor-suite-v13-official-policies-hub';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.webmanifest'
