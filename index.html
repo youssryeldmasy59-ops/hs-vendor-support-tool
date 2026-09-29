@@ -2124,7 +2124,7 @@
 
             <!-- 🔄 Force Refresh / Cache Purge -->
             <button type="button" class="header-btn" onclick="forcePurgeAndReload()" style="color: #10B981; border-color: rgba(16,185,129,0.3);" title="تحديث فوري وحذف الكاش القديم (v8)">
-                <i class="fa-solid fa-rotate"></i> <span>تحديث v10 🔄</span>
+                <i class="fa-solid fa-rotate"></i> <span>تحديث v11 🔄</span>
             </button>
 
             <!-- 🔊 Sound FX Mute Toggle -->
@@ -2813,7 +2813,7 @@
 
 
 window.forcePurgeAndReload = function() {
-    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v10)...');
+    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v11)...');
     if ('caches' in window) {
         caches.keys().then(names => {
             return Promise.all(names.map(name => caches.delete(name)));
@@ -7153,8 +7153,9 @@ async function loadKBData() {
             enProc = enProc.replace(/\[IBAN\]|\[Bank Account\]/g, val.cleanIban);
 
             const greetings = window.currentActiveGreetings || { arGreeting: "", enGreeting: "" };
-            const finalAr = buildArabicMacro(greetings.arGreeting, arProc);
-            const finalEn = buildEnglishMacro(greetings.enGreeting, enProc);
+            const partnerStoreName = (val && val.storeName) ? val.storeName : '';
+            const finalAr = buildArabicMacro(greetings.arGreeting, arProc, partnerStoreName);
+            const finalEn = buildEnglishMacro(greetings.enGreeting, enProc, partnerStoreName);
 
             // Recompute deep analysis and dynamic macro with new live variables
             const partnerMsg = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '') || '';
@@ -7172,7 +7173,7 @@ async function loadKBData() {
 
             const arEl = document.getElementById('arMacroText');
             const enEl = document.getElementById('enMacroText');
-            const activeMode = window.currentActiveMacroMode || 'dynamic';
+            const activeMode = window.currentActiveMacroMode || 'standard';
             if (arEl) arEl.innerText = (activeMode === 'dynamic' && window.currentDynamicArMacro) ? window.currentDynamicArMacro : finalAr;
             if (enEl) enEl.innerText = (activeMode === 'dynamic' && window.currentDynamicEnMacro) ? window.currentDynamicEnMacro : finalEn;
 
@@ -7192,7 +7193,7 @@ async function loadKBData() {
 
         
         // ── 🧠 DEEP AI INQUIRY COMPREHENSION & DYNAMIC TAILORED MACRO ENGINE ──
-        window.currentActiveMacroMode = window.currentActiveMacroMode || 'dynamic';
+        window.currentActiveMacroMode = 'standard';
         window.currentAgentExtraInstruction = window.currentAgentExtraInstruction || '';
 
         function deepAnalyzeVendorInquiry(partnerMsg, caseObj, agentNote = '') {
@@ -7417,9 +7418,15 @@ ${sopProc}`);
             const agentNameEn = (typeof getAgentEnglishName === 'function' ? getAgentEnglishName() : 'Partner Support Team');
             enSections.push(`Thank you for your valued partnership,\n\n${agentNameEn}\nPartner Support Team | Hungerstation\nDirect Line: 920033935`);
 
+            const greetings = window.currentActiveGreetings || { arGreeting: "", enGreeting: "" };
+            const synthArBody = (resPoints.length > 0) ? resPoints.join('\n\n') : (c.procedure_arabic || "تم استلام الطلب ومتابعته مع الفريق المختص.");
+            const synthEnBody = (resEnPoints.length > 0) ? resEnPoints.join('\n\n') : (c.procedure_english || "Your request is currently being handled according to our standard operating procedures.");
+            const unifiedAr = buildArabicMacro(greetings.arGreeting, synthArBody, storeName !== '[اسم المتجر]' ? storeName : '');
+            const unifiedEn = buildEnglishMacro(greetings.enGreeting, synthEnBody, storeName !== '[اسم المتجر]' ? storeName : '');
+
             return {
-                arMacro: arSections.join('\n\n'),
-                enMacro: enSections.join('\n\n'),
+                arMacro: unifiedAr,
+                enMacro: unifiedEn,
                 analysis
             };
         }
@@ -7707,93 +7714,96 @@ function cleanArabicProcedure(text) {
 
         function detectGreetings(text) {
             if (!text) return { arGreeting: "", enGreeting: "" };
-            const lower = String(text || '').toLowerCase();
+            const lower = String(text || '').toLowerCase().trim();
             let arGreeting = "";
             let enGreeting = "";
 
-            if (lower.includes("السلام عليكم") || lower.includes("سلام عليكم") || lower.includes("وعليكم السلام")) {
-                arGreeting = "وعليكم السلام ورحمة الله وبركاته\n\n";
-                enGreeting = "Peace be upon you,\n\n";
+            if (lower.includes("السلام عليكم") || lower.includes("سلام عليكم") || lower.includes("وعليكم السلام") || lower.includes("سلام الله عليكم")) {
+                arGreeting = "وعليكم السلام ورحمة الله وبركاته،";
+                enGreeting = "Peace be upon you,";
             } else if (lower.includes("صباح الخير") || lower.includes("صباح النور") || lower.includes("good morning")) {
-                arGreeting = "صباح النور والسرور 🌸\n\n";
-                enGreeting = "Good morning,\n\n";
+                arGreeting = "صباح النور والسرور،";
+                enGreeting = "Good morning,";
             } else if (lower.includes("مساء الخير") || lower.includes("مساء النور") || lower.includes("good evening")) {
-                arGreeting = "مساء النور والسرور 🌸\n\n";
-                enGreeting = "Good evening,\n\n";
-            } else if (lower.includes("hello") || lower.includes("hi") || lower.includes("هلا") || lower.includes("مرحبا")) {
-                arGreeting = "أهلاً وسهلاً بك،\n\n";
-                enGreeting = "Hello,\n\n";
+                arGreeting = "مساء النور والسرور،";
+                enGreeting = "Good evening,";
             }
+            // Strict rule: if no greeting in partner inquiry, arGreeting remains empty!
 
             return { arGreeting, enGreeting };
         }
 
-                function buildArabicMacro(greeting, kbContentText) {
-            const arAgent = getAgentArabicName();
-            if (!kbContentText) {
-                return `${greeting ? greeting + '\n\n' : ''}شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nتم استلام طلبكم ومتابعته مع القسم المعني.\n\nنود إفادتكم بأنه سيتم إرسال استبيان تلقائي خاص بهذه التذكرة.\nتشير نجمة واحدة إلى أن مستوى الخدمة لم يكن مرضياً، بينما تشير خمس نجوم إلى أن مستوى الخدمة كان مرضياً جداً.\nشكراً لتواصلكم معنا.\nنتمنى لكم الصحة والعافية.\nمع الشكر،\n${arAgent}\nهنقرستيشن\nتفاصيل التواصل:\nمشاكل الطلبات: 920033935`;
-            }
-
-            const lines = kbContentText.split('\n');
+        function cleanMacroCoreBody(text, isEn = false) {
+            if (!text) return '';
+            const lines = String(text).split('\n');
             const cleanLines = [];
-            
+            const arAgent = (typeof getAgentArabicName === 'function' ? getAgentArabicName() : 'عمر') || 'عمر';
+            const enAgent = (typeof getAgentEnglishName === 'function' ? getAgentEnglishName() : 'Omar') || 'Omar';
+
             for (let l of lines) {
                 let s = l.trim();
                 if (!s) continue;
-                // Filter out English text from Arabic Macro
-                let enCount = (s.match(/[a-zA-Z]/g) || []).length;
-                let arCount = (s.match(/[\u0600-\u06FF]/g) || []).length;
-                if (enCount > arCount && enCount > 8 && !s.includes('@') && !s.startsWith('http')) {
-                    continue;
+
+                // Filter out language mismatch
+                if (!isEn) {
+                    let enCount = (s.match(/[a-zA-Z]/g) || []).length;
+                    let arCount = (s.match(/[\u0600-\u06FF]/g) || []).length;
+                    if (enCount > arCount && enCount > 10 && !s.includes('@') && !s.startsWith('http')) continue;
+                } else {
+                    let arCount = (s.match(/[\u0600-\u06FF]/g) || []).length;
+                    let enCount = (s.match(/[a-zA-Z]/g) || []).length;
+                    if (arCount > enCount && arCount > 5) continue;
                 }
-                if (s.includes('Dear') || s.includes('Thank you for contacting') || s.includes('Your request has been') || s.includes('Five Star') || s.includes('One Star') || s.includes('Contact Details:') || s.includes('Issues with Orders:') || s.includes('revert to you') || s.includes('I was honored')) {
-                    continue;
+
+                // Strip redundant outer greetings
+                if (/^(?:شريكنا|عزيزنا|مرحبا|أهلا|اهلاً|السلام عليكم|وعليكم السلام|صباح الخير|مساء الخير|Dear Valued Partner|Dear Partner|Hello|Good morning|Good evening)/i.test(s)) continue;
+
+                // Strip duplicate "شكراً لتواصلكم مع هنقرستيشن" but preserve "بخصوص..."
+                if (/^(?:شكراً|شكرا)\s*لتواصلكم\s*مع\s*هنقرستيشن|Thank you for contacting Hungerstation/i.test(s)) {
+                    if (/^(?:شكراً|شكرا)\s*لتواصلكم\s*مع\s*هنقرستيشن[\.\s]*$/i.test(s)) continue;
+                    s = s.replace(/^(?:شكراً|شكرا)\s*لتواصلكم\s*مع\s*هنقرستيشن\s*(?:بخصوص|حول|بشأن)\s*/i, 'بخصوص ').trim();
                 }
-                // Filter out duplicated greetings/survey/closing lines
-                if (s.startsWith('شريكنا') || s.startsWith('شكراً لتواصلكم') || s.startsWith('مع الشكر') || s.startsWith('هنقرستيشن') || s.startsWith('تفاصيل التواصل') || s.startsWith('مشاكل الطلبات') || s.startsWith('نود إفادتكم بأنه سيتم إرسال استبيان') || s.startsWith('تشير نجمة واحدة') || s.startsWith('⭐⭐⭐') || s.startsWith('نجمة واحدة') || s.startsWith('خمس نجوم') || s.startsWith('شكرا لتواصلك معنا اتمنى لك الصحه') || s.startsWith('تشرفت بمساعدتك اليوم')) {
-                    continue;
-                }
+
+                // Strip survey, closings, signatures, contact lines
+                if (/^(?:نود إفادتكم بأنه سيتم إرسال استبيان|تشير نجمة واحدة|ويساعدنا تقييمكم|شكراً لتواصلكم معنا|شكرا لتواصلك معنا|نتمنى لكم الصحة|مع الشكر|هنقرستيشن|تفاصيل التواصل|مشاكل الطلبات|قنوات التواصل|شكاوي تتعلق بالطلبات|تشرفت بمساعدتك|نعتذر عن أي إزعاج)/i.test(s)) continue;
+                if (/^(?:Please be informed that an automated survey|One star indicates|Your feedback helps us|Thank you for contacting us|We wish you|Best regards|Hungerstation|HungerStation|Contact details|Contact Details|Order issues|Order Issues|Issues with Orders|Apologies for any inconvenience|I was honored)/i.test(s)) continue;
+                if (/^[⭐\*\s]+$/.test(s) || s.includes('⭐⭐') || /^(?:راضي جدا|راض جدا|محايد|غير راض)/i.test(s)) continue;
+                if (s === arAgent || s === enAgent || s === 'اسم الموظف' || s === 'Employee Name' || s === 'مع السلامه' || s === 'دمتم بخير') continue;
+
                 cleanLines.push(s);
             }
-            
-            let coreBody = cleanLines.join('\n\n').trim();
-            if (!coreBody) coreBody = "تم استلام طلبكم وجاري متابعته مع الفريق المختص.";
 
-            return `${greeting ? greeting + '\n\n' : ''}شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\n${coreBody}\n\nنود إفادتكم بأنه سيتم إرسال استبيان تلقائي خاص بهذه التذكرة.\nتشير نجمة واحدة إلى أن مستوى الخدمة لم يكن مرضياً، بينما تشير خمس نجوم إلى أن مستوى الخدمة كان مرضياً جداً.\nشكراً لتواصلكم معنا.\nنتمنى لكم الصحة والعافية.\nمع الشكر،\n${arAgent}\nهنقرستيشن\nتفاصيل التواصل:\nمشاكل الطلبات: 920033935`;
+            return cleanLines.join('\n\n').trim();
         }
 
-        function buildEnglishMacro(greeting, kbContentText) {
-            const enAgent = getAgentEnglishName();
-            if (!kbContentText) {
-                return `${greeting ? greeting + '\n\n' : ''}Dear Valued Partner,\n\nThank you for contacting HungerStation.\n\nYour request has been received and is being processed by the relevant department.\n\nWe would like to inform you that an automated survey will be sent regarding this ticket.\nOne star indicates that the service level was unsatisfactory, while five stars indicate that the service level was very satisfactory.\nThank you for contacting us.\nWe wish you good health and well-being.\nBest regards,\n${enAgent}\nHungerStation\nContact Details:\nOrder Issues: 920033935`;
+        function buildArabicMacro(greeting, kbContentText, partnerName = '') {
+            const arAgent = (typeof getAgentArabicName === 'function' ? getAgentArabicName() : 'عمر') || 'عمر';
+            const pName = partnerName ? partnerName.trim() : '';
+            const salutation = pName ? `شريكنا ${pName} العزيز` : 'شريكنا العزيز';
+            
+            let coreBody = cleanMacroCoreBody(kbContentText, false);
+            if (!coreBody) {
+                coreBody = "تم استلام طلبكم وجاري متابعته مع الفريق المختص.";
             }
 
-            const lines = kbContentText.split('\n');
-            const cleanLines = [];
-            
-            for (let l of lines) {
-                let s = l.trim();
-                if (!s) continue;
-                // Filter out Arabic text from English Macro
-                let arCount = (s.match(/[\u0600-\u06FF]/g) || []).length;
-                let enCount = (s.match(/[a-zA-Z]/g) || []).length;
-                if (arCount > enCount && arCount > 5) {
-                    continue;
-                }
-                if (s.includes('شريكنا') || s.includes('شكراً لتواصلكم') || s.includes('نود إفادتكم') || s.includes('نجمة واحدة') || s.includes('خمس نجوم') || s.includes('هنقرستيشن') || s.includes('تفاصيل التواصل') || s.includes('مشاكل الطلبات')) {
-                    continue;
-                }
-                // Filter out duplicated greetings/closing
-                if (s.startsWith('Dear') || s.startsWith('Thank you for contacting') || s.startsWith('Best regards') || s.startsWith('Hungerstation') || s.startsWith('HungerStation') || s.startsWith('Contact Details') || s.startsWith('Order Issues') || s.startsWith('We would like to inform you that an auto') || s.startsWith('One star indicates') || s.startsWith('⭐⭐⭐')) {
-                    continue;
-                }
-                cleanLines.push(s);
-            }
-            
-            let coreBody = cleanLines.join('\n\n').trim();
-            if (!coreBody) coreBody = "Your request has been received and is being processed by the relevant department.";
+            const greetingPrefix = greeting && greeting.trim() ? (greeting.trim() + '\n\n') : '';
 
-            return `${greeting ? greeting + '\n\n' : ''}Dear Valued Partner,\n\nThank you for contacting HungerStation.\n\n${coreBody}\n\nWe would like to inform you that an automated survey will be sent regarding this ticket.\nOne star indicates that the service level was unsatisfactory, while five stars indicate that the service level was very satisfactory.\nThank you for contacting us.\nWe wish you good health and well-being.\nBest regards,\n${enAgent}\nHungerStation\nContact Details:\nOrder Issues: 920033935`;
+            return `${greetingPrefix}${salutation}\n\nشكراً لتواصلكم مع هنقرستيشن.\n\n${coreBody}\n\nنود إفادتكم بأنه سيتم إرسال استبيان تلقائي خاص بهذه التذكرة.\nتشير نجمة واحدة إلى أن مستوى الخدمة لم يكن مرضياً، بينما تشير خمس نجوم إلى أن مستوى الخدمة كان مرضياً جداً. ويساعدنا تقييمكم في تحسين جودة خدماتنا.\nشكراً لتواصلكم معنا.\nنتمنى لكم الصحة والعافية.\nمع الشكر،\n${arAgent}\nهنقرستيشن\nتفاصيل التواصل:\nمشاكل الطلبات: 920033935`;
+        }
+
+        function buildEnglishMacro(greeting, kbContentText, partnerName = '') {
+            const enAgent = (typeof getAgentEnglishName === 'function' ? getAgentEnglishName() : 'Omar') || 'Omar';
+            const pName = partnerName ? partnerName.trim() : '';
+            const salutation = pName ? `Dear Valued Partner ${pName},` : 'Dear Valued Partner,';
+
+            let coreBody = cleanMacroCoreBody(kbContentText, true);
+            if (!coreBody) {
+                coreBody = "Your request has been received and is being processed by the relevant department.";
+            }
+
+            const greetingPrefix = greeting && greeting.trim() ? (greeting.trim() + '\n\n') : '';
+
+            return `${greetingPrefix}${salutation}\n\nThank you for contacting HungerStation.\n\n${coreBody}\n\nWe would like to inform you that an automated survey will be sent regarding this ticket.\nOne star indicates that the service level was unsatisfactory, while five stars indicate that the service level was very satisfactory.\nThank you for contacting us.\nWe wish you good health and well-being.\nBest regards,\n${enAgent}\nHungerStation\nContact Details:\nOrder Issues: 920033935`;
         }
 
         let _macroActive = false;
@@ -8174,8 +8184,9 @@ function cleanArabicProcedure(text) {
             }
 
             const greetings = window.currentActiveGreetings || { arGreeting: "", enGreeting: "" };
-            const finalAr = buildArabicMacro(greetings.arGreeting, arProc);
-            const finalEn = buildEnglishMacro(greetings.enGreeting, enProc);
+            const partnerStoreName = (val && val.storeName) ? val.storeName : '';
+            const finalAr = buildArabicMacro(greetings.arGreeting, arProc, partnerStoreName);
+            const finalEn = buildEnglishMacro(greetings.enGreeting, enProc, partnerStoreName);
 
             const arEl = document.getElementById('arMacroText');
             const enEl = document.getElementById('enMacroText');
@@ -9413,7 +9424,8 @@ ${invoiceGuideHtml || ""}
                 enProcText = enProcText.replace(/\[IBAN\]|\[Bank Account\]/g, detectedEntities.iban);
             }
             
-            let finalArMacro = buildArabicMacro(greetings.arGreeting, arProcText);
+            const partnerStoreName = (detectedEntities && detectedEntities.storeName) ? detectedEntities.storeName : '';
+            let finalArMacro = buildArabicMacro(greetings.arGreeting, arProcText, partnerStoreName);
             let aiBadgeNotice = `<div style="background: rgba(16, 185, 129, 0.12); border: 1.5px solid #10B981; color: #059669; padding: 7px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-certificate" style="color: #10B981;"></i> الرد المعتمد الرسمي من قاعدة المعرفة (KnowledgeOwl Inbound KB) ✅</div>`;
             
             if (aiOverrideText) {
@@ -9421,7 +9433,7 @@ ${invoiceGuideHtml || ""}
             }
             const arMacro = finalArMacro;
     
-            const enMacro = buildEnglishMacro(greetings.enGreeting, enProcText);
+            const enMacro = buildEnglishMacro(greetings.enGreeting, enProcText, partnerStoreName);
             const arAgentName = getAgentArabicName();
             const enAgentName = getAgentEnglishName();
 
@@ -9441,7 +9453,7 @@ ${invoiceGuideHtml || ""}
             window.currentStandardArMacro = finalArMacro;
             window.currentStandardEnMacro = enMacro;
 
-            const activeMacroMode = window.currentActiveMacroMode || 'dynamic';
+            const activeMacroMode = window.currentActiveMacroMode || 'standard';
             const initialArMacroDisplay = (activeMacroMode === 'dynamic') ? tailoredMacros.arMacro : finalArMacro;
             const initialEnMacroDisplay = (activeMacroMode === 'dynamic') ? tailoredMacros.enMacro : enMacro;
             
@@ -12896,8 +12908,9 @@ function downloadOfficialMenuExcel() {
             }
 
             const greetings = window.currentActiveGreetings || { arGreeting: "", enGreeting: "" };
-            const finalAr = buildArabicMacro(greetings.arGreeting, arProc);
-            const finalEn = buildEnglishMacro(greetings.enGreeting, enProc);
+            const partnerStoreName = (val && val.storeName) ? val.storeName : '';
+            const finalAr = buildArabicMacro(greetings.arGreeting, arProc, partnerStoreName);
+            const finalEn = buildEnglishMacro(greetings.enGreeting, enProc, partnerStoreName);
 
             const arEl = document.getElementById('arMacroText');
             const enEl = document.getElementById('enMacroText');
@@ -14921,7 +14934,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=10')
+        navigator.serviceWorker.register('./sw.js?v=11')
             .then(() => console.log('✓ Service Worker Registered successfully.'))
             .catch(err => console.log('SW registration error:', err));
     });
@@ -15094,7 +15107,7 @@ function updateMobileMockup() {
 const originalRenderStudioTables = window.renderStudioMenuPreviewTables;
 
 window.forcePurgeAndReload = function() {
-    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v10)...');
+    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v11)...');
     if ('caches' in window) {
         caches.keys().then(names => {
             return Promise.all(names.map(name => caches.delete(name)));
@@ -15268,47 +15281,18 @@ function runBatchMultiTicketSolver() {
         return;
     }
 
+    const batchSurveyFooter = `\n\nنود إفادتكم بأنه سيتم إرسال استبيان تلقائي خاص بهذه التذكرة.\nتشير نجمة واحدة إلى أن مستوى الخدمة لم يكن مرضياً، بينما تشير خمس نجوم إلى أن مستوى الخدمة كان مرضياً جداً. ويساعدنا تقييمكم في تحسين جودة خدماتنا.\nشكراً لتواصلكم معنا.\nنتمنى لكم الصحة والعافية.\nمع الشكر،\n${agentName}\nهنقرستيشن\nتفاصيل التواصل:\nمشاكل الطلبات: 920033935`;
+
     const templateMap = {
-        'DRIVER_DELAY': (ord) => `شريكنا العزيز،
+        'DRIVER_DELAY': (ord) => `شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nبخصوص الطلب رقم (#${ord}) وتأخر وصول السائق لاستلام الوجبة: تم تصعيد البلاغ فوراً لفريق العمليات الميدانية لإعادة إسناد الطلب لكابتن بديل لضمان وصول الوجبة بحالة ممتازة.${batchSurveyFooter}`,
 
-شكراً لتواصلكم مع هنقرستيشن.
-بخصوص الطلب رقم (#${ord}) وتأخر وصول السائق لاستلام الوجبة:
-تم تصعيد البلاغ فوراً لفريق العمليات الميدانية لإعادة توجيه أقرب سائق بديل لموقع فرعكم بأسرع وقت لتفادي تأثر جودة الطلب.
+        'THURSDAY_PAYOUT': (ord) => `شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nبخصوص المبيعات والحوالة البنكية للطلب (#${ord}): نحيطكم علماً بأن إيداع مستحقات مبيعات الأسبوع يتم كل يوم خميس وتستغرق الحوالة من 24 إلى 48 ساعة عمل كحد أقصى لتظهر في حسابكم البنكي المعتمد.${batchSurveyFooter}`,
 
-شاكرين تفهمكم وحسن تعاونكم،
-${agentName} | فريق دعم الشركاء`,
+        'CANCEL_COMP': (ord) => `شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nبخصوص الطلب رقم (#${ord}) الذي تم إلغاؤه بعد البدء في تحضيره: نؤكد لكم أنه وفقاً للائحة التعويضات الرسمية، تم احتساب قيمة الطلب بالكامل لصالح متجركم وسيتم إدراجها ضمن فاتورة الأسبوع القادمة دون أي خصومات.${batchSurveyFooter}`,
 
-        'THURSDAY_PAYOUT': (ord) => `شريكنا العزيز،
+        'DEVICE_REPLACE': (ord) => `شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nبخصوص طلب استبدال جهاز التابلت المرتبط بالفرع (#${ord}): تم تسجيل طلبكم بنجاح لاستبدال الجهاز، ونفيدكم بأن رسوم استبدال الجهاز هي 500 ريال يتم خصمها تلقائياً من مستحقات المتجر، وسيتم تسليم الجهاز الجديد خلال يومين عمل.${batchSurveyFooter}`,
 
-شكراً لتواصلكم مع هنقرستيشن بخصوص المبيعات والحوالة البنكية للطلب (#${ord}):
-نحيطكم علماً بأن إيداع مستحقات مبيعات الأسبوع يتم كل يوم خميس وتستغرق الحوالة من 24 إلى 48 ساعة عمل كحد أقصى لتظهر في حسابكم البنكي المعتمد.
-
-شاكرين حسن تعاونكم،
-${agentName} | فريق دعم الشركاء`,
-
-        'CANCEL_COMP': (ord) => `شريكنا العزيز،
-
-بخصوص الطلب رقم (#${ord}) الذي تم إلغاؤه من قبل العميل بعد استلامه والبدء في تحضيره:
-نؤكد لكم أنه وفقاً للائحة التعويضات الرسمية، تم احتساب قيمة الطلب بالكامل لصالح متجركم وسيتم إدراجها ضمن فاتورة الأسبوع القادمة دون أي خصومات.
-
-شاكرين حسن تعاونكم،
-${agentName} | فريق دعم الشركاء`,
-
-        'DEVICE_REPLACE': (ord) => `شريكنا العزيز،
-
-بخصوص طلب استبدال جهاز التابلت المرتبط بالفرع (#${ord}):
-تم تسجيل طلبكم بنجاح لاستبدال الجهاز، ونفيدكم بأن رسوم استبدال الجهاز هي 500 ريال يتم خصمها تلقائياً من مستحقات المتجر، وسيتم تسليم الجهاز الجديد خلال يومين عمل.
-
-شاكرين حسن تعاونكم،
-${agentName} | فريق دعم الشركاء`,
-
-        'MENU_UPDATE': (ord) => `شريكنا العزيز،
-
-شكراً لتواصلكم معنا بخصوص تحديث قائمة الطعام والأسعار للطلب/التذكرة (#${ord}):
-تم استلام التعديلات المطلوبة وجاري مراجعتها وتطبيقها على متجركم عبر بوابة العمليات خلال 24 ساعة كحد أقصى.
-
-شاكرين حسن تعاونكم،
-${agentName} | فريق دعم الشركاء`
+        'MENU_UPDATE': (ord) => `شريكنا العزيز\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nبخصوص تحديث قائمة الطعام والأسعار للطلب/التذكرة (#${ord}): تم استلام التعديلات المطلوبة وجاري مراجعتها وتطبيقها على متجركم عبر بوابة العمليات خلال 24 ساعة كحد أقصى.${batchSurveyFooter}`
     };
 
     const builder = templateMap[scenario] || templateMap['DRIVER_DELAY'];
@@ -16764,7 +16748,7 @@ if (typeof window !== 'undefined') {
     </div>
 
 
-    <!-- PWA Service Worker handled by sw.js?v=10 -->
+    <!-- PWA Service Worker handled by sw.js?v=11 -->
 
 </body>
 </html>
