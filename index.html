@@ -2729,7 +2729,7 @@
 
             <!-- Textarea Box with Integrated Toolbar (At the Top for instant focus!) -->
             <div class="textarea-wrapper">
-                <textarea id="partnerMessage" placeholder="الصق رسالة الشريك هنا مباشرة، أو اضغط للتسجيل الصوتي... (يستخرج النظام بيانات التذاكر والأرقام تلقائياً)" oninput="updateInputStats()"></textarea>
+                <textarea id="partnerMessage" onpaste="handlePartnerMessagePaste(event)" placeholder="الصق رسالة الشريك هنا مباشرة، أو اضغط للتسجيل الصوتي... (يستخرج النظام بيانات التذاكر والأرقام تلقائياً)" oninput="updateInputStats()"></textarea>
                 <div class="textarea-toolbar">
                     <div class="textarea-tools-left">
                         <button type="button" class="tool-mini-btn" onclick="pastePartnerMessage()" title="لصق من الحافظة">
@@ -13547,7 +13547,7 @@ function downloadOfficialMenuExcel() {
         window._currentArMacroRaw = "";
         window._currentEnMacroRaw = "";
 
-        function applyMacroTone(tone) {
+        async function applyMacroTone(tone) {
             const c = window.currentActiveCaseObj;
             if (!c) return;
 
@@ -13555,62 +13555,153 @@ function downloadOfficialMenuExcel() {
             const enEl = document.getElementById('enMacroText');
             if (!arEl && !enEl) return;
 
-            const agentAr = getAgentArabicName();
-            const agentEn = getAgentEnglishName();
-
-            const idx = window.currentActiveSubMacroIdx || 0;
-            const sm = (c.sub_macros && c.sub_macros[idx]) ? c.sub_macros[idx] : null;
-            let coreAr = (sm && sm.macro_arabic) ? sm.macro_arabic : (c.procedure_arabic || "تم استلام طلبكم وجاري متابعته مع الفريق المختص.");
-            let coreEn = (sm && sm.macro_english) ? sm.macro_english : (c.procedure_english || "Your request has been received and is being processed.");
-
-            const entities = window.currentActiveDetectedEntities || {};
-            if (entities.orderId) {
-                coreAr = coreAr.replace(/\[رقم الطلب\]/g, entities.orderId);
-                coreEn = coreEn.replace(/\[Order ID\]/g, entities.orderId);
-            }
-            if (entities.storeName) {
-                coreAr = coreAr.replace(/\[اسم المتجر\]|\[اسم الشريك\]/g, entities.storeName);
-                coreEn = coreEn.replace(/\[Store Name\]|\[Partner Name\]/g, entities.storeName);
-            }
-            if (entities.amount) {
-                coreAr = coreAr.replace(/\[المبلغ\]/g, entities.amount + ' ريال');
-                coreEn = coreEn.replace(/\[Amount\]/g, entities.amount + ' SAR');
-            }
-
-            let finalAr = "";
-            let finalEn = "";
-
-            if (tone === 'de-escalation') {
-                finalAr = `عزيزنا الشريك،\n\nنود في البداية أن نؤكد لكم بالغ تقديرنا لشراكتكم القيّمة واهتمامنا الكامل بنجاح متجركم، ونعتذر بصدق عن أي إزعاج أو تجربة غير ملائمة قد تكون واجهتكم.\n\nبخصوص استفساركم الكريم، نود توضيح الإجراء التالي:\n${cleanArabicLinguistics(coreAr)}\n\nنحن دائماً بجانبكم ويسعدنا تقديم كامل الدعم والمساندة لضمان تجربة تشغيلية مثالية.\n\nتقبلوا خالص التحية والتقدير،\nفريق دعم الشركاء | هنقرستيشن\n${agentAr}`;
-                
-                finalEn = `Dear Esteemed Partner,\n\nWe would like to express our highest appreciation for your partnership and sincere apologies for any inconvenience you may have experienced.\n\nRegarding your inquiry, please note the following approved procedure:\n${cleanEnglishLinguistics(coreEn)}\n\nWe remain committed to supporting your business every step of the way.\n\nBest regards,\nPartner Operations Support | Hungerstation\n${agentEn}`;
-            } else if (tone === 'firm') {
-                finalAr = `عزيزنا الشريك،\n\nإشارةً إلى استفساركم، وتأكيداً على اللوائح والسياسات التشغيلية المعتمدة لدى منصة هنقرستيشن:\n\n${cleanArabicLinguistics(coreAr)}\n\nنأمل التكرم بالالتزام بالإجراءات المحددة أعلاه لضمان سير العمليات وفق أعلى معايير الجودة والشفافية.\n\nشاكرين حسن تعاونكم وتفهمكم،\nفريق إدارة عمليات الشركاء | هنقرستيشن\n${agentAr}`;
-                
-                finalEn = `Dear Partner,\n\nIn reference to your inquiry and in accordance with Hungerstation official operational guidelines and policies:\n\n${cleanEnglishLinguistics(coreEn)}\n\nWe kindly ask for your adherence to these approved standards to ensure optimal operations.\n\nSincerely,\nVendor Operations Compliance | Hungerstation\n${agentEn}`;
-            } else if (tone === 'quick') {
-                const cleanSingleAr = coreAr.replace(/\n+/g, ' ').trim();
-                const cleanSingleEn = coreEn.replace(/\n+/g, ' ').trim();
-                finalAr = `أهلاً بك عزيزنا الشريك 🌹\n• بخصوص تذكرتك: ${cleanArabicLinguistics(cleanSingleAr)}\n• لأي مساعدة إضافية نحن بخدمتكم فوراً.\n${agentAr}`;
-                
-                finalEn = `Hello Partner 👋\n• Resolution: ${cleanEnglishLinguistics(cleanSingleEn)}\n• Please let us know if you need further assistance.\n${agentEn}`;
-            } else {
-                const greetings = window.currentActiveGreetings || { arGreeting: "", enGreeting: "" };
-                const pName = (entities && entities.storeName) ? entities.storeName : '';
-                finalAr = buildArabicMacro(greetings.arGreeting, coreAr, pName);
-                finalEn = buildEnglishMacro(greetings.enGreeting, coreEn, pName);
-            }
-
-            if (arEl) arEl.innerText = finalAr;
-            if (enEl) enEl.innerText = finalEn;
-
             const buttons = document.querySelectorAll('.tone-pill-btn');
             buttons.forEach(b => b.classList.remove('active-tone'));
             const clickedBtn = document.getElementById('toneBtn_' + tone);
             if (clickedBtn) clickedBtn.classList.add('active-tone');
 
             const toneLabel = tone === 'de-escalation' ? 'امتصاص الغضب 🛡️' : tone === 'firm' ? 'رسمي وحازم ⚖️' : tone === 'quick' ? 'مختصر وسريع ⚡' : 'الرد الأصلي 🔄';
-            showToast(`تم تبديل النبرة إلى: ${toneLabel}`);
+            showToast(`جاري تحويل النبرة إلى: ${toneLabel}...`);
+
+            // If Groq Cloud Key is available, run direct 120B Tone Shifting
+            const key = localStorage.getItem('hs_cloud_ai_key');
+            if (key && (tone === 'de-escalation' || tone === 'firm' || tone === 'quick')) {
+                const currentText = arEl.innerText || '';
+                const promptTone = tone === 'de-escalation' 
+                    ? 'Rewrite the following Arabic response with deep empathy, acknowledging frustration, expressing sincere partnership appreciation, yet remaining 100% compliant with policy.'
+                    : tone === 'firm'
+                    ? 'Rewrite the following Arabic response with formal, firm, and authoritative tone, clearly citing official contractual guidelines and platform policy.'
+                    : 'Rewrite the following Arabic response into concise, 2-bullet points optimized for fast live chat without any unnecessary words.';
+
+                try {
+                    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${key}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            model: 'openai/gpt-oss-120b',
+                            messages: [
+                                { role: 'system', content: `You are an expert HungerStation Support Quality Specialist. ${promptTone} Maintain greetings, partner name, and sign-off.` },
+                                { role: 'user', content: currentText }
+                            ],
+                            max_tokens: 600,
+                            temperature: 0.3
+                        })
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        const rewritten = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
+                        if (rewritten && rewritten.trim().length > 30) {
+                            arEl.innerText = rewritten.trim();
+                            showToast(`✨ تم ضبط النبرة بنجاح عبر GPT-OSS 120B: ${toneLabel}!`);
+                            if (typeof playSuccessChime === 'function') playSuccessChime();
+                            return;
+                        }
+                    }
+                } catch(e) {
+                    console.warn('AI tone fallback to local template:', e);
+                }
+            }
+
+            // Offline / Fast Fallback Template Logic
+            const agentAr = getAgentArabicName();
+            const agentEn = getAgentEnglishName();
+            const idx = window.currentActiveSubMacroIdx || 0;
+            const sm = (c.sub_macros && c.sub_macros[idx]) ? c.sub_macros[idx] : null;
+            let coreAr = (sm && sm.macro_arabic) ? sm.macro_arabic : (c.procedure_arabic || "تم استلام طلبكم وجاري متابعته مع الفريق المختص.");
+            let coreEn = (sm && sm.macro_english) ? sm.macro_english : (c.procedure_english || "Your request has been received and is being processed.");
+
+            const entities = window.currentActiveDetectedEntities || {};
+            const storeName = entities.storeName || '';
+            const pSalutationAr = storeName ? `شريكنا ${storeName} العزيز` : 'شريكنا العزيز';
+            const pSalutationEn = storeName ? `Dear Valued Partner (${storeName}),` : 'Dear Valued Partner,';
+
+            let finalAr = "";
+            let finalEn = "";
+
+            if (tone === 'de-escalation') {
+                finalAr = `${pSalutationAr}،
+
+نود في البداية أن نؤكد لكم بالغ تقديرنا لشراكتكم القيّمة واهتمامنا الكامل بنجاح متجركم، ونعتذر بصدق عن أي إزعاج أو تجربة غير ملائمة قد تكون واجهتكم.
+
+بخصوص استفساركم الكريم، نود توضيح الإجراء التالي:
+${cleanArabicLinguistics(coreAr)}
+
+• الخطوة القادمة: نحن دائماً بجانبكم ويسعدنا تقديم كامل الدعم والمساندة لضمان تجربة تشغيلية مثالية.
+
+تقبلوا خالص التحية والتقدير،
+فريق دعم الشركاء | هنقرستيشن
+${agentAr}
+تفاصيل التواصل:
+مشاكل الطلبات: 920033935`;
+                finalEn = `${pSalutationEn}
+
+We would like to express our highest appreciation for your partnership and sincere apologies for any inconvenience you may have experienced.
+
+Regarding your inquiry, please note the following approved procedure:
+${cleanEnglishLinguistics(coreEn)}
+
+• Next Step: We remain committed to supporting your business every step of the way.
+
+Best regards,
+Partner Operations Support | Hungerstation
+${agentEn}
+Contact Details:
+Order Issues: 920033935`;
+            } else if (tone === 'firm') {
+                finalAr = `${pSalutationAr}،
+
+إشارةً إلى استفساركم، وتأكيداً على اللوائح والسياسات التشغيلية المعتمدة لدى منصة هنقرستيشن:
+
+${cleanArabicLinguistics(coreAr)}
+
+• الخطوة القادمة: نأمل التكرم بالالتزام بالإجراءات المحددة أعلاه لضمان سير العمليات وفق أعلى معايير الجودة والشفافية.
+
+شاكرين حسن تعاونكم وتفهمكم،
+فريق إدارة عمليات الشركاء | هنقرستيشن
+${agentAr}
+تفاصيل التواصل:
+مشاكل الطلبات: 920033935`;
+                finalEn = `${pSalutationEn}
+
+In reference to your inquiry and in accordance with Hungerstation official operational guidelines and policies:
+
+${cleanEnglishLinguistics(coreEn)}
+
+• Next Step: We kindly ask for your adherence to these approved standards to ensure optimal operations.
+
+Sincerely,
+Vendor Operations Compliance | Hungerstation
+${agentEn}
+Contact Details:
+Order Issues: 920033935`;
+            } else if (tone === 'quick') {
+                const cleanSingleAr = coreAr.replace(/[\r\n]+/g, ' ').trim();
+                const cleanSingleEn = coreEn.replace(/[\r\n]+/g, ' ').trim();
+                finalAr = `${pSalutationAr} 🌹
+• بخصوص تذكرتكم: ${cleanArabicLinguistics(cleanSingleAr)}
+• الخطوة القادمة: تم تسجيل الإجراء في النظام ولأي مساعدة إضافية نحن بخدمتكم فوراً.
+
+مع الشكر،
+${agentAr} | هنقرستيشن (920033935)`;
+                finalEn = `${pSalutationEn} 👋
+• Resolution: ${cleanEnglishLinguistics(cleanSingleEn)}
+• Next Step: Action logged in system. Reach us anytime for additional support.
+
+Best regards,
+${agentEn} | Hungerstation (920033935)`;
+            } else {
+                const greetings = window.currentActiveGreetings || { arGreeting: "", enGreeting: "" };
+                finalAr = buildArabicMacro(greetings.arGreeting, coreAr, storeName);
+                finalEn = buildEnglishMacro(greetings.enGreeting, coreEn, storeName);
+            }
+
+            if (arEl) arEl.innerText = finalAr;
+            if (enEl) enEl.innerText = finalEn;
+            showToast(`تم تطبيق: ${toneLabel}`);
         }
 
         // ══════════════════════════════════════════════════════════════════
@@ -17429,6 +17520,62 @@ Strict Rules:
             const headerLabel = document.getElementById('cloudAiHeaderLabel');
             if (headerLabel && key) {
                 headerLabel.innerHTML = `AI نشط (${prov.toUpperCase()}) ⚡`;
+            }
+        });
+
+
+        // =====================================================================
+        // ⚡ INSTANT PASTE AUTO-DETECTION & GLOBAL HOTKEYS (ALT+G, ALT+C, ALT+E)
+        // =====================================================================
+        function handlePartnerMessagePaste(e) {
+            setTimeout(() => {
+                const partnerMsgVal = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '').trim();
+                if (!partnerMsgVal) return;
+
+                // 1. Extract entities immediately
+                if (typeof extractEmailEntities === 'function') {
+                    const detected = extractEmailEntities(partnerMsgVal);
+                    window.currentActiveDetectedEntities = detected;
+                    if (detected.storeName) {
+                        const storeInp = document.getElementById('customStoreNameInput');
+                        if (storeInp) storeInp.value = detected.storeName;
+                    }
+                }
+
+                // 2. Run instant search and matching
+                searchCases(false);
+                showToast('⚡ تم التعرف التلقائي على تفاصيل الرسالة وتجهيز الماكرو المتوافق!');
+            }, 50);
+        }
+
+        // Global Hotkeys Listener
+        document.addEventListener('keydown', (e) => {
+            // Alt + G: Consult Cloud AI
+            if (e.altKey && (e.key === 'g' || e.key === 'G' || e.code === 'KeyG')) {
+                e.preventDefault();
+                consultCloudAi();
+            }
+            // Alt + C: Copy Arabic Macro
+            if (e.altKey && (e.key === 'c' || e.key === 'C' || e.code === 'KeyC')) {
+                const arBox = document.getElementById('arMacroText');
+                if (arBox && arBox.innerText) {
+                    e.preventDefault();
+                    navigator.clipboard.writeText(arBox.innerText).then(() => {
+                        showToast('📋 تم نسخ الماكرو العربي (Alt+C)!');
+                        if (typeof playSuccessChime === 'function') playSuccessChime();
+                    });
+                }
+            }
+            // Alt + E: Copy English Macro
+            if (e.altKey && (e.key === 'e' || e.key === 'E' || e.code === 'KeyE')) {
+                const enBox = document.getElementById('englishMacroText') || document.getElementById('enMacroText');
+                if (enBox && enBox.innerText) {
+                    e.preventDefault();
+                    navigator.clipboard.writeText(enBox.innerText).then(() => {
+                        showToast('📋 Copied English Macro (Alt+E)!');
+                        if (typeof playSuccessChime === 'function') playSuccessChime();
+                    });
+                }
             }
         });
 

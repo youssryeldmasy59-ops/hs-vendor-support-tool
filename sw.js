@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hs-vendor-suite-v17-cloud-ai-120b-live';
+const CACHE_NAME = 'hs-vendor-suite-v18-qa-perfection-suite';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.webmanifest'
