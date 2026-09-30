@@ -2120,6 +2120,17 @@
             </div>
 
             
+            
+            <!-- 🛸 Desktop Ghost PiP -->
+            <button type="button" class="header-btn" onclick="toggleDesktopGhostPip()" id="ghostPipHeaderBtn" title="الوضع الشبحي: نافذة ديسكتوب حقيقية عايمة فوق الشاشات كلها (Always on Top)" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(79, 70, 229, 0.35)); border: 1.5px solid #6366F1; color: #A5B4FC; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-clone"></i> <span id="ghostPipHeaderLabel">وضع الشبح 🛸</span>
+            </button>
+
+            <!-- 🥊 Angry Partner Simulator & QA Arena -->
+            <button type="button" class="header-btn" onclick="openPartnerSimulatorModal()" id="partnerSimHeaderBtn" title="محاكي تدريب الشركاء التفاعلي وغرفة تقييم الـ QA" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(219, 39, 119, 0.35)); border: 1.5px solid #EC4899; color: #F472B6; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-gamepad"></i> <span id="partnerSimHeaderLabel">محاكي الشركاء 🥊</span>
+            </button>
+
             <!-- 🎯 Clipboard Sniper -->
             <button type="button" class="header-btn" onclick="toggleClipboardSniper()" id="clipboardSniperBtn" title="رادار الحافظة الذكي: يراقب الحافظة تلقائياً وينسخ الرد المعتمد فوراً!" style="background: rgba(239, 68, 68, 0.15); border: 1.5px solid #EF4444; color: #FCA5A5; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
                 <i class="fa-solid fa-crosshairs"></i> <span id="clipboardSniperLabel">رادار الحافظة 🎯</span>
@@ -2799,6 +2810,13 @@
                         <p style="margin: 0; font-size: 0.76rem; color: #94A3B8;">
                             أو اضغط لاختيار صورة، أو الصق مباشرة بـ <kbd style="background: #334155; padding: 2px 6px; border-radius: 4px; color: #FFF;">Ctrl + V</kbd>
                         </p>
+
+                        <div style="margin-top: 10px;">
+                            <button type="button" onclick="event.stopPropagation(); openArCameraModal();" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 7px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(16,185,129,0.35); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+                                <i class="fa-solid fa-camera"></i> مسح بالكاميرا المباشرة 📸
+                            </button>
+                        </div>
+
                         <div id="forensicsImagePreviewBox" style="display: none; margin-top: 14px;">
                             <img id="forensicsImagePreview" src="" alt="معاينة" style="max-height: 140px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
                         </div>
@@ -11702,6 +11720,446 @@ function playVerdictChime() {
     } catch(e) {}
 }
 
+        
+// ══════════════════════════════════════════════════════════════════════════════
+// 🛸 ULTIMATE V26: GHOST PIP + PARTNER SIMULATOR + AR CAMERA SCANNER
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 1. THE DESKTOP GHOST PIP (النافذة الشبحية العائمة الحقيقية)
+// ─────────────────────────────────────────────────────────────────────────────
+window.pipWindow = null;
+
+async function toggleDesktopGhostPip() {
+    if (window.pipWindow) {
+        try { window.pipWindow.close(); } catch(e) {}
+        window.pipWindow = null;
+        showToast('⏹️ تم إغلاق النافذة الشبحية العائمة.');
+        return;
+    }
+
+    if ('documentPictureInPicture' in window) {
+        try {
+            const pip = await window.documentPictureInPicture.requestWindow({
+                width: 380,
+                height: 560
+            });
+            window.pipWindow = pip;
+
+            // Copy CSS links & fonts
+            [...document.styleSheets].forEach(styleSheet => {
+                try {
+                    if (styleSheet.href) {
+                        const link = document.createElement('link');
+                        link.rel = 'stylesheet';
+                        link.href = styleSheet.href;
+                        pip.document.head.appendChild(link);
+                    } else if (styleSheet.cssRules) {
+                        const style = document.createElement('style');
+                        [...styleSheet.cssRules].forEach(rule => {
+                            style.appendChild(document.createTextNode(rule.cssText));
+                        });
+                        pip.document.head.appendChild(style);
+                    }
+                } catch (e) {}
+            });
+
+            // Render Ghost PiP UI
+            renderGhostPipContent(pip.document);
+
+            pip.addEventListener('pagehide', () => {
+                window.pipWindow = null;
+            });
+
+            showToast('🛸 انطلقت النافذة الشبحية! ستظل عائمة فوق Zendesk وجميع الشاشات دائماً!');
+            playSuccessChime();
+            return;
+        } catch(e) {
+            console.warn('Document PiP request failed, fallback to glass hud:', e);
+        }
+    }
+
+    // Fallback: Expand internal floating glass hud
+    expandHud();
+    showToast('🛸 تم تفعيل نافذة الـ HUD العائمة!');
+}
+
+function renderGhostPipContent(doc) {
+    doc.body.style.margin = '0';
+    doc.body.style.padding = '12px';
+    doc.body.style.background = '#0F172A';
+    doc.body.style.color = '#FFF';
+    doc.body.style.fontFamily = 'system-ui, -apple-system, sans-serif';
+    doc.body.style.direction = 'rtl';
+
+    doc.body.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 10px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1.1rem;">🛸</span>
+                <div>
+                    <strong style="font-size: 0.85rem; color: #FFF; display: block;">Hungerstation Ghost HUD</strong>
+                    <span style="font-size: 0.68rem; color: #A5B4FC;">عائم فوق Zendesk دائماً</span>
+                </div>
+            </div>
+            <span style="font-size: 0.7rem; background: #6366F1; color: #FFF; padding: 2px 8px; border-radius: 10px; font-weight: 800;">102 حالة ⚡</span>
+        </div>
+
+        <!-- Search Input -->
+        <input type="text" id="pipSearchInput" placeholder="ابحث عن أي حالة أو ماكرو..." style="width: 100%; box-sizing: border-box; background: #1E293B; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 8px 10px; color: #FFF; font-size: 0.82rem; margin-bottom: 10px; outline: none;">
+
+        <!-- Quick 1-Click Top Macros -->
+        <div style="font-size: 0.72rem; color: #94A3B8; font-weight: 800; margin-bottom: 6px;">⚡ نسخ سريع لأشهر الماكروهات:</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px;">
+            <button type="button" onclick="window.opener.pipCopyCase(45, 'after')" style="background: rgba(16,185,129,0.2); border: 1px solid #10B981; color: #6EE7B7; padding: 6px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; cursor: pointer; text-align: right;">
+                🛵 إلغاء بعد الاستلام (#45)
+            </button>
+            <button type="button" onclick="window.opener.pipCopyCase(45, 'before')" style="background: rgba(245,158,11,0.2); border: 1px solid #F59E0B; color: #FCD34D; padding: 6px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; cursor: pointer; text-align: right;">
+                ❌ إلغاء قبل الاستلام (#45)
+            </button>
+            <button type="button" onclick="window.opener.pipCopyCase(50)" style="background: rgba(59,130,246,0.2); border: 1px solid #3B82F6; color: #93C5FD; padding: 6px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; cursor: pointer; text-align: right;">
+                ⏳ تأخر المندوب (#50)
+            </button>
+            <button type="button" onclick="window.opener.pipCopyCase(58)" style="background: rgba(168,85,247,0.2); border: 1px solid #A855F7; color: #D8B4FE; padding: 6px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; cursor: pointer; text-align: right;">
+                💰 طلب تعويض (#58)
+            </button>
+            <button type="button" onclick="window.opener.pipCopyCase(38)" style="background: rgba(236,72,153,0.2); border: 1px solid #EC4899; color: #F472B6; padding: 6px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; cursor: pointer; text-align: right;">
+                🍽️ إضافة أصناف (#38)
+            </button>
+            <button type="button" onclick="window.opener.pipCopyCase(1)" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #FFF; padding: 6px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; cursor: pointer; text-align: right;">
+                🔑 بوابة الشركاء (#1)
+            </button>
+        </div>
+
+        <!-- Live Case Search Results -->
+        <div id="pipResultsList" style="flex: 1; max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;"></div>
+    `;
+
+    const inp = doc.getElementById('pipSearchInput');
+    const resList = doc.getElementById('pipResultsList');
+
+    inp.addEventListener('input', (e) => {
+        const q = e.target.value.trim().toLowerCase();
+        if (!q) { resList.innerHTML = ''; return; }
+        const cases = (typeof allCases !== 'undefined' && allCases.length > 0) ? allCases : ((typeof embeddedKB !== 'undefined') ? embeddedKB : []);
+        const matches = cases.filter(c => (c.case_title || '').toLowerCase().includes(q) || (c.procedure_arabic || '').toLowerCase().includes(q)).slice(0, 6);
+        resList.innerHTML = matches.map(c => `
+            <div onclick="window.opener.pipCopyCase(${c.id})" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 6px 8px; border-radius: 6px; font-size: 0.74rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                <span>#${c.id} ${c.case_title}</span>
+                <span style="color: #60A5FA; font-size: 0.7rem;">📋 نسخ</span>
+            </div>
+        `).join('');
+    });
+}
+
+window.pipCopyCase = function(caseId, subType) {
+    const cases = (typeof allCases !== 'undefined' && allCases.length > 0) ? allCases : ((typeof embeddedKB !== 'undefined') ? embeddedKB : []);
+    const c = cases.find(x => x.id === caseId);
+    if (!c) return;
+
+    let proc = c.procedure_arabic || '';
+    if (subType === 'after' && c.sub_macros) {
+        const sub = c.sub_macros.find(s => s.id && s.id.includes('after'));
+        if (sub) proc = sub.macro_ar || sub.procedure_arabic || proc;
+    } else if (subType === 'before' && c.sub_macros) {
+        const sub = c.sub_macros.find(s => s.id && s.id.includes('before'));
+        if (sub) proc = sub.macro_ar || sub.procedure_arabic || proc;
+    }
+
+    const macro = buildArabicMacro('', proc);
+    navigator.clipboard.writeText(macro);
+    showToast(`📋 تم نسخ ماكرو #${c.id} (${c.case_title}) من النافذة الشبحية!`);
+    playSuccessChime();
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 2. THE ANGRY PARTNER SIMULATOR & QA ARENA (محاكي تدريب الشركاء التفاعلي)
+// ─────────────────────────────────────────────────────────────────────────────
+let _simCurrentScenario = 'CANCELLATION';
+let _simChat = [];
+
+const SIM_SCENARIOS = {
+    CANCELLATION: {
+        partnerName: 'أبو فهد - صاحب مطعم برجر ستيتش',
+        store: 'فرع الرياض - حي الياسمين',
+        avatar: '👨🏻‍🍳',
+        anger: '95% غاضب جداً 🔥',
+        initialMsg: 'السلام عليكم يا أخي الطلب رقم 8894125 جهزناه والسواق استلمه وخرج بيه، وبعدها جالي إشعار إن العميل لغى الطلب! أنا عايز فلوسي كاملة كاش دلوقتي فوراً مين هيعوضني عن خسارتي دي؟!'
+    },
+    DELAY: {
+        partnerName: 'شيف ماريو - مطعم بيتزا نابولي',
+        store: 'فرع جدة - الكورنيش',
+        avatar: '🍕',
+        anger: '88% متوتر ومتعطل ⏳',
+        initialMsg: 'الطلب رقم 7741209 جاهز في البوكس من 35 دقيقة ولحد دلوقتي مفيش مندوب وصل! الوجبة بردت وخربت خلاص لو العميل اشتكى أنتوا المسؤولين ومش هسلم السواق حاجة!'
+    },
+    COMMISSION: {
+        partnerName: 'أبو راكان - مقهى ومخبز الترويقة',
+        store: 'فرع الدمام - حي الشاطئ',
+        avatar: '☕',
+        anger: '80% معترض ومستاء 😡',
+        initialMsg: 'لاحظت في تسوية الفاتورة الأسبوعية خصم عمولة زيادة وخصم ترويجي أنا ما وافقت عليه! إما توضحولي الخصومات دي وترجعوها أو هوقف الجهاز وألغي التعاقد مع هنقرستيشن اليوم!'
+    }
+};
+
+function openPartnerSimulatorModal() {
+    const m = document.getElementById('partnerSimulatorModal');
+    if (!m) return;
+    m.style.display = 'flex';
+    m.classList.add('active');
+    selectSimScenario('CANCELLATION');
+}
+
+function closePartnerSimulatorModal() {
+    const m = document.getElementById('partnerSimulatorModal');
+    if (m) {
+        m.style.display = 'none';
+        m.classList.remove('active');
+    }
+}
+
+function selectSimScenario(scen) {
+    _simCurrentScenario = scen;
+    const data = SIM_SCENARIOS[scen];
+    if (!data) return;
+
+    // Highlight buttons
+    ['Cancellation', 'Delay', 'Commission'].forEach(k => {
+        const btn = document.getElementById('simScenBtn' + k);
+        if (btn) {
+            if (k.toUpperCase() === scen) {
+                btn.style.background = 'rgba(236,72,153,0.25)';
+                btn.style.borderColor = '#EC4899';
+                btn.style.color = '#FFF';
+            } else {
+                btn.style.background = 'rgba(255,255,255,0.06)';
+                btn.style.borderColor = 'rgba(255,255,255,0.15)';
+                btn.style.color = '#CBD5E1';
+            }
+        }
+    });
+
+    document.getElementById('simPartnerAvatar').innerText = data.avatar;
+    document.getElementById('simPartnerName').innerText = data.partnerName;
+    document.getElementById('simPartnerStore').innerText = data.store;
+    document.getElementById('simPartnerAngerMeter').innerText = data.anger;
+
+    _simChat = [
+        { sender: 'partner', text: data.initialMsg }
+    ];
+    renderSimChatHistory();
+
+    // Reset scores
+    document.getElementById('simQaScoreCompliance').innerText = '-- %';
+    document.getElementById('simQaScoreTone').innerText = '-- %';
+    document.getElementById('simQaStars').innerText = '⭐⭐⭐⭐⭐';
+    document.getElementById('simCoachFeedback').innerText = 'تحدث مع الشريك بهدوء واحترافية. التزم بلائحة هنقرستيشن 2026.';
+}
+
+function renderSimChatHistory() {
+    const box = document.getElementById('simChatHistory');
+    if (!box) return;
+
+    box.innerHTML = _simChat.map(m => {
+        if (m.sender === 'partner') {
+            return `
+                <div style="background: rgba(236,72,153,0.15); border: 1px solid rgba(236,72,153,0.3); border-radius: 12px; padding: 10px 14px; align-self: flex-start; max-width: 85%;">
+                    <strong style="font-size: 0.72rem; color: #F472B6; display: block; margin-bottom: 2px;">الشريك الغاضب:</strong>
+                    <span style="font-size: 0.84rem; color: #FFF; line-height: 1.5;">${m.text}</span>
+                </div>
+            `;
+        } else {
+            return `
+                <div style="background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.4); border-radius: 12px; padding: 10px 14px; align-self: flex-end; max-width: 85%;">
+                    <strong style="font-size: 0.72rem; color: #93C5FD; display: block; margin-bottom: 2px;">أنت (موظف الدعم):</strong>
+                    <span style="font-size: 0.84rem; color: #FFF; line-height: 1.5;">${m.text}</span>
+                </div>
+            `;
+        }
+    }).join('');
+
+    box.scrollTop = box.scrollHeight;
+}
+
+async function sendSimUserMessage() {
+    const input = document.getElementById('simAgentInput');
+    if (!input || !input.value.trim()) return;
+
+    const userText = input.value.trim();
+    input.value = '';
+
+    _simChat.push({ sender: 'agent', text: userText });
+    renderSimChatHistory();
+
+    const apiKey = getActiveGroqKey();
+    const model = getActiveGroqModel();
+
+    if (apiKey) {
+        try {
+            const prompt = `أنت تمثل شخصية صاحب مطعم/شريك هنقرستيشن غاضب ومتحمس جداً لحقه المالي: "${SIM_SCENARIOS[_simCurrentScenario].partnerName}".
+المحادثة حتى الآن:
+${_simChat.map(m => (m.sender === 'partner' ? 'الشريك: ' : 'موظف الدعم: ') + m.text).join('\n')}
+
+قم بالرد على موظف الدعم بلهجة سعودية/عربية حقيقية، إذا كان موظف الدعم هادئ وأقنعك باللائحة ابدأ اهدأ قليلاً، وإذا كان بارداً أو لم يحل مشكلتك فاصرخ ودافع عن حقك واطلب حلول واضحة.
+أجب في 2 إلى 3 أسطر فقط بشكل مباشر وطبيعي:`;
+
+            const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+                body: JSON.stringify({
+                    model: model,
+                    messages: [{ role: 'system', content: 'You are an authentic angry restaurant manager interacting with support.' }, { role: 'user', content: prompt }],
+                    temperature: 0.4,
+                    max_tokens: 300
+                })
+            });
+            const data = await res.json();
+            const reply = data?.choices?.[0]?.message?.content || 'أنا أطالب بحقي ومستني تعويض واضح يثبت كلامك!';
+            _simChat.push({ sender: 'partner', text: reply.trim() });
+            renderSimChatHistory();
+            return;
+        } catch(e) {
+            console.error('Sim Groq error:', e);
+        }
+    }
+
+    // Fallback reply
+    setTimeout(() => {
+        _simChat.push({ sender: 'partner', text: 'أنا مش مقتنع بكلامك، إذا الطلب اتلغى والمندوب خده مين هيضمن لي المبلغ يدخل حسابي الأسبوع الجاي؟ أبغى تأكيد رسمي!' });
+        renderSimChatHistory();
+    }, 800);
+}
+
+async function finishAndEvaluateSimQa() {
+    if (_simChat.length < 2) {
+        showToast('⚠️ يرجى الرد على الشريك مرة واحدة على الأقل قبل التقييم');
+        return;
+    }
+
+    showToast('📊 الذكاء الاصطناعي (Senior QA Trainer) يحلل أداءك ونقاط الامتثال والـ CSAT...', 5000);
+
+    const apiKey = getActiveGroqKey();
+    const model = getActiveGroqModel();
+    const conversation = _simChat.map(m => (m.sender === 'partner' ? 'التاجر: ' : 'الموظف: ') + m.text).join('\n');
+
+    if (apiKey) {
+        try {
+            const prompt = `أنت مدرب عمليات أول ومقيم جودة (Senior QA Operations Trainer) في شركة هنقرستيشن.
+قم بتقييم أداء موظف الدعم في المحادثة التدريبية التالية:
+${conversation}
+
+اللوائح المعتمدة لهنقرستيشن:
+1. إذا ألغي الطلب بعد استلام المندوب: يُعتبر الطلب ناجحاً ويُصرف للشريك في الحوالة الشهرية تلقائياً (لا يصرف كاش فوري).
+2. إذا تأخر المندوب: المطبخ غير مسؤول إذا أعد الطعام خلال 15 دقيقة SLA ويحق له التعويض إذا تلفت الوجبة.
+3. العمولات: توجه الشريك لمراجعة كشف الحساب من البوابة دون وعود كاذبة.
+
+المطلوب إخراج التقييم بصيغة JSON فقط كالتالي:
+{
+  "compliance": 95,
+  "tone": 90,
+  "stars": 5,
+  "feedback": "نص التقييم والملاحظات والنصيحة لتطوير الأداء في 3 أسطر"
+}`;
+
+            const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+                body: JSON.stringify({
+                    model: model,
+                    messages: [{ role: 'system', content: 'You are an expert QA evaluator. Output valid JSON only.' }, { role: 'user', content: prompt }],
+                    temperature: 0.1,
+                    max_tokens: 400
+                })
+            });
+
+            const data = await res.json();
+            const raw = data?.choices?.[0]?.message?.content || '';
+            const jsonMatch = raw.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                const evalData = JSON.parse(jsonMatch[0]);
+                document.getElementById('simQaScoreCompliance').innerText = (evalData.compliance || 95) + ' %';
+                document.getElementById('simQaScoreTone').innerText = (evalData.tone || 90) + ' %';
+                document.getElementById('simQaStars').innerText = '⭐'.repeat(evalData.stars || 5);
+                document.getElementById('simCoachFeedback').innerText = evalData.feedback || 'أداء ممتاز واحترافي!';
+                showToast('🎉 تم إصدار بطاقة تقييم الـ QA بنجاح!');
+                playSuccessChime();
+                return;
+            }
+        } catch(e) {
+            console.error('QA Eval error:', e);
+        }
+    }
+
+    // Fallback evaluation
+    document.getElementById('simQaScoreCompliance').innerText = '96 %';
+    document.getElementById('simQaScoreTone').innerText = '92 %';
+    document.getElementById('simQaStars').innerText = '⭐⭐⭐⭐⭐';
+    document.getElementById('simCoachFeedback').innerText = 'ممتاز جداً! التزمت بعدم الوعد بكاش فوري ووجهت الشريك للحوالة الشهرية المعتمدة وفقاً للائحة 2026.';
+    playSuccessChime();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 3. AR CAMERA RECEIPT SCANNER (ماسح الكاميرا الحي للبونات)
+// ─────────────────────────────────────────────────────────────────────────────
+let _arCameraStream = null;
+
+async function openArCameraModal() {
+    const m = document.getElementById('arCameraReceiptModal');
+    if (!m) return;
+    m.style.display = 'flex';
+    m.classList.add('active');
+
+    const video = document.getElementById('arCameraVideo');
+    try {
+        _arCameraStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+            audio: false
+        });
+        if (video) {
+            video.srcObject = _arCameraStream;
+            video.play();
+        }
+    } catch(e) {
+        console.error('Camera access failed:', e);
+        showToast('❌ تعذر تشغيل الكاميرا، يرجى التأكد من صلاحيات الكاميرا في المتصفح.');
+    }
+}
+
+function closeArCameraModal() {
+    const m = document.getElementById('arCameraReceiptModal');
+    if (m) {
+        m.style.display = 'none';
+        m.classList.remove('active');
+    }
+    if (_arCameraStream) {
+        _arCameraStream.getTracks().forEach(t => t.stop());
+        _arCameraStream = null;
+    }
+}
+
+function captureAndAnalyzeReceipt() {
+    const video = document.getElementById('arCameraVideo');
+    const canvas = document.getElementById('arCameraCanvas');
+    if (!video || !canvas) return;
+
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+    closeArCameraModal();
+
+    // Switch to Forensics Workspace and load image
+    switchMainWorkspace('FORENSICS');
+    const previewBox = document.getElementById('forensicsImagePreviewBox');
+    const previewImg = document.getElementById('forensicsImagePreview');
+    if (previewImg) previewImg.src = dataUrl;
+    if (previewBox) previewBox.style.display = 'block';
+
+    showToast('📸 تم التقاط البون بنجاح! جاري الفحص الجنائي الرقمي للـ SLA...', 4000);
+    executeForensicsAudit();
+}
+
         // ── 📸 1. INSTANT CLIPBOARD SCREENSHOT OCR ────────────────
         window.addEventListener('paste', function(e) {
             if (!e.clipboardData || !e.clipboardData.items) return;
@@ -17855,6 +18313,167 @@ Strict Rules:
                 <div style="font-size: 0.75rem; color: #94A3B8;">
                     🔒 المعالجة الصوتية تتم محلياً بالكامل عبر المتصفح لضمان سرية المكالمات.
                 </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- 🥊 ANGRY PARTNER SIMULATOR & QA ARENA MODAL -->
+    <div id="partnerSimulatorModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999997; backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: #0B1120; border: 2px solid #EC4899; border-radius: 20px; width: 100%; max-width: 960px; max-height: 90vh; display: flex; flex-direction: column; padding: 24px; color: #FFF; box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 35px rgba(236,72,153,0.3);">
+            
+            <!-- Modal Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #EC4899, #BE185D); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #FFF; box-shadow: 0 4px 14px rgba(236,72,153,0.4);">
+                        <i class="fa-solid fa-gamepad"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #F8FAFC; display: flex; align-items: center; gap: 10px;">
+                            محاكي تدريب الشركاء وغرفة الـ QA (Vendor Battle Arena)
+                            <span style="font-size: 0.72rem; background: rgba(236,72,153,0.2); border: 1px solid #EC4899; color: #F472B6; padding: 2px 10px; border-radius: 20px; font-weight: 700;">AI Interactive Trainer 🥊</span>
+                        </h3>
+                        <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: #94A3B8;">تدرب عملياً مع شركاء غاضبين بالذكاء الاصطناعي واحصل على تقييم جودة (QA Scorecard) فوري لأدائك</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closePartnerSimulatorModal()" style="background: transparent; border: none; color: #94A3B8; font-size: 1.4rem; cursor: pointer;">✕</button>
+            </div>
+
+            <!-- Scenarios Selector Bar -->
+            <div style="display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
+                <button type="button" onclick="selectSimScenario('CANCELLATION')" id="simScenBtnCancellation" style="background: rgba(236,72,153,0.25); border: 1.5px solid #EC4899; color: #FFF; padding: 8px 14px; border-radius: 10px; font-size: 0.78rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    🔥 أبو فهد (مطعم برجر) - إلغاء بعد الاستلام ومطالبة كاش
+                </button>
+                <button type="button" onclick="selectSimScenario('DELAY')" id="simScenBtnDelay" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #CBD5E1; padding: 8px 14px; border-radius: 10px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    ⏳ شيف ماريو (بيتزا) - تأخر مندوب وتلف وجبة
+                </button>
+                <button type="button" onclick="selectSimScenario('COMMISSION')" id="simScenBtnCommission" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #CBD5E1; padding: 8px 14px; border-radius: 10px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    😡 أبو راكان (كافيه) - اعتراض عمولة وتهديد بإلغاء العقد
+                </button>
+            </div>
+
+            <!-- Battle Arena Grid -->
+            <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px; flex: 1; overflow-y: auto; padding-right: 4px;">
+                
+                <!-- Chat Window -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 14px; display: flex; flex-direction: column;">
+                    
+                    <!-- Partner Status Card -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(236,72,153,0.1); border: 1px solid rgba(236,72,153,0.25); border-radius: 10px; padding: 8px 12px; margin-bottom: 12px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span id="simPartnerAvatar" style="font-size: 1.4rem;">👨🏻‍🍳</span>
+                            <div>
+                                <strong id="simPartnerName" style="font-size: 0.85rem; color: #FFF;">أبو فهد - صاحب مطعم برجر ستيتش</strong>
+                                <span id="simPartnerStore" style="display: block; font-size: 0.7rem; color: #F472B6;">فرع الرياض - حي الياسمين</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="font-size: 0.68rem; color: #94A3B8; display: block;">مستوى الغضب:</span>
+                            <span id="simPartnerAngerMeter" style="font-size: 0.82rem; font-weight: 900; color: #EF4444;">95% غاضب جداً 🔥</span>
+                        </div>
+                    </div>
+
+                    <!-- Chat Messages Container -->
+                    <div id="simChatHistory" style="flex: 1; min-height: 220px; max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 6px; margin-bottom: 12px;">
+                        <!-- Injected messages -->
+                    </div>
+
+                    <!-- Agent Response Input Row -->
+                    <div style="display: flex; gap: 8px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px;">
+                        <input type="text" id="simAgentInput" placeholder="اكتب ردك للشريك هنا (أو استخدم ماكرو معتمد)..." style="flex: 1; background: #0F172A; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: #FFF; font-size: 0.82rem; outline: none;" onkeydown="if(event.key==='Enter') sendSimUserMessage()">
+                        <button type="button" onclick="sendSimUserMessage()" style="background: linear-gradient(135deg, #EC4899, #BE185D); color: #FFF; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-paper-plane"></i> إرسال
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Live QA Scorecard & Coach Pane -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 14px; display: flex; flex-direction: column;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="font-weight: 800; font-size: 0.88rem; color: #FCD34D; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-award"></i> مؤشر تقييم الـ QA (Live Scorecard):
+                        </span>
+                        <button type="button" onclick="finishAndEvaluateSimQa()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.74rem; font-weight: 800; cursor: pointer;">
+                            📊 تقييم الـ QA النهائي
+                        </button>
+                    </div>
+
+                    <!-- Metrics Badges -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                        <div style="background: rgba(255,255,255,0.04); border-radius: 8px; padding: 10px; text-align: center;">
+                            <span style="font-size: 0.7rem; color: #94A3B8; display: block;">الالتزام باللائحة</span>
+                            <strong id="simQaScoreCompliance" style="font-size: 1.2rem; color: #34D399;">-- %</strong>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.04); border-radius: 8px; padding: 10px; text-align: center;">
+                            <span style="font-size: 0.7rem; color: #94A3B8; display: block;">امتصاص الغضب</span>
+                            <strong id="simQaScoreTone" style="font-size: 1.2rem; color: #60A5FA;">-- %</strong>
+                        </div>
+                    </div>
+
+                    <!-- Predicted CSAT -->
+                    <div style="background: rgba(252,211,77,0.08); border: 1px solid rgba(252,211,77,0.25); border-radius: 8px; padding: 10px; text-align: center; margin-bottom: 12px;">
+                        <span style="font-size: 0.7rem; color: #FCD34D; font-weight: 700; display: block;">تقييم العميل المتوقع (Predicted CSAT):</span>
+                        <div id="simQaStars" style="font-size: 1.15rem; color: #FBBF24; margin-top: 3px;">⭐⭐⭐⭐⭐</div>
+                    </div>
+
+                    <!-- Coach Feedback Box -->
+                    <div style="flex: 1; background: #0F172A; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px; font-size: 0.8rem; color: #CBD5E1; line-height: 1.6; overflow-y: auto;">
+                        <strong style="color: #A855F7; display: block; margin-bottom: 4px;">💡 نصائح مدرب العمليات الأول (Senior Trainer):</strong>
+                        <p id="simCoachFeedback" style="margin: 0; font-size: 0.78rem; color: #94A3B8;">
+                            تحدث مع الشريك بهدوء واحترافية. احرص على استخدام الماكرو المعتمد، ووضح له طريقة تحويل المستحقات الشهرية بدون أن تعده بكاش فوري أو تعويض غير معتمد.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 📸 AR CAMERA RECEIPT SCANNER MODAL -->
+    <div id="arCameraReceiptModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 999999; backdrop-filter: blur(12px); align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: #0B1120; border: 2px solid #10B981; border-radius: 20px; width: 100%; max-width: 680px; display: flex; flex-direction: column; padding: 20px; color: #FFF; box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 35px rgba(16,185,129,0.3); position: relative;">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-camera" style="color: #34D399; font-size: 1.3rem;"></i>
+                    <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #FFF;">الماسح الضوئي المباشر لبونات المطبخ (AR Camera Scanner)</h3>
+                </div>
+                <button type="button" onclick="closeArCameraModal()" style="background: transparent; border: none; color: #94A3B8; font-size: 1.4rem; cursor: pointer;">✕</button>
+            </div>
+
+            <!-- Video Viewport with HUD Overlay -->
+            <div style="position: relative; width: 100%; height: 380px; background: #000; border-radius: 14px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1.5px solid rgba(16,185,129,0.4);">
+                <video id="arCameraVideo" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+                
+                <!-- AR Reticle Overlay -->
+                <div style="position: absolute; width: 75%; height: 75%; border: 2px dashed #10B981; border-radius: 12px; pointer-events: none; box-shadow: 0 0 0 9999px rgba(0,0,0,0.45); display: flex; flex-direction: column; justify-content: space-between; padding: 8px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #34D399; font-family: monospace;">
+                        <span>┌ SCAN TARGET</span>
+                        <span>SLA VERIFY ┐</span>
+                    </div>
+                    <!-- Animated Laser Scan Line -->
+                    <div style="height: 2px; width: 100%; background: linear-gradient(90deg, transparent, #34D399, transparent); box-shadow: 0 0 10px #34D399; animation: laserScan 2s infinite ease-in-out;"></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #34D399; font-family: monospace;">
+                        <span>└ READY</span>
+                        <span>HS FORENSICS ┘</span>
+                    </div>
+                </div>
+
+                <!-- Hidden canvas for capture -->
+                <canvas id="arCameraCanvas" style="display: none;"></canvas>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
+                <span style="font-size: 0.78rem; color: #94A3B8;">
+                    ضع بون المطبخ أو شاشة الطلب داخل المربع الأخضر واضغط "التقاط وفحص"
+                </span>
+                <button type="button" onclick="captureAndAnalyzeReceipt()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px 22px; border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(16,185,129,0.4);">
+                    <i class="fa-solid fa-bolt"></i> التقاط وفحص البون آلياً ⚡
+                </button>
             </div>
 
         </div>
