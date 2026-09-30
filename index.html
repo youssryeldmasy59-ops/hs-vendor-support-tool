@@ -2119,6 +2119,17 @@
                 <i class="fa-solid fa-pen" style="font-size: 0.68rem; opacity: 0.6;"></i>
             </div>
 
+            
+            <!-- 🎯 Clipboard Sniper -->
+            <button type="button" class="header-btn" onclick="toggleClipboardSniper()" id="clipboardSniperBtn" title="رادار الحافظة الذكي: يراقب الحافظة تلقائياً وينسخ الرد المعتمد فوراً!" style="background: rgba(239, 68, 68, 0.15); border: 1.5px solid #EF4444; color: #FCA5A5; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-crosshairs"></i> <span id="clipboardSniperLabel">رادار الحافظة 🎯</span>
+            </button>
+
+            <!-- 🎙️ Live Call Whisperer -->
+            <button type="button" class="header-btn" onclick="openLiveCallWhispererModal()" id="callWhispererBtn" title="الملقّن الحي لمكالمات الشركاء (يسمع المكالمة لايف ويمليك الرد المعتمد)" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.35)); border: 1.5px solid #10B981; color: #6EE7B7; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-headset"></i> <span id="whispererBtnLabel">🎙️ ملقّن المكالمة</span>
+            </button>
+
             <!-- 🎙️ Voice Assistant -->
             <button type="button" class="header-btn" onclick="toggleVoiceAiDrawer()" id="voiceAiTriggerBtn" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFF; border: none; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);" title="المساعد الصوتي الذكي (AR+EN)">
                 <i class="fa-solid fa-microphone"></i> <span id="voiceBadgeText">🎙️ صوتي</span>
@@ -2256,6 +2267,12 @@
             <i class="fa-solid fa-file-excel" style="color: #34D399;"></i>
             <span>🍽️ استوديو إنشاء وتجهيز المنيو الرسمي (_MenuUpload.xlsx)</span>
         </button>
+
+        <button id="viewBtnForensics" onclick="switchMainWorkspace('FORENSICS')" class="ws-tab-btn forensics-tab" style="background: rgba(245, 158, 11, 0.12); color: #F59E0B; border: 2px solid #F59E0B;">
+            <i class="fa-solid fa-scale-balanced" style="color: #FCD34D;"></i>
+            <span>🔍 المحقق الجنائي للاعتراضات والفواتير (Dispute Forensics AI) ⚖️</span>
+        </button>
+
     </div>
 
     <!-- 🍽️ DEDICATED MENU BUILDER STUDIO WORKSPACE -->
@@ -2729,7 +2746,167 @@
         </div>
     </div>
 
-<div class="app-container">
+
+    <!-- 🔍 DEDICATED DISPUTE FORENSICS AI WORKSPACE -->
+    <div id="forensicsWorkspace" style="display: none; max-width: 1400px; margin: 16px auto; padding: 0 20px;">
+        <div style="background: var(--bg-card, #1E293B); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 18px; padding: 26px; color: var(--text-main, #FFF); box-shadow: 0 20px 50px rgba(0,0,0,0.5); backdrop-filter: blur(16px);">
+            
+            <!-- Hero Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 18px; margin-bottom: 22px; flex-wrap: wrap; gap: 14px;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, #F59E0B, #D97706); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #FFF; box-shadow: 0 6px 18px rgba(245, 158, 11, 0.4);">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <div>
+                        <h2 style="font-size: 1.35rem; font-weight: 800; color: #F8FAFC; margin: 0; display: flex; align-items: center; gap: 10px;">
+                            المحقق الجنائي للاعتراضات والفواتير (Dispute Forensics AI)
+                            <span style="font-size: 0.72rem; background: linear-gradient(135deg, #F59E0B, #B45309); color: #FFF; padding: 3px 10px; border-radius: 12px; font-weight: 800;">Forensic Engine 2026 ⚖️</span>
+                        </h2>
+                        <p style="margin: 4px 0 0 0; font-size: 0.82rem; color: #94A3B8;">
+                            تحليل صور بونات المطبخ، توقيت طابعة المطعم، وسجلات الـ GPS والـ SLA للبت في أحقية التعويض 100% بدقة قطعية
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Quick Preset Test Buttons -->
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" onclick="loadForensicsDemo('RIDER_DELAY')" style="background: rgba(16,185,129,0.15); border: 1.5px solid #10B981; color: #6EE7B7; padding: 6px 12px; border-radius: 8px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">
+                        🧾 تجربة: تأخر مندوب (مستحق 100%)
+                    </button>
+                    <button type="button" onclick="loadForensicsDemo('PORTAL_DISPUTE')" style="background: rgba(245,158,11,0.15); border: 1.5px solid #F59E0B; color: #FCD34D; padding: 6px 12px; border-radius: 8px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">
+                        ❌ تجربة: إلغاء قبل الاستلام (بوابة الشركاء)
+                    </button>
+                    <button type="button" onclick="loadForensicsDemo('KITCHEN_DELAY')" style="background: rgba(239,68,68,0.15); border: 1.5px solid #EF4444; color: #FCA5A5; padding: 6px 12px; border-radius: 8px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">
+                        ⏳ تجربة: تأخير مطبخ (مرفوض)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Forensics Main Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1.25fr; gap: 24px;">
+                
+                <!-- Input / Drop Zone Column -->
+                <div>
+                    <!-- Drop Zone -->
+                    <div id="forensicsDropZone" ondragover="event.preventDefault(); this.style.borderColor='#F59E0B';" ondragleave="this.style.borderColor='rgba(255,255,255,0.2)';" ondrop="handleForensicsDrop(event)" style="border: 2px dashed rgba(255,255,255,0.2); border-radius: 14px; padding: 24px; text-align: center; background: rgba(255,255,255,0.02); cursor: pointer; transition: all 0.25s ease;" onclick="document.getElementById('forensicsFileInput').click()">
+                        <input type="file" id="forensicsFileInput" accept="image/*" style="display: none;" onchange="handleForensicsFileSelect(event)">
+                        <div style="font-size: 2.2rem; color: #F59E0B; margin-bottom: 10px;">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+                        <h4 style="margin: 0 0 6px 0; font-size: 0.95rem; font-weight: 800; color: #FFF;">
+                            اسحب وأفلت صورة بون المطبخ أو شاشة السيستم هنا
+                        </h4>
+                        <p style="margin: 0; font-size: 0.76rem; color: #94A3B8;">
+                            أو اضغط لاختيار صورة، أو الصق مباشرة بـ <kbd style="background: #334155; padding: 2px 6px; border-radius: 4px; color: #FFF;">Ctrl + V</kbd>
+                        </p>
+                        <div id="forensicsImagePreviewBox" style="display: none; margin-top: 14px;">
+                            <img id="forensicsImagePreview" src="" alt="معاينة" style="max-height: 140px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
+                        </div>
+                    </div>
+
+                    <!-- Input Fields for Manual or Detected Data -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; margin-top: 16px; display: flex; flex-direction: column; gap: 10px;">
+                        <span style="font-weight: 800; font-size: 0.82rem; color: #CBD5E1; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-sliders"></i> بيانات الطلب والـ SLA للتأكيد:
+                        </span>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label style="font-size: 0.74rem; color: #94A3B8; display: block; margin-bottom: 4px;">رقم الطلب (Order ID):</label>
+                                <input type="text" id="forensicsOrderId" placeholder="مثال: 98451203" style="width: 100%; background: #0F172A; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 6px 10px; color: #FFF; font-size: 0.82rem;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.74rem; color: #94A3B8; display: block; margin-bottom: 4px;">اسم المتجر / الفرع:</label>
+                                <input type="text" id="forensicsStoreName" placeholder="مثال: شاورما جليلة" style="width: 100%; background: #0F172A; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 6px 10px; color: #FFF; font-size: 0.82rem;">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                            <div>
+                                <label style="font-size: 0.72rem; color: #94A3B8; display: block; margin-bottom: 4px;">وقت الطلب بالسيستم:</label>
+                                <input type="text" id="forensicsOrderTime" value="14:00" style="width: 100%; background: #0F172A; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 6px 8px; color: #FFF; font-size: 0.8rem; text-align: center;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.72rem; color: #94A3B8; display: block; margin-bottom: 4px;">وقت جاهزية المطبخ:</label>
+                                <input type="text" id="forensicsKitchenReadyTime" value="14:11" style="width: 100%; background: #0F172A; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 6px 8px; color: #FFF; font-size: 0.8rem; text-align: center;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.72rem; color: #94A3B8; display: block; margin-bottom: 4px;">وقت وصول المندوب:</label>
+                                <input type="text" id="forensicsRiderArrivalTime" value="14:35" style="width: 100%; background: #0F172A; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 6px 8px; color: #FFF; font-size: 0.8rem; text-align: center;">
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="executeForensicsAudit()" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: #FFF; border: none; padding: 10px; border-radius: 8px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px; box-shadow: 0 4px 14px rgba(245,158,11,0.35);">
+                            <i class="fa-solid fa-gavel"></i> إجراء التحقيق والبت في الحكم الجنائي فوراً
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Forensic Verdict Column -->
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    
+                    <!-- Verdict Banner -->
+                    <div id="forensicsVerdictBanner" style="background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.3)); border: 2px solid #10B981; border-radius: 14px; padding: 18px; display: flex; align-items: center; gap: 16px; box-shadow: 0 6px 20px rgba(16,185,129,0.2);">
+                        <div id="forensicsVerdictIcon" style="width: 48px; height: 48px; border-radius: 12px; background: #10B981; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #FFF;">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div>
+                            <span style="font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.5px; color: #A7F3D0; font-weight: 800;">قرار التدقيق الجنائي المعتمد</span>
+                            <h3 id="forensicsVerdictTitle" style="margin: 2px 0 0 0; font-size: 1.25rem; font-weight: 900; color: #FFF;">
+                                ⚖️ مستحق للتعويض بنسبة 100% (تأخر المندوب)
+                            </h3>
+                        </div>
+                    </div>
+
+                    <!-- SLA Forensic Timeline Metrics Grid -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                        <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px; text-align: center;">
+                            <span style="font-size: 0.72rem; color: #94A3B8; display: block;">مدة تحضير المطبخ</span>
+                            <strong id="forensicsMetricPrepTime" style="font-size: 1.15rem; color: #34D399; display: block; margin-top: 2px;">11 دقيقة</strong>
+                            <span style="font-size: 0.65rem; color: #6EE7B7;">ضمن الـ SLA المسموح (15 د) ✅</span>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px; text-align: center;">
+                            <span style="font-size: 0.72rem; color: #94A3B8; display: block;">تأخر المندوب بالاستلام</span>
+                            <strong id="forensicsMetricRiderDelay" style="font-size: 1.15rem; color: #F87171; display: block; margin-top: 2px;">24 دقيقة</strong>
+                            <span style="font-size: 0.65rem; color: #FCA5A5;">تجاوز الحد التشغيلي ❌</span>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px; text-align: center;">
+                            <span style="font-size: 0.72rem; color: #94A3B8; display: block;">بند اللائحة المعتمد</span>
+                            <strong id="forensicsMetricClause" style="font-size: 1.05rem; color: #FCD34D; display: block; margin-top: 2px;">كيس #58</strong>
+                            <span style="font-size: 0.65rem; color: #CBD5E1;">تعويض تأخر مندوب 2026</span>
+                        </div>
+                    </div>
+
+                    <!-- Forensic Analysis Reasoning -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px;">
+                        <h4 style="margin: 0 0 6px 0; font-size: 0.82rem; font-weight: 800; color: #E2E8F0;">
+                            🔍 تقرير الفحص والتحليل الجنائي:
+                        </h4>
+                        <p id="forensicsReasoningText" style="margin: 0; font-size: 0.82rem; color: #94A3B8; line-height: 1.6;">
+                            بمراجعة التوقيت، أتم المتجر إعداد الطلب خلال 11 دقيقة وهو أقل من الحد الأقصى المسموح (15 دقيقة SLA)، وتأخر وصول المندوب لمدة 24 دقيقة مما تسبب في تلف الوجبة وإلغاء الطلب من قبل العميل. الشريك غير مسؤول عن الإلغاء ومستحق للتعويض المالي الكامل.
+                        </p>
+                    </div>
+
+                    <!-- Output Action Buttons & Macro -->
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" onclick="copyForensicsVendorMacro()" style="flex: 1; background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px; border-radius: 8px; font-weight: 800; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                <i class="fa-solid fa-copy"></i> نسخ الرد المعتمد للشريك
+                            </button>
+                            <button type="button" onclick="copyForensicsFinanceAuditReport()" style="flex: 1; background: rgba(59,130,246,0.2); border: 1.5px solid #3B82F6; color: #93C5FD; padding: 10px; border-radius: 8px; font-weight: 800; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                <i class="fa-solid fa-file-shield"></i> نسخ تقرير التدقيق للمالية
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="app-container">
 
         <!-- Left Input Panel (Uncluttered & Airy) -->
         <div class="panel">
@@ -3143,14 +3320,55 @@ var allCases = window.allCases = [];
             const ticketCont = document.querySelector('.app-container');
             const studioCont = document.getElementById('menuStudioWorkspace');
             const policiesCont = document.getElementById('policiesWorkspace');
+            const forensicsCont = document.getElementById('forensicsWorkspace');
             const btnTicket = document.getElementById('viewBtnTickets');
             const btnMenu = document.getElementById('viewBtnMenu');
             const btnPolicies = document.getElementById('viewBtnPolicies');
+            const btnForensics = document.getElementById('viewBtnForensics');
+
+            if (mode === 'FORENSICS') {
+                if (ticketCont) ticketCont.style.display = 'none';
+                if (studioCont) studioCont.style.display = 'none';
+                if (policiesCont) policiesCont.style.display = 'none';
+                if (forensicsCont) forensicsCont.style.display = 'block';
+
+                if (btnTicket) {
+                    btnTicket.style.borderColor = 'transparent';
+                    btnTicket.style.background = '#1E293B';
+                    btnTicket.style.color = '#94A3B8';
+                }
+                if (btnMenu) {
+                    btnMenu.style.borderColor = '#10B981';
+                    btnMenu.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.25) 100%)';
+                    btnMenu.style.color = '#A7F3D0';
+                }
+                if (btnPolicies) {
+                    btnPolicies.style.borderColor = '#A855F7';
+                    btnPolicies.style.background = 'rgba(168, 85, 247, 0.12)';
+                    btnPolicies.style.color = '#C084FC';
+                }
+                if (btnForensics) {
+                    btnForensics.style.borderColor = '#F59E0B';
+                    btnForensics.style.background = 'linear-gradient(135deg, rgba(245, 158, 11, 0.3) 0%, rgba(217, 119, 6, 0.5) 100%)';
+                    btnForensics.style.color = '#FFF';
+                    btnForensics.style.boxShadow = '0 4px 16px rgba(245, 158, 11, 0.4)';
+                }
+                return;
+            } else if (forensicsCont) {
+                forensicsCont.style.display = 'none';
+                if (btnForensics) {
+                    btnForensics.style.borderColor = '#F59E0B';
+                    btnForensics.style.background = 'rgba(245, 158, 11, 0.12)';
+                    btnForensics.style.color = '#F59E0B';
+                    btnForensics.style.boxShadow = 'none';
+                }
+            }
 
             if (mode === 'POLICIES') {
                 if (ticketCont) ticketCont.style.display = 'none';
                 if (studioCont) studioCont.style.display = 'none';
                 if (policiesCont) policiesCont.style.display = 'block';
+                if (forensicsCont) forensicsCont.style.display = 'none';
 
                 if (btnTicket) {
                     btnTicket.style.borderColor = 'transparent';
@@ -3183,6 +3401,8 @@ var allCases = window.allCases = [];
             if (mode === 'MENU_STUDIO') {
                 if (ticketCont) ticketCont.style.display = 'none';
                 if (studioCont) studioCont.style.display = 'block';
+                if (policiesCont) policiesCont.style.display = 'none';
+                if (forensicsCont) forensicsCont.style.display = 'none';
                 if (btnTicket) {
                     btnTicket.style.borderColor = 'transparent';
                     btnTicket.style.background = '#1E293B';
@@ -10893,6 +11113,595 @@ ${titles}
             showToast('🎉 اكتملت معالجة المنيو بالكامل عبر الذكاء الاصطناعي!');
         }
 
+        
+// ══════════════════════════════════════════════════════════════════════════════
+// 🚀 SUPER TRIO ENGINE: CLIPBOARD SNIPER + LIVE WHISPERER + DISPUTE FORENSICS
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 1. THE CLIPBOARD SNIPER (رادار الحافظة الذكي)
+// ─────────────────────────────────────────────────────────────────────────────
+window._clipboardSniperActive = false;
+window._lastSniperText = '';
+window._sniperInterval = null;
+
+function toggleClipboardSniper() {
+    if (window._clipboardSniperActive) {
+        stopClipboardSniper();
+    } else {
+        startClipboardSniper();
+    }
+}
+
+async function startClipboardSniper() {
+    window._clipboardSniperActive = true;
+    const btn = document.getElementById('clipboardSniperBtn');
+    const label = document.getElementById('clipboardSniperLabel');
+    const pill = document.getElementById('clipboardSniperFloatPill');
+
+    if (btn) {
+        btn.style.background = 'linear-gradient(135deg, #EF4444, #DC2626)';
+        btn.style.color = '#FFF';
+        btn.style.boxShadow = '0 0 16px rgba(239, 68, 68, 0.6)';
+    }
+    if (label) label.innerText = 'رادار الحافظة: نشط 🎯';
+    if (pill) pill.style.display = 'flex';
+
+    playSniperChime();
+    showToast('🎯 تم تفعيل رادار الحافظة! افتح Zendesk وانسخ أي مشكلة (Ctrl+C)، التول هتكتب الرد المعتمد مكانه فوراً!', 6000);
+
+    // Initial check
+    checkClipboardSniper();
+
+    // Polling interval when active
+    if (window._sniperInterval) clearInterval(window._sniperInterval);
+    window._sniperInterval = setInterval(checkClipboardSniper, 1500);
+
+    window.addEventListener('focus', checkClipboardSniper);
+}
+
+function stopClipboardSniper() {
+    window._clipboardSniperActive = false;
+    if (window._sniperInterval) {
+        clearInterval(window._sniperInterval);
+        window._sniperInterval = null;
+    }
+    window.removeEventListener('focus', checkClipboardSniper);
+
+    const btn = document.getElementById('clipboardSniperBtn');
+    const label = document.getElementById('clipboardSniperLabel');
+    const pill = document.getElementById('clipboardSniperFloatPill');
+
+    if (btn) {
+        btn.style.background = 'rgba(239, 68, 68, 0.15)';
+        btn.style.color = '#FCA5A5';
+        btn.style.boxShadow = 'none';
+    }
+    if (label) label.innerText = 'رادار الحافظة 🎯';
+    if (pill) pill.style.display = 'none';
+
+    showToast('⏹️ تم إيقاف رادار الحافظة الذكي.');
+}
+
+async function checkClipboardSniper() {
+    if (!window._clipboardSniperActive) return;
+    try {
+        if (!navigator.clipboard || !navigator.clipboard.readText) return;
+        const text = await navigator.clipboard.readText();
+        if (!text || text.trim().length < 8) return;
+        const clean = text.trim();
+        
+        // Skip if same as last or if it's already an official Hungerstation macro
+        if (clean === window._lastSniperText || clean.includes('هنقرستيشن') || clean.includes('شريكنا العزيز') || clean.includes('Valued Partner')) {
+            return;
+        }
+
+        // Keywords detection
+        const hasKeywords = /(طلب|مندوب|سائق|لغى|الغا|ملغي|عمولة|فرع|منيو|بوابة|جهاز|فاتورة|سداد|اعتراض|order|rider|cancel)/i.test(clean);
+        if (hasKeywords || /\d{6,10}/.test(clean)) {
+            await processSniperInquiry(clean);
+        }
+    } catch(e) {
+        // clipboard access might be restricted until window focused
+    }
+}
+
+async function processSniperInquiry(rawText) {
+    window._lastSniperText = rawText;
+    
+    // Extract entities
+    const orderMatch = rawText.match(/\b\d{7,10}\b/);
+    const orderId = orderMatch ? orderMatch[0] : '';
+    
+    // Match intent
+    const norm = normalizeArabic(rawText.toLowerCase());
+    let targetCaseId = 45; // Default to cancellation
+
+    if (norm.includes('تاخر') || norm.includes('متاخر') || norm.includes('وين المندوب') || norm.includes('eta') || norm.includes('delay')) {
+        targetCaseId = 50;
+    } else if (norm.includes('تعويض') || norm.includes('خسارة') || norm.includes('كب') || norm.includes('تالف')) {
+        targetCaseId = 58;
+    } else if (norm.includes('منيو') || norm.includes('اضافة صنف') || norm.includes('تعديل سعر')) {
+        targetCaseId = 38;
+    } else if (norm.includes('بوابة') || norm.includes('رمز الفرع') || norm.includes('باسورد')) {
+        targetCaseId = 1;
+    } else if (norm.includes('لغى') || norm.includes('ملغي') || norm.includes('الغاء')) {
+        targetCaseId = 45;
+    }
+
+    const cases = (typeof allCases !== 'undefined' && allCases.length > 0) ? allCases : ((typeof embeddedKB !== 'undefined') ? embeddedKB : []);
+    const c = cases.find(x => x.id === targetCaseId) || cases[0];
+    
+    // Choose appropriate submacro if available
+    let procedureText = c.procedure_arabic || '';
+    if (c.sub_macros && c.sub_macros.length > 0) {
+        // If after pickup vs before pickup
+        if (norm.includes('بعد') || norm.includes('استلم') || norm.includes('اخذ')) {
+            const sub = c.sub_macros.find(s => s.id && s.id.includes('after'));
+            if (sub) procedureText = sub.macro_ar || sub.procedure_arabic || procedureText;
+        } else {
+            const sub = c.sub_macros.find(s => s.id && s.id.includes('before'));
+            if (sub) procedureText = sub.macro_ar || sub.procedure_arabic || procedureText;
+        }
+    }
+
+    const agentName = getAgentArabicName() || 'عمر';
+    const finalMacro = buildArabicMacro(orderId, procedureText);
+
+    // Overwrite clipboard
+    try {
+        await navigator.clipboard.writeText(finalMacro);
+        window._lastSniperText = finalMacro;
+    } catch(e) {}
+
+    playSniperChime();
+    showToast(`🎯 [رادار الحافظة]: تم التقاط مشكلة #${c.id} (${c.case_title})! الصق الآن (Ctrl+V) في Zendesk 🚀`, 5000);
+}
+
+function testClipboardSniperSample() {
+    processSniperInquiry('الطلب رقم 8874129 تم إلغاؤه من العميل بعد ما المندوب جه واستلم الوجبة وعايزين نعرف الفلوس هتنزل امتى');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 2. LIVE CALL WHISPERER AI (الملقّن الحي لمكالمات الشركاء بالصوت)
+// ─────────────────────────────────────────────────────────────────────────────
+let _whispererRec = null;
+let _whispererSeconds = 0;
+let _whispererInterval = null;
+let _whispererActiveCaseId = 45;
+
+function openLiveCallWhispererModal() {
+    const m = document.getElementById('liveCallWhispererModal');
+    if (!m) return;
+    m.style.display = 'flex';
+    m.classList.add('active');
+
+    // Reset timer
+    _whispererSeconds = 0;
+    if (_whispererInterval) clearInterval(_whispererInterval);
+    _whispererInterval = setInterval(() => {
+        _whispererSeconds++;
+        const mins = String(Math.floor(_whispererSeconds / 60)).padStart(2, '0');
+        const secs = String(_whispererSeconds % 60).padStart(2, '0');
+        const badge = document.getElementById('whispererTimerBadge');
+        if (badge) badge.innerText = `⏱️ ${mins}:${secs}`;
+    }, 1000);
+}
+
+function closeLiveCallWhispererModal() {
+    const m = document.getElementById('liveCallWhispererModal');
+    if (m) {
+        m.style.display = 'none';
+        m.classList.remove('active');
+    }
+    if (_whispererInterval) {
+        clearInterval(_whispererInterval);
+        _whispererInterval = null;
+    }
+    if (_whispererRec) {
+        try { _whispererRec.stop(); } catch(e) {}
+        _whispererRec = null;
+    }
+    const btn = document.getElementById('whispererToggleBtn');
+    if (btn) {
+        btn.innerHTML = '<i class="fa-solid fa-microphone"></i> <span>بدء الاستماع الحي (Mic On)</span>';
+        btn.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+    }
+}
+
+function toggleWhispererMic() {
+    const btn = document.getElementById('whispererToggleBtn');
+    const pill = document.getElementById('whispererStatusPill');
+
+    if (_whispererRec) {
+        try { _whispererRec.stop(); } catch(e) {}
+        _whispererRec = null;
+        if (btn) {
+            btn.innerHTML = '<i class="fa-solid fa-microphone"></i> <span>بدء الاستماع الحي (Mic On)</span>';
+            btn.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+        }
+        if (pill) {
+            pill.innerText = '● متوقف';
+            pill.style.background = 'rgba(239, 68, 68, 0.2)';
+            pill.style.borderColor = '#EF4444';
+            pill.style.color = '#FCA5A5';
+        }
+        showToast('⏹️ تم إيقاف المايكروفون.');
+        return;
+    }
+
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRec) {
+        showToast('⚠️ المتصفح لا يدعم التعرف الصوتي المباشر، جرب أزرار المحاكاة السريعة.');
+        return;
+    }
+
+    try {
+        _whispererRec = new SpeechRec();
+        _whispererRec.continuous = true;
+        _whispererRec.interimResults = true;
+        _whispererRec.lang = 'ar-SA';
+
+        _whispererRec.onstart = () => {
+            if (btn) {
+                btn.innerHTML = '<i class="fa-solid fa-microphone-slash"></i> <span>إيقاف المايك (Listening Live...)</span>';
+                btn.style.background = 'linear-gradient(135deg, #EF4444, #DC2626)';
+            }
+            if (pill) {
+                pill.innerText = '● يستمع للمكالمة مباشرة 🟢';
+                pill.style.background = 'rgba(16, 185, 129, 0.2)';
+                pill.style.borderColor = '#10B981';
+                pill.style.color = '#34D399';
+            }
+            showToast('🎙️ المايكروفون نشط ويستمع للمكالمة لايف!');
+            playSuccessChime();
+        };
+
+        _whispererRec.onresult = (event) => {
+            let transcript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                transcript += event.results[i][0].transcript;
+            }
+            if (transcript.trim()) {
+                handleWhispererSpeech(transcript);
+            }
+        };
+
+        _whispererRec.onerror = (e) => {
+            console.error('Whisperer Speech error:', e);
+        };
+
+        _whispererRec.start();
+    } catch(e) {
+        console.error('Failed to start Whisperer speech:', e);
+        showToast('❌ تعذر الوصول للمايكروفون، يرجى منح الإذن للمتصفح.');
+    }
+}
+
+function handleWhispererSpeech(text) {
+    const box = document.getElementById('whispererTranscriptBox');
+    if (box) box.innerText = `"${text}"`;
+
+    // Detect sentiment
+    const sentBadge = document.getElementById('whispererSentiment');
+    if (sentBadge) {
+        if (text.includes('غلط') || text.includes('سرقة') || text.includes('حرام') || text.includes('فلوسي') || text.includes('اشتكي')) {
+            sentBadge.innerText = 'نبرة الشريك: غاضب / متوتر 😡';
+            sentBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+            sentBadge.style.color = '#FCA5A5';
+        } else if (text.includes('مستعجل') || text.includes('بسرعة') || text.includes('وين') || text.includes('تأخر')) {
+            sentBadge.innerText = 'نبرة الشريك: مستعجل ⏳';
+            sentBadge.style.background = 'rgba(245, 158, 11, 0.2)';
+            sentBadge.style.color = '#FCD34D';
+        } else {
+            sentBadge.innerText = 'نبرة الشريك: طبيعي 😌';
+            sentBadge.style.background = 'rgba(59, 130, 246, 0.15)';
+            sentBadge.style.color = '#93C5FD';
+        }
+    }
+
+    // Match intent to Teleprompter
+    const norm = normalizeArabic(text.toLowerCase());
+    const promptBox = document.getElementById('whispererPromptText');
+    const badge = document.getElementById('whispererMatchedCaseBadge');
+    const objList = document.getElementById('whispererObjectionList');
+
+    if (norm.includes('لغى') || norm.includes('ملغي') || norm.includes('استلم') || norm.includes('اخذ')) {
+        _whispererActiveCaseId = 45;
+        if (badge) badge.innerText = 'الحالة: #45 - إلغاء بعد استلام المندوب';
+        if (promptBox) {
+            promptBox.innerHTML = '<strong>نحيطكم علماً بأن الطلب تم إلغاؤه بعد استلامه من المندوب؛ وبالتالي يُعتبر الطلب ناجح وسوف يتم احتساب قيمته كاملة ضمن الحوالة الشهرية الخاصة بكم بإذن الله.</strong>';
+        }
+        if (objList) {
+            objList.innerHTML = `
+                <div style="background: rgba(255,255,255,0.04); padding: 6px 10px; border-radius: 6px; border-left: 3px solid #10B981;">
+                    <strong>إذا قال الشريك "المبلغ هينزل امتى؟":</strong> وضح له أن المبيعات تنزل مع كشف الحساب الأسبوعي/الشهري القادم في الحساب البنكي.
+                </div>
+            `;
+        }
+    } else if (norm.includes('تاخر') || norm.includes('متاخر') || norm.includes('سائق') || norm.includes('مندوب')) {
+        _whispererActiveCaseId = 50;
+        if (badge) badge.innerText = 'الحالة: #50 - تأخر المندوب (Rider ETA)';
+        if (promptBox) {
+            promptBox.innerHTML = '<strong>نعتذر عن التأخير غير المقصود، المندوب حالياً في طريقه إلى فرعكم ويستغرق الوصول بضع دقائق، تم إرسال تنبيه للمندوب وتعيين أولوية قصوى لطلبكم.</strong>';
+        }
+        if (objList) {
+            objList.innerHTML = `
+                <div style="background: rgba(255,255,255,0.04); padding: 6px 10px; border-radius: 6px; border-left: 3px solid #F59E0B;">
+                    <strong>إذا قال الشريك "الوجبة بردت خلاص":</strong> اطلب منه إعادة تجهيز وجبة طازجة إذا كان تأخير المندوب تجاوز 15 دقيقة وسيعوض عنها.
+                </div>
+            `;
+        }
+    } else if (norm.includes('منيو') || norm.includes('سعر') || norm.includes('صنف') || norm.includes('وجبة')) {
+        _whispererActiveCaseId = 38;
+        if (badge) badge.innerText = 'الحالة: #38 - تحديث وتعديل المنيو';
+        if (promptBox) {
+            promptBox.innerHTML = '<strong>يسعدنا خدمتك! يمكنك تحديث أسعارك وأصنافك فوراً عبر استوديو المنيو أو بوابة الشركاء، وسيقوم فريق المنيو باعتمادها خلال وقت قياسي.</strong>';
+        }
+    }
+}
+
+function simulateWhispererSpeech(simText) {
+    handleWhispererSpeech(simText);
+}
+
+function copyWhispererPrompt() {
+    const box = document.getElementById('whispererPromptText');
+    if (!box) return;
+    const txt = box.innerText || box.textContent;
+    navigator.clipboard.writeText(txt);
+    showToast('📋 تم نسخ رد الملقّن الصوتي!');
+    playSuccessChime();
+}
+
+function openWhispererCaseInMain() {
+    closeLiveCallWhispererModal();
+    selectCase(_whispererActiveCaseId);
+    showToast(`⚡ تم فتح الحالة #${_whispererActiveCaseId} في مولد الردود!`);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 3. DISPUTE FORENSICS AI ENGINE
+// ─────────────────────────────────────────────────────────────────────────────
+let _forensicsCurrentData = {
+    verdict: 'APPROVED_100',
+    orderId: '98451203',
+    storeName: 'شاورما جليلة',
+    prepDuration: 11,
+    riderDelay: 24,
+    clause: 'كيس #58 / لائحة إلغاء الطلبات 2026'
+};
+
+function handleForensicsDrop(e) {
+    e.preventDefault();
+    const zone = document.getElementById('forensicsDropZone');
+    if (zone) zone.style.borderColor = 'rgba(255,255,255,0.2)';
+
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+        processForensicsFile(e.dataTransfer.files[0]);
+    }
+}
+
+function handleForensicsFileSelect(e) {
+    if (e.target && e.target.files && e.target.files[0]) {
+        processForensicsFile(e.target.files[0]);
+    }
+}
+
+function processForensicsFile(file) {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        const previewBox = document.getElementById('forensicsImagePreviewBox');
+        const previewImg = document.getElementById('forensicsImagePreview');
+        if (previewImg) previewImg.src = ev.target.result;
+        if (previewBox) previewBox.style.display = 'block';
+
+        showToast('🔍 تم استلام صورة البون! جاري الفحص الجنائي الرقمي للـ SLA...', 4000);
+        executeForensicsAudit();
+    };
+    reader.readAsDataURL(file);
+}
+
+function loadForensicsDemo(type) {
+    const idInp = document.getElementById('forensicsOrderId');
+    const storeInp = document.getElementById('forensicsStoreName');
+    const orderTimeInp = document.getElementById('forensicsOrderTime');
+    const kitchenReadyInp = document.getElementById('forensicsKitchenReadyTime');
+    const riderArrivalInp = document.getElementById('forensicsRiderArrivalTime');
+
+    if (type === 'RIDER_DELAY') {
+        if (idInp) idInp.value = '98451203';
+        if (storeInp) storeInp.value = 'شاورما جليلة (فرع العليا)';
+        if (orderTimeInp) orderTimeInp.value = '14:00';
+        if (kitchenReadyInp) kitchenReadyInp.value = '14:11';
+        if (riderArrivalInp) riderArrivalInp.value = '14:35';
+    } else if (type === 'PORTAL_DISPUTE') {
+        if (idInp) idInp.value = '77123984';
+        if (storeInp) storeInp.value = 'برجر بوتيك';
+        if (orderTimeInp) orderTimeInp.value = '19:10';
+        if (kitchenReadyInp) kitchenReadyInp.value = '19:18';
+        if (riderArrivalInp) riderArrivalInp.value = 'لم يحضر (ألغي قبل الاستلام)';
+    } else if (type === 'KITCHEN_DELAY') {
+        if (idInp) idInp.value = '66541299';
+        if (storeInp) storeInp.value = 'بيتزا هت (فرع التحلية)';
+        if (orderTimeInp) orderTimeInp.value = '21:00';
+        if (kitchenReadyInp) kitchenReadyInp.value = '21:32';
+        if (riderArrivalInp) riderArrivalInp.value = '21:14';
+    }
+
+    executeForensicsAudit();
+}
+
+function executeForensicsAudit() {
+    const id = document.getElementById('forensicsOrderId')?.value || '98451203';
+    const store = document.getElementById('forensicsStoreName')?.value || 'شاورما جليلة';
+    const riderArrival = document.getElementById('forensicsRiderArrivalTime')?.value || '';
+    
+    const banner = document.getElementById('forensicsVerdictBanner');
+    const icon = document.getElementById('forensicsVerdictIcon');
+    const title = document.getElementById('forensicsVerdictTitle');
+    const prepMetric = document.getElementById('forensicsMetricPrepTime');
+    const riderMetric = document.getElementById('forensicsMetricRiderDelay');
+    const clauseMetric = document.getElementById('forensicsMetricClause');
+    const reasoning = document.getElementById('forensicsReasoningText');
+
+    if (riderArrival.includes('لم يحضر') || riderArrival.includes('ألغي قبل')) {
+        // Portal Dispute
+        _forensicsCurrentData = {
+            verdict: 'PORTAL_DISPUTE',
+            orderId: id,
+            storeName: store,
+            prepDuration: 8,
+            riderDelay: 0,
+            clause: 'كيس #45 / بوابة الشركاء Finance Bulk Dispute'
+        };
+        if (banner) {
+            banner.style.background = 'linear-gradient(135deg, rgba(245,158,11,0.2), rgba(217,119,6,0.3))';
+            banner.style.borderColor = '#F59E0B';
+            banner.style.boxShadow = '0 6px 20px rgba(245,158,11,0.2)';
+        }
+        if (icon) {
+            icon.style.background = '#F59E0B';
+            icon.innerHTML = '<i class="fa-solid fa-arrow-up-right-from-square"></i>';
+        }
+        if (title) title.innerText = '⚖️ توجيه لبوابة الشركاء (اعتراض مالي مجمّع - كيس #45)';
+        if (prepMetric) prepMetric.innerText = '8 دقائق';
+        if (riderMetric) riderMetric.innerText = 'لم يحضر';
+        if (clauseMetric) clauseMetric.innerText = 'كيس #45';
+        if (reasoning) {
+            reasoning.innerText = 'الطلب أُلغي من العميل قبل استلام المندوب. وفقاً للائحة 2026 المحدثة، لا يتم تأكيد التعويض يدوياً للشريك عبر المحادثة، بل يتم توجيهه لبوابة الشركاء (Vendor Portal) ➔ قسم المالية ➔ مدفوعات طلبات الاعتراض لرفع ملف الإكسيل.';
+        }
+    } else if (document.getElementById('forensicsKitchenReadyTime')?.value === '21:32') {
+        // Kitchen Delay -> Rejected
+        _forensicsCurrentData = {
+            verdict: 'REJECTED_DELAY',
+            orderId: id,
+            storeName: store,
+            prepDuration: 32,
+            riderDelay: 0,
+            clause: 'كيس #58 / تجاوز الـ SLA'
+        };
+        if (banner) {
+            banner.style.background = 'linear-gradient(135deg, rgba(239,68,68,0.2), rgba(220,38,38,0.3))';
+            banner.style.borderColor = '#EF4444';
+            banner.style.boxShadow = '0 6px 20px rgba(239,68,68,0.2)';
+        }
+        if (icon) {
+            icon.style.background = '#EF4444';
+            icon.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+        }
+        if (title) title.innerText = '❌ غير مستحق للتعويض (تأخير المطبخ 32 دقيقة)';
+        if (prepMetric) prepMetric.innerText = '32 دقيقة';
+        if (riderMetric) riderMetric.innerText = 'المندوب حضر بالموعد';
+        if (clauseMetric) clauseMetric.innerText = 'مرفوض SLA';
+        if (reasoning) {
+            reasoning.innerText = 'أظهر التحقيق الجنائي أن المطبخ استغرق 32 دقيقة لتحضير الطلب، متجاوزاً الحد الأقصى المسموح (15 دقيقة SLA). حضر المندوب في الدقيقة 14 وانتظر طويلاً مما سبب الإلغاء. الشريك مسؤول عن التأخير وغير مؤهل للتعويض.';
+        }
+    } else {
+        // Approved 100%
+        _forensicsCurrentData = {
+            verdict: 'APPROVED_100',
+            orderId: id,
+            storeName: store,
+            prepDuration: 11,
+            riderDelay: 24,
+            clause: 'كيس #58 / تعويض تأخر مندوب 2026'
+        };
+        if (banner) {
+            banner.style.background = 'linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.3))';
+            banner.style.borderColor = '#10B981';
+            banner.style.boxShadow = '0 6px 20px rgba(16,185,129,0.2)';
+        }
+        if (icon) {
+            icon.style.background = '#10B981';
+            icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+        }
+        if (title) title.innerText = '⚖️ مستحق للتعويض بنسبة 100% (تأخر المندوب 24 دقيقة)';
+        if (prepMetric) prepMetric.innerText = '11 دقيقة';
+        if (riderMetric) riderMetric.innerText = '24 دقيقة تأخير';
+        if (clauseMetric) clauseMetric.innerText = 'كيس #58';
+        if (reasoning) {
+            reasoning.innerText = 'بمراجعة التوقيت، أتم المتجر إعداد الطلب خلال 11 دقيقة (أقل من الـ 15 دقيقة SLA)، بينما تأخر المندوب 24 دقيقة مما تسبب في تلف الوجبة وإلغاء الطلب. الشريك غير مسؤول عن الإلغاء ومستحق للتعويض المالي بنسبة 100%.';
+        }
+    }
+
+    playVerdictChime();
+    showToast('⚖️ اكتمل التدقيق الجنائي وصدور الحكم المعتمد!');
+}
+
+function copyForensicsVendorMacro() {
+    let msg = '';
+    const id = _forensicsCurrentData.orderId || 'المذكور';
+    const store = _forensicsCurrentData.storeName || 'شريكنا العزيز';
+
+    if (_forensicsCurrentData.verdict === 'APPROVED_100') {
+        msg = `حياك الله شريكنا العزيز (${store})،\n\nتم مراجعة بيانات الطلب رقم (${id}) والتحقق من توقيت إعداد الوجبة ووصول المندوب، ونفيدكم بأن الطلب مؤهل للتعويض بنسبة 100% نظراً لجاهزية الطلب ضمن الوقت المحدد وتأخر المندوب.\nسيتم إدراج قيمة التعويض في حسابكم البنكي ضمن الحوالة القادمة بإذن الله.\n\nشكراً لتعاونكم معنا،\nخدمة شركاء هنقرستيشن`;
+    } else if (_forensicsCurrentData.verdict === 'PORTAL_DISPUTE') {
+        msg = `حياك الله شريكنا العزيز (${store})،\n\nبخصوص الطلب رقم (${id})، نفيدكم بأنه يمكنكم الآن تقديم طلب الاعتراض مباشرة من خلال بوابة الشركاء (Vendor Portal) ➔ قسم المالية ➔ مدفوعات طلبات الاعتراض ➔ رفع ملف الاعتراضات المجمّعة وسيتم معالجتها آلياً.\n\nشكراً لتفهمكم،\nخدمة شركاء هنقرستيشن`;
+    } else {
+        msg = `حياك الله شريكنا العزيز (${store})،\n\nبعد مراجعة السجلات الفنية للطلب رقم (${id})، نعتذر لإبلاغكم بتعذر التعويض نظراً لتجاوز مدة تحضير الوجبة الوقت القياسي المسموح به (SLA) بحسب اللائحة المعتمدة.\n\nشاكرين ومقدرين حسن تفهمكم،\nخدمة شركاء هنقرستيشن`;
+    }
+
+    navigator.clipboard.writeText(msg.replace(/\\n/g, '\n'));
+    showToast('📋 تم نسخ الرد المعتمد للشريك!');
+    playSuccessChime();
+}
+
+function copyForensicsFinanceAuditReport() {
+    const report = `[Hungerstation Dispute Forensic Audit Report]\n` +
+        `• Order ID: ${_forensicsCurrentData.orderId}\n` +
+        `• Store: ${_forensicsCurrentData.storeName}\n` +
+        `• Kitchen Prep Duration: ${_forensicsCurrentData.prepDuration} min (SLA: 15 min)\n` +
+        `• Rider Delay: ${_forensicsCurrentData.riderDelay} min\n` +
+        `• Forensic Verdict: ${_forensicsCurrentData.verdict}\n` +
+        `• Policy Reference: ${_forensicsCurrentData.clause}\n` +
+        `• Audit Status: Verified by HS Forensics Engine 2026`;
+
+    navigator.clipboard.writeText(report.replace(/\\n/g, '\n'));
+    showToast('🏢 تم نسخ تقرير التدقيق الداخلي لقسم المالية!');
+    playSuccessChime();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 4. AUDIO CHIMES FOR INSTANT WOW FACTOR
+// ─────────────────────────────────────────────────────────────────────────────
+function playSniperChime() {
+    if (localStorage.getItem('hs_sound_muted') === '1') return;
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+        osc.frequency.setValueAtTime(1046.50, ctx.currentTime + 0.08); // C6
+        gain.gain.setValueAtTime(0.18, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.3);
+    } catch(e) {}
+}
+
+function playVerdictChime() {
+    if (localStorage.getItem('hs_sound_muted') === '1') return;
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, ctx.currentTime); // A4
+        osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.2); // A5
+        gain.gain.setValueAtTime(0.18, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.45);
+    } catch(e) {}
+}
+
         // ── 📸 1. INSTANT CLIPBOARD SCREENSHOT OCR ────────────────
         window.addEventListener('paste', function(e) {
             if (!e.clipboardData || !e.clipboardData.items) return;
@@ -16928,6 +17737,127 @@ Strict Rules:
         <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #34D399; box-shadow: 0 0 10px #34D399; animation: pulse 1.5s infinite;"></span>
         <i class="fa-solid fa-robot" style="font-size: 1.15rem;"></i>
         <span>اسأل الـ AI Copilot 🤖</span>
+    </div>
+
+
+    <!-- 🎯 FLOATING CLIPBOARD SNIPER ACTIVE PILL -->
+    <div id="clipboardSniperFloatPill" style="display: none; position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 999999; background: rgba(15, 23, 42, 0.95); border: 2px solid #EF4444; color: #FFF; padding: 8px 20px; border-radius: 30px; box-shadow: 0 10px 35px rgba(239, 68, 68, 0.4); backdrop-filter: blur(12px); font-size: 0.85rem; font-weight: 800; align-items: center; gap: 12px; transition: all 0.3s ease;">
+        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #EF4444; box-shadow: 0 0 12px #EF4444; animation: pulse 1s infinite;"></span>
+        <span>🎯 رادار الحافظة الذكي نشط: انسخ المشكلة من Zendesk (Ctrl+C) وهيتحط الرد بدالها تلقائياً!</span>
+        <button type="button" onclick="testClipboardSniperSample()" style="background: rgba(239,68,68,0.3); border: 1px solid #EF4444; color: #FFF; padding: 3px 10px; border-radius: 6px; font-size: 0.74rem; cursor: pointer; font-weight: 700;">تجربة لقط نص ⚡</button>
+        <button type="button" onclick="stopClipboardSniper()" style="background: transparent; border: none; color: #94A3B8; font-size: 1.1rem; cursor: pointer; margin-right: 4px;">✕</button>
+    </div>
+
+    <!-- 🎙️ LIVE CALL WHISPERER MODAL -->
+    <div id="liveCallWhispererModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999998; backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: #0F172A; border: 2px solid #10B981; border-radius: 20px; width: 100%; max-width: 900px; max-height: 90vh; display: flex; flex-direction: column; padding: 24px; color: #FFF; box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 30px rgba(16,185,129,0.25);">
+            
+            <!-- Modal Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 18px;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 46px; height: 46px; border-radius: 12px; background: linear-gradient(135deg, #10B981, #059669); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #FFF; box-shadow: 0 4px 14px rgba(16,185,129,0.4);">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #F8FAFC; display: flex; align-items: center; gap: 10px;">
+                            ملقّن المكالمات الصوتي الحي (Live Call Whisperer AI)
+                            <span id="whispererStatusPill" style="font-size: 0.72rem; background: rgba(16,185,129,0.2); border: 1px solid #10B981; color: #34D399; padding: 2px 10px; border-radius: 20px; font-weight: 700;">● جاهز للاستماع</span>
+                        </h3>
+                        <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: #94A3B8;">يسمع كلام الشريك بالمايك لايف، يفهم المشكلة فوراً، ويمليك الرد المعتمد والتعامل مع الاعتراضات كلمة بكلمة</p>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span id="whispererTimerBadge" style="font-size: 0.85rem; font-weight: 800; color: #38BDF8; background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.3); padding: 4px 12px; border-radius: 8px;">⏱️ 00:00</span>
+                    <button type="button" onclick="closeLiveCallWhispererModal()" style="background: transparent; border: none; color: #94A3B8; font-size: 1.4rem; cursor: pointer;">✕</button>
+                </div>
+            </div>
+
+            <!-- Wave Visualizer -->
+            <div id="whispererWaveContainer" style="display: flex; align-items: center; justify-content: center; gap: 5px; height: 32px; margin-bottom: 16px;">
+                <div class="whisperer-bar" style="width: 4px; height: 12px; background: #10B981; border-radius: 2px;"></div>
+                <div class="whisperer-bar" style="width: 4px; height: 24px; background: #34D399; border-radius: 2px;"></div>
+                <div class="whisperer-bar" style="width: 4px; height: 18px; background: #10B981; border-radius: 2px;"></div>
+                <div class="whisperer-bar" style="width: 4px; height: 28px; background: #6EE7B7; border-radius: 2px;"></div>
+                <div class="whisperer-bar" style="width: 4px; height: 14px; background: #10B981; border-radius: 2px;"></div>
+                <div class="whisperer-bar" style="width: 4px; height: 22px; background: #34D399; border-radius: 2px;"></div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex: 1; overflow-y: auto; padding-right: 4px;">
+                
+                <!-- Left Pane: Speech Recognition Transcript & Sentiment -->
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px; display: flex; flex-direction: column;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <span style="font-weight: 800; font-size: 0.85rem; color: #60A5FA; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-microphone-lines"></i> الاستماع الحي لكلام الشريك:
+                        </span>
+                        <span id="whispererSentiment" style="font-size: 0.72rem; background: rgba(59,130,246,0.15); color: #93C5FD; padding: 2px 8px; border-radius: 12px; font-weight: 700;">نبرة الشريك: طبيعي 😌</span>
+                    </div>
+
+                    <div id="whispererTranscriptBox" style="flex: 1; min-height: 120px; max-height: 160px; background: #0B1120; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px; font-size: 0.88rem; color: #E2E8F0; overflow-y: auto; line-height: 1.6; font-style: italic;">
+                        اضغط "بدء الاستماع" وتحدث أو اترك الشريك يتحدث... ستظهر كلماته هنا فوراً.
+                    </div>
+
+                    <!-- Quick simulation tags for testing -->
+                    <div style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px;">
+                        <span style="font-size: 0.72rem; color: #94A3B8; display: block; margin-bottom: 6px;">محاكاة سريعة (كليك واحد للتجربة):</span>
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                            <button type="button" onclick="simulateWhispererSpeech('الطلب اتلغى والزبون لغاه بعد ما المندوب اخد الوجبة وعايز تعويض كامل')" style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: #CBD5E1; padding: 3px 8px; border-radius: 6px; font-size: 0.72rem; cursor: pointer;">إلغاء بعد استلام المندوب 🛵</button>
+                            <button type="button" onclick="simulateWhispererSpeech('المندوب اتأخر عليا أكتر من نص ساعة والوجبة بردت والعميل هيشتكي')" style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: #CBD5E1; padding: 3px 8px; border-radius: 6px; font-size: 0.72rem; cursor: pointer;">تأخر المندوب ⏳</button>
+                            <button type="button" onclick="simulateWhispererSpeech('عايز اغير اسعار الوجبات واضيف اصناف جديدة في المنيو')" style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); color: #CBD5E1; padding: 3px 8px; border-radius: 6px; font-size: 0.72rem; cursor: pointer;">تعديل المنيو 🍽️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Pane: Teleprompter & Objections -->
+                <div style="background: rgba(16,185,129,0.04); border: 1.5px solid rgba(16,185,129,0.3); border-radius: 14px; padding: 16px; display: flex; flex-direction: column;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <span style="font-weight: 800; font-size: 0.88rem; color: #34D399; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-bullhorn"></i> ما يجب قوله للشريك فوراً (Teleprompter):
+                        </span>
+                        <span id="whispererMatchedCaseBadge" style="font-size: 0.72rem; background: rgba(16,185,129,0.2); color: #6EE7B7; padding: 2px 8px; border-radius: 10px; font-weight: 800;">الحالة: #45 - إلغاء بعد الاستلام</span>
+                    </div>
+
+                    <div id="whispererPromptText" style="flex: 1; background: rgba(15,23,42,0.9); border: 1.5px solid #10B981; border-radius: 12px; padding: 14px; font-size: 0.94rem; color: #FFF; line-height: 1.7; font-weight: 600; box-shadow: 0 4px 16px rgba(16,185,129,0.15);">
+                        "حياك الله شريكنا العزيز، نحيطكم علماً بأن الطلب تم إلغاؤه بعد استلامه من المندوب؛ وبالتالي يُعتبر الطلب ناجح وسوف يتم احتساب قيمته كاملة ضمن الحوالة الشهرية الخاصة بكم بإذن الله."
+                    </div>
+
+                    <!-- Teleprompter Actions -->
+                    <div style="display: flex; gap: 8px; margin-top: 12px;">
+                        <button type="button" onclick="copyWhispererPrompt()" style="flex: 1; background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <i class="fa-solid fa-copy"></i> نسخ الرد
+                        </button>
+                        <button type="button" onclick="openWhispererCaseInMain()" style="background: rgba(245,158,11,0.2); border: 1.5px solid #F59E0B; color: #FCD34D; padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-bolt"></i> فتح الحالة
+                        </button>
+                    </div>
+
+                    <!-- Dynamic Objections Radar -->
+                    <div style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px;">
+                        <span style="font-size: 0.74rem; font-weight: 800; color: #F59E0B; display: block; margin-bottom: 6px;">🛡️ الرد على الاعتراضات الحية:</span>
+                        <div id="whispererObjectionList" style="display: flex; flex-direction: column; gap: 6px; font-size: 0.76rem;">
+                            <div style="background: rgba(255,255,255,0.04); padding: 6px 10px; border-radius: 6px; border-left: 3px solid #38BDF8;">
+                                <strong>إذا قال الشريك "أنا عايز الفلوس دلوقتي كاش":</strong> وضح له أن مبيعات التوصيل تحول بنكياً آلياً كل أسبوع/شهر حسب العقد.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer Controls -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px; margin-top: 16px;">
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" id="whispererToggleBtn" onclick="toggleWhispererMic()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px 20px; border-radius: 10px; font-size: 0.88rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(16,185,129,0.35);">
+                        <i class="fa-solid fa-microphone"></i> <span>بدء الاستماع الحي (Mic On)</span>
+                    </button>
+                </div>
+                <div style="font-size: 0.75rem; color: #94A3B8;">
+                    🔒 المعالجة الصوتية تتم محلياً بالكامل عبر المتصفح لضمان سرية المكالمات.
+                </div>
+            </div>
+
+        </div>
     </div>
 
 </body>

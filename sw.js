@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hs-vendor-suite-v24-omni-ai-superpowers';
+const CACHE_NAME = 'hs-vendor-suite-v25-super-trio-superpowers';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.webmanifest'
