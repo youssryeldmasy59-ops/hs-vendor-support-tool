@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hs-vendor-suite-v21-ai-omni-upgrade';
+const CACHE_NAME = 'hs-vendor-suite-v22-obsidian-luxury-upgrade';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.webmanifest'

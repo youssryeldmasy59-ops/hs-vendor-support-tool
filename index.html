@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl"><head>
+<html lang="ar" dir="rtl" data-theme="dark"><head>
     <meta charset="UTF-8">
     <!-- Cache-Busting Headers for Instant Browser Updates -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -123,53 +123,54 @@
             margin-right: 6px;
         }
 
-        :root {
-            /* ☀️ Sunny, Vibrant & Cheerful Modern Theme (DEFAULT) */
+        :root,
+        [data-theme="dark"] {
+            /* 👑 Midnight Obsidian & Amber Gold Ultra-Luxury Suite v22 (DEFAULT) */
+            --bg-body: #060911;
+            --bg-card: rgba(13, 19, 34, 0.72);
+            --bg-card-hover: rgba(20, 30, 54, 0.88);
+            --primary: #F59E0B;
+            --primary-hover: #FBBF24;
+            --primary-glow: rgba(245, 158, 11, 0.4);
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(245, 158, 11, 0.5);
+            --radius-xl: 18px;
+            --radius-lg: 13px;
+            --radius-md: 9px;
+            --radius-sm: 6px;
+            --radius-pill: 9999px;
+            --shadow-panel: 0 20px 50px -10px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            --header-bg: rgba(7, 11, 20, 0.78);
+            --input-bg: rgba(9, 14, 26, 0.75);
+            --response-bg: rgba(11, 17, 32, 0.85);
+            --response-border: rgba(245, 158, 11, 0.35);
+            --response-text: #F8FAFC;
+            --kb-filter-bg: rgba(10, 16, 29, 0.7);
+            --card-subtle-bg: rgba(245, 158, 11, 0.08);
+        }
+
+        /* ☀️ Daylight Crisp Mode (Explicit Toggle Only) */
+        [data-theme="bright"] {
             --bg-body: #F4F7FC;
             --bg-card: rgba(255, 255, 255, 0.95);
             --bg-card-hover: #FFFFFF;
             --primary: #F59E0B;
             --primary-hover: #D97706;
-            --primary-glow: rgba(245, 158, 11, 0.3);
+            --primary-glow: rgba(245, 158, 11, 0.25);
             --text-main: #0F172A;
             --text-muted: #64748B;
             --border: rgba(226, 232, 240, 0.95);
             --border-hover: rgba(245, 158, 11, 0.5);
-            --radius-xl: 20px;
-            --radius-lg: 14px;
-            --radius-md: 10px;
-            --radius-sm: 7px;
-            --radius-pill: 9999px;
             --shadow-panel: 0 12px 32px -4px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(226, 232, 240, 0.9);
-            --header-bg: rgba(255, 255, 255, 0.94);
+            --header-bg: rgba(255, 255, 255, 0.92);
             --input-bg: #F8FAFC;
             --response-bg: #FFFDF5;
             --response-border: #FCD34D;
             --response-text: #0F172A;
             --kb-filter-bg: #F8FAFC;
             --card-subtle-bg: rgba(245, 158, 11, 0.05);
-        }
-
-        /* 🌙 Cyber Neon Twilight Mode */
-        [data-theme="dark"] {
-            --bg-body: #090D16;
-            --bg-card: rgba(16, 22, 36, 0.88);
-            --bg-card-hover: rgba(22, 30, 48, 0.95);
-            --primary: #FFC400;
-            --primary-hover: #FFB300;
-            --primary-glow: rgba(255, 196, 0, 0.3);
-            --text-main: #F8FAFC;
-            --text-muted: #94A3B8;
-            --border: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(255, 196, 0, 0.4);
-            --shadow-panel: 0 12px 32px -4px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.07);
-            --header-bg: rgba(11, 16, 28, 0.92);
-            --input-bg: rgba(10, 15, 26, 0.7);
-            --response-bg: rgba(14, 20, 33, 0.9);
-            --response-border: rgba(255, 196, 0, 0.3);
-            --response-text: #F8FAFC;
-            --kb-filter-bg: rgba(10, 15, 26, 0.55);
-            --card-subtle-bg: rgba(255, 196, 0, 0.06);
         }
 
         * {
@@ -202,9 +203,10 @@
         body {
             background-color: var(--bg-body);
             background-image: 
-                radial-gradient(ellipse at 12% 8%, rgba(245, 158, 11, 0.12) 0%, transparent 45%),
-                radial-gradient(ellipse at 88% 92%, rgba(56, 189, 248, 0.12) 0%, transparent 50%),
-                radial-gradient(circle at 50% 40%, rgba(244, 63, 94, 0.05) 0%, transparent 60%);
+                radial-gradient(ellipse at 15% 10%, rgba(245, 158, 11, 0.09) 0%, transparent 45%),
+                radial-gradient(ellipse at 85% 90%, rgba(59, 130, 246, 0.09) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.06) 0%, transparent 60%);
+            background-attachment: fixed;
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -212,17 +214,12 @@
             transition: background-color 0.25s ease, color 0.25s ease;
         }
 
-        [data-theme="dark"] body {
-            background-image: 
-                radial-gradient(ellipse at 15% 10%, rgba(255, 196, 0, 0.08) 0%, transparent 45%),
-                radial-gradient(ellipse at 85% 90%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 60%);
-        }
-
         /* Modern Enterprise Top Header */
         header.main-header {
             background: var(--header-bg);
-            -webkit-border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
             padding: 12px 28px;
             display: flex;
             justify-content: space-between;
@@ -230,7 +227,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
             transition: background 0.25s ease, border-color 0.25s ease;
         }
 
@@ -477,14 +474,14 @@
             color: #10B981;
         }
 
-        /* 🚀 Motivational Productivity Hero Bar */
+        /* 🚀 Motivational Productivity Hero Ribbon (Obsidian Glass Edition) */
         .motivation-bar {
             max-width: 1720px;
             margin: 14px auto 0;
             padding: 0 28px;
             width: 100%;
             display: grid;
-            grid-template-columns: 1.35fr 1.65fr;
+            grid-template-columns: 1.25fr 1.75fr;
             gap: 16px;
         }
 
@@ -496,41 +493,43 @@
         }
 
         .motivation-greeting-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(254, 243, 199, 0.6));
-            border: 1.5px solid rgba(245, 158, 11, 0.35);
+            background: rgba(13, 19, 34, 0.72);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: var(--radius-xl);
-            padding: 16px 20px;
+            padding: 14px 18px;
             display: flex;
             align-items: center;
-            gap: 16px;
-            box-shadow: 0 8px 24px -4px rgba(245, 158, 11, 0.12);
+            gap: 14px;
+            box-shadow: 0 12px 32px -6px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
             position: relative;
             overflow: hidden;
             transition: all 0.25s ease;
         }
 
-        [data-theme="dark"] .motivation-greeting-card {
-            background: linear-gradient(135deg, rgba(20, 27, 45, 0.95), rgba(30, 41, 59, 0.85));
-            border: 1.5px solid rgba(255, 196, 0, 0.25);
-            box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4);
+        .motivation-greeting-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 140px;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(245, 158, 11, 0.14), transparent 70%);
+            pointer-events: none;
         }
 
         .motivation-avatar {
-            width: 52px;
-            height: 52px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #FFB800, #EF4444);
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #F59E0B, #EA580C);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.75rem;
+            font-size: 1.6rem;
             box-shadow: 0 6px 18px rgba(245, 158, 11, 0.35);
             flex-shrink: 0;
-            }
-
-        @keyframes floatSlow {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-4px); }
         }
 
         .motivation-text {
@@ -555,13 +554,14 @@
         }
 
         .hero-badge {
-            background: linear-gradient(135deg, #10B981, #059669);
-            color: #FFF;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34D399;
             font-size: 0.72rem;
             font-weight: 800;
             padding: 3px 10px;
             border-radius: var(--radius-pill);
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
             display: inline-flex;
             align-items: center;
             gap: 4px;
@@ -575,17 +575,18 @@
             font-weight: 600;
         }
 
-        /* Stats & Streaks Card */
         .motivation-stats-card {
-            background: var(--bg-card);
-            border: 1.5px solid var(--border);
+            background: rgba(13, 19, 34, 0.72);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: var(--radius-xl);
-            padding: 14px 20px;
+            padding: 12px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            box-shadow: var(--shadow-panel);
+            box-shadow: 0 12px 32px -6px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
             flex-wrap: wrap;
             transition: all 0.25s ease;
         }
@@ -597,13 +598,13 @@
         }
 
         .stat-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             flex-shrink: 0;
         }
 
@@ -631,7 +632,7 @@
         }
 
         .stat-val {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 900;
             color: var(--text-main);
             line-height: 1.2;
@@ -685,14 +686,10 @@
 
         .progress-track {
             height: 8px;
-            background: rgba(226, 232, 240, 0.8);
+            background: rgba(255, 255, 255, 0.08);
             border-radius: var(--radius-pill);
             overflow: hidden;
             position: relative;
-        }
-
-        [data-theme="dark"] .progress-track {
-            background: rgba(255, 255, 255, 0.1);
         }
 
         .progress-fill {
@@ -700,12 +697,13 @@
             background: linear-gradient(90deg, #F59E0B, #10B981);
             border-radius: var(--radius-pill);
             transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
         }
 
         /* Workspace Switcher Bar */
         .workspace-bar {
             max-width: 1720px;
-            margin: 12px auto 0;
+            margin: 14px auto 0;
             padding: 0 28px;
             display: flex;
             gap: 10px;
@@ -714,54 +712,77 @@
         }
 
         .ws-tab-btn {
-            background: var(--bg-card);
-            border: 1.5px solid var(--border);
+            background: rgba(13, 19, 34, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             color: var(--text-muted);
             flex: 1;
-            padding: 11px 18px;
+            padding: 12px 18px;
             border-radius: var(--radius-lg);
             font-weight: 800;
             font-size: 0.92rem;
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            transition: all 0.22s;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
         }
 
         .ws-tab-btn:hover {
-            border-color: var(--primary);
+            background: rgba(20, 30, 52, 0.85);
+            border-color: rgba(255, 255, 255, 0.16);
             color: var(--text-main);
-            transform: translateY(-1px);
+            transform: translateY(-1.5px);
         }
 
         .ws-tab-btn.active {
-            background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-            color: #FFF;
-            border: 2px solid #0284C7;
-            box-shadow: 0 4px 16px rgba(2, 132, 199, 0.3);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(217, 119, 6, 0.08)) !important;
+            border: 1px solid rgba(245, 158, 11, 0.5) !important;
+            color: #F8FAFC !important;
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
         }
 
-        [data-theme="dark"] .ws-tab-btn.active {
-            background: linear-gradient(135deg, #1E293B, #0F172A);
-            color: #FFF;
-            border: 2px solid #3B82F6;
-            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.25);
+        .ws-tab-btn.policy-tab {
+            background: rgba(168, 85, 247, 0.08);
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            color: #C084FC;
+        }
+
+        .ws-tab-btn.policy-tab:hover {
+            background: rgba(168, 85, 247, 0.18);
+            border-color: rgba(168, 85, 247, 0.4);
+            color: #E9D5FF;
+        }
+
+        .ws-tab-btn.policy-tab.active {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.22), rgba(124, 58, 237, 0.12)) !important;
+            border: 1px solid rgba(168, 85, 247, 0.6) !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
         }
 
         .ws-tab-btn.menu-tab {
-            background: rgba(16, 185, 129, 0.12);
-            color: #059669;
-            border: 2px solid #10B981;
-        }
-        [data-theme="dark"] .ws-tab-btn.menu-tab {
-            color: #A7F3D0;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #6EE7B7;
         }
 
         .ws-tab-btn.menu-tab:hover {
-            background: rgba(16, 185, 129, 0.25);
+            background: rgba(16, 185, 129, 0.18);
+            border-color: rgba(16, 185, 129, 0.4);
+            color: #A7F3D0;
+        }
+
+        .ws-tab-btn.menu-tab.active {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(5, 150, 105, 0.12)) !important;
+            border: 1px solid rgba(16, 185, 129, 0.6) !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
         }
 
         /* App Container & Panels */
@@ -785,15 +806,20 @@
 
         .panel {
             background: var(--bg-card);
-            -webkit-border: 1.5px solid var(--border);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border);
             border-radius: var(--radius-xl);
-            padding: 20px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
             box-shadow: var(--shadow-panel);
             position: relative;
             transition: all 0.25s ease;
+        }
+        .panel:hover {
+            border-color: rgba(255, 255, 255, 0.14);
         }
 
         .panel-header {
@@ -920,29 +946,30 @@
 
         /* Main Generate Button */
         .btn-generate {
-            background: linear-gradient(135deg, #FFB800 0%, #F59E0B 50%, #EF4444 100%);
-            color: #000;
-            font-weight: 900;
-            font-size: 1.05rem;
-            padding: 14px 22px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            color: #060911;
             border: none;
+            padding: 14px 24px;
+            font-size: 1.05rem;
+            font-weight: 900;
             border-radius: var(--radius-lg);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            box-shadow: 0 6px 22px rgba(245, 158, 11, 0.35);
+            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
             transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
             width: 100%;
+            letter-spacing: 0.2px;
         }
 
         .btn-generate:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(245, 158, 11, 0.45);
-            filter: brightness(1.04);
+            box-shadow: 0 12px 32px rgba(245, 158, 11, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            filter: brightness(1.05);
         }
 
         .btn-generate:active {
@@ -1026,26 +1053,27 @@
         }
 
         .preset-chip {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 6px 13px;
+            background: rgba(16, 24, 42, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #E2E8F0;
+            padding: 7px 15px;
             border-radius: var(--radius-pill);
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             font-weight: 700;
             cursor: pointer;
             white-space: nowrap;
-            transition: all 0.2s;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             user-select: none;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .preset-chip:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: #000;
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.6);
+            color: #FFFFFF;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px var(--primary-glow);
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.25);
         }
 
         /* Collapsible KB Filter Card */
@@ -2080,7 +2108,7 @@
                 <h1>Hungerstation Vendor Support Suite</h1>
                 <p>المنصة المعتمدة للردود التلقائية، المنيو، وقاعدة المعرفة (102 حالة معتمدة)</p>
             </div>
-            <span class="version-badge">v3.0 Ultra ✨</span>
+            <span class="version-badge">v22 Luxury Suite ✨</span>
         </div>
 
         <div class="header-controls">
@@ -2092,28 +2120,25 @@
             </div>
 
             <!-- 🎙️ Voice Assistant -->
-            <button type="button" class="header-btn" onclick="toggleVoiceAiDrawer()" id="voiceAiTriggerBtn" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFF; border: none;" title="المساعد الصوتي الذكي (AR+EN)">
+            <button type="button" class="header-btn" onclick="toggleVoiceAiDrawer()" id="voiceAiTriggerBtn" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFF; border: none; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);" title="المساعد الصوتي الذكي (AR+EN)">
                 <i class="fa-solid fa-microphone"></i> <span id="voiceBadgeText">🎙️ صوتي</span>
             </button>
 
-            <!-- ⚡ AI Copilot / Settings -->
-            <button type="button" class="header-btn" onclick="openAiSettingsModal()" id="aiStatusBadge" title="إعدادات الذكاء الاصطناعي والموديل">
-                <i class="fa-solid fa-wand-magic-sparkles" style="color: #A78BFA;"></i> <span>⚡ AI</span>
-            </button>
-
-            <!-- 🖥️ Dock Mode Toggle -->
-            <button type="button" class="header-btn" onclick="toggleDockMode()" id="dockToggleBtn" style="color: #38BDF8;" title="وضع نصف الشاشة للعمل بجانب Zendesk (Alt+D)">
-                <i class="fa-solid fa-table-columns"></i> <span id="dockToggleText">دوك 🖥️</span>
-            </button>
-
-            <!-- ⌨️ Hotkeys Cheat Sheet -->
-            <button type="button" class="header-btn" onclick="openHotkeysModal()" id="hotkeysBtn" style="color: #FCD34D;" title="اختصارات لوحة المفاتيح السريعة (Alt+1, Alt+2, Alt+C)">
-                <i class="fa-solid fa-keyboard"></i> <span>الاختصارات ⌨️</span>
+            <!-- 🤖 Cloud AI Settings & Model Selector -->
+            <button type="button" class="header-btn" onclick="openCloudAiSettingsModal()" id="cloudAiHeaderBtn" title="إعدادات وتشغيل الـ AI السحابي المباشر (Groq / DeepSeek / Claude)" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(124, 58, 237, 0.4)); border: 1.5px solid #A855F7; color: #F3E8FF; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-brain" style="color: #C084FC;"></i>
+                <span id="cloudAiHeaderLabel">الـ AI السحابي ⚡</span>
             </button>
 
             <!-- 🔄 Force Refresh / Cache Purge -->
-            <button type="button" class="header-btn" onclick="forcePurgeAndReload()" style="color: #10B981; border-color: rgba(16,185,129,0.3); font-weight: 800;" title="تحديث فوري وحذف الكاش القديم (v21)">
-                <i class="fa-solid fa-rotate"></i> <span>تحديث v21 🔄</span>
+            <button type="button" class="header-btn" onclick="forcePurgeAndReload()" style="color: #10B981; border: 1px solid rgba(16,185,129,0.3); font-weight: 800; background: rgba(16, 185, 129, 0.08);" title="تحديث فوري وحذف الكاش القديم (v22)">
+                <i class="fa-solid fa-rotate"></i> <span>تحديث v22 🔄</span>
+            </button>
+
+            <!-- 🌙 / ☀️ Theme Switcher -->
+            <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" id="themeToggleBtn" title="تبديل مظهر الواجهة">
+                <i class="fa-solid fa-moon" style="color: #818CF8;" id="themeToggleIcon"></i>
+                <span id="themeToggleText">الوضع الفاخر 🌙</span>
             </button>
 
             <!-- ⚡ Consolidated Enterprise Tools Dropdown -->
@@ -2125,6 +2150,18 @@
                 <div class="tools-dropdown-menu" id="toolsDropdownMenu">
                     <!-- Category 1: Tickets & Operations -->
                     <div class="tools-dropdown-group-title">🎯 التذاكر والعمليات اليومية</div>
+                    <div class="tools-dropdown-item" onclick="toggleDockMode(); closeToolsMenu();" title="وضع نصف الشاشة للعمل بجانب Zendesk (Alt+D)">
+                        <i class="fa-solid fa-table-columns" style="color: #38BDF8;"></i>
+                        <span style="flex: 1;" id="dockToggleText">وضع الدوك (نصف شاشة)</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="openHotkeysModal(); closeToolsMenu();" title="اختصارات لوحة المفاتيح السريعة (Alt+1, Alt+2, Alt+C)">
+                        <i class="fa-solid fa-keyboard" style="color: #FCD34D;"></i>
+                        <span style="flex: 1;">دليل اختصارات الكيبورد</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="openAiSettingsModal(); closeToolsMenu();" title="إعدادات نماذج الذكاء الاصطناعي">
+                        <i class="fa-solid fa-wand-magic-sparkles" style="color: #A78BFA;"></i>
+                        <span style="flex: 1;">إعدادات الذكاء الاصطناعي (AI)</span>
+                    </div>
                     <div class="tools-dropdown-item" onclick="openPendingVaultModal(); closeToolsMenu();" title="حافظة التذاكر المعلقة وتفادي كسر الـ SLA">
                         <i class="fa-solid fa-clock-rotate-left" style="color: #F59E0B;"></i>
                         <span style="flex: 1;">حافظة التذاكر المعلقة</span>
@@ -2183,10 +2220,6 @@
                         <i class="fa-solid fa-window-restore" style="color: #38BDF8;"></i>
                         <span style="flex: 1;">نافذة عائمة شبحية (HUD)</span>
                     </div>
-                    <div class="tools-dropdown-item" onclick="openCopilotModal(); closeToolsMenu();" title="كابيلوت الدعم التفاعلي">
-                        <i class="fa-solid fa-robot" style="color: #A78BFA;"></i>
-                        <span style="flex: 1;">كابيلوت الدعم الذكي</span>
-                    </div>
                     <div class="tools-dropdown-item" onclick="downloadStandaloneFile(); closeToolsMenu();" title="تنزيل نسخة أوفلاين">
                         <i class="fa-solid fa-cloud-arrow-down" style="color: #38BDF8;"></i>
                         <span style="flex: 1;">تحميل نسخة أوفلاين كاملة</span>
@@ -2205,18 +2238,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- ☀️ Theme Switcher -->
-                        <!-- 🤖 Cloud AI Settings & Model Selector -->
-            <button type="button" class="header-btn" onclick="openCloudAiSettingsModal()" id="cloudAiHeaderBtn" title="إعدادات وتشغيل الـ AI السحابي المباشر (Groq / DeepSeek / Claude)" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(124, 58, 237, 0.4)); border: 1.5px solid #A855F7; color: #F3E8FF; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-brain" style="color: #C084FC;"></i>
-                <span id="cloudAiHeaderLabel">الـ AI السحابي ⚡</span>
-            </button>
-
-            <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" id="themeToggleBtn" title="تبديل مظهر الواجهة">
-                <i class="fa-solid fa-sun" style="color: #F59E0B;" id="themeToggleIcon"></i>
-                <span id="themeToggleText">الوضع المبهج ☀️</span>
-            </button>
         </div>
     </header>
 
@@ -2892,22 +2913,21 @@
 
 
 window.forcePurgeAndReload = function() {
-    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v12)...');
+    if (typeof showToast === 'function') showToast('⏳ جاري تحديث النسخة الفاخرة وحذف الكاش القديم (v22)...');
+    localStorage.setItem('hs_app_theme', 'dark');
     if ('caches' in window) {
         caches.keys().then(names => {
             return Promise.all(names.map(name => caches.delete(name)));
         }).then(() => {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(regs => {
-                    for (let r of regs) r.unregister();
-                    setTimeout(() => { window.location.href = window.location.pathname + '?nocache=' + Date.now(); }, 200);
+                    regs.forEach(r => r.unregister());
                 });
-            } else {
-                window.location.href = window.location.pathname + '?nocache=' + Date.now();
             }
+            window.location.reload(true);
         });
     } else {
-        window.location.href = window.location.pathname + '?nocache=' + Date.now();
+        window.location.reload(true);
     }
 };
 
@@ -13221,9 +13241,9 @@ function downloadOfficialMenuExcel() {
         // ── APP THEME ENGINE (BRIGHT SUNNY / NEON TWILIGHT) ─────────
         function initTheme() {
             let savedTheme = localStorage.getItem('hs_app_theme');
-            if (!savedTheme) {
-                savedTheme = 'bright'; // Default to cheerful bright!
-                localStorage.setItem('hs_app_theme', 'bright');
+            if (!savedTheme || savedTheme === 'bright') {
+                savedTheme = 'dark';
+                localStorage.setItem('hs_app_theme', 'dark');
             }
             applyTheme(savedTheme);
         }
@@ -15818,22 +15838,21 @@ function updateMobileMockup() {
 const originalRenderStudioTables = window.renderStudioMenuPreviewTables;
 
 window.forcePurgeAndReload = function() {
-    if (typeof showToast === 'function') showToast('⏳ جاري حذف الكاش وتحميل أحدث نسخة (v12)...');
+    if (typeof showToast === 'function') showToast('⏳ جاري تحديث النسخة الفاخرة وحذف الكاش القديم (v22)...');
+    localStorage.setItem('hs_app_theme', 'dark');
     if ('caches' in window) {
         caches.keys().then(names => {
             return Promise.all(names.map(name => caches.delete(name)));
         }).then(() => {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(regs => {
-                    for (let r of regs) r.unregister();
-                    setTimeout(() => { window.location.href = window.location.pathname + '?nocache=' + Date.now(); }, 200);
+                    regs.forEach(r => r.unregister());
                 });
-            } else {
-                window.location.href = window.location.pathname + '?nocache=' + Date.now();
             }
+            window.location.reload(true);
         });
     } else {
-        window.location.href = window.location.pathname + '?nocache=' + Date.now();
+        window.location.reload(true);
     }
 };
 
