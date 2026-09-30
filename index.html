@@ -5,12 +5,6 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-
-    <!-- 🔥 Firebase Config -->
-    
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hungerstation Vendor Support AI Suite v3.0 | المنصة الذكية لدعم الشركاء</title>
     <!-- Google Fonts: Cairo & Outfit -->
@@ -2117,19 +2111,9 @@
                 <i class="fa-solid fa-keyboard"></i> <span>الاختصارات ⌨️</span>
             </button>
 
-            <!-- 📋 Auto-Copy Toggle -->
-            <button type="button" class="header-btn" onclick="toggleAutoCopy()" id="autoCopyToggleBtn" title="تفعيل/تعطيل النسخ التلقائي للماكرو فور اختياره">
-                <i class="fa-solid fa-clipboard-check"></i> <span id="autoCopyToggleText">نسخ فوري ⚡</span>
-            </button>
-
             <!-- 🔄 Force Refresh / Cache Purge -->
-            <button type="button" class="header-btn" onclick="forcePurgeAndReload()" style="color: #10B981; border-color: rgba(16,185,129,0.3);" title="تحديث فوري وحذف الكاش القديم (v20)">
-                <i class="fa-solid fa-rotate"></i> <span>تحديث v20 🔄</span>
-            </button>
-
-            <!-- 🔊 Sound FX Mute Toggle -->
-            <button type="button" class="header-btn" onclick="toggleSoundMute()" id="soundToggleBtn" title="كتم/تشغيل التنبيهات والمؤثرات الصوتية">
-                <i class="fa-solid fa-volume-high" style="color: #10B981;"></i> <span id="soundToggleText">صوت 🔊</span>
+            <button type="button" class="header-btn" onclick="forcePurgeAndReload()" style="color: #10B981; border-color: rgba(16,185,129,0.3); font-weight: 800;" title="تحديث فوري وحذف الكاش القديم (v21)">
+                <i class="fa-solid fa-rotate"></i> <span>تحديث v21 🔄</span>
             </button>
 
             <!-- ⚡ Consolidated Enterprise Tools Dropdown -->
@@ -2255,7 +2239,7 @@
 
     <!-- 🍽️ DEDICATED MENU BUILDER STUDIO WORKSPACE -->
     <div id="menuStudioWorkspace" style="display: none; max-width: 1400px; margin: 16px auto; padding: 0 20px;">
-        <div style="background: #1E293B; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 24px; color: #FFF; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+        <div style="background: var(--bg-card, #1E293B); border: 1px solid var(--border-color, rgba(255,255,255,0.12)); border-radius: 16px; padding: 24px; color: var(--text-main, #FFF); box-shadow: 0 20px 40px rgba(0,0,0,0.3); backdrop-filter: blur(16px);">
             
             <!-- Studio Hero Header -->
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
@@ -2289,6 +2273,12 @@
                     </button>
                     <button onclick="quickAddCustomItem()" style="background: rgba(59, 130, 246, 0.2); color: #60A5FA; border: 1px solid #3B82F6; padding: 10px 14px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
                         <i class="fa-solid fa-plus-circle"></i> إضافة صنف يدوي
+                    </button>
+                    <button onclick="aiBulkGenerateDescriptions()" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #FFF; border: none; padding: 10px 16px; border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);" title="الذكاء الاصطناعي يكتب وصف احترافي لكل صنف تلقائياً">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 🤖 توليد أوصاف AI
+                    </button>
+                    <button onclick="aiAuditMenu()" style="background: linear-gradient(135deg, #EF4444, #DC2626); color: #FFF; border: none; padding: 10px 16px; border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);" title="مراجعة شاملة للمنيو بالذكاء الاصطناعي">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i> 🔍 مراجعة AI
                     </button>
                     <button onclick="switchMainWorkspace('TICKETS')" style="background: rgba(255,255,255,0.08); color: #CBD5E1; border: 1px solid rgba(255,255,255,0.15); padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer;">
                         <i class="fa-solid fa-arrow-right"></i> مولد التذاكر
@@ -2328,8 +2318,8 @@
 روابط الصور: https://drive.google.com/drive/folders/..."></textarea>
                     
                     <div style="display: flex; gap: 8px; margin-top: 10px;">
-                        <button onclick="parseStudioRawMenuInput()" style="flex: 1; background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px; border-radius: 8px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> معالجة وتوليد الشيت فوراً
+                        <button onclick="aiEnhancedParseMenu()" style="flex: 1; background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px; border-radius: 8px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> 🤖 معالجة وتوليد الشيت بالذكاء الاصطناعي
                         </button>
                         <button onclick="loadStudioSampleMenuData()" style="background: rgba(255,255,255,0.08); color: #CBD5E1; border: 1px solid rgba(255,255,255,0.12); padding: 10px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
                             📋 تجربة بيانات نموذجية
@@ -2391,6 +2381,9 @@
 
                     <!-- Smart Fast Actions -->
                     <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <button onclick="aiTranslateEntireMenu()" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #FFF; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.35);" title="ترجمة ذكية فورية عبر الذكاء الاصطناعي (Groq 120B)">
+                            <i class="fa-solid fa-brain"></i> ترجمة ذكية بالـ AI 🤖
+                        </button>
                         <button onclick="autoFillMissingBilingualNames()" style="background: linear-gradient(135deg, #6366F1, #4F46E5); color: #FFF; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;">
                             <i class="fa-solid fa-language"></i> إكمال وترجمة الإنجليزية/العربية
                         </button>
@@ -2570,7 +2563,7 @@
     
     <!-- 📚 DEDICATED SUPPORT POLICIES WORKSPACE (BITE HUB SOP & POLICIES) -->
     <div id="policiesWorkspace" style="display: none; max-width: 1560px; margin: 16px auto; padding: 0 20px;">
-        <div style="background: #1E293B; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 26px; color: #FFF; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+        <div style="background: var(--bg-card, #1E293B); border: 1px solid var(--border-color, rgba(255,255,255,0.12)); border-radius: 16px; padding: 26px; color: var(--text-main, #FFF); box-shadow: 0 20px 40px rgba(0,0,0,0.3); backdrop-filter: blur(16px);">
             
             <!-- Policies Hero Header -->
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 18px; margin-bottom: 22px; flex-wrap: wrap; gap: 14px;">
@@ -2595,6 +2588,9 @@
                     </div>
                     <button type="button" onclick="switchPolicyLang('AR')" id="policyLangBtnAR" style="background: #A855F7; color: #FFF; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; cursor: pointer;">عربي</button>
                     <button type="button" onclick="switchPolicyLang('EN')" id="policyLangBtnEN" style="background: rgba(255,255,255,0.08); color: #94A3B8; border: 1px solid rgba(255,255,255,0.15); padding: 8px 14px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; cursor: pointer;">English</button>
+                    <button type="button" onclick="askAiPolicyAdvisor()" style="background: linear-gradient(135deg, #A855F7, #7C3AED); color: #FFF; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(168, 85, 247, 0.35);" title="استشارة الذكاء الاصطناعي في السياسات المعتمدة">
+                        <i class="fa-solid fa-graduation-cap"></i> مستشار السياسات AI 🤖
+                    </button>
                 </div>
             </div>
 
@@ -3572,6 +3568,341 @@ function smartDetectCategory(itemName) {
         }
     }
     return { ar: 'القائمة الرئيسية', en: 'Main Menu' };
+}
+
+// =========================================================================
+// 🤖 AI-POWERED MENU INTELLIGENCE ENGINE (Real Cloud AI - Groq LLM)
+// =========================================================================
+
+// 1. AI Smart Menu Parser — replaces regex parsing with LLM understanding
+async function aiParseRawMenu(rawText) {
+    if (!rawText || rawText.trim().length < 10) return null;
+    const apiKey = localStorage.getItem('hs_cloud_ai_key');
+    const model = localStorage.getItem('hs_cloud_ai_model') || 'openai/gpt-oss-120b';
+    if (!apiKey) { showToast('⚠️ يرجى إعداد مفتاح الـ Cloud AI أولاً'); return null; }
+    
+    showToast('🤖 الذكاء الاصطناعي يحلل المنيو...', 3000);
+    try {
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+            body: JSON.stringify({
+                model: model,
+                messages: [{
+                    role: 'system',
+                    content: `You are a HungerStation menu data extraction AI. Parse restaurant menu text and return ONLY valid JSON. Extract:
+- Menu groups/categories (sections like "Grills", "Beverages")
+- Items with: name_ar, name_en, price, calories (if mentioned), category
+- Modifiers/add-ons with: name_ar, name_en, price
+
+Rules:
+1. If item name is Arabic, translate to English. If English, translate to Arabic.
+2. Prices in SAR. If no price found, set 0.
+3. Auto-detect category from item name.
+4. Handle messy WhatsApp-style text, unstructured lists, pasted spreadsheet data.
+5. Return JSON format: {"groups":[{"name_ar":"","name_en":"","sort_order":1}], "items":[{"name_ar":"","name_en":"","price":0,"calories":0,"category_ar":"","category_en":"","description_ar":"","description_en":""}], "modifiers":[{"name_ar":"","name_en":"","price":0,"group_name_ar":""}]}`
+                }, {
+                    role: 'user',
+                    content: `Parse this restaurant menu:\n\n${rawText.slice(0, 4000)}`
+                }],
+                temperature: 0.1,
+                max_tokens: 4000
+            })
+        });
+        const data = await res.json();
+        const text = data?.choices?.[0]?.message?.content || '';
+        // Extract JSON from response (handle markdown code blocks)
+        const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, text];
+        const parsed = JSON.parse(jsonMatch[1].trim());
+        showToast('✅ الذكاء الاصطناعي حلّل المنيو بنجاح! 🎉');
+        return parsed;
+    } catch(e) {
+        console.error('AI Menu Parse error:', e);
+        showToast('⚠️ فشل تحليل الـ AI، جاري الرجوع للمحلل المحلي...');
+        return null;
+    }
+}
+
+// 2. AI Translation — professional food-specific translation
+async function aiTranslateMenuItem(text, targetLang = 'EN') {
+    if (!text || text.trim().length < 2) return autoTranslateMenuText(text, targetLang);
+    const apiKey = localStorage.getItem('hs_cloud_ai_key');
+    if (!apiKey) return autoTranslateMenuText(text, targetLang);
+    try {
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+            body: JSON.stringify({
+                model: localStorage.getItem('hs_cloud_ai_model') || 'openai/gpt-oss-120b',
+                messages: [{
+                    role: 'system',
+                    content: `You are a professional food menu translator for Saudi Arabian restaurants. Translate menu item names accurately. ${targetLang === 'EN' ? 'Translate Arabic to English.' : 'Translate English to Arabic.'} Return ONLY the translated text, nothing else. Use proper food industry terminology.`
+                }, {
+                    role: 'user',
+                    content: text
+                }],
+                temperature: 0,
+                max_tokens: 100
+            })
+        });
+        const data = await res.json();
+        return data?.choices?.[0]?.message?.content?.trim() || autoTranslateMenuText(text, targetLang);
+    } catch(e) {
+        return autoTranslateMenuText(text, targetLang);
+    }
+}
+
+// 3. AI Menu Description Generator — generates professional item descriptions
+async function aiGenerateMenuDescription(itemName, lang = 'AR') {
+    const apiKey = localStorage.getItem('hs_cloud_ai_key');
+    if (!apiKey) { showToast('⚠️ يرجى إعداد مفتاح الـ Cloud AI أولاً'); return ''; }
+    try {
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+            body: JSON.stringify({
+                model: localStorage.getItem('hs_cloud_ai_model') || 'openai/gpt-oss-120b',
+                messages: [{
+                    role: 'system',
+                    content: `You are a professional food copywriter for HungerStation restaurant menus in Saudi Arabia. Write a short, appetizing description (1-2 sentences max, under 120 characters) for menu items. ${lang === 'AR' ? 'Write in Arabic.' : 'Write in English.'} Be concise and mouth-watering. No emojis.`
+                }, {
+                    role: 'user',
+                    content: `Write a menu description for: ${itemName}`
+                }],
+                temperature: 0.7,
+                max_tokens: 100
+            })
+        });
+        const data = await res.json();
+        return data?.choices?.[0]?.message?.content?.trim() || '';
+    } catch(e) {
+        return '';
+    }
+}
+
+// 4. AI Bulk Description Generator — generates descriptions for all items
+async function aiBulkGenerateDescriptions() {
+    if (!window.menuBuilderData || window.menuBuilderData.items.length === 0) {
+        showToast('⚠️ لا توجد أصناف لتوليد أوصاف لها');
+        return;
+    }
+    const apiKey = localStorage.getItem('hs_cloud_ai_key');
+    if (!apiKey) { showToast('⚠️ يرجى إعداد مفتاح الـ Cloud AI أولاً'); return; }
+    
+    showToast('🤖 جاري توليد أوصاف احترافية لجميع الأصناف...', 5000);
+    const items = window.menuBuilderData.items;
+    const itemNames = items.map((it, i) => `${i+1}. ${it.name_ar || it.name_en}`).join('\n');
+    
+    try {
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+            body: JSON.stringify({
+                model: localStorage.getItem('hs_cloud_ai_model') || 'openai/gpt-oss-120b',
+                messages: [{
+                    role: 'system',
+                    content: `You are a professional food copywriter for HungerStation Saudi restaurants. Generate short appetizing descriptions (Arabic, 1 sentence, max 100 chars each) for each menu item. Return ONLY a JSON array of strings in the same order. No markdown.`
+                }, {
+                    role: 'user',
+                    content: `Generate Arabic descriptions for these items:\n${itemNames}`
+                }],
+                temperature: 0.7,
+                max_tokens: 3000
+            })
+        });
+        const data = await res.json();
+        const text = data?.choices?.[0]?.message?.content || '[]';
+        const jsonMatch = text.match(/\[([\s\S]*?)\]/);
+        const descriptions = JSON.parse(jsonMatch ? `[${jsonMatch[1]}]` : text);
+        
+        descriptions.forEach((desc, i) => {
+            if (i < items.length && desc) {
+                items[i].description_ar = desc;
+            }
+        });
+        
+        renderStudioMenuPreviewTables();
+        showToast(`✅ تم توليد أوصاف احترافية لـ ${descriptions.length} صنف بالذكاء الاصطناعي! 🎉`);
+    } catch(e) {
+        console.error('AI Bulk Description error:', e);
+        showToast('⚠️ فشل توليد الأوصاف');
+    }
+}
+
+// 5. AI Menu Quality Auditor — comprehensive AI review of the menu
+async function aiAuditMenu() {
+    if (!window.menuBuilderData || window.menuBuilderData.items.length === 0) {
+        showToast('⚠️ لا توجد أصناف لمراجعتها');
+        return;
+    }
+    const apiKey = localStorage.getItem('hs_cloud_ai_key');
+    if (!apiKey) { showToast('⚠️ يرجى إعداد مفتاح الـ Cloud AI أولاً'); return; }
+    
+    showToast('🔍 الذكاء الاصطناعي يراجع المنيو...', 5000);
+    const menuSummary = JSON.stringify({
+        groups: window.menuBuilderData.groups.map(g => ({ name_ar: g.name_ar, name_en: g.name_en })),
+        items: window.menuBuilderData.items.map(it => ({ name_ar: it.name_ar, name_en: it.name_en, price: it.price, calories: it.calories, category: it.sort_group_name_ar })),
+        modifiers: window.menuBuilderData.modifiers.map(m => ({ name_ar: m.name_ar, name_en: m.name_en, price: m.price }))
+    });
+    
+    try {
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+            body: JSON.stringify({
+                model: localStorage.getItem('hs_cloud_ai_model') || 'openai/gpt-oss-120b',
+                messages: [{
+                    role: 'system',
+                    content: `You are a HungerStation menu quality auditor. Analyze restaurant menus and find issues. Report in Arabic. Categories of issues:
+1. 🔴 أخطاء حرجة (Critical): أسعار صفرية، أسماء مكررة، أقسام فاضية
+2. 🟡 تحسينات (Improvements): ترتيب الأقسام، أسعار غير منطقية، أصناف ممكن تتجمع
+3. 🟢 اقتراحات (Suggestions): أصناف ناقصة شائعة، تحسينات الوصف
+
+Return a structured Arabic report with the issues found. Be specific with item names and prices.`
+                }, {
+                    role: 'user',
+                    content: `Audit this HungerStation menu:\n${menuSummary.slice(0, 4000)}`
+                }],
+                temperature: 0.3,
+                max_tokens: 2000
+            })
+        });
+        const data = await res.json();
+        const report = data?.choices?.[0]?.message?.content || 'لم يتم العثور على مشاكل';
+        
+        // Show in a modal
+        const modalHtml = `
+            <div class="modal-overlay" id="aiMenuAuditModal" style="display:flex; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px;" onclick="if(event.target===this)this.style.display='none'">
+                <div style="background:var(--bg-card, #1E293B); border:1px solid rgba(255,255,255,0.15); border-radius:16px; padding:28px; max-width:700px; width:100%; max-height:80vh; overflow-y:auto; color:var(--text-primary, #F8FAFC); box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                        <h3 style="margin:0; font-size:1.3rem; display:flex; align-items:center; gap:10px;">🤖 تقرير مراجعة الـ AI للمنيو</h3>
+                        <button onclick="this.closest('.modal-overlay').style.display='none'" style="background:rgba(239,68,68,0.2); color:#EF4444; border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:6px 12px; cursor:pointer; font-weight:700;">✕ إغلاق</button>
+                    </div>
+                    <div style="background:rgba(0,0,0,0.2); border-radius:12px; padding:16px; white-space:pre-wrap; line-height:1.8; font-size:0.9rem;">${report.replace(/\n/g, '<br>')}</div>
+                </div>
+            </div>`;
+        
+        const existing = document.getElementById('aiMenuAuditModal');
+        if (existing) existing.remove();
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        showToast('✅ تم مراجعة المنيو بالذكاء الاصطناعي!');
+    } catch(e) {
+        console.error('AI Menu Audit error:', e);
+        showToast('⚠️ فشل مراجعة الـ AI');
+    }
+}
+
+// 6. AI-Enhanced parseStudioRawMenuInput — tries AI first, falls back to regex
+async function aiEnhancedParseMenu() {
+    const inputEl = document.getElementById('studioRawMenuInput');
+    const rawText = inputEl ? inputEl.value : '';
+    if (!rawText.trim()) {
+        showToast('⚠️ برجاء لصق المنيو أولاً');
+        return;
+    }
+    
+    // Try AI parsing first
+    const aiResult = await aiParseRawMenu(rawText);
+    if (aiResult && aiResult.items && aiResult.items.length > 0) {
+        // AI succeeded — use its structured data
+        window.menuBuilderData.groups = (aiResult.groups || []).map((g, i) => ({
+            name_ar: g.name_ar || '',
+            name_en: g.name_en || '',
+            sort_order: g.sort_order || (i + 1)
+        }));
+        window.menuBuilderData.items = (aiResult.items || []).map(it => ({
+            name_ar: it.name_ar || '',
+            name_en: it.name_en || '',
+            price: parseFloat(it.price) || 0,
+            calories: parseInt(it.calories) || 0,
+            sort_group_name_ar: it.category_ar || '',
+            sort_group_name_en: it.category_en || '',
+            description_ar: it.description_ar || '',
+            description_en: it.description_en || ''
+        }));
+        window.menuBuilderData.modifiers = (aiResult.modifiers || []).map(m => ({
+            name_ar: m.name_ar || '',
+            name_en: m.name_en || '',
+            price: parseFloat(m.price) || 0,
+            modifier_group_name_ar: m.group_name_ar || 'إضافات'
+        }));
+        renderStudioMenuPreviewTables();
+        updateStudioHealthRadar();
+        showToast(`🤖 تم تحليل ${aiResult.items.length} صنف و${(aiResult.groups||[]).length} قسم بالذكاء الاصطناعي! 🎉`);
+    } else {
+        // Fallback to local regex parser
+        parseStudioRawMenuInput();
+    }
+}
+
+// 7. AI Full Menu Translator — batches menu items for expert cloud LLM translation
+async function aiTranslateEntireMenu() {
+    if (!window.menuBuilderData || !window.menuBuilderData.items.length) {
+        showToast("⚠️ لا توجد أصناف لترجمتها!");
+        return;
+    }
+    const apiKey = localStorage.getItem('hs_cloud_ai_key');
+    if (!apiKey) {
+        autoFillMissingBilingualNames();
+        return;
+    }
+
+    showToast("🤖 جاري ترجمة الأصناف بالذكاء الاصطناعي (Groq)...", 5000);
+    const items = window.menuBuilderData.items;
+    
+    const itemsToTranslate = items.map((it, idx) => ({
+        idx,
+        ar: it.item_ar || it.name_ar || '',
+        en: it.item_en || it.name_en || ''
+    }));
+
+    try {
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+            body: JSON.stringify({
+                model: localStorage.getItem('hs_cloud_ai_model') || 'openai/gpt-oss-120b',
+                messages: [{
+                    role: 'system',
+                    content: `You are a professional restaurant menu translator for Saudi Arabia.
+Translate food item names accurately between Arabic and English.
+Return ONLY a valid JSON array of objects with keys: "idx", "ar", "en".
+Example: [{"idx": 0, "ar": "برجر دجاج مشوي", "en": "Grilled Chicken Burger"}]`
+                }, {
+                    role: 'user',
+                    content: `Translate these items:\n${JSON.stringify(itemsToTranslate.slice(0, 60))}`
+                }],
+                temperature: 0.1,
+                max_tokens: 3500
+            })
+        });
+        const data = await res.json();
+        const content = data?.choices?.[0]?.message?.content || '[]';
+        const match = content.match(/\[([\s\S]*?)\]/);
+        const translated = JSON.parse(match ? `[${match[1]}]` : content);
+
+        translated.forEach(t => {
+            if (items[t.idx]) {
+                if (t.ar) { items[t.idx].item_ar = t.ar; items[t.idx].name_ar = t.ar; }
+                if (t.en) { items[t.idx].item_en = t.en; items[t.idx].name_en = t.en; }
+            }
+        });
+
+        // Also translate groups
+        window.menuBuilderData.groups.forEach(g => {
+            if (!g.en_name || g.en_name === '-') g.en_name = autoTranslateMenuText(g.ar_name, 'EN') || 'Main Menu';
+            if (!g.ar_name || g.ar_name === '-') g.ar_name = autoTranslateMenuText(g.en_name, 'AR') || 'القائمة الرئيسية';
+            g.name_en = g.en_name;
+            g.name_ar = g.ar_name;
+        });
+
+        renderStudioMenuPreviewTables();
+        playSuccessChime();
+        showToast(`✅ تم ترجمة المنيو بالكامل بالذكاء الاصطناعي بنجاح! 🚀`);
+    } catch(e) {
+        console.warn("AI bulk translation fallback:", e);
+        autoFillMissingBilingualNames();
+    }
 }
 
 
@@ -9318,7 +9649,7 @@ function cleanArabicProcedure(text) {
             // If confidence is low or query is ambiguous, consult Gemini 2.0 Flash classifier
             if ((!finalMatchedCase || finalConfidence < 65) && cleanMsg.length > 10) {
                 try {
-                    const topTenForAi = allCases.slice(0, 15);
+                    const topTenForAi = allCases.map(c => ({ c, score: smartScore(c, cleanMsg) })).sort((a, b) => b.score - a.score).slice(0, 15).map(x => x.c);
                     const geminiMatchedIndices = await classifyWithGemini(cleanMsg, topTenForAi);
                     if (geminiMatchedIndices && geminiMatchedIndices[0] >= 0 && topTenForAi[geminiMatchedIndices[0]]) {
                         finalMatchedCase = topTenForAi[geminiMatchedIndices[0]];
@@ -10097,8 +10428,11 @@ ${invoiceGuideHtml || ""}
                             <span id="arQaBadge" style="font-size: 0.76rem; color: #059669; font-weight: 700; display: flex; align-items: center; gap: 6px;">
                                 <i class="fa-solid fa-circle-check"></i> <strong>فحص الجودة (QA): الرد مدقق لغوياً وخالي من الأخطاء</strong>
                             </span>
-                            <button type="button" onclick="proofreadCurrentMacro()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> تدقيق لغوي وإملائي فوري (QA 100%) ✨
+                            <button type="button" onclick="proofreadCurrentMacro(false)" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> تدقيق سريع ✨
+                            </button>
+                            <button type="button" onclick="proofreadCurrentMacro(true)" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #FFF; border: none; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 6px rgba(139, 92, 246, 0.3);" title="تدقيق سياقي فائق بالذكاء الاصطناعي (Groq 120B)">
+                                <i class="fa-solid fa-brain"></i> تدقيق ذكي بالـ AI 🤖
                             </button>
                         </div>
 
@@ -10110,6 +10444,7 @@ ${invoiceGuideHtml || ""}
                                 <span>نسخ الماكرو العربي الجاهز (باسم ${arAgentName}) 🚀</span>
                                 <kbd style="font-family: monospace; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; padding: 1px 6px; font-size: 0.7rem; color: #FFF;">Alt+C</kbd>
                             </button>
+                            <button class="btn-learn" onclick="generateAiOfficialEmail()" style="background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(5,150,105,0.22)); color: #10B981; border: 1.5px solid #10B981; font-weight: 800;" title="توليد إيميل رسمي معتمد للشركاء بالذكاء الاصطناعي مع التوقيع والاستبيان"><i class="fa-solid fa-envelope-open-text"></i> صياغة إيميل رسمي AI ✉️</button>
                             <button class="btn-learn" onclick="openTeleprompterModal()" style="background: linear-gradient(135deg, rgba(236,72,153,0.15), rgba(139,92,246,0.15)); color: #EC4899; border-color: rgba(236,72,153,0.35);" title="تحويل الماكرو لنقاط تحدث شفوية لمكالمة هاتفية مع الشريك">
                                 <i class="fa-solid fa-phone-volume"></i> ملقن المكالمة 🎙️
                             </button>
@@ -10146,8 +10481,11 @@ ${invoiceGuideHtml || ""}
                             <span id="enQaBadge" style="font-size: 0.76rem; color: #0284C7; font-weight: 700; display: flex; align-items: center; gap: 6px;">
                                 <i class="fa-solid fa-circle-check"></i> <strong>QA Verified: 100% Quality Grammar & Punctuation</strong>
                             </span>
-                            <button type="button" onclick="proofreadCurrentMacro()" style="background: linear-gradient(135deg, #3B82F6, #2563EB); color: #FFF; border: none; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> Proofread English (QA 100%) ✨
+                            <button type="button" onclick="proofreadCurrentMacro(false)" style="background: linear-gradient(135deg, #3B82F6, #2563EB); color: #FFF; border: none; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Fast Proofread ✨
+                            </button>
+                            <button type="button" onclick="proofreadCurrentMacro(true)" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #FFF; border: none; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;" title="Deep Contextual AI Proofreading (Groq 120B)">
+                                <i class="fa-solid fa-brain"></i> AI Proofread 🤖
                             </button>
                         </div>
 
@@ -13439,7 +13777,7 @@ function downloadOfficialMenuExcel() {
             return s.trim();
         }
 
-        function proofreadCurrentMacro() {
+        async function proofreadCurrentMacro(forceAi = false) {
             const isEn = (typeof activeLangTab !== 'undefined' && activeLangTab === 'EN');
             const boxId = isEn ? 'enMacroText' : 'arMacroText';
             const el = document.getElementById(boxId);
@@ -13454,7 +13792,126 @@ function downloadOfficialMenuExcel() {
                 badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #10B981;"></i> <strong>درجة الجودة: 100% ممتاز (خالي تماماً من الأخطاء الإملائية والترقيم) ✨</strong>`;
                 badge.style.color = '#059669';
             }
+
+            const apiKey = localStorage.getItem('hs_cloud_ai_key');
+            if (forceAi && apiKey) {
+                showToast("🤖 جاري التدقيق السياقي الفائق عبر الذكاء الاصطناعي (Groq 120B)...", 4000);
+                try {
+                    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+                        body: JSON.stringify({
+                            model: localStorage.getItem('hs_cloud_ai_model') || 'openai/gpt-oss-120b',
+                            messages: [{
+                                role: 'system',
+                                content: `You are an elite QA Auditor for HungerStation Saudi Partner Support.
+Proofread and polish the following support response (${isEn ? 'English' : 'Arabic'}).
+Rules:
+1. Fix all grammar, spelling, phrasing, and punctuation.
+2. Ensure professional, polite, respectful tone according to Saudi business norms.
+3. Keep all IDs, order numbers, store names, CCR codes, and sign-offs intact.
+4. Output ONLY the polished final response text without quotes or intro.`
+                            }, { role: 'user', content: el.innerText }],
+                            temperature: 0.1,
+                            max_tokens: 1200
+                        })
+                    });
+                    const data = await res.json();
+                    const aiPolished = data?.choices?.[0]?.message?.content?.trim();
+                    if (aiPolished && aiPolished.length > 20) {
+                        el.innerText = aiPolished;
+                        if (badge) {
+                            badge.innerHTML = `<i class="fa-solid fa-sparkles" style="color: #8B5CF6;"></i> <strong>تدقيق الذكاء الاصطناعي السحابي (Groq 120B QA Auditor): 100% احترافي 🚀</strong>`;
+                            badge.style.color = '#8B5CF6';
+                        }
+                        showToast("✅ تم التدقيق السياقي الفائق بالذكاء الاصطناعي بنجاح! 🎯");
+                        return;
+                    }
+                } catch(e) {
+                    console.warn("AI proofreading fallback:", e);
+                }
+            }
             showToast("تم تدقيق الرد وتصحيح الهمزات والتنوين وعلامات الترقيم بنجاح! 🎯");
+        }
+
+        // ✉️ AI OFFICIAL EMAIL GENERATOR
+        async function generateAiOfficialEmail() {
+            const c = window.currentActiveCaseObj;
+            if (!c) {
+                showToast("⚠️ برجاء اختيار حالة أو توليد رد أولاً!");
+                return;
+            }
+
+            const pm = document.getElementById('partnerMessage');
+            const userMsg = pm ? pm.value : '';
+            const arEl = document.getElementById('arMacroText');
+            if (!arEl) return;
+
+            showToast("🤖 جاري صياغة إيميل رسمي معتمد بالذكاء الاصطناعي...", 4000);
+
+            const entities = {};
+            const orderMatch = (userMsg || '').match(/\b\d{7,10}\b/);
+            if (orderMatch) entities.orderId = orderMatch[0];
+            const amountMatch = (userMsg || '').match(/(\d+(?:\.\d+)?)\s*(?:ريال|SAR|sar)/i);
+            if (amountMatch) entities.amount = amountMatch[1];
+            const storeEl = document.getElementById('extractedStoreName');
+            if (storeEl && storeEl.innerText) entities.storeName = storeEl.innerText.trim();
+
+            const greetings = {
+                arGreeting: getGreetingByTime() + ' شريكنا العزيز\n\nتحية طيبة وبعد،\n\n'
+            };
+
+            let emailText = await callGeminiFreeAi(userMsg || c.case_title, c, greetings, entities);
+
+            if (!emailText) {
+                const apiKey = localStorage.getItem('hs_cloud_ai_key');
+                if (apiKey) {
+                    try {
+                        const arAgentName = getAgentArabicName();
+                        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+                            body: JSON.stringify({
+                                model: localStorage.getItem('hs_cloud_ai_model') || 'openai/gpt-oss-120b',
+                                messages: [{
+                                    role: 'system',
+                                    content: `أنت مساعد دعم شركاء هنقرستيشن. اكتب إيميل رسمي معتمد ومحترم جداً باللغة العربية للرد على استفسار الشريك.
+بيانات الحالة:
+- العنوان: ${c.case_title}
+- الإجراء: ${c.procedure_arabic}
+- اسم الموظف: ${arAgentName}
+${entities.orderId ? `رقم الطلب: ${entities.orderId}` : ''}
+${entities.amount ? `المبلغ: ${entities.amount} ريال` : ''}
+
+قواعد الصياغة:
+1. تحية رسمية راقية.
+2. شرح الإجراء المعتمد بأسلوب مهذب ومباشر بدون أقواس أو تعليمات داخلية.
+3. التوقيع الرسمي باسم الموظف (${arAgentName}) وخدمة الشركاء.
+4. إشعار الاستبيان (تشير نجمة واحدة إلى أن مستوى الخدمة لم يكن مرضياً، بينما تشير خمس نجوم إلى أن مستوى الخدمة كان مرضياً جداً).
+اكتب نص الإيميل الجاهز للإرسال فقط بدون مقدمات.`
+                                }, { role: 'user', content: userMsg || c.case_title }],
+                                temperature: 0.2,
+                                max_tokens: 800
+                            })
+                        });
+                        const data = await res.json();
+                        emailText = data?.choices?.[0]?.message?.content?.trim();
+                    } catch(err) {
+                        console.warn("Groq email fallback error:", err);
+                    }
+                }
+            }
+
+            if (emailText) {
+                arEl.innerText = emailText;
+                showToast("✅ تم توليد وتنسيق الإيميل الرسمي المعتمد بالذكاء الاصطناعي! ✉️");
+                const badge = document.getElementById('arQaBadge');
+                if (badge) {
+                    badge.innerHTML = `<i class="fa-solid fa-envelope-circle-check" style="color: #10B981;"></i> <strong>إيميل رسمي معتمد صادر من الذكاء الاصطناعي (جاهز للإرسال 100%)</strong>`;
+                }
+            } else {
+                showToast("⚠️ تعذر توليد الإيميل، يرجى التأكد من اتصال الإنترنت أو مفتاح الـ AI.");
+            }
         }
 
         // ══════════════════════════════════════════════════════════════════
@@ -16654,6 +17111,82 @@ if (typeof window !== 'undefined') {
                 nextBtn.disabled = currentQrStep === 6;
                 nextBtn.style.opacity = currentQrStep === 6 ? '0.4' : '1';
                 nextBtn.textContent = isEn ? 'Next ➡️' : 'التالي ➡️';
+            }
+        }
+
+        // 🤖 AI POLICY ADVISOR (Grounded in 13 Official Bite Hub SOPs)
+        async function askAiPolicyAdvisor() {
+            const inputEl = document.getElementById('policySearchInput');
+            const query = inputEl ? inputEl.value.trim() : '';
+            const userPrompt = query || prompt("اسأل مستشار السياسات الذكي (مثال: متى يحق للمطعم تعويض عند إلغاء الطلب؟):");
+            if (!userPrompt || !userPrompt.trim()) return;
+
+            const apiKey = localStorage.getItem('hs_cloud_ai_key');
+            if (!apiKey) {
+                showToast("⚠️ يرجى ضبط مفتاح الـ Cloud AI أولاً للاستفادة من مستشار السياسات.");
+                return;
+            }
+
+            showToast("🤖 مستشار السياسات يحلل القواعد الرسمية الـ 13...", 4000);
+
+            const policiesContext = (typeof biteHubPoliciesData !== 'undefined' ? biteHubPoliciesData : []).map(p => 
+                `[سياسة: ${p.titleAr} | CCR: ${p.ccr} | القناة: ${p.categoryLabelAr}]\nالقاعدة: ${p.ruleAr}\nالنقاط الأساسية: ${(p.keyNotesAr || []).join(' - ')}`
+            ).join('\n\n');
+
+            try {
+                const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+                    body: JSON.stringify({
+                        model: localStorage.getItem('hs_cloud_ai_model') || 'openai/gpt-oss-120b',
+                        messages: [{
+                            role: 'system',
+                            content: `أنت المستشار الإجرائي والقانوني لسياسات دعم شركاء هنقرستيشن (Bite Hub Policy Advisor).
+مهمتك: الإجابة على استفسارات الموظفين بدقة 100% مستنداً فقط إلى السياسات الـ 13 المعتمدة المرفقة.
+القواعد:
+1. اذكر اسم السياسة وكود الـ CCR المعني.
+2. وضح ما إذا كان الإجراء خاصاً بمحادثات الشات (Live Chat) أو التذاكر (Cases).
+3. اشرح الخطوات بوضوح وبلهجة عربية رسمية ومباشرة.
+4. إذا كان الاستفسار يتعلق بتعويض، اذكر شروط استحقاق التعويض ومقداره (100% أو لا يستحق).
+
+دليل السياسات الـ 13 المعتمدة:
+${policiesContext}`
+                        }, {
+                            role: 'user',
+                            content: userPrompt
+                        }],
+                        temperature: 0.1,
+                        max_tokens: 1500
+                    })
+                });
+
+                const data = await res.json();
+                const advice = data?.choices?.[0]?.message?.content || 'تعذر الحصول على توجيه.';
+
+                // Render in a luxury advisor modal
+                const modalHtml = `
+                    <div class="modal-overlay" id="aiPolicyAdvisorModal" style="display:flex; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.75); backdrop-filter:blur(10px); align-items:center; justify-content:center; padding:20px;" onclick="if(event.target===this)this.style.display='none'">
+                        <div style="background:var(--bg-card, #1E293B); border:1.5px solid #A855F7; border-radius:18px; padding:26px; max-width:720px; width:100%; max-height:85vh; overflow-y:auto; color:var(--text-main, #F8FAFC); box-shadow:0 24px 70px rgba(168,85,247,0.35);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:14px;">
+                                <h3 style="margin:0; font-size:1.25rem; display:flex; align-items:center; gap:10px; color:#C084FC;">
+                                    <i class="fa-solid fa-graduation-cap"></i> مستشار السياسات بالذكاء الاصطناعي (Bite Hub AI Advisor)
+                                </h3>
+                                <button onclick="document.getElementById('aiPolicyAdvisorModal').style.display='none'" style="background:rgba(239,68,68,0.2); color:#EF4444; border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:6px 14px; cursor:pointer; font-weight:700;">✕ إغلاق</button>
+                            </div>
+                            <div style="background:rgba(168,85,247,0.1); border:1px solid rgba(168,85,247,0.25); border-radius:10px; padding:12px 16px; margin-bottom:16px; font-size:0.88rem; color:#E9D5FF;">
+                                <strong>سؤالك:</strong> ${userPrompt}
+                            </div>
+                            <div style="background:rgba(0,0,0,0.25); border-radius:12px; padding:18px; white-space:pre-wrap; line-height:1.8; font-size:0.92rem; border:1px solid rgba(255,255,255,0.06);">${advice.replace(/\n/g, '<br>')}</div>
+                        </div>
+                    </div>`;
+
+                const existing = document.getElementById('aiPolicyAdvisorModal');
+                if (existing) existing.remove();
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+                showToast("✅ تم استخراج التوجيه الرسمي من السياسات!");
+            } catch(e) {
+                console.error("Policy advisor error:", e);
+                showToast("⚠️ تعذر استشارة السياسات عبر الذكاء الاصطناعي.");
             }
         }
 

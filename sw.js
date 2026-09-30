@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hs-vendor-suite-v20-bulletproof-voice-and-generator';
+const CACHE_NAME = 'hs-vendor-suite-v21-ai-omni-upgrade';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.webmanifest'
