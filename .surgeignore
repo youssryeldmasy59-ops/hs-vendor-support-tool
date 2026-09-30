@@ -1,0 +1,9 @@
+.git
+*.py
+*.js
+!sw.js
+*.json
+*.bak*
+*.md
+.github
+Delivery
