@@ -18,6 +18,8 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- AI-Powered Instant Support & Smart Triage Engine -->
+    <script src="ai_smart_support.js"></script>
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -6772,6 +6774,10 @@ function cleanArabicProcedure(text) {
             if (typeof cleanAndFormatBilingualSpeech === 'function') {
                 rawMsg = cleanAndFormatBilingualSpeech(rawMsg);
             }
+            // 🧠 Smart AI Triage (Category, Priority, Sentiment, Summary)
+            if (typeof window.performSmartTriageOnSubmit === 'function' && rawMsg) {
+                window.performSmartTriageOnSubmit(rawMsg);
+            }
             let greetings = detectGreetings(rawMsg);
             
             // Comprehensive Structured Vendor Macro Parsing
@@ -7608,15 +7614,6 @@ ${invoiceGuideHtml || ""}
             }
         };
 
-            // Hook Response Intelligence Features
-            if (typeof renderPredictiveNextMoves === 'function') {
-                renderPredictiveNextMoves(c ? c.id : 45, subMacroId || null);
-            }
-            if (typeof checkLegalComplianceShield === 'function') {
-                checkLegalComplianceShield();
-            }
-
-
         async function displayCaseDualMacro(c, greetings, isEn, aiOverrideText = null, confidenceScore = 95, alternativeCases = [], detectedEntities = {}, targetSubMacroIdx = null) {
             const partnerMsgVal = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '') || (document.getElementById('searchInput') ? document.getElementById('searchInput').value : '');
             
@@ -8326,15 +8323,15 @@ ${invoiceGuideHtml || ""}
                     }).catch(() => {});
                 }
             }
-        }
 
             // Hook Response Intelligence Features
             if (typeof renderPredictiveNextMoves === 'function') {
-                renderPredictiveNextMoves(c ? c.id : 45, subMacroId || null);
+                renderPredictiveNextMoves(c ? c.id : 45, targetSubMacroIdx || null);
             }
             if (typeof checkLegalComplianceShield === 'function') {
                 checkLegalComplianceShield();
             }
+        }
 
 
 
@@ -8484,7 +8481,11 @@ ${invoiceGuideHtml || ""}
 
         function openAiSettingsModal() {
             const savedKey = localStorage.getItem('gemini_api_key') || '';
-            document.getElementById('geminiApiKeyInput').value = savedKey;
+            const savedProxy = localStorage.getItem('hs_triage_proxy_url') || '';
+            const savedOpenAi = localStorage.getItem('hs_openai_api_key') || '';
+            if (document.getElementById('geminiApiKeyInput')) document.getElementById('geminiApiKeyInput').value = savedKey;
+            if (document.getElementById('triageProxyUrlInput')) document.getElementById('triageProxyUrlInput').value = savedProxy;
+            if (document.getElementById('openAiApiKeyInput')) document.getElementById('openAiApiKeyInput').value = savedOpenAi;
             document.getElementById('aiSettingsModal').style.display = 'flex';
         }
 
@@ -8493,24 +8494,64 @@ ${invoiceGuideHtml || ""}
         }
 
         function saveGeminiApiKey() {
-            const key = document.getElementById('geminiApiKeyInput').value.trim();
+            const key = document.getElementById('geminiApiKeyInput') ? document.getElementById('geminiApiKeyInput').value.trim() : '';
+            const proxy = document.getElementById('triageProxyUrlInput') ? document.getElementById('triageProxyUrlInput').value.trim() : '';
+            const openAi = document.getElementById('openAiApiKeyInput') ? document.getElementById('openAiApiKeyInput').value.trim() : '';
+
             if (key) {
                 localStorage.setItem('gemini_api_key', key);
-                updateAiStatusBadge();
-                alert('✨ تم حفظ مفتاح الذكاء الاصطناعي بنجاح! سيتم استخدامه لتوليد الردود الذكية فوراً.');
             } else {
                 localStorage.removeItem('gemini_api_key');
-                updateAiStatusBadge();
+            }
+
+            if (proxy) {
+                localStorage.setItem('hs_triage_proxy_url', proxy);
+            } else {
+                localStorage.removeItem('hs_triage_proxy_url');
+            }
+
+            if (openAi) {
+                localStorage.setItem('hs_openai_api_key', openAi);
+            } else {
+                localStorage.removeItem('hs_openai_api_key');
+            }
+
+            updateAiStatusBadge();
+            if (typeof showToast === 'function') {
+                showToast('✨ تم حفظ إعدادات وبروكسي الذكاء الاصطناعي بنجاح!');
+            } else {
+                alert('✨ تم حفظ إعدادات وبروكسي الذكاء الاصطناعي بنجاح!');
             }
             closeAiSettingsModal();
         }
 
         function clearGeminiApiKey() {
             localStorage.removeItem('gemini_api_key');
-            document.getElementById('geminiApiKeyInput').value = '';
+            localStorage.removeItem('hs_triage_proxy_url');
+            localStorage.removeItem('hs_openai_api_key');
+            if (document.getElementById('geminiApiKeyInput')) document.getElementById('geminiApiKeyInput').value = '';
+            if (document.getElementById('triageProxyUrlInput')) document.getElementById('triageProxyUrlInput').value = '';
+            if (document.getElementById('openAiApiKeyInput')) document.getElementById('openAiApiKeyInput').value = '';
             updateAiStatusBadge();
-            alert('تم إلغاء تفعيل المفتاح والعودة للمحرك المحلي.');
+            alert('تم إعادة ضبط إعدادات الـ AI والعودة للمحرك المحلي الافتراضي.');
             closeAiSettingsModal();
+        }
+
+        async function testTriageConnection() {
+            const testBtn = document.getElementById('testTriageBtn');
+            const orig = testBtn ? testBtn.innerHTML : '';
+            if (testBtn) { testBtn.disabled = true; testBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الفحص...'; }
+            try {
+                if (window.aiSmartSupport && typeof window.aiSmartSupport.executeSmartTriage === 'function') {
+                    const sampleText = 'عندي مشكلة في تأخر تحويل المستحقات وفاتورة الأسبوع الماضي معلقة';
+                    const res = await window.aiSmartSupport.executeSmartTriage(sampleText);
+                    alert(`✅ الاتصال ناجح ومفعل!\n\nالتصنيف: ${res.category}\nالأولوية: ${res.priority}\nالنبرة: ${res.sentiment}\nالملخص: ${res.summary}`);
+                }
+            } catch (err) {
+                alert(`⚠️ تعذر الاتصال بالبروكسي: ${err.message}`);
+            } finally {
+                if (testBtn) { testBtn.disabled = false; testBtn.innerHTML = orig; }
+            }
         }
 
         function updateAiStatusBadge() {
@@ -16934,8 +16975,8 @@ Thank you for your understanding and cooperation.`;
             m.style.display = 'flex';
 
             const prov = localStorage.getItem('hs_cloud_ai_provider') || 'groq';
-            const model = localStorage.getItem('hs_cloud_ai_model') || (prov === 'groq' ? 'llama-3.3-70b-versatile' : 'deepseek/deepseek-r1:free');
-            const key = localStorage.getItem('hs_cloud_ai_key') || '';
+            const model = localStorage.getItem('hs_cloud_ai_model') || (prov === 'groq' ? 'openai/gpt-oss-120b' : 'deepseek/deepseek-r1:free');
+            const key = localStorage.getItem('hs_cloud_ai_key') || (typeof getActiveGroqKey === 'function' ? getActiveGroqKey() : DEFAULT_GROQ_KEY);
 
             setCloudAiProvider(prov, false);
             const selectEl = document.getElementById('cloudAiModelSelect');
@@ -17003,9 +17044,12 @@ Thank you for your understanding and cooperation.`;
         }
 
         function saveCloudAiSettings() {
-            const prov = currentCloudProvider;
-            const model = document.getElementById('cloudAiModelSelect') ? document.getElementById('cloudAiModelSelect').value : '';
-            const key = document.getElementById('cloudAiApiKeyInput') ? document.getElementById('cloudAiApiKeyInput').value.trim() : '';
+            const prov = currentCloudProvider || 'groq';
+            const model = document.getElementById('cloudAiModelSelect') ? document.getElementById('cloudAiModelSelect').value : 'openai/gpt-oss-120b';
+            let key = document.getElementById('cloudAiApiKeyInput') ? document.getElementById('cloudAiApiKeyInput').value.trim() : '';
+            if (!key && prov === 'groq') {
+                key = (typeof getActiveGroqKey === 'function' ? getActiveGroqKey() : DEFAULT_GROQ_KEY);
+            }
 
             localStorage.setItem('hs_cloud_ai_provider', prov);
             localStorage.setItem('hs_cloud_ai_model', model);
@@ -17020,7 +17064,9 @@ Thank you for your understanding and cooperation.`;
             }
 
             closeCloudAiSettingsModal();
-            showToast('✅ تم حفظ إعدادات الـ AI السحابي بنجاح!');
+            if (typeof showToast === 'function') {
+                showToast('✅ تم حفظ وتفعيل إعدادات الـ AI السحابي بنجاح!');
+            }
         }
 
         async function testCloudAiConnection() {
@@ -17390,14 +17436,38 @@ Strict Rules:
                 </ol>
             </div>
 
-            <div style="margin-bottom: 16px;">
+            <div style="margin-bottom: 14px;">
                 <label style="display: block; font-size: 0.85rem; font-weight: 700; color: #CBD5E1; margin-bottom: 6px;">مفتاح Gemini API Key الخاص بك:</label>
                 <input type="password" id="geminiApiKeyInput" placeholder="AIzaSy..." style="width: 100%; padding: 10px 14px; background: #0F172A; border: 1px solid var(--border-color); border-radius: 8px; color: #FFF; font-size: 0.9rem;">
             </div>
 
+            <!-- Smart Triage & Proxy Settings (Cloudflare Worker / Vercel for GitHub Pages) -->
+            <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); padding: 14px; border-radius: 10px; margin-bottom: 16px;">
+                <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: #34D399; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-shield-halved"></i> إعدادات الـ API Proxy الآمن لـ GitHub Pages:
+                </h4>
+                <p style="margin: 0 0 10px 0; font-size: 0.78rem; color: #94A3B8; line-height: 1.5;">
+                    لتأمين مفاتيح الـ API ومنع سرقتها من GitHub Pages، أدخل رابط Cloudflare Worker أو Vercel الوسيط أدناه:
+                </p>
+
+                <div style="margin-bottom: 10px;">
+                    <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #CBD5E1; margin-bottom: 4px;">رابط الـ Proxy (Cloudflare Worker / Vercel API):</label>
+                    <input type="url" id="triageProxyUrlInput" placeholder="https://hs-triage-proxy.your-name.workers.dev" style="width: 100%; padding: 8px 12px; background: #0F172A; border: 1px solid var(--border-color); border-radius: 8px; color: #FFF; font-size: 0.84rem;">
+                </div>
+
+                <div style="margin-bottom: 10px;">
+                    <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #CBD5E1; margin-bottom: 4px;">مفتاح OpenAI المباشر (اختياري / للاختبار):</label>
+                    <input type="password" id="openAiApiKeyInput" placeholder="sk-proj-..." style="width: 100%; padding: 8px 12px; background: #0F172A; border: 1px solid var(--border-color); border-radius: 8px; color: #FFF; font-size: 0.84rem;">
+                </div>
+
+                <button type="button" id="testTriageBtn" onclick="testTriageConnection()" style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #6EE7B7; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-vial"></i> تجربة فحص الاتصال والتصنيف (Test Triage)
+                </button>
+            </div>
+
             <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                <button onclick="clearGeminiApiKey()" style="background: #334155; color: #94A3B8; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer;">إلغاء المفتاح</button>
-                <button onclick="saveGeminiApiKey()" style="background: #7C3AED; color: #FFF; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 700; cursor: pointer;"><i class="fa-solid fa-floppy-disk"></i> حفظ وتفعيل الذكاء الاصطناعي</button>
+                <button onclick="clearGeminiApiKey()" style="background: #334155; color: #94A3B8; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer;">إعادة ضبط</button>
+                <button onclick="saveGeminiApiKey()" style="background: #7C3AED; color: #FFF; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 700; cursor: pointer;"><i class="fa-solid fa-floppy-disk"></i> حفظ وتفعيل الإعدادات</button>
             </div>
         </div>
     </div>

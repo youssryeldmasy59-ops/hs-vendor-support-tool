@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hs-vendor-suite-v27-response-intelligence';
+const CACHE_NAME = 'hs-vendor-suite-v28-smart-triage-fix';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.webmanifest'
