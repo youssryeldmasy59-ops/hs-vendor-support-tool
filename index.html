@@ -11057,11 +11057,11 @@ function matchImageWithMenuItem(itemName, category) {
 function parseCategorizedDriveLinks(text) {
     if (!text) return [];
     const results = [];
+    const str = String(text);
     
     // Pattern 1: Markdown links: [الاسم](رابط)
     const mdRegex = /\[([^\]]+)\]\((https?:\/\/[^\s\)]+)\)/g;
     let match;
-    const str = String(text);
     while ((match = mdRegex.exec(str)) !== null) {
         const catName = match[1].trim();
         const url = match[2].trim();
@@ -11073,23 +11073,56 @@ function parseCategorizedDriveLinks(text) {
         });
     }
 
-    // Pattern 2: Key-value lines: "البرجر: https://..." or "قسم الشاورما - https://..."
+    // Pattern 2: Key-value or space/tab lines: "البرجر: https://..." or "البرجر - https://..." or "البرجر https://..."
     if (results.length === 0) {
-        const lines = text.split('\n');
+        const lines = str.split('\n');
         lines.forEach(line => {
             const trimmed = line.trim();
-            const kvMatch = trimmed.match(/^([^:\-\n]+)[:\-]\s*(https?:\/\/[^\s]+)/);
-            if (kvMatch) {
+            if (!trimmed) return;
+            const kvMatch = trimmed.match(/^([^:\-\t\n]+?)[:\-\t\s]+(https?:\/\/[^\s]+)/);
+            if (kvMatch && !kvMatch[1].startsWith('http')) {
                 const catName = kvMatch[1].replace(/^(قسم|مجموعة|تصنيف)/g, '').trim();
                 const url = kvMatch[2].trim();
                 const idMatch = url.match(/(?:id=|folders\/|file\/d\/)([a-zA-Z0-9_-]+)/);
                 results.push({
-                    category: catName,
+                    category: catName || 'عام',
                     url: url,
                     id: idMatch ? idMatch[1] : null
                 });
             }
         });
+    }
+
+    // Pattern 3: Alternating lines (Line 1 = Category Name, Line 2 = URL)
+    if (results.length === 0) {
+        const rawLines = str.split('\n').map(l => l.trim()).filter(Boolean);
+        for (let i = 0; i < rawLines.length - 1; i += 2) {
+            const l1 = rawLines[i];
+            const l2 = rawLines[i + 1];
+            if (!l1.startsWith('http') && l2.startsWith('http')) {
+                const idMatch = l2.match(/(?:id=|folders\/|file\/d\/)([a-zA-Z0-9_-]+)/);
+                results.push({
+                    category: l1.replace(/^(قسم|مجموعة|تصنيف)/g, '').trim() || 'قسم',
+                    url: l2,
+                    id: idMatch ? idMatch[1] : null
+                });
+            }
+        }
+    }
+
+    // Pattern 4: Plain list of Google Drive folder URLs
+    if (results.length === 0) {
+        const driveUrls = str.match(/https?:\/\/drive\.google\.com\/[^\s,;"'<>]+/gi) || [];
+        if (driveUrls.length > 0) {
+            driveUrls.forEach((u, idx) => {
+                const idMatch = u.match(/(?:id=|folders\/|file\/d\/)([a-zA-Z0-9_-]+)/);
+                results.push({
+                    category: `مجلد_${idx + 1}`,
+                    url: u,
+                    id: idMatch ? idMatch[1] : null
+                });
+            });
+        }
     }
 
     return results;
@@ -11124,7 +11157,7 @@ async function handleDriveUrlFetch() {
         return;
     }
 
-    // 1. Check for Multiple Categorized Links (e.g., [البرجر](url), [البروست](url)...)
+    // 1. Check for Multiple Categorized Links (e.g., [البرجر](url), [البروست](url)... or plain drive links)
     const categorized = parseCategorizedDriveLinks(rawVal);
     if (categorized.length > 0) {
         window.menuBuilderData = window.menuBuilderData || {};
@@ -11179,35 +11212,41 @@ async function handleDriveUrlFetch() {
         }
 
         playSuccessChime();
-        showToast(`🎉 تم التعرف على ${categorized.length} تصنيفات بروابطها وتثبيتها في المنيو!`);
+        showToast(`📁 تم التعرف على ${categorized.length} مجلدات للأقسام! نزل المجلد من درايف كملف ZIP واسحبه هنا للفرز التلقائي.`);
+        const dz = document.getElementById('studioDriveDropzone');
+        if (dz) {
+            dz.style.borderColor = '#10B981';
+            setTimeout(() => { dz.style.borderColor = 'rgba(139, 92, 246, 0.35)'; }, 4000);
+        }
         return;
     }
 
     // 2. Check for Single Folder Link
-    const folderMatch = rawVal.match(/folders\/([a-zA-Z0-9_-]+)/);
+    const folderMatch = rawVal.match(/(?:folders\/|open\?id=)([a-zA-Z0-9_-]+)/);
     const helper = document.getElementById('studioDriveAuthHelper');
     const openBtn = document.getElementById('btnOpenDriveFolder');
 
-    if (folderMatch && folderMatch[1]) {
+    if (folderMatch && folderMatch[1] && (rawVal.includes('folders') || rawVal.includes('drive.google.com'))) {
         const folderId = folderMatch[1];
         if (openBtn) openBtn.href = `https://drive.google.com/drive/folders/${folderId}`;
         if (helper) helper.style.display = 'block';
 
-        showToast("🔍 تم فحص مجلد Google Drive. يمكنك سحب ملف ZIP أو المجلد المفرز أدناه!");
+        showToast("🔍 تم فحص مجلد Google Drive. نزل المجلد كملف ZIP واسحبه في المربع أدناه ليتم فرزه ومقاس 640×480 فوراً!");
         const dz = document.getElementById('studioDriveDropzone');
         if (dz) {
             dz.style.borderColor = '#F59E0B';
             setTimeout(() => { dz.style.borderColor = 'rgba(139, 92, 246, 0.35)'; }, 4000);
         }
+        return;
+    }
+
+    // 3. Direct Image URLs (Only for actual image file URLs)
+    const urls = extractImageUrls(rawVal).filter(u => !u.includes('/folders/'));
+    if (urls && urls.length > 0) {
+        showToast(`🚀 جاري فحص ومعالجة ${urls.length} رابط صورة...`);
+        processDirectImageUrls(urls);
     } else {
-        // 3. Direct Image URLs
-        const urls = extractImageUrls(rawVal);
-        if (urls && urls.length > 0) {
-            showToast(`🚀 جاري تحميل ومعالجة ${urls.length} رابط صورة...`);
-            processDirectImageUrls(urls);
-        } else {
-            showToast("⚠️ لم يتم التعرف على معرف مجلد أو صور في هذا الرابط.");
-        }
+        showToast("⚠️ لم يتم التعرف على روابط صالحة. الصق روابط مجلدات درايف أو اسحب ملفات الـ ZIP مباشرة!");
     }
 }
 
@@ -11248,13 +11287,17 @@ async function processDirectImageUrls(urls) {
         const pct = Math.round(((i + 1) / urls.length) * 100);
         if (pFill) pFill.style.width = pct + '%';
         if (pPct) pPct.textContent = pct + '%';
-        if (pText) pText.textContent = `جاري معالجة ${i + 1}/${urls.length}...`;
+        if (pText) pText.textContent = `جاري فحص ${i + 1}/${urls.length}...`;
     }
 
     setTimeout(() => { if (pb) pb.style.display = 'none'; }, 800);
     renderDriveGallery();
-    playSuccessChime();
-    showToast(`🎉 تم معالجة ${done} صورة بنجاح بمقاس 640×480!`);
+    if (done === 0) {
+        showToast("⚠️ تعذر تحميل صور مباشرة لأن الروابط خاصة بحساب درايف أو مجلدات. نزل ملف الـ ZIP واسحبه في المربع وسيقوم بالفرز فوراً!");
+    } else {
+        playSuccessChime();
+        showToast(`🎉 تم معالجة ${done} صورة بنجاح بمقاس 640×480 بدون حواف بيضاء!`);
+    }
 }
 
 async function handleDriveDrop(event) {
@@ -11268,8 +11311,17 @@ async function handleDriveDrop(event) {
     const items = event.dataTransfer.items;
     const files = event.dataTransfer.files;
 
-    if (files && files.length === 1 && files[0].name.toLowerCase().endsWith('.zip')) {
-        return processDriveZip(files[0]);
+    // Check for ZIP files (single or multiple)
+    if (files && files.length > 0) {
+        const zipFiles = [];
+        for (let i = 0; i < files.length; i++) {
+            if (files[i].name.toLowerCase().endsWith('.zip')) {
+                zipFiles.push(files[i]);
+            }
+        }
+        if (zipFiles.length > 0) {
+            return processMultipleDriveZips(zipFiles);
+        }
     }
 
     // Try webkitGetAsEntry for folders
@@ -11288,9 +11340,6 @@ async function handleDriveDrop(event) {
         const entries = [];
         for (let i = 0; i < files.length; i++) {
             const f = files[i];
-            if (f.name.toLowerCase().endsWith('.zip')) {
-                return processDriveZip(f);
-            }
             if (/\.(jpe?g|png|webp|bmp)$/i.test(f.name)) {
                 entries.push({
                     file: f,
@@ -11344,91 +11393,110 @@ function handleDriveFileInput(event) {
     const files = event.target.files;
     if (!files || !files.length) return;
 
-    if (files.length === 1 && files[0].name.toLowerCase().endsWith('.zip')) {
-        processDriveZip(files[0]);
-    } else {
-        const entries = [];
-        for (let i = 0; i < files.length; i++) {
-            const f = files[i];
-            if (f.name.toLowerCase().endsWith('.zip')) {
-                processDriveZip(f);
-                return;
-            }
-            if (/\.(jpe?g|png|webp|bmp)$/i.test(f.name)) {
-                let cat = 'عام';
-                if (f.webkitRelativePath) {
-                    const parts = f.webkitRelativePath.split('/').filter(Boolean);
-                    if (parts.length >= 2) {
-                        cat = parts[parts.length - 2];
-                        if ((cat === 'الصور' || cat === 'Images') && parts.length >= 3) {
-                            cat = parts[parts.length - 3];
-                        }
+    const zipFiles = [];
+    for (let i = 0; i < files.length; i++) {
+        if (files[i].name.toLowerCase().endsWith('.zip')) {
+            zipFiles.push(files[i]);
+        }
+    }
+    if (zipFiles.length > 0) {
+        processMultipleDriveZips(zipFiles);
+        event.target.value = '';
+        return;
+    }
+
+    const entries = [];
+    for (let i = 0; i < files.length; i++) {
+        const f = files[i];
+        if (/\.(jpe?g|png|webp|bmp)$/i.test(f.name)) {
+            let cat = 'عام';
+            if (f.webkitRelativePath) {
+                const parts = f.webkitRelativePath.split('/').filter(Boolean);
+                if (parts.length >= 2) {
+                    cat = parts[parts.length - 2];
+                    if ((cat === 'الصور' || cat === 'Images') && parts.length >= 3) {
+                        cat = parts[parts.length - 3];
                     }
                 }
-                entries.push({
-                    file: f,
-                    name: f.name.replace(/\.[^/.]+$/, ''),
-                    category: cat
-                });
             }
+            entries.push({
+                file: f,
+                name: f.name.replace(/\.[^/.]+$/, ''),
+                category: cat
+            });
         }
-        if (entries.length > 0) processExtractedEntries(entries);
     }
+    if (entries.length > 0) processExtractedEntries(entries);
     event.target.value = '';
 }
 
 async function processDriveZip(zipFile) {
+    return processMultipleDriveZips([zipFile]);
+}
+
+async function processMultipleDriveZips(zipFiles) {
     if (typeof JSZip === 'undefined') {
         showToast('⏳ جاري تحميل مكتبة الضغط...');
         await new Promise(r => setTimeout(r, 1000));
     }
 
-    showToast(`📦 جاري فك ضغط ملف: ${zipFile.name}...`);
     const pb = document.getElementById('studioDriveProgressBar');
     const pFill = document.getElementById('studioDriveProgressFill');
     const pText = document.getElementById('studioDriveProgressText');
     const pPct = document.getElementById('studioDriveProgressPercent');
     if (pb) pb.style.display = 'block';
 
-    try {
-        const zip = await JSZip.loadAsync(zipFile);
-        const entries = [];
+    const allEntries = [];
+    showToast(`📦 جاري فك ضغط وفحص ${zipFiles.length} ملف ZIP...`);
 
-        for (let [relPath, zEntry] of Object.entries(zip.files)) {
-            if (zEntry.dir) continue;
-            if (relPath.includes('__MACOSX') || relPath.includes('.DS_Store')) continue;
-            if (!/\.(jpe?g|png|webp|bmp)$/i.test(zEntry.name)) continue;
+    for (let zIdx = 0; zIdx < zipFiles.length; zIdx++) {
+        const zipFile = zipFiles[zIdx];
+        if (pText) pText.textContent = `فك ضغط [${zIdx + 1}/${zipFiles.length}]: ${zipFile.name}...`;
+        const pct = Math.round(((zIdx + 1) / zipFiles.length) * 40);
+        if (pFill) pFill.style.width = pct + '%';
+        if (pPct) pPct.textContent = pct + '%';
 
-            const parts = relPath.split('/').filter(Boolean);
-            const fname = parts[parts.length - 1];
-            let cat = 'عام';
-            if (parts.length >= 2) {
-                cat = parts[parts.length - 2];
-                if ((cat === 'الصور' || cat === 'Images' || cat === 'Photos') && parts.length >= 3) {
-                    cat = parts[parts.length - 3];
+        try {
+            const zip = await JSZip.loadAsync(zipFile);
+            const cleanZipName = zipFile.name
+                .replace(/-\d{8}T\d+Z.*$/i, '')
+                .replace(/\.zip$/i, '')
+                .trim();
+
+            for (let [relPath, zEntry] of Object.entries(zip.files)) {
+                if (zEntry.dir) continue;
+                if (relPath.includes('__MACOSX') || relPath.includes('.DS_Store')) continue;
+                if (!/\.(jpe?g|png|webp|bmp)$/i.test(zEntry.name)) continue;
+
+                const parts = relPath.split('/').filter(Boolean);
+                const fname = parts[parts.length - 1];
+                let cat = cleanZipName || 'عام';
+                if (parts.length >= 2) {
+                    const folderCat = parts[parts.length - 2];
+                    if (folderCat && folderCat !== 'الصور' && folderCat !== 'Images' && folderCat !== 'Photos') {
+                        cat = folderCat;
+                    }
                 }
+
+                const blob = await zEntry.async('blob');
+                allEntries.push({
+                    file: blob,
+                    name: fname.replace(/\.[^/.]+$/, ''),
+                    category: cat
+                });
             }
-
-            const blob = await zEntry.async('blob');
-            entries.push({
-                file: blob,
-                name: fname.replace(/\.[^/.]+$/, ''),
-                category: cat
-            });
+        } catch(err) {
+            console.warn("ZIP read error for:", zipFile.name, err);
         }
-
-        if (entries.length === 0) {
-            showToast('⚠️ لم يتم العثور على صور مدعومة داخل ملف الـ ZIP!');
-            if (pb) pb.style.display = 'none';
-            return;
-        }
-
-        await processExtractedEntries(entries);
-    } catch(err) {
-        console.error("ZIP read error:", err);
-        showToast(`❌ تعذر قراءة ملف الـ ZIP: ${err.message}`);
-        if (pb) pb.style.display = 'none';
     }
+
+    if (allEntries.length === 0) {
+        showToast('⚠️ لم يتم العثور على صور مدعومة داخل ملفات الـ ZIP!');
+        if (pb) pb.style.display = 'none';
+        return;
+    }
+
+    await processExtractedEntries(allEntries);
 }
 
 async function processExtractedEntries(entries) {
@@ -11478,8 +11546,12 @@ async function processExtractedEntries(entries) {
 
     setTimeout(() => { if (pb) pb.style.display = 'none'; }, 800);
     renderDriveGallery();
-    playSuccessChime();
-    showToast(`🎉 تم استخراج ومعالجة ${completed} صورة بمقاس 640×480 بنجاح!`);
+    if (completed === 0) {
+        showToast("⚠️ لم يتم العثور على صور صالحة للمعالجة.");
+    } else {
+        playSuccessChime();
+        showToast(`🎉 تم استخراج ومعالجة ${completed} صورة بمقاس 640×480 بدون حواف بيضاء بنجاح!`);
+    }
 }
 
 function renderDriveGallery(activeFilter = 'ALL') {
