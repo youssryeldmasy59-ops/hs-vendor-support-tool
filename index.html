@@ -12196,19 +12196,52 @@ function createOfficialMenuWorkbook() {
         ]
     ];
     items.forEach((it, idx) => {
-        const pEn = (it.prod_en && it.prod_en !== '-') ? toEnglishProper(it.prod_en) : '-';
-        const pAr = (it.prod_ar && it.prod_ar !== '-') ? cleanProperTrim(it.prod_ar) : '-';
         const numPrice = Number(it.price) || 0;
-        const safeItemAr = cleanProperTrim(it.item_ar || it.name_ar || pAr);
-        let safeItemEn = it.item_en || it.name_en || pEn;
-        if (!safeItemEn || /[\u0600-\u06FF]/.test(safeItemEn) || safeItemEn === '-') {
-            safeItemEn = smartTranslateFoodName(safeItemAr);
+        const rawItemAr = cleanProperTrim(it.item_ar || it.name_ar || it.prod_ar || '');
+        let rawItemEn = it.item_en || it.name_en || it.prod_en || '';
+        if (!rawItemEn || /[\u0600-\u06FF]/.test(rawItemEn) || rawItemEn === '-') {
+            rawItemEn = smartTranslateFoodName(rawItemAr);
         } else {
-            safeItemEn = toEnglishProper(safeItemEn);
+            rawItemEn = toEnglishProper(rawItemEn);
         }
 
-        const safeDescAr = cleanProperTrim(it.item_ar_desc || it.desc_ar || '');
-        let safeDescEn = cleanProperTrim(it.item_en_desc || it.desc_en || '');
+        // Smart Variant Extraction: Separate Product Base from Variant/Size
+        // e.g. "برجر لحم (بالجبن)" -> Base: "برجر لحم", Variant: "بالجبن"
+        let baseAr = rawItemAr;
+        let varAr = 'عادي';
+        let baseEn = rawItemEn;
+        let varEn = 'Regular';
+
+        const arParenMatch = rawItemAr.match(/^(.+?)\s*\((.+?)\)$/);
+        if (arParenMatch) {
+            baseAr = arParenMatch[1].trim();
+            varAr = arParenMatch[2].trim();
+        }
+
+        const enParenMatch = rawItemEn.match(/^(.+?)\s*\((.+?)\)$/);
+        if (enParenMatch) {
+            baseEn = enParenMatch[1].trim();
+            varEn = enParenMatch[2].trim();
+        } else if (arParenMatch) {
+            const varTrans = {
+                'صغير': 'Small', 'وسط': 'Medium', 'كبير': 'Large', 'عادي': 'Regular',
+                'حراق': 'Spicy', 'بالجبن': 'With Cheese', 'دبل': 'Double',
+                'دبل بالجبن': 'Double With Cheese', 'صغير بالجبن': 'Small With Cheese',
+                'كبير بالجبن': 'Large With Cheese'
+            };
+            varEn = varTrans[varAr] || smartTranslateFoodName(varAr);
+            baseEn = smartTranslateFoodName(baseAr);
+        }
+
+        const hasSiblings = items.some((other, oIdx) => oIdx !== idx && cleanProperTrim(other.item_ar || other.name_ar || '').startsWith(baseAr));
+
+        let finalProdEn = toEnglishProper(baseEn);
+        let finalProdAr = cleanProperTrim(baseAr);
+        let finalItemEn = hasSiblings ? toEnglishProper(varEn) : toEnglishProper(rawItemEn);
+        let finalItemAr = hasSiblings ? cleanProperTrim(varAr) : cleanProperTrim(rawItemAr);
+
+        const safeDescAr = cleanProperTrim(it.item_ar_desc || it.desc_ar || it.prod_ar_desc || '');
+        let safeDescEn = cleanProperTrim(it.item_en_desc || it.desc_en || it.prod_en_desc || '');
         if (!safeDescEn || /[\u0600-\u06FF]/.test(safeDescEn)) {
             safeDescEn = smartTranslateFoodDescription(safeDescAr);
         }
@@ -12216,17 +12249,17 @@ function createOfficialMenuWorkbook() {
         ws3_data.push([
             idx + 1,
             Number(it.group_id) || 1,
-            (pEn !== '-' && !/[\u0600-\u06FF]/.test(pEn)) ? pEn : '-',
-            pAr,
-            cleanProperTrim(it.prod_en_desc || ''),
-            cleanProperTrim(it.prod_ar_desc || ''),
-            safeItemEn,
-            safeItemAr,
+            finalProdEn,
+            finalProdAr,
+            cleanProperTrim(it.prod_en_desc || safeDescEn),
+            cleanProperTrim(it.prod_ar_desc || safeDescAr),
+            finalItemEn,
+            finalItemAr,
             safeDescEn,
             safeDescAr,
             numPrice,
             it.pickup_price ? Number(it.pickup_price) : numPrice,
-            parseInt(it.kcal || it.calories || 0, 10),
+            parseInt(it.kcal || it.calories || 0, 10) || '',
             String(it.modifier_groups || ''),
             it.vendor_id || ('P' + (idx + 1)),
             it.allergens || 'No Allergens',
