@@ -2434,12 +2434,14 @@
                 </div>
 
                 <!-- Input Row: Link paste + Check -->
-                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                <div style="display: flex; gap: 8px; margin-bottom: 12px; align-items: flex-start;">
                     <div style="position: relative; flex: 1;">
-                        <i class="fa-solid fa-link" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #64748B; font-size: 0.85rem;"></i>
-                        <input type="text" id="studioDriveUrlInput" placeholder="الصق رابط مجلد Google Drive (مثل: https://drive.google.com/drive/folders/...) أو روابط الصور هنا..." style="width: 100%; background: #0F172A; border: 1px solid rgba(255,255,255,0.15); color: #FFF; padding: 9px 36px 9px 12px; border-radius: 8px; font-size: 0.82rem; outline: none;">
+                        <textarea id="studioDriveUrlInput" rows="3" placeholder="الصق روابط مجلدات درايف مع أسماء التصنيفات، مثلاً:
+[البرجر](https://drive.google.com/open?id=...)
+[البروست](https://drive.google.com/open?id=...)
+أو رابط المجلد الرئيسي للصور..." style="width: 100%; background: #0F172A; border: 1px solid rgba(255,255,255,0.15); color: #FFF; padding: 10px 12px; border-radius: 8px; font-size: 0.82rem; outline: none; font-family: monospace; resize: vertical;"></textarea>
                     </div>
-                    <button onclick="handleDriveUrlFetch()" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #FFF; border: none; padding: 9px 18px; border-radius: 8px; font-weight: 800; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                    <button onclick="handleDriveUrlFetch()" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #FFF; border: none; padding: 12px 18px; border-radius: 8px; font-weight: 800; font-size: 0.84rem; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; height: fit-content;">
                         <i class="fa-solid fa-magnifying-glass"></i> فحص واستخراج
                     </button>
                 </div>
@@ -2447,16 +2449,16 @@
                 <!-- Private Folder Notice Box (Hidden by default, shown when folder is private) -->
                 <div id="studioDriveAuthHelper" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 12px; margin-bottom: 12px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                        <span style="font-weight: 800; color: #FCD34D; font-size: 0.85rem;"><i class="fa-solid fa-lock"></i> مجلد Google Drive محمي بحساب Google الشريك</span>
+                        <span style="font-weight: 800; color: #FCD34D; font-size: 0.85rem;"><i class="fa-solid fa-folder-tree"></i> مجلدات وتصنيفات Google Drive المكتشفة:</span>
                         <a id="btnOpenDriveFolder" href="#" target="_blank" style="background: #F59E0B; color: #000; padding: 5px 12px; border-radius: 6px; font-weight: 800; text-decoration: none; font-size: 0.78rem; display: flex; align-items: center; gap: 5px;">
                             <i class="fa-brands fa-google-drive"></i> فتح المجلد في Drive
                         </a>
                     </div>
-                    <p style="font-size: 0.8rem; color: #FEF3C7; margin: 8px 0 0 0; line-height: 1.5;">
-                        💡 <strong>طريقة الاستخراج الفورية بدون إذن API:</strong><br>
-                        1. اضغط "فتح المجلد في Drive" أعلاه.<br>
-                        2. كليك يمين على مجلد <strong>الصور</strong> واختر <strong>تنزيل (Download)</strong>.<br>
-                        3. اسحب ملف الـ <strong>ZIP</strong> الناتج (أو اسحب مجلد الصور مباشرة من جهازك) وأفلته في المربع أدناه 👇 — وسيقوم النظام فوراً بفك الضغط، فرز المجلدات (البرجر، الشاورما، الفطائر...)، وتعديل مقاس كل الصور لـ 640×480 وربطها بالمنيو في ثانية واحدة!
+                    <div id="studioDriveCategoriesList" style="margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px;"></div>
+                    <p style="font-size: 0.8rem; color: #FEF3C7; margin: 10px 0 0 0; line-height: 1.5;">
+                        💡 <strong>طريقة التنزيل والتقسيم في فايلز مخصصة:</strong><br>
+                        1. اضغط على أي قسم أعلاه لفتحه أو نزّل المجلد الرئيسي من درايف كـ ZIP.<br>
+                        2. اسحب ملف الـ <strong>ZIP</strong> أو مجلد الصور إلى المربع أدناه 👇 — وسيقوم النظام فوراً بفرز كل قسم، تعديل المقاس لـ 640×480 بدون جوانب بيضاء، وتنزيل حزمة ZIP بفايلز ومجلدات منفصلة لكل تصنيف!
                     </p>
                 </div>
 
@@ -9343,6 +9345,25 @@ function parseRawMenuInput() {
         const trimmed = line.trim();
         if (!trimmed || trimmed.startsWith('http') || trimmed.startsWith('روابط')) return;
 
+        // Check if Markdown Category Link: [البرجر](https://drive.google.com/...)
+        const mdCatMatch = trimmed.match(/^\[([^\]]+)\]\((https?:\/\/[^\s\)]+)\)/);
+        if (mdCatMatch) {
+            isModifierSection = false;
+            let arCat = cleanProperTrim(mdCatMatch[1]);
+            let enCat = toEnglishProper(autoTranslateMenuText(arCat, 'EN') || arCat);
+            currentGroup = {
+                id: groups.length + 1,
+                en_name: enCat || 'Main Menu',
+                ar_name: arCat || 'القائمة الرئيسية',
+                name_en: enCat || 'Main Menu',
+                name_ar: arCat || 'القائمة الرئيسية',
+                order: groups.length + 1,
+                drive_url: mdCatMatch[2].trim()
+            };
+            groups.push(currentGroup);
+            return;
+        }
+
         // Check if Category / Section Header
         if (trimmed.startsWith('قسم') || trimmed.startsWith('مجموعة') || trimmed.toLowerCase().startsWith('category') || trimmed.toLowerCase().startsWith('group') || (trimmed.endsWith(':') && !trimmed.includes('السعر'))) {
             let catClean = trimmed.replace(/^قسم|^مجموعة|category|group|:$/gi, '').trim();
@@ -11033,14 +11054,136 @@ function matchImageWithMenuItem(itemName, category) {
     return found || null;
 }
 
+function parseCategorizedDriveLinks(text) {
+    if (!text) return [];
+    const results = [];
+    
+    // Pattern 1: Markdown links: [الاسم](رابط)
+    const mdRegex = /\[([^\]]+)\]\((https?:\/\/[^\s\)]+)\)/g;
+    let match;
+    const str = String(text);
+    while ((match = mdRegex.exec(str)) !== null) {
+        const catName = match[1].trim();
+        const url = match[2].trim();
+        const idMatch = url.match(/(?:id=|folders\/|file\/d\/)([a-zA-Z0-9_-]+)/);
+        results.push({
+            category: catName,
+            url: url,
+            id: idMatch ? idMatch[1] : null
+        });
+    }
+
+    // Pattern 2: Key-value lines: "البرجر: https://..." or "قسم الشاورما - https://..."
+    if (results.length === 0) {
+        const lines = text.split('\n');
+        lines.forEach(line => {
+            const trimmed = line.trim();
+            const kvMatch = trimmed.match(/^([^:\-\n]+)[:\-]\s*(https?:\/\/[^\s]+)/);
+            if (kvMatch) {
+                const catName = kvMatch[1].replace(/^(قسم|مجموعة|تصنيف)/g, '').trim();
+                const url = kvMatch[2].trim();
+                const idMatch = url.match(/(?:id=|folders\/|file\/d\/)([a-zA-Z0-9_-]+)/);
+                results.push({
+                    category: catName,
+                    url: url,
+                    id: idMatch ? idMatch[1] : null
+                });
+            }
+        });
+    }
+
+    return results;
+}
+
+async function handleSingleCategoryUpload(categoryName, event) {
+    const files = event.target.files;
+    if (!files || !files.length) return;
+    const entries = [];
+    for (let i = 0; i < files.length; i++) {
+        const f = files[i];
+        if (/\.(jpe?g|png|webp|bmp)$/i.test(f.name)) {
+            entries.push({
+                file: f,
+                name: f.name.replace(/\.[^/.]+$/, ''),
+                category: categoryName
+            });
+        }
+    }
+    event.target.value = '';
+    if (entries.length > 0) {
+        await processExtractedEntries(entries);
+        showToast(`✅ تم استخراج وإضافة ${entries.length} صورة لقسم: ${categoryName}`);
+    }
+}
+
 async function handleDriveUrlFetch() {
     const input = document.getElementById('studioDriveUrlInput');
     const rawVal = (input ? input.value : '').trim();
     if (!rawVal) {
-        showToast("⚠️ برجاء إدخال رابط Google Drive أولاً!");
+        showToast("⚠️ برجاء إدخال روابط Google Drive أولاً!");
         return;
     }
 
+    // 1. Check for Multiple Categorized Links (e.g., [البرجر](url), [البروست](url)...)
+    const categorized = parseCategorizedDriveLinks(rawVal);
+    if (categorized.length > 0) {
+        window.menuBuilderData = window.menuBuilderData || {};
+        window.menuBuilderData.driveCategoryLinks = categorized;
+
+        // Auto-register categories into Menu Groups
+        if (!window.menuBuilderData.groups) window.menuBuilderData.groups = [];
+        categorized.forEach((catObj) => {
+            let existing = window.menuBuilderData.groups.find(g => (g.ar_name || g.name_ar) === catObj.category);
+            if (!existing) {
+                const enName = autoTranslateMenuText(catObj.category, 'EN') || catObj.category;
+                window.menuBuilderData.groups.push({
+                    id: window.menuBuilderData.groups.length + 1,
+                    ar_name: catObj.category,
+                    name_ar: catObj.category,
+                    en_name: enName,
+                    name_en: enName,
+                    order: window.menuBuilderData.groups.length + 1,
+                    drive_url: catObj.url,
+                    drive_id: catObj.id
+                });
+            } else {
+                existing.drive_url = catObj.url;
+                existing.drive_id = catObj.id;
+            }
+        });
+
+        if (typeof renderStudioMenuPreviewTables === 'function') renderStudioMenuPreviewTables();
+
+        // Render Dynamic Category Cards in Helper Box
+        const helper = document.getElementById('studioDriveAuthHelper');
+        const catList = document.getElementById('studioDriveCategoriesList');
+        if (helper) helper.style.display = 'block';
+        if (catList) {
+            catList.innerHTML = categorized.map(c => `
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; padding: 8px; display: flex; flex-direction: column; justify-content: space-between; gap: 6px;">
+                    <div style="font-weight: 800; color: #FFF; font-size: 0.82rem; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-folder-closed" style="color: #F59E0B;"></i>
+                        <span>${c.category}</span>
+                    </div>
+                    <div style="display: flex; gap: 4px;">
+                        <a href="${c.url}" target="_blank" style="flex: 1; background: rgba(59, 130, 246, 0.2); color: #93C5FD; border: 1px solid #3B82F6; text-decoration: none; border-radius: 4px; padding: 4px 6px; font-size: 0.7rem; text-align: center; font-weight: 700;">
+                            <i class="fa-brands fa-google-drive"></i> فتح في Drive
+                        </a>
+                        <label style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid #10B981; border-radius: 4px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; font-weight: 700; display: flex; align-items: center;">
+                            <i class="fa-solid fa-upload"></i> رفع
+                            <input type="file" multiple accept="image/*" style="display: none;" onchange="handleSingleCategoryUpload('${c.category}', event)">
+                        </label>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        playSuccessChime();
+        showToast(`🎉 تم التعرف على ${categorized.length} تصنيفات بروابطها وتثبيتها في المنيو!`);
+        return;
+    }
+
+    // 2. Check for Single Folder Link
     const folderMatch = rawVal.match(/folders\/([a-zA-Z0-9_-]+)/);
     const helper = document.getElementById('studioDriveAuthHelper');
     const openBtn = document.getElementById('btnOpenDriveFolder');
@@ -11050,23 +11193,14 @@ async function handleDriveUrlFetch() {
         if (openBtn) openBtn.href = `https://drive.google.com/drive/folders/${folderId}`;
         if (helper) helper.style.display = 'block';
 
-        showToast("🔍 فحص مجلد Google Drive... يتم التحقق من الصلاحيات.");
-        
-        // Check if public by trying to fetch thumbnail or embed
-        try {
-            const checkUrl = `https://drive.google.com/embeddedfolderview?id=${folderId}#list`;
-            // Trigger dropzone animation to guide user
-            const dz = document.getElementById('studioDriveDropzone');
-            if (dz) {
-                dz.style.borderColor = '#F59E0B';
-                setTimeout(() => { dz.style.borderColor = 'rgba(139, 92, 246, 0.35)'; }, 4000);
-            }
-            showToast("🔒 المجلد خاص أو يتطلب تسجيل الدخول. يمكنك تنزيل المجلد كـ ZIP من درايف وإسقاطه هنا مباشرة!");
-        } catch(e) {
-            console.warn(e);
+        showToast("🔍 تم فحص مجلد Google Drive. يمكنك سحب ملف ZIP أو المجلد المفرز أدناه!");
+        const dz = document.getElementById('studioDriveDropzone');
+        if (dz) {
+            dz.style.borderColor = '#F59E0B';
+            setTimeout(() => { dz.style.borderColor = 'rgba(139, 92, 246, 0.35)'; }, 4000);
         }
     } else {
-        // Direct file links?
+        // 3. Direct Image URLs
         const urls = extractImageUrls(rawVal);
         if (urls && urls.length > 0) {
             showToast(`🚀 جاري تحميل ومعالجة ${urls.length} رابط صورة...`);
@@ -11453,11 +11587,17 @@ async function downloadAllProcessedDriveImagesZip() {
         const safeCat = (img.category || 'عام').replace(/[^\u0600-\u06FFa-zA-Z0-9_-]/g, '_');
         const safeName = (img.matchedItemName || img.name || `صنف_${i + 1}`).replace(/[^\u0600-\u06FFa-zA-Z0-9_-]/g, '_');
         
-        const fname = `${numStr}_[${safeCat}]_${safeName}.jpg`;
-        rootFolder.file(fname, img.blob);
+        // 1. Direct Category Folder at root level (e.g. البرجر/01_برجر_لحم.jpg)
+        const directCat = zip.folder(safeCat);
+        directCat.file(`${numStr}_${safeName}.jpg`, img.blob);
 
+        // 2. In Category subfolder inside Menu_Images_By_Category
         const sub = categoryFolder.folder(safeCat);
         sub.file(`${numStr}_${safeName}.jpg`, img.blob);
+
+        // 3. In rootFolder sorted sequentially
+        const fname = `${numStr}_[${safeCat}]_${safeName}.jpg`;
+        rootFolder.file(fname, img.blob);
     });
 
     const content = await zip.generateAsync({ type: 'blob' });
