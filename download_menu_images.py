@@ -62,14 +62,21 @@ def process_item_image(item):
                 f.write(r.content)
             return True, idx, f"Saved as-is (Already 640x480): {fname}"
         else:
-            # Resize with aspect-fit and white background
-            canvas = Image.new('RGB', (640, 480), (255, 255, 255))
-            img.thumbnail((640, 480), Image.Resampling.LANCZOS)
-            x = (640 - img.width) // 2
-            y = (480 - img.height) // 2
-            canvas.paste(img, (x, y))
-            canvas.save(fpath, 'JPEG', quality=95)
-            return True, idx, f"Resized to 640x480: {fname}"
+            # Aspect-Fill (Cover) - Zero white borders, photo fills 100% of 640x480 frame
+            target_ratio = 640.0 / 480.0
+            orig_ratio = img.width / img.height
+            if orig_ratio > target_ratio:
+                new_width = int(img.height * target_ratio)
+                offset = (img.width - new_width) // 2
+                img = img.crop((offset, 0, offset + new_width, img.height))
+            elif orig_ratio < target_ratio:
+                new_height = int(img.width / target_ratio)
+                offset = (img.height - new_height) // 2
+                img = img.crop((0, offset, img.width, offset + new_height))
+
+            img = img.resize((640, 480), Image.Resampling.LANCZOS)
+            img.save(fpath, 'JPEG', quality=96, optimize=True, subsampling=0)
+            return True, idx, f"Resized to 640x480 (Cover): {fname}"
 
     except Exception as e:
         return False, idx, str(e)

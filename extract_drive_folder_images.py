@@ -27,19 +27,30 @@ def clean_name(s):
     return re.sub(r'_+', '_', s).strip('_')
 
 def resize_image_bytes(img_bytes):
-    """Resizes raw image bytes to 640x480 JPEG with centered aspect-fit."""
+    """Resizes raw image bytes to 640x480 JPEG with centered aspect-fill (zero white borders, crystal-clear quality)."""
     img = Image.open(io.BytesIO(img_bytes)).convert('RGB')
     if img.size == (640, 480):
         return img_bytes, False
     
-    canvas = Image.new('RGB', (640, 480), (255, 255, 255))
-    img.thumbnail((640, 480), Image.Resampling.LANCZOS)
-    x = (640 - img.width) // 2
-    y = (480 - img.height) // 2
-    canvas.paste(img, (x, y))
+    target_ratio = 640.0 / 480.0  # 4:3
+    orig_ratio = img.width / img.height
+
+    if orig_ratio > target_ratio:
+        # Wider than 4:3 -> crop left and right evenly
+        new_width = int(img.height * target_ratio)
+        offset = (img.width - new_width) // 2
+        img = img.crop((offset, 0, offset + new_width, img.height))
+    elif orig_ratio < target_ratio:
+        # Taller than 4:3 -> crop top and bottom evenly
+        new_height = int(img.width / target_ratio)
+        offset = (img.height - new_height) // 2
+        img = img.crop((0, offset, img.width, offset + new_height))
+
+    # Resize cleanly to 640x480 with high-fidelity LANCZOS resampling
+    img = img.resize((640, 480), Image.Resampling.LANCZOS)
     
     buf = io.BytesIO()
-    canvas.save(buf, format='JPEG', quality=95, optimize=True)
+    img.save(buf, format='JPEG', quality=96, optimize=True, subsampling=0)
     return buf.getvalue(), True
 
 def process_zip_archive(zip_path, output_dir):

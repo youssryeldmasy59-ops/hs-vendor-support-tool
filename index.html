@@ -4962,16 +4962,19 @@ async function loadKBData() {
             ctx.fillStyle = "#FFFFFF";
             ctx.fillRect(0, 0, targetWidth, targetHeight);
 
+            // Aspect Fill (Cover) - Zero white borders, fills 100% of target frame cleanly
             const hRatio = targetWidth / selectedSourceImage.width;
             const vRatio = targetHeight / selectedSourceImage.height;
-            const ratio = Math.min(hRatio, vRatio);
-            const centerShiftX = (targetWidth - selectedSourceImage.width * ratio) / 2;
-            const centerShiftY = (targetHeight - selectedSourceImage.height * ratio) / 2;
+            const ratio = Math.max(hRatio, vRatio);
+            const drawW = Math.round(selectedSourceImage.width * ratio);
+            const drawH = Math.round(selectedSourceImage.height * ratio);
+            const centerShiftX = Math.round((targetWidth - drawW) / 2);
+            const centerShiftY = Math.round((targetHeight - drawH) / 2);
 
             ctx.drawImage(
                 selectedSourceImage,
                 0, 0, selectedSourceImage.width, selectedSourceImage.height,
-                centerShiftX, centerShiftY, selectedSourceImage.width * ratio, selectedSourceImage.height * ratio
+                centerShiftX, centerShiftY, drawW, drawH
             );
 
             canvas.toBlob(function(pngBlob) {
@@ -10757,7 +10760,7 @@ function fetchAndProcessImage640x480(directUrl) {
                     return;
                 }
 
-                // If dimensions differ: resize cleanly to 640x480 with centered letterbox
+                // If dimensions differ: resize cleanly to 640x480 with aspect fill cover (zero white borders)
                 const canvas = document.createElement('canvas');
                 canvas.width = 640;
                 canvas.height = 480;
@@ -10765,12 +10768,10 @@ function fetchAndProcessImage640x480(directUrl) {
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = 'high';
 
-                ctx.fillStyle = '#FFFFFF';
-                ctx.fillRect(0, 0, 640, 480);
-
-                const scale = Math.min(640 / img.naturalWidth, 480 / img.naturalHeight);
-                const w = img.naturalWidth * scale;
-                const h = img.naturalHeight * scale;
+                // Aspect Fill (Cover) - Zero white borders, photo fills 100% of 640x480
+                const scale = Math.max(640 / img.naturalWidth, 480 / img.naturalHeight);
+                const w = Math.round(img.naturalWidth * scale);
+                const h = Math.round(img.naturalHeight * scale);
                 const x = Math.round((640 - w) / 2);
                 const y = Math.round((480 - h) / 2);
 
@@ -10779,7 +10780,7 @@ function fetchAndProcessImage640x480(directUrl) {
                 canvas.toBlob((blob) => {
                     if (blob) resolve({ blob: blob, wasResized: true });
                     else reject(new Error('Canvas toBlob failed'));
-                }, 'image/jpeg', 0.95);
+                }, 'image/jpeg', 0.96);
             } catch (err) {
                 reject(err);
             }
@@ -10808,16 +10809,16 @@ function fetchAndProcessImage640x480(directUrl) {
                     canvas.width = 640;
                     canvas.height = 480;
                     const ctx = canvas.getContext('2d', { alpha: false });
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.fillRect(0, 0, 640, 480);
-                    const scale = Math.min(640 / fallbackImg.naturalWidth, 480 / fallbackImg.naturalHeight);
-                    const w = fallbackImg.naturalWidth * scale;
-                    const h = fallbackImg.naturalHeight * scale;
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    const scale = Math.max(640 / fallbackImg.naturalWidth, 480 / fallbackImg.naturalHeight);
+                    const w = Math.round(fallbackImg.naturalWidth * scale);
+                    const h = Math.round(fallbackImg.naturalHeight * scale);
                     ctx.drawImage(fallbackImg, Math.round((640 - w) / 2), Math.round((480 - h) / 2), w, h);
                     canvas.toBlob((blob) => {
                         if (blob) resolve({ blob: blob, wasResized: true });
                         else reject(new Error('Fallback blob failed'));
-                    }, 'image/jpeg', 0.95);
+                    }, 'image/jpeg', 0.96);
                 } catch(e) { reject(e); }
             };
             fallbackImg.onerror = (e) => reject(new Error('Image failed to load: ' + directUrl));
@@ -10972,12 +10973,8 @@ function resizeImageBlobTo640x480(blobOrFile) {
             ctx.imageSmoothingEnabled = true;
             ctx.imageSmoothingQuality = 'high';
 
-            // Clean HungerStation white background
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(0, 0, 640, 480);
-
-            // Aspect fit centered
-            const scale = Math.min(640 / origW, 480 / origH);
+            // Aspect Fill (Cover) - Zero white borders, photo fills 100% of 640x480 as if shot natively in 4:3!
+            const scale = Math.max(640 / origW, 480 / origH);
             const w = Math.round(origW * scale);
             const h = Math.round(origH * scale);
             const x = Math.round((640 - w) / 2);
@@ -10990,7 +10987,7 @@ function resizeImageBlobTo640x480(blobOrFile) {
                     reject(new Error("Canvas toBlob failed"));
                     return;
                 }
-                const previewUrl = canvas.toDataURL('image/jpeg', 0.88);
+                const previewUrl = canvas.toDataURL('image/jpeg', 0.92);
                 resolve({
                     blob: blob,
                     origW,
@@ -10998,7 +10995,7 @@ function resizeImageBlobTo640x480(blobOrFile) {
                     wasResized: true,
                     previewUrl: previewUrl
                 });
-            }, 'image/jpeg', 0.95);
+            }, 'image/jpeg', 0.96);
         };
         img.onerror = () => reject(new Error("تعذر قراءة الصورة"));
         img.src = url;
