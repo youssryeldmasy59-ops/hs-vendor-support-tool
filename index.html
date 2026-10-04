@@ -2402,26 +2402,116 @@
                 </div>
             </div>
 
-            <!-- Drive Image Links Container -->
-            <div id="studioExtractedImagesContainer" style="display: none; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 14px; margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <div style="font-size: 0.88rem; font-weight: 700; color: #C4B5FD; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-brands fa-google-drive"></i> <span>🖼️ روابط وصور الأصناف المعزولة (Google Drive & Links):</span>
-                        <span id="studioImgCountBadge" style="background: #8B5CF6; color: #FFF; font-size: 0.72rem; padding: 2px 10px; border-radius: 12px; font-weight: 800;">0 رابط</span>
+            <!-- 🖼️ Google Drive Folder & Image Extractor Hub -->
+            <div id="studioDriveImageHub" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(139, 92, 246, 0.35); border-radius: 14px; padding: 18px; margin-bottom: 22px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35); backdrop-filter: blur(8px);">
+                <!-- Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #EC4899, #8B5CF6); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.45);">
+                            <i class="fa-brands fa-google-drive" style="color: #FFF; font-size: 1.25rem;"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.95rem; font-weight: 800; color: #FFF; display: flex; align-items: center; gap: 8px;">
+                                <span>مستخرج ومعالج صور Google Drive (Drive Folder & Image Hub)</span>
+                                <span id="studioDriveCountBadge" style="background: rgba(139, 92, 246, 0.25); color: #C4B5FD; border: 1px solid rgba(139, 92, 246, 0.4); font-size: 0.72rem; padding: 2px 10px; border-radius: 12px; font-weight: 800;">0 صورة</span>
+                            </div>
+                            <div style="font-size: 0.76rem; color: #94A3B8; margin-top: 2px;">
+                                استخراج الصور من روابط ومجلدات Google Drive، التعرف على الأقسام، تحويل المقاس لـ 640×480 وحفظها بملف ZIP مسمى لهنقرستيشن
+                            </div>
+                        </div>
                     </div>
-                    <div style="display: flex; gap: 8px;">
-                        <button onclick="downloadAllMenuImagesZip640x480()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 5px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);">
-                            <i class="fa-solid fa-file-zipper"></i> ⚡ تنزيل كل الصور بمقاس 640×480 (ملف ZIP)
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button onclick="downloadAllProcessedDriveImagesZip()" id="btnDownloadDriveZip" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 8px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);">
+                            <i class="fa-solid fa-file-zipper"></i> ⚡ تنزيل حزمة الصور 640×480 (ZIP مسمى)
                         </button>
-                        <button onclick="copyStudioExtractedImages()" style="background: #8B5CF6; color: #FFF; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;">
-                            <i class="fa-solid fa-copy"></i> نسخ الروابط
+                        <button onclick="autoBuildMenuFromDriveImages()" id="btnBuildMenuFromImages" style="background: linear-gradient(135deg, #6366F1, #4F46E5); color: #FFF; border: none; padding: 8px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="إنشاء أقسام وأصناف المنيو في الشيت تلقائياً بناءً على أسماء المجلدات والصور">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> ✨ بناء المنيو من الصور
                         </button>
-                        <button onclick="downloadStudioImagesTxt()" style="background: rgba(255,255,255,0.1); color: #FFF; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; cursor: pointer;">
-                            <i class="fa-solid fa-download"></i> حفظ ملف TXT
+                        <button onclick="clearProcessedDriveImages()" style="background: rgba(239, 68, 68, 0.15); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer;">
+                            <i class="fa-solid fa-trash-can"></i> مسح
                         </button>
                     </div>
                 </div>
-                <div id="studioExtractedImagesList" style="max-height: 100px; overflow-y: auto; background: #0F172A; border-radius: 6px; padding: 10px; font-size: 0.78rem; color: #93C5FD; font-family: monospace; line-height: 1.6;"></div>
+
+                <!-- Input Row: Link paste + Check -->
+                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                    <div style="position: relative; flex: 1;">
+                        <i class="fa-solid fa-link" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #64748B; font-size: 0.85rem;"></i>
+                        <input type="text" id="studioDriveUrlInput" placeholder="الصق رابط مجلد Google Drive (مثل: https://drive.google.com/drive/folders/...) أو روابط الصور هنا..." style="width: 100%; background: #0F172A; border: 1px solid rgba(255,255,255,0.15); color: #FFF; padding: 9px 36px 9px 12px; border-radius: 8px; font-size: 0.82rem; outline: none;">
+                    </div>
+                    <button onclick="handleDriveUrlFetch()" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #FFF; border: none; padding: 9px 18px; border-radius: 8px; font-weight: 800; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                        <i class="fa-solid fa-magnifying-glass"></i> فحص واستخراج
+                    </button>
+                </div>
+
+                <!-- Private Folder Notice Box (Hidden by default, shown when folder is private) -->
+                <div id="studioDriveAuthHelper" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 12px; margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                        <span style="font-weight: 800; color: #FCD34D; font-size: 0.85rem;"><i class="fa-solid fa-lock"></i> مجلد Google Drive محمي بحساب Google الشريك</span>
+                        <a id="btnOpenDriveFolder" href="#" target="_blank" style="background: #F59E0B; color: #000; padding: 5px 12px; border-radius: 6px; font-weight: 800; text-decoration: none; font-size: 0.78rem; display: flex; align-items: center; gap: 5px;">
+                            <i class="fa-brands fa-google-drive"></i> فتح المجلد في Drive
+                        </a>
+                    </div>
+                    <p style="font-size: 0.8rem; color: #FEF3C7; margin: 8px 0 0 0; line-height: 1.5;">
+                        💡 <strong>طريقة الاستخراج الفورية بدون إذن API:</strong><br>
+                        1. اضغط "فتح المجلد في Drive" أعلاه.<br>
+                        2. كليك يمين على مجلد <strong>الصور</strong> واختر <strong>تنزيل (Download)</strong>.<br>
+                        3. اسحب ملف الـ <strong>ZIP</strong> الناتج (أو اسحب مجلد الصور مباشرة من جهازك) وأفلته في المربع أدناه 👇 — وسيقوم النظام فوراً بفك الضغط، فرز المجلدات (البرجر، الشاورما، الفطائر...)، وتعديل مقاس كل الصور لـ 640×480 وربطها بالمنيو في ثانية واحدة!
+                    </p>
+                </div>
+
+                <!-- Dropzone Area -->
+                <div id="studioDriveDropzone" onclick="document.getElementById('studioDriveZipInput').click()" ondragover="event.preventDefault(); this.style.borderColor='#8B5CF6'; this.style.background='rgba(139, 92, 246, 0.1)';" ondragleave="this.style.borderColor='rgba(139, 92, 246, 0.35)'; this.style.background='rgba(15, 23, 42, 0.5)';" ondrop="handleDriveDrop(event);" style="border: 2px dashed rgba(139, 92, 246, 0.35); border-radius: 10px; padding: 20px 16px; text-align: center; cursor: pointer; background: rgba(15, 23, 42, 0.5); transition: all 0.2s;">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: #A78BFA; margin-bottom: 6px;"></i>
+                    <div style="font-size: 0.92rem; font-weight: 800; color: #F1F5F9;">
+                        اسحب وأفلت ملف الـ ZIP أو مجلد الصور من درايف هنا (أو انقر للاختيار)
+                    </div>
+                    <div style="font-size: 0.76rem; color: #94A3B8; margin-top: 4px;">
+                        يدعم ملفات ZIP المنزلة من Google Drive، أو مجلد الصور بالكامل، أو صور متعددة دفعة واحدة.
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+                        <button type="button" onclick="event.stopPropagation(); document.getElementById('studioDriveFolderInput').click();" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #CBD5E1; padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                            <i class="fa-solid fa-folder-open"></i> اختيار مجلد من الجهاز
+                        </button>
+                        <button type="button" onclick="event.stopPropagation(); document.getElementById('studioDriveZipInput').click();" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #CBD5E1; padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                            <i class="fa-solid fa-file-zipper"></i> اختيار ملف ZIP أو صور
+                        </button>
+                    </div>
+                    <input type="file" id="studioDriveZipInput" accept=".zip,image/*" multiple style="display: none;" onchange="handleDriveFileInput(event)">
+                    <input type="file" id="studioDriveFolderInput" webkitdirectory directory multiple style="display: none;" onchange="handleDriveFileInput(event)">
+                </div>
+
+                <!-- Progress Bar -->
+                <div id="studioDriveProgressBar" style="display: none; margin-top: 12px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: #CBD5E1; margin-bottom: 4px;">
+                        <span id="studioDriveProgressText">جاري المعالجة...</span>
+                        <span id="studioDriveProgressPercent">0%</span>
+                    </div>
+                    <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                        <div id="studioDriveProgressFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #EC4899, #8B5CF6); transition: width 0.2s;"></div>
+                    </div>
+                </div>
+
+                <!-- Extracted Image URLs from text (Backward-compatible) -->
+                <div id="studioExtractedImagesContainer" style="display: none; margin-top: 12px; background: #0F172A; border-radius: 8px; padding: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="font-size: 0.78rem; color: #94A3B8;">روابط الصور المستخرجة من النصوص:</span>
+                        <span id="studioImgCountBadge" style="font-size: 0.72rem; color: #8B5CF6;">0 رابط</span>
+                    </div>
+                    <div id="studioExtractedImagesList" style="max-height: 80px; overflow-y: auto; font-size: 0.75rem; color: #93C5FD; font-family: monospace;"></div>
+                </div>
+
+                <!-- Processed Gallery Section -->
+                <div id="studioDriveGallerySection" style="display: none; margin-top: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                        <div style="font-size: 0.85rem; font-weight: 800; color: #E2E8F0; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-images" style="color: #38BDF8;"></i>
+                            <span>الصور المعالجة والمربوطة بالأقسام (640×480):</span>
+                        </div>
+                        <div id="studioDriveCategoryFilters" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
+                    </div>
+                    <div id="studioDriveGalleryGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; max-height: 480px; overflow-y: auto; padding: 4px;"></div>
+                </div>
             </div>
 
             <!-- Preview 4-Sheets Section -->
@@ -10738,6 +10828,10 @@ function fetchAndProcessImage640x480(directUrl) {
 }
 
 async function downloadAllMenuImagesZip640x480() {
+    if (window.menuBuilderData && window.menuBuilderData.processedDriveImages && window.menuBuilderData.processedDriveImages.length > 0) {
+        return downloadAllProcessedDriveImagesZip();
+    }
+
     if (typeof JSZip === 'undefined') {
         showToast('⏳ جاري تحميل مكتبة الضغط...');
         await new Promise(r => setTimeout(r, 1000));
@@ -10745,7 +10839,7 @@ async function downloadAllMenuImagesZip640x480() {
 
     const { items, groups, imageLinks } = window.menuBuilderData || {};
     if (!items || !items.length) {
-        showToast('⚠️ لا توجد أصناف في المنيو لمعالجة صورها!');
+        showToast('⚠️ لا توجد أصناف في المنيو لمعالجة صورها! يمكنك سحب مجلد درايف أو ملف ZIP في المركز أدناه.');
         return;
     }
 
@@ -10773,7 +10867,9 @@ async function downloadAllMenuImagesZip640x480() {
     });
 
     if (targetItems.length === 0) {
-        showToast('⚠️ لم يتم العثور على روابط صور للأصناف في هذا الشيت!');
+        showToast('💡 برجاء سحب ملف ZIP أو مجلد صور Google Drive في مركز الصور أدناه!');
+        const hub = document.getElementById('studioDriveImageHub');
+        if (hub) hub.scrollIntoView({ behavior: 'smooth' });
         return;
     }
 
@@ -10807,14 +10903,10 @@ async function downloadAllMenuImagesZip640x480() {
                 .replace(/_+/g, '_')
                 .slice(0, 35);
             
-            // Sequential number: 01, 02, 03... (First image is first item in menu)
             const numStr = String(item.index).padStart(2, '0');
             const fileName = `${numStr}_[${safeCat}]_${safeName}.jpg`;
 
-            // 1. In root folder (strictly sorted 01 to N)
             rootFolder.file(fileName, res.blob);
-
-            // 2. In category subfolder
             const subCatFolder = categoryFolder.folder(safeCat);
             subCatFolder.file(`${numStr}_${safeName}.jpg`, res.blob);
 
@@ -10826,7 +10918,7 @@ async function downloadAllMenuImagesZip640x480() {
     }
 
     if (completed === 0) {
-        showToast('❌ تعذر تحميل الصور عبر المتصفح بسبب أذونات الحماية على الروابط.');
+        showToast('❌ تعذر تحميل الصور تلقائياً بسبب حماية روابط درايف. اسحب ملف ZIP مباشرة في مربع السحب!');
         return;
     }
 
@@ -10846,6 +10938,618 @@ async function downloadAllMenuImagesZip640x480() {
     playSuccessChime();
     const note = untouchedCount > 0 ? ` (${untouchedCount} صورة كانت جاهزة 640×480 ولم يتم تعديلها)` : '';
     showToast(`✅ تم تنزيل ${completed} صورة مرتبة ومسماة بالتصنيف ورقم الصنف بنجاح!${note}`);
+}
+
+
+// =========================================================================
+// 🚀 GOOGLE DRIVE FOLDER & ZIP IMAGE EXTRACTION & MATCHING ENGINE (640x480)
+// =========================================================================
+
+function resizeImageBlobTo640x480(blobOrFile) {
+    return new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(blobOrFile);
+        const img = new Image();
+        img.onload = () => {
+            URL.revokeObjectURL(url);
+            const origW = img.naturalWidth;
+            const origH = img.naturalHeight;
+
+            if (origW === 640 && origH === 480) {
+                resolve({
+                    blob: blobOrFile,
+                    origW,
+                    origH,
+                    wasResized: false,
+                    previewUrl: url
+                });
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 640;
+            canvas.height = 480;
+            const ctx = canvas.getContext('2d', { alpha: false });
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+
+            // Clean HungerStation white background
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, 640, 480);
+
+            // Aspect fit centered
+            const scale = Math.min(640 / origW, 480 / origH);
+            const w = Math.round(origW * scale);
+            const h = Math.round(origH * scale);
+            const x = Math.round((640 - w) / 2);
+            const y = Math.round((480 - h) / 2);
+
+            ctx.drawImage(img, x, y, w, h);
+
+            canvas.toBlob((blob) => {
+                if (!blob) {
+                    reject(new Error("Canvas toBlob failed"));
+                    return;
+                }
+                const previewUrl = canvas.toDataURL('image/jpeg', 0.88);
+                resolve({
+                    blob: blob,
+                    origW,
+                    origH,
+                    wasResized: true,
+                    previewUrl: previewUrl
+                });
+            }, 'image/jpeg', 0.95);
+        };
+        img.onerror = () => reject(new Error("تعذر قراءة الصورة"));
+        img.src = url;
+    });
+}
+
+function matchImageWithMenuItem(itemName, category) {
+    const items = (window.menuBuilderData && window.menuBuilderData.items) || [];
+    if (!items.length) return null;
+
+    const norm = (s) => String(s || '').toLowerCase().replace(/[\s\-_/\\()]/g, '');
+    const cItem = norm(itemName);
+    const cCat = norm(category);
+
+    // 1. Direct match by item name
+    let found = items.find(it => norm(it.item_ar || it.name_ar) === cItem || norm(it.item_en || it.name_en) === cItem);
+    if (found) return found;
+
+    // 2. Category match + partial item name
+    found = items.find(it => {
+        const itCat = norm(it.group_name || it.category || '');
+        const itAr = norm(it.item_ar || it.name_ar);
+        const itEn = norm(it.item_en || it.name_en);
+        const catMatches = !cCat || cCat === 'عام' || itCat.includes(cCat) || cCat.includes(itCat);
+        return catMatches && (itAr.includes(cItem) || cItem.includes(itAr) || itEn.includes(cItem) || cItem.includes(itEn));
+    });
+    if (found) return found;
+
+    // 3. Fallback partial match anywhere
+    found = items.find(it => {
+        const itAr = norm(it.item_ar || it.name_ar);
+        return itAr.includes(cItem) || cItem.includes(itAr);
+    });
+
+    return found || null;
+}
+
+async function handleDriveUrlFetch() {
+    const input = document.getElementById('studioDriveUrlInput');
+    const rawVal = (input ? input.value : '').trim();
+    if (!rawVal) {
+        showToast("⚠️ برجاء إدخال رابط Google Drive أولاً!");
+        return;
+    }
+
+    const folderMatch = rawVal.match(/folders\/([a-zA-Z0-9_-]+)/);
+    const helper = document.getElementById('studioDriveAuthHelper');
+    const openBtn = document.getElementById('btnOpenDriveFolder');
+
+    if (folderMatch && folderMatch[1]) {
+        const folderId = folderMatch[1];
+        if (openBtn) openBtn.href = `https://drive.google.com/drive/folders/${folderId}`;
+        if (helper) helper.style.display = 'block';
+
+        showToast("🔍 فحص مجلد Google Drive... يتم التحقق من الصلاحيات.");
+        
+        // Check if public by trying to fetch thumbnail or embed
+        try {
+            const checkUrl = `https://drive.google.com/embeddedfolderview?id=${folderId}#list`;
+            // Trigger dropzone animation to guide user
+            const dz = document.getElementById('studioDriveDropzone');
+            if (dz) {
+                dz.style.borderColor = '#F59E0B';
+                setTimeout(() => { dz.style.borderColor = 'rgba(139, 92, 246, 0.35)'; }, 4000);
+            }
+            showToast("🔒 المجلد خاص أو يتطلب تسجيل الدخول. يمكنك تنزيل المجلد كـ ZIP من درايف وإسقاطه هنا مباشرة!");
+        } catch(e) {
+            console.warn(e);
+        }
+    } else {
+        // Direct file links?
+        const urls = extractImageUrls(rawVal);
+        if (urls && urls.length > 0) {
+            showToast(`🚀 جاري تحميل ومعالجة ${urls.length} رابط صورة...`);
+            processDirectImageUrls(urls);
+        } else {
+            showToast("⚠️ لم يتم التعرف على معرف مجلد أو صور في هذا الرابط.");
+        }
+    }
+}
+
+async function processDirectImageUrls(urls) {
+    if (!window.menuBuilderData) window.menuBuilderData = {};
+    if (!window.menuBuilderData.processedDriveImages) window.menuBuilderData.processedDriveImages = [];
+
+    const pb = document.getElementById('studioDriveProgressBar');
+    const pFill = document.getElementById('studioDriveProgressFill');
+    const pText = document.getElementById('studioDriveProgressText');
+    const pPct = document.getElementById('studioDriveProgressPercent');
+    if (pb) pb.style.display = 'block';
+
+    let done = 0;
+    for (let i = 0; i < urls.length; i++) {
+        const u = urls[i];
+        const directUrl = convertToDirectImageUrl(u);
+        const nameGuess = `صورة_${i + 1}`;
+        try {
+            const res = await fetchAndProcessImage640x480(directUrl);
+            const matched = matchImageWithMenuItem(nameGuess, 'عام');
+            window.menuBuilderData.processedDriveImages.push({
+                id: window.menuBuilderData.processedDriveImages.length + 1,
+                name: nameGuess,
+                category: 'عام',
+                blob: res.blob,
+                previewUrl: URL.createObjectURL(res.blob),
+                origW: 640,
+                origH: 480,
+                wasResized: res.wasResized,
+                matchedItemId: matched ? (matched.id || matched.item_id) : null,
+                matchedItemName: matched ? (matched.item_ar || matched.name_ar) : null
+            });
+            done++;
+        } catch(e) {
+            console.warn("Direct url error", u, e);
+        }
+        const pct = Math.round(((i + 1) / urls.length) * 100);
+        if (pFill) pFill.style.width = pct + '%';
+        if (pPct) pPct.textContent = pct + '%';
+        if (pText) pText.textContent = `جاري معالجة ${i + 1}/${urls.length}...`;
+    }
+
+    setTimeout(() => { if (pb) pb.style.display = 'none'; }, 800);
+    renderDriveGallery();
+    playSuccessChime();
+    showToast(`🎉 تم معالجة ${done} صورة بنجاح بمقاس 640×480!`);
+}
+
+async function handleDriveDrop(event) {
+    event.preventDefault();
+    const dz = document.getElementById('studioDriveDropzone');
+    if (dz) {
+        dz.style.borderColor = 'rgba(139, 92, 246, 0.35)';
+        dz.style.background = 'rgba(15, 23, 42, 0.5)';
+    }
+
+    const items = event.dataTransfer.items;
+    const files = event.dataTransfer.files;
+
+    if (files && files.length === 1 && files[0].name.toLowerCase().endsWith('.zip')) {
+        return processDriveZip(files[0]);
+    }
+
+    // Try webkitGetAsEntry for folders
+    if (items && items.length > 0 && items[0].webkitGetAsEntry) {
+        const fileEntries = [];
+        for (let i = 0; i < items.length; i++) {
+            const entry = items[i].webkitGetAsEntry();
+            if (entry) await traverseDirectoryEntry(entry, '', fileEntries);
+        }
+        if (fileEntries.length > 0) {
+            return processExtractedEntries(fileEntries);
+        }
+    }
+
+    if (files && files.length > 0) {
+        const entries = [];
+        for (let i = 0; i < files.length; i++) {
+            const f = files[i];
+            if (f.name.toLowerCase().endsWith('.zip')) {
+                return processDriveZip(f);
+            }
+            if (/\.(jpe?g|png|webp|bmp)$/i.test(f.name)) {
+                entries.push({
+                    file: f,
+                    name: f.name.replace(/\.[^/.]+$/, ''),
+                    category: 'عام'
+                });
+            }
+        }
+        if (entries.length > 0) {
+            return processExtractedEntries(entries);
+        }
+    }
+}
+
+async function traverseDirectoryEntry(entry, currentPath, list) {
+    if (entry.isFile) {
+        if (/\.(jpe?g|png|webp|bmp)$/i.test(entry.name)) {
+            const file = await new Promise(res => entry.file(res));
+            const full = (currentPath ? currentPath + '/' : '') + entry.name;
+            const parts = full.split('/').filter(Boolean);
+            let cat = 'عام';
+            if (parts.length >= 2) {
+                cat = parts[parts.length - 2];
+                if ((cat === 'الصور' || cat === 'Images') && parts.length >= 3) {
+                    cat = parts[parts.length - 3];
+                }
+            }
+            list.push({
+                file: file,
+                name: entry.name.replace(/\.[^/.]+$/, ''),
+                category: cat
+            });
+        }
+    } else if (entry.isDirectory) {
+        const reader = entry.createReader();
+        const readBatch = () => new Promise(res => reader.readEntries(res));
+        let batch;
+        const newPath = currentPath ? currentPath + '/' + entry.name : entry.name;
+        do {
+            batch = await readBatch();
+            if (batch && batch.length) {
+                for (const child of batch) {
+                    await traverseDirectoryEntry(child, newPath, list);
+                }
+            }
+        } while (batch && batch.length > 0);
+    }
+}
+
+function handleDriveFileInput(event) {
+    const files = event.target.files;
+    if (!files || !files.length) return;
+
+    if (files.length === 1 && files[0].name.toLowerCase().endsWith('.zip')) {
+        processDriveZip(files[0]);
+    } else {
+        const entries = [];
+        for (let i = 0; i < files.length; i++) {
+            const f = files[i];
+            if (f.name.toLowerCase().endsWith('.zip')) {
+                processDriveZip(f);
+                return;
+            }
+            if (/\.(jpe?g|png|webp|bmp)$/i.test(f.name)) {
+                let cat = 'عام';
+                if (f.webkitRelativePath) {
+                    const parts = f.webkitRelativePath.split('/').filter(Boolean);
+                    if (parts.length >= 2) {
+                        cat = parts[parts.length - 2];
+                        if ((cat === 'الصور' || cat === 'Images') && parts.length >= 3) {
+                            cat = parts[parts.length - 3];
+                        }
+                    }
+                }
+                entries.push({
+                    file: f,
+                    name: f.name.replace(/\.[^/.]+$/, ''),
+                    category: cat
+                });
+            }
+        }
+        if (entries.length > 0) processExtractedEntries(entries);
+    }
+    event.target.value = '';
+}
+
+async function processDriveZip(zipFile) {
+    if (typeof JSZip === 'undefined') {
+        showToast('⏳ جاري تحميل مكتبة الضغط...');
+        await new Promise(r => setTimeout(r, 1000));
+    }
+
+    showToast(`📦 جاري فك ضغط ملف: ${zipFile.name}...`);
+    const pb = document.getElementById('studioDriveProgressBar');
+    const pFill = document.getElementById('studioDriveProgressFill');
+    const pText = document.getElementById('studioDriveProgressText');
+    const pPct = document.getElementById('studioDriveProgressPercent');
+    if (pb) pb.style.display = 'block';
+
+    try {
+        const zip = await JSZip.loadAsync(zipFile);
+        const entries = [];
+
+        for (let [relPath, zEntry] of Object.entries(zip.files)) {
+            if (zEntry.dir) continue;
+            if (relPath.includes('__MACOSX') || relPath.includes('.DS_Store')) continue;
+            if (!/\.(jpe?g|png|webp|bmp)$/i.test(zEntry.name)) continue;
+
+            const parts = relPath.split('/').filter(Boolean);
+            const fname = parts[parts.length - 1];
+            let cat = 'عام';
+            if (parts.length >= 2) {
+                cat = parts[parts.length - 2];
+                if ((cat === 'الصور' || cat === 'Images' || cat === 'Photos') && parts.length >= 3) {
+                    cat = parts[parts.length - 3];
+                }
+            }
+
+            const blob = await zEntry.async('blob');
+            entries.push({
+                file: blob,
+                name: fname.replace(/\.[^/.]+$/, ''),
+                category: cat
+            });
+        }
+
+        if (entries.length === 0) {
+            showToast('⚠️ لم يتم العثور على صور مدعومة داخل ملف الـ ZIP!');
+            if (pb) pb.style.display = 'none';
+            return;
+        }
+
+        await processExtractedEntries(entries);
+    } catch(err) {
+        console.error("ZIP read error:", err);
+        showToast(`❌ تعذر قراءة ملف الـ ZIP: ${err.message}`);
+        if (pb) pb.style.display = 'none';
+    }
+}
+
+async function processExtractedEntries(entries) {
+    if (!window.menuBuilderData) window.menuBuilderData = {};
+    if (!window.menuBuilderData.processedDriveImages) window.menuBuilderData.processedDriveImages = [];
+
+    const pb = document.getElementById('studioDriveProgressBar');
+    const pFill = document.getElementById('studioDriveProgressFill');
+    const pText = document.getElementById('studioDriveProgressText');
+    const pPct = document.getElementById('studioDriveProgressPercent');
+    if (pb) pb.style.display = 'block';
+
+    const total = entries.length;
+    let completed = 0;
+    let resizedCount = 0;
+
+    for (let i = 0; i < total; i++) {
+        const item = entries[i];
+        if (pText) pText.textContent = `معالجة ${i + 1}/${total} [${item.category}] : ${item.name}...`;
+        const pct = Math.round(((i + 1) / total) * 100);
+        if (pFill) pFill.style.width = pct + '%';
+        if (pPct) pPct.textContent = pct + '%';
+
+        try {
+            const res = await resizeImageBlobTo640x480(item.file);
+            if (res.wasResized) resizedCount++;
+
+            const matched = matchImageWithMenuItem(item.name, item.category);
+
+            window.menuBuilderData.processedDriveImages.push({
+                id: window.menuBuilderData.processedDriveImages.length + 1,
+                name: item.name,
+                category: item.category || 'عام',
+                blob: res.blob,
+                previewUrl: res.previewUrl,
+                origW: res.origW,
+                origH: res.origH,
+                wasResized: res.wasResized,
+                matchedItemId: matched ? (matched.id || matched.item_id) : null,
+                matchedItemName: matched ? (matched.item_ar || matched.name_ar) : null
+            });
+            completed++;
+        } catch(e) {
+            console.warn("Resize error for:", item.name, e);
+        }
+    }
+
+    setTimeout(() => { if (pb) pb.style.display = 'none'; }, 800);
+    renderDriveGallery();
+    playSuccessChime();
+    showToast(`🎉 تم استخراج ومعالجة ${completed} صورة بمقاس 640×480 بنجاح!`);
+}
+
+function renderDriveGallery(activeFilter = 'ALL') {
+    const list = (window.menuBuilderData && window.menuBuilderData.processedDriveImages) || [];
+    const sec = document.getElementById('studioDriveGallerySection');
+    const badge = document.getElementById('studioDriveCountBadge');
+    const grid = document.getElementById('studioDriveGalleryGrid');
+    const filters = document.getElementById('studioDriveCategoryFilters');
+
+    if (badge) badge.textContent = `${list.length} صورة`;
+
+    if (!list.length) {
+        if (sec) sec.style.display = 'none';
+        return;
+    }
+
+    if (sec) sec.style.display = 'block';
+
+    // Unique Categories
+    const categories = ['ALL', ...new Set(list.map(x => x.category))];
+    if (filters) {
+        filters.innerHTML = categories.map(cat => {
+            const count = cat === 'ALL' ? list.length : list.filter(x => x.category === cat).length;
+            const isAct = cat === activeFilter;
+            return `
+                <button type="button" onclick="renderDriveGallery('${cat}')" style="background: ${isAct ? '#8B5CF6' : 'rgba(255,255,255,0.06)'}; color: ${isAct ? '#FFF' : '#CBD5E1'}; border: 1px solid ${isAct ? '#A78BFA' : 'rgba(255,255,255,0.1)'}; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; cursor: pointer;">
+                    ${cat === 'ALL' ? 'الكل' : cat} (${count})
+                </button>
+            `;
+        }).join('');
+    }
+
+    const filtered = activeFilter === 'ALL' ? list : list.filter(x => x.category === activeFilter);
+    const menuItems = (window.menuBuilderData && window.menuBuilderData.items) || [];
+
+    if (grid) {
+        grid.innerHTML = filtered.map(img => {
+            const itemOptions = menuItems.map(it => {
+                const itName = it.item_ar || it.name_ar || ('صنف #' + it.id);
+                const isSelected = img.matchedItemId && (it.id === img.matchedItemId || it.item_id === img.matchedItemId);
+                return `<option value="${it.id || it.item_id}" ${isSelected ? 'selected' : ''}>${itName}</option>`;
+            }).join('');
+
+            return `
+                <div style="background: #0F172A; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.25);">
+                    <div style="position: relative; width: 100%; height: 110px; background: #FFF; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                        <img src="${img.previewUrl}" alt="${img.name}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                        <span style="position: absolute; top: 4px; left: 4px; background: rgba(0,0,0,0.7); color: #FFF; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;">640×480</span>
+                        <span style="position: absolute; top: 4px; right: 4px; background: #8B5CF6; color: #FFF; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;">${img.category}</span>
+                    </div>
+                    <div style="font-size: 0.8rem; font-weight: 700; color: #F1F5F9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${img.name}">
+                        ${img.name}
+                    </div>
+                    <div style="font-size: 0.7rem; color: #94A3B8;">
+                        الأصل: ${img.origW}×${img.origH} px ${img.wasResized ? '➔ معدل' : '➔ معتمد'}
+                    </div>
+                    <div>
+                        <select onchange="rebindImageWithItem(${img.id}, this.value)" style="width: 100%; background: #1E293B; color: #F8FAFC; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 4px; font-size: 0.72rem;">
+                            <option value="">-- ربط بصنف منيو --</option>
+                            ${itemOptions}
+                        </select>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+}
+
+function rebindImageWithItem(imgId, itemId) {
+    const list = (window.menuBuilderData && window.menuBuilderData.processedDriveImages) || [];
+    const target = list.find(x => x.id === imgId);
+    if (!target) return;
+
+    if (!itemId) {
+        target.matchedItemId = null;
+        target.matchedItemName = null;
+    } else {
+        target.matchedItemId = parseInt(itemId);
+        const menuItems = (window.menuBuilderData && window.menuBuilderData.items) || [];
+        const it = menuItems.find(x => (x.id === target.matchedItemId || x.item_id === target.matchedItemId));
+        if (it) target.matchedItemName = it.item_ar || it.name_ar;
+    }
+    showToast(`✅ تم تحديث ربط صورة: ${target.name}`);
+}
+
+async function downloadAllProcessedDriveImagesZip() {
+    const list = (window.menuBuilderData && window.menuBuilderData.processedDriveImages) || [];
+    if (!list.length) {
+        showToast("⚠️ لا توجد صور معالجة لتنزيلها! اسحب ملف ZIP أو المجلد أولاً.");
+        return;
+    }
+
+    if (typeof JSZip === 'undefined') {
+        showToast('⏳ جاري تحميل مكتبة الضغط...');
+        await new Promise(r => setTimeout(r, 1000));
+    }
+
+    showToast(`📦 جاري تجهيز حزمة ${list.length} صورة 640×480 لبورتال هنقرستيشن...`);
+    const zip = new JSZip();
+    const rootFolder = zip.folder('Menu_Images_Sorted_640x480');
+    const categoryFolder = zip.folder('Menu_Images_By_Category');
+
+    list.forEach((img, i) => {
+        const numStr = String(i + 1).padStart(2, '0');
+        const safeCat = (img.category || 'عام').replace(/[^\u0600-\u06FFa-zA-Z0-9_-]/g, '_');
+        const safeName = (img.matchedItemName || img.name || `صنف_${i + 1}`).replace(/[^\u0600-\u06FFa-zA-Z0-9_-]/g, '_');
+        
+        const fname = `${numStr}_[${safeCat}]_${safeName}.jpg`;
+        rootFolder.file(fname, img.blob);
+
+        const sub = categoryFolder.folder(safeCat);
+        sub.file(`${numStr}_${safeName}.jpg`, img.blob);
+    });
+
+    const content = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(content);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Hungerstation_Menu_Images_640x480.zip`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, 10000);
+
+    playSuccessChime();
+    showToast(`🎉 تم تنزيل حزمة ${list.length} صورة 640×480 بنجاح!`);
+}
+
+function autoBuildMenuFromDriveImages() {
+    const list = (window.menuBuilderData && window.menuBuilderData.processedDriveImages) || [];
+    if (!list.length) {
+        showToast("⚠️ لا توجد صور مستخرجة لبناء المنيو منها!");
+        return;
+    }
+
+    if (!window.menuBuilderData) window.menuBuilderData = {};
+    const groups = [];
+    const items = [];
+
+    // Distinct Categories
+    const categories = [...new Set(list.map(x => x.category || 'عام'))];
+    categories.forEach((cat, idx) => {
+        groups.push({
+            id: idx + 1,
+            ar_name: cat,
+            name_ar: cat,
+            en_name: autoTranslateMenuText(cat, 'EN') || 'Section',
+            name_en: autoTranslateMenuText(cat, 'EN') || 'Section',
+            order: idx + 1
+        });
+    });
+
+    list.forEach((img, idx) => {
+        const grp = groups.find(g => g.ar_name === img.category) || groups[0];
+        const itAr = img.name;
+        const itEn = autoTranslateMenuText(itAr, 'EN') || `Item ${idx + 1}`;
+        items.push({
+            id: idx + 1,
+            item_id: idx + 1,
+            item_ar: itAr,
+            name_ar: itAr,
+            item_en: itEn,
+            name_en: itEn,
+            group_id: grp.id,
+            group_name: grp.ar_name,
+            category: grp.ar_name,
+            price: 25,
+            calories: 350,
+            description_ar: `أشهى ${itAr} الطازجة المحضرة يومياً بأعلى معايير الجودة`,
+            description_en: `Fresh and delicious ${itEn} prepared daily with the finest ingredients`,
+            allergens: 'No Allergens'
+        });
+        img.matchedItemId = idx + 1;
+        img.matchedItemName = itAr;
+    });
+
+    window.menuBuilderData.groups = groups;
+    window.menuBuilderData.items = items;
+    if (!window.menuBuilderData.modifiers) window.menuBuilderData.modifiers = [];
+
+    smartAutoFillAndTranslateBilingual();
+    if (typeof renderStudioMenuPreviewTables === 'function') renderStudioMenuPreviewTables();
+    if (typeof updateStudioHealthRadar === 'function') updateStudioHealthRadar();
+    renderDriveGallery();
+
+    playSuccessChime();
+    showToast(`✨ تم إنشاء ${groups.length} أقسام و ${items.length} أصناف في المنيو باللغتين بنجاح من الصور!`);
+}
+
+function clearProcessedDriveImages() {
+    if (window.menuBuilderData) {
+        window.menuBuilderData.processedDriveImages = [];
+    }
+    renderDriveGallery();
+    const helper = document.getElementById('studioDriveAuthHelper');
+    if (helper) helper.style.display = 'none';
+    const input = document.getElementById('studioDriveUrlInput');
+    if (input) input.value = '';
+    showToast("🗑️ تم مسح الصور المعالجة.");
 }
 
 
