@@ -12165,38 +12165,39 @@ function createOfficialMenuWorkbook() {
     const ws2_data = [
         ['#', 'Group. english name *', 'Group. arabic name *', 'max limit ', 'min limit *', 'Modifier en name *', 'Modifier ar name *', 'price *', 'kcal ', 'Vendor ID']
     ];
+    let modRowIdx = 1;
+
     if (modifiers && modifiers.length > 0) {
         let lastGroupEn = null;
-        modifiers.forEach((m, idx) => {
+        modifiers.forEach((m) => {
             const isNewGroup = m.group_en !== lastGroupEn;
             ws2_data.push([
-                idx + 1,
+                modRowIdx,
                 isNewGroup ? toEnglishProper(m.group_en || m.group_name) : '',
                 isNewGroup ? cleanProperTrim(m.group_ar || m.group_name) : '',
-                isNewGroup ? (m.max_limit !== '' ? Number(m.max_limit) : 3) : '',
+                isNewGroup ? (m.max_limit !== '' ? Number(m.max_limit) : 1) : '',
                 isNewGroup ? (m.min_limit !== '' ? Number(m.min_limit) : 0) : '',
                 toEnglishProper(m.mod_en || m.option_en || m.name_en),
                 cleanProperTrim(m.mod_ar || m.option_ar || m.name_ar),
                 Number(m.price) || 0,
                 parseInt(m.kcal || 0, 10),
-                m.vendor_id || ('M' + (idx + 1))
+                m.vendor_id || ('M' + modRowIdx)
             ]);
             if (isNewGroup) lastGroupEn = m.group_en;
+            modRowIdx++;
         });
     }
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws2_data), 'Modifier groupsmodifiers');
 
-    // 3. Sheet: Menu productsitems (Full 29 Official Hungerstation Columns!)
-    const ws3_data = [
-        [
-            '#', 'menu group # *', 'Product english name *', 'Product arabic name *', 'Product english desc ', 'Product arabic desc ',
-            ' item english name *', ' item arabic name *', 'item english desc ', 'item arabic desc ', 'price*', 'pickup_price', 'kcal ',
-            'modifier groups #', 'Vendor ID', 'Allergens', 'Protein', 'Full Fat', 'Saturated fat', 'Trans Fat', 'Cholesterol',
-            'Carbohydrate', 'Fiber', 'Total Sugers', 'Added Sugars', 'Salt', 'Sodiom', 'Caffeine', 'Dietary Preferences'
-        ]
-    ];
-    items.forEach((it, idx) => {
-        const numPrice = Number(it.price) || 0;
+    // Smart Variant Extraction & Grouping: One Card Per Product with Options Underneath
+    const varTrans = {
+        'صغير': 'Small', 'وسط': 'Medium', 'كبير': 'Large', 'عادي': 'Regular',
+        'حراق': 'Spicy', 'بالجبن': 'With Cheese', 'دبل': 'Double',
+        'دبل بالجبن': 'Double With Cheese', 'صغير بالجبن': 'Small With Cheese',
+        'كبير بالجبن': 'Large With Cheese'
+    };
+
+    const productMap = new Map();
+    items.forEach((it) => {
         const rawItemAr = cleanProperTrim(it.item_ar || it.name_ar || it.prod_ar || '');
         let rawItemEn = it.item_en || it.name_en || it.prod_en || '';
         if (!rawItemEn || /[\u0600-\u06FF]/.test(rawItemEn) || rawItemEn === '-') {
@@ -12205,8 +12206,6 @@ function createOfficialMenuWorkbook() {
             rawItemEn = toEnglishProper(rawItemEn);
         }
 
-        // Smart Variant Extraction: Separate Product Base from Variant/Size
-        // e.g. "برجر لحم (بالجبن)" -> Base: "برجر لحم", Variant: "بالجبن"
         let baseAr = rawItemAr;
         let varAr = 'عادي';
         let baseEn = rawItemEn;
@@ -12223,45 +12222,110 @@ function createOfficialMenuWorkbook() {
             baseEn = enParenMatch[1].trim();
             varEn = enParenMatch[2].trim();
         } else if (arParenMatch) {
-            const varTrans = {
-                'صغير': 'Small', 'وسط': 'Medium', 'كبير': 'Large', 'عادي': 'Regular',
-                'حراق': 'Spicy', 'بالجبن': 'With Cheese', 'دبل': 'Double',
-                'دبل بالجبن': 'Double With Cheese', 'صغير بالجبن': 'Small With Cheese',
-                'كبير بالجبن': 'Large With Cheese'
-            };
             varEn = varTrans[varAr] || smartTranslateFoodName(varAr);
             baseEn = smartTranslateFoodName(baseAr);
         }
 
-        const hasSiblings = items.some((other, oIdx) => oIdx !== idx && cleanProperTrim(other.item_ar || other.name_ar || '').startsWith(baseAr));
-
-        let finalProdEn = toEnglishProper(baseEn);
-        let finalProdAr = cleanProperTrim(baseAr);
-        let finalItemEn = hasSiblings ? toEnglishProper(varEn) : toEnglishProper(rawItemEn);
-        let finalItemAr = hasSiblings ? cleanProperTrim(varAr) : cleanProperTrim(rawItemAr);
-
-        const safeDescAr = cleanProperTrim(it.item_ar_desc || it.desc_ar || it.prod_ar_desc || '');
-        let safeDescEn = cleanProperTrim(it.item_en_desc || it.desc_en || it.prod_en_desc || '');
-        if (!safeDescEn || /[\u0600-\u06FF]/.test(safeDescEn)) {
-            safeDescEn = smartTranslateFoodDescription(safeDescAr);
+        const key = (it.group_id || 1) + '|||' + baseAr;
+        if (!productMap.has(key)) {
+            const safeDescAr = cleanProperTrim(it.item_ar_desc || it.desc_ar || it.prod_ar_desc || '');
+            let safeDescEn = cleanProperTrim(it.item_en_desc || it.desc_en || it.prod_en_desc || '');
+            if (!safeDescEn || /[\u0600-\u06FF]/.test(safeDescEn)) {
+                safeDescEn = smartTranslateFoodDescription(safeDescAr);
+            }
+            productMap.set(key, {
+                group_id: Number(it.group_id) || 1,
+                baseAr: baseAr,
+                baseEn: baseEn,
+                descAr: safeDescAr,
+                descEn: safeDescEn,
+                variants: [],
+                meta: it
+            });
         }
 
+        const p = productMap.get(key);
+        const pPrice = Number(it.price) || 0;
+        if (!p.variants.some(v => v.varAr === varAr && Math.abs(v.price - pPrice) < 0.1)) {
+            p.variants.push({
+                varAr: varAr,
+                varEn: varEn,
+                price: pPrice,
+                kcal: parseInt(it.kcal || it.calories || 0, 10) || 0
+            });
+        }
+    });
+
+    // Generate Modifiers for products with > 1 variant
+    productMap.forEach((p) => {
+        p.variants.sort((a, b) => a.price - b.price);
+        const hasMods = p.variants.length > 1;
+        p.basePrice = p.variants[0].price;
+        p.baseKcal = p.variants[0].kcal;
+        p.modGroupRef = p.meta.modifier_groups ? String(p.meta.modifier_groups) : '';
+
+        if (hasMods) {
+            p.modGroupRef = String(modRowIdx);
+            let grpAr = 'الخيارات والإضافات';
+            let grpEn = 'Options & Add-ons';
+            if (p.variants.some(v => v.varAr.includes('صغير') || v.varAr.includes('كبير') || v.varAr.includes('وسط'))) {
+                grpAr = 'اختر الحجم';
+                grpEn = 'Select Size';
+            } else if (p.variants.some(v => v.varAr.includes('حراق'))) {
+                grpAr = 'اختر النكهة';
+                grpEn = 'Select Flavor';
+            }
+
+            p.variants.forEach((v, vIdx) => {
+                const isFirst = (vIdx === 0);
+                const deltaPrice = Math.max(0, Math.round((v.price - p.basePrice) * 100) / 100);
+                ws2_data.push([
+                    modRowIdx,
+                    isFirst ? grpEn : '',
+                    isFirst ? grpAr : '',
+                    isFirst ? 1 : '',
+                    isFirst ? 1 : '',
+                    toEnglishProper(v.varEn),
+                    cleanProperTrim(v.varAr),
+                    deltaPrice,
+                    v.kcal,
+                    'M' + modRowIdx
+                ]);
+                modRowIdx++;
+            });
+        }
+    });
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws2_data), 'Modifier groupsmodifiers');
+
+    // 3. Sheet: Menu productsitems (One row per Product)
+    const ws3_data = [
+        [
+            '#', 'menu group # *', 'Product english name *', 'Product arabic name *', 'Product english desc ', 'Product arabic desc ',
+            ' item english name *', ' item arabic name *', 'item english desc ', 'item arabic desc ', 'price*', 'pickup_price', 'kcal ',
+            'modifier groups #', 'Vendor ID', 'Allergens', 'Protein', 'Full Fat', 'Saturated fat', 'Trans Fat', 'Cholesterol',
+            'Carbohydrate', 'Fiber', 'Total Sugers', 'Added Sugars', 'Salt', 'Sodiom', 'Caffeine', 'Dietary Preferences'
+        ]
+    ];
+
+    let prodRowIdx = 1;
+    productMap.forEach((p) => {
+        const it = p.meta;
         ws3_data.push([
-            idx + 1,
-            Number(it.group_id) || 1,
-            finalProdEn,
-            finalProdAr,
-            cleanProperTrim(it.prod_en_desc || safeDescEn),
-            cleanProperTrim(it.prod_ar_desc || safeDescAr),
-            finalItemEn,
-            finalItemAr,
-            safeDescEn,
-            safeDescAr,
-            numPrice,
-            it.pickup_price ? Number(it.pickup_price) : numPrice,
-            parseInt(it.kcal || it.calories || 0, 10) || '',
-            String(it.modifier_groups || ''),
-            it.vendor_id || ('P' + (idx + 1)),
+            prodRowIdx,
+            p.group_id,
+            toEnglishProper(p.baseEn),
+            cleanProperTrim(p.baseAr),
+            cleanProperTrim(it.prod_en_desc || p.descEn),
+            cleanProperTrim(it.prod_ar_desc || p.descAr),
+            toEnglishProper(p.baseEn),
+            cleanProperTrim(p.baseAr),
+            p.descEn,
+            p.descAr,
+            p.basePrice,
+            it.pickup_price ? Number(it.pickup_price) : p.basePrice,
+            p.baseKcal || '',
+            p.modGroupRef,
+            it.vendor_id || ('P' + prodRowIdx),
             it.allergens || 'No Allergens',
             cleanProperTrim(it.protein || ''),
             cleanProperTrim(it.full_fat || it.fat || ''),
@@ -12277,6 +12341,7 @@ function createOfficialMenuWorkbook() {
             cleanProperTrim(it.caffeine || ''),
             cleanProperTrim(it.dietary_preferences || '')
         ]);
+        prodRowIdx++;
     });
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws3_data), 'Menu productsitems');
 
