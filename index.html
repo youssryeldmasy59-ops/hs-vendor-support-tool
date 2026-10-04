@@ -2310,6 +2310,9 @@
                     <button onclick="runMenuAutoPilot()" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #000; border: none; padding: 10px 22px; border-radius: 10px; font-weight: 900; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.5); " title="1-Click Auto-Pilot: يحول الشيت + ينزل _MenuUpload.xlsx + يختار CCR التذكرة + ينسخ الماكرو في ثانية واحدة!">
                         <i class="fa-solid fa-bolt" style="font-size: 1.1rem;"></i> ⚡ الطيار الآلي الشامل (1-Click Auto-Pilot)
                     </button>
+                    <button onclick="smartAutoFillAndTranslateBilingual()" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: #FFF; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);" title="إصلاح المنيو بالكامل وتعبئة النواقص والترجمة ثنائية الاتجاه بنقرة واحدة">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 🛠️ تصليح وإكمال النواقص باللغتين (1-Click Fix)
+                    </button>
                     <button onclick="downloadOfficialMenuExcel()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
                         <i class="fa-solid fa-cloud-arrow-down"></i> تنزيل شيت الإكسيل الرسمي (_MenuUpload.xlsx)
                     </button>
@@ -4019,7 +4022,7 @@ async function aiAuditMenu() {
     showToast('🔍 الذكاء الاصطناعي يراجع المنيو...', 5000);
     const menuSummary = JSON.stringify({
         groups: window.menuBuilderData.groups.map(g => ({ name_ar: g.name_ar, name_en: g.name_en })),
-        items: window.menuBuilderData.items.map(it => ({ name_ar: it.name_ar, name_en: it.name_en, price: it.price, calories: it.calories, category: it.sort_group_name_ar })),
+        items: window.menuBuilderData.items.map(it => ({ name_ar: it.name_ar, name_en: it.name_en, price: it.price, calories: it.calories, category: (window.menuBuilderData.groups.find(g => g.id === it.group_id)?.ar_name) || it.group_name || 'عام' })),
         modifiers: window.menuBuilderData.modifiers.map(m => ({ name_ar: m.name_ar, name_en: m.name_en, price: m.price }))
     });
     
@@ -9723,8 +9726,15 @@ function processVendorMenuWorkbook(workbook) {
                 if (!rowStr) return;
 
                 // Check for section divider rows (e.g. "قسم البروست", "القسم: البرجر | Burgers")
-                if (/^(?:القسم|قسم|category)[:\s]/i.test(rowStr) || (r.filter(Boolean).length === 1 && rowStr.length < 50 && !/\d/.test(rowStr))) {
-                    currentSectionCategory = rowStr.replace(/^(?:القسم|قسم|category)[:\s]*/i, '').trim();
+                const isSectionDivider = /^(?:القسم|قسم|category)[:\s]/i.test(rowStr) || (
+                    r.filter(Boolean).length === 1 &&
+                    rowStr.length < 50 &&
+                    !/\d/.test(rowStr) &&
+                    !['حراق', 'عادي', 'صغير', 'وسط', 'كبير', 'دبل', 'بالجبن', 'سبايسي', 'small', 'medium', 'large', 'regular', 'spicy'].includes(rowStr.toLowerCase()) &&
+                    /^(?:القسم|قسم|فئة|تصنيف|category)\s*/i.test(rowStr)
+                );
+                if (isSectionDivider) {
+                    currentSectionCategory = rowStr.replace(/^(?:القسم|قسم|فئة|تصنيف|category)[:\s]*/i, '').trim();
                     lastItemNameEn = '';
                     lastItemNameAr = '';
                     return;
@@ -10024,6 +10034,9 @@ function processVendorMenuWorkbook(workbook) {
         if (imgBanner) imgBanner.style.display = 'block';
         if (typeof showToast === 'function') showToast('📸 تم استخراج ' + imgCount + ' رابط صورة! اضغط زر تنزيل الصور لحفظها كملف ZIP مسمى.');
     }
+    // Automatically trigger comprehensive bilingual auto-repair & translation
+    smartAutoFillAndTranslateBilingual();
+
     if (typeof renderStudioMenuPreviewTables === 'function') renderStudioMenuPreviewTables();
     if (typeof renderMenuPreviewTables === 'function') renderMenuPreviewTables();
     if (typeof updateStudioHealthRadar === 'function') updateStudioHealthRadar();
@@ -10120,6 +10133,235 @@ function handleStudioDroppedFiles(event) {
 
 
 // =========================================================================
+// =========================================================================
+// 🌐 SMART BIDIRECTIONAL (AR <-> EN) FOOD TRANSLATION & REPAIR ENGINE
+// =========================================================================
+
+function smartTranslateToAr(str) {
+    if (!str) return '';
+    let s = String(str).trim();
+    if (/[\u0600-\u06FF]/.test(s)) return s;
+
+    const phrases = [
+        ['chicken fries', 'دجاج فرايز'], ['shrimp fries', 'جمبري فرايز'], ['zinger fries', 'زنجر فرايز'],
+        ['shawarma fries', 'شاورما فرايز'], ['french fries plate', 'صحن بطاطس'], ['french fries', 'بطاطس مقلية'],
+        ['double with cheese', 'دبل بالجبن'], ['with cheese', 'بالجبن'], ['small with cheese', 'صغير بالجبن'],
+        ['large with cheese', 'كبير بالجبن'], ['shrimp broast', 'بروست جمبري'], ['chicken broast 4 pieces', 'بروست دجاج 4 قطع'],
+        ['chicken broast 8 pieces', 'بروست دجاج 8 قطع'], ['chicken broast', 'بروست دجاج'],
+        ['fish nuggets', 'مسحب سمك'], ['chicken nuggets', 'مسحب دجاج'], ['shish tawook wrap', 'شيش طاووق راب'],
+        ['shish tawook', 'شيش طاووق'], ['beef burger', 'برجر لحم'], ['chicken burger', 'برجر دجاج'],
+        ['twister burger', 'برجر تويستر'], ['zinger burger', 'برجر زنجر'], ['zinger club', 'زنجر كلوب'],
+        ['zinger wrap', 'زنجر راب'], ['zinger supreme', 'زنجر سوبريم'], ['sarokh shawarma', 'شاورما صاروخ'],
+        ['arabic shawarma double', 'شاورما عربي دبل'], ['arabic shawarma', 'شاورما عربي'], ['sliced shawarma', 'شاورما شرائح'],
+        ['potato chips roll', 'رول رقائق بطاطس'], ['potato chips', 'رقائق بطاطس'],
+        ['egg pie', 'فطيرة بالبيض'], ['falafel pie', 'فطيرة بالطعمية'], ['shrimp pie', 'فطيرة بالجمبري'],
+        ['zinger pie', 'فطيرة بالزنجر'], ['musahab pie', 'فطيرة مسحب']
+    ];
+
+    let low = s.toLowerCase();
+    for (const [en, ar] of phrases) {
+        low = low.split(en).join(ar);
+    }
+
+    const words = [
+        ['burger', 'برجر'], ['sandwich', 'ساندوتش'], ['wrap', 'راب'], ['shawarma', 'شاورما'],
+        ['pie', 'فطيرة'], ['chicken', 'دجاج'], ['beef', 'لحم'], ['fish', 'سمك'],
+        ['shrimp', 'جمبري'], ['fries', 'بطاطس'], ['broast', 'بروست'], ['nuggets', 'مسحب'],
+        ['small', 'صغير'], ['medium', 'وسط'], ['large', 'كبير'], ['regular', 'عادي'],
+        ['spicy', 'حراق'], ['double', 'دبل'], ['cheese', 'جبن'], ['salad', 'سلطة'],
+        ['sauce', 'صوص'], ['drink', 'مشروب'], ['juice', 'عصير'], ['plate', 'صحن']
+    ];
+
+    for (const [en, ar] of words) {
+        low = low.split(new RegExp('\\b' + en + '\\b', 'g')).join(ar);
+    }
+    return low.replace(/\s+/g, ' ').trim();
+}
+
+function smartTranslateDescToAr(str) {
+    if (!str) return '';
+    let s = String(str).trim();
+    if (/[\u0600-\u06FF]/.test(s)) return s;
+
+    const phrases = [
+        ['crispy fried chicken pieces', 'قطع دجاج مقلية مقرمشة'],
+        ['crispy fried shrimp pieces', 'قطع جمبري مقلية مقرمشة'],
+        ['crunchy fried chicken pieces', 'قطع دجاج كرانشي مقرمشة'],
+        ['served with cheese sauce, french fries, and ketchup', 'يقدم مع صوص الجبنة والبطاطس والكاتشب'],
+        ['served with cheese sauce', 'مع صوص الجبنة'],
+        ['served with french fries, bread, and assorted sauces', 'يقدم مع بطاطس مقلية وخبز وصوصات مشكلة'],
+        ['with mayonnaise, ketchup, and fresh salad', 'مع المايونيز والكاتشب والسلطة الطازجة'],
+        ['with garlic dip, french fries, and sauces', 'مع الثومية والبطاطس المقلية والصوصات'],
+        ['served hot', 'يقدم ساخناً'],
+        ['burger bun with grilled beef patty', 'خبز برجر مع شريحة لحم مشوية'],
+        ['burger bun with chicken patty', 'خبز برجر مع شريحة دجاج'],
+        ['tortilla bread stuffed with chicken shawarma', 'خبز تورتيلا محشو بشاورما الدجاج'],
+        ['chapati pie stuffed with pan-fried eggs', 'فطيرة شباتي محشوة بالبيض المقلي على الصاج']
+    ];
+
+    let low = s.toLowerCase();
+    for (const [en, ar] of phrases) {
+        low = low.split(en).join(ar);
+    }
+    return low.charAt(0).toUpperCase() + low.slice(1);
+}
+
+// 🛡️ UNIVERSAL BILINGUAL AUTO-REPAIR & COMPLETION ENGINE
+function smartAutoFillAndTranslateBilingual() {
+    if (!window.menuBuilderData || !window.menuBuilderData.items || window.menuBuilderData.items.length === 0) {
+        if (typeof showToast === 'function') showToast('⚠️ لا توجد أصناف في المنيو لمعالجتها');
+        return;
+    }
+
+    const { groups, items } = window.menuBuilderData;
+
+    // 1. Repair and clean groups, removing empty ones
+    const usedGroupIds = new Set(items.map(it => it.group_id));
+    let activeGroups = groups.filter(g => usedGroupIds.has(g.id));
+    if (activeGroups.length === 0 && groups.length > 0) activeGroups = [groups[0]];
+    if (activeGroups.length === 0) {
+        activeGroups.push({ id: 1, name_ar: 'القائمة الرئيسية', name_en: 'Main Menu', ar_name: 'القائمة الرئيسية', en_name: 'Main Menu', order: 1 });
+    }
+
+    const groupIdMap = new Map();
+    activeGroups.forEach((g, idx) => {
+        groupIdMap.set(g.id, idx + 1);
+        g.id = idx + 1;
+        g.order = idx + 1;
+        
+        let ar = cleanProperTrim(g.ar_name || g.name_ar || '');
+        let en = cleanProperTrim(g.en_name || g.name_en || '');
+
+        if (!ar && en) {
+            ar = smartTranslateToAr(en);
+        } else if (!en && ar) {
+            en = getEnglishCategory(ar);
+        } else if (/[\u0600-\u06FF]/.test(en)) {
+            en = getEnglishCategory(en);
+        } else if (!/[\u0600-\u06FF]/.test(ar) && /[a-zA-Z]/.test(ar)) {
+            ar = smartTranslateToAr(ar);
+        }
+
+        g.ar_name = ar || 'عام';
+        g.name_ar = ar || 'عام';
+        g.en_name = toEnglishProper(en || 'General');
+        g.name_en = toEnglishProper(en || 'General');
+    });
+
+    window.menuBuilderData.groups = activeGroups;
+
+    // 2. Repair items (Names, Sizes, Descriptions, Two-way Translation, Group Linkage)
+    let lastParentBaseAr = '';
+    let lastParentBaseEn = '';
+    let lastParentPrice = 15;
+    let lastParentKcal = 350;
+    let lastParentDescAr = '';
+    let lastParentDescEn = '';
+
+    const SIZE_WORDS_AR = ['صغير', 'وسط', 'كبير', 'عادي', 'حراق', 'سبايسي', 'بالجبن', 'دبل', 'دبل بالجبن', 'صغير بالجبن', 'كبير بالجبن'];
+    const SIZE_WORDS_EN = ['small', 'medium', 'large', 'regular', 'spicy', 'double', 'with cheese'];
+
+    items.forEach((it, idx) => {
+        if (groupIdMap.has(it.group_id)) {
+            it.group_id = groupIdMap.get(it.group_id);
+        } else {
+            it.group_id = 1;
+        }
+
+        const grp = activeGroups.find(g => g.id === it.group_id) || activeGroups[0];
+        it.sort_group_name_ar = grp.ar_name;
+        it.sort_group_name_en = grp.en_name;
+        it.group_name = grp.ar_name + ' / ' + grp.en_name;
+
+        let nameAr = cleanProperTrim(it.name_ar || it.item_ar || '');
+        let nameEn = cleanProperTrim(it.name_en || it.item_en || '');
+
+        const isSoleSizeAr = SIZE_WORDS_AR.includes(nameAr) || SIZE_WORDS_AR.includes(nameAr.replace(/[()]/g, ''));
+        const isSoleSizeEn = SIZE_WORDS_EN.includes(nameEn.toLowerCase()) || SIZE_WORDS_EN.includes(nameEn.toLowerCase().replace(/[()]/g, ''));
+
+        if ((isSoleSizeAr || isSoleSizeEn) && lastParentBaseAr) {
+            const sizeStr = nameAr || nameEn;
+            nameAr = `${lastParentBaseAr} (${sizeStr})`;
+            nameEn = `${lastParentBaseEn} (${smartTranslateFoodName(sizeStr)})`;
+        } else {
+            if (nameAr && !isSoleSizeAr) {
+                lastParentBaseAr = nameAr.replace(/\s*\([^)]*\)/g, '').trim();
+                lastParentBaseEn = smartTranslateFoodName(lastParentBaseAr);
+            }
+        }
+
+        if (nameAr && (!nameEn || /[\u0600-\u06FF]/.test(nameEn) || nameEn === '-')) {
+            nameEn = smartTranslateFoodName(nameAr);
+        } else if (nameEn && (!nameAr || !/[\u0600-\u06FF]/.test(nameAr) || nameAr === '-')) {
+            nameAr = smartTranslateToAr(nameEn);
+        }
+
+        it.name_ar = nameAr || `صنف ${idx + 1}`;
+        it.item_ar = nameAr || `صنف ${idx + 1}`;
+        it.name_en = toEnglishProper(nameEn || `Item ${idx + 1}`);
+        it.item_en = toEnglishProper(nameEn || `Item ${idx + 1}`);
+        it.prod_en = '-';
+        it.prod_ar = '-';
+
+        let descAr = cleanProperTrim(it.desc_ar || it.item_ar_desc || '');
+        let descEn = cleanProperTrim(it.desc_en || it.item_en_desc || '');
+
+        if (!descAr && !descEn && lastParentDescAr) {
+            descAr = lastParentDescAr;
+            descEn = lastParentDescEn;
+        }
+
+        if (descAr && (!descEn || /[\u0600-\u06FF]/.test(descEn))) {
+            descEn = smartTranslateFoodDescription(descAr);
+        } else if (descEn && (!descAr || !/[\u0600-\u06FF]/.test(descAr))) {
+            descAr = smartTranslateDescToAr(descEn);
+        }
+
+        if (descAr) {
+            lastParentDescAr = descAr;
+            lastParentDescEn = descEn;
+        }
+
+        it.desc_ar = descAr;
+        it.item_ar_desc = descAr;
+        it.desc_en = descEn;
+        it.item_en_desc = descEn;
+
+        let p = Number(it.price) || 0;
+        if (p <= 0 && lastParentPrice > 0) p = lastParentPrice;
+        if (p <= 0) p = 15;
+        lastParentPrice = p;
+        it.price = p;
+        it.pickup_price = it.pickup_price ? Number(it.pickup_price) : p;
+
+        let k = parseInt(it.kcal || it.calories || 0, 10);
+        if (k <= 0 && lastParentKcal > 0) k = lastParentKcal;
+        if (k <= 0) {
+            const lower = (it.name_en + ' ' + grp.en_name).toLowerCase();
+            if (lower.includes('burger')) k = 550;
+            else if (lower.includes('shawarma')) k = 480;
+            else if (lower.includes('broast') || lower.includes('chicken')) k = 650;
+            else if (lower.includes('fries') || lower.includes('potato')) k = 380;
+            else if (lower.includes('shrimp') || lower.includes('fish')) k = 420;
+            else if (lower.includes('pie') || lower.includes('pastry')) k = 320;
+            else if (lower.includes('drink') || lower.includes('juice')) k = 140;
+            else k = 350;
+        }
+        lastParentKcal = k;
+        it.kcal = k;
+        it.calories = k;
+    });
+
+    if (typeof renderStudioMenuPreviewTables === 'function') renderStudioMenuPreviewTables();
+    if (typeof renderMenuPreviewTables === 'function') renderMenuPreviewTables();
+    if (typeof updateStudioHealthRadar === 'function') updateStudioHealthRadar();
+    if (typeof playSuccessChime === 'function') playSuccessChime();
+    if (typeof showToast === 'function') {
+        showToast(`⚡ تم فحص وتصليح المنيو بالكامل! تم تعبئة وترجمة (${items.length}) صنف باللغتين وضبط الأقسام والأسعار بدقة! 🚀`);
+    }
+}
+window.smartAutoFillAndTranslateBilingual = smartAutoFillAndTranslateBilingual;
+
 // 🌐 SMART ARABIC -> ENGLISH FOOD TRANSLATION & DICTIONARY ENGINE
 // =========================================================================
 
