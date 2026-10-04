@@ -9623,6 +9623,7 @@ function processVendorMenuWorkbook(workbook) {
                 }
             }
 
+            let currentSectionCategory = sheetsToProcess.length > 1 ? sname : 'Main Menu';
             const headers = rows[bestHeaderRow].map(v => cleanStr(v));
             const colMap = { allergen_cols: [], choice_cols: [], add_cols: [] };
 
@@ -9639,8 +9640,17 @@ function processVendorMenuWorkbook(workbook) {
                         if (colMap.name_en === undefined) colMap.name_en = idx;
                     }
                 } else if (/category|قسم|تصنيف|فئة|مجموعة|جروب/i.test(hl)) {
-                    if (colMap.category === undefined) colMap.category = idx;
-                } else if (/price|سعر|مبلغ|cost|sar/i.test(hl)) {
+                    // Check if this column is actually the item name column with the category in the header (e.g. "قسم الفرايز")
+                    const sampleVal = cleanStr(rows[bestHeaderRow + 1] ? rows[bestHeaderRow + 1][idx] : '');
+                    if (sampleVal && !sampleVal.startsWith('قسم') && !/^[\d\.\s,]+$/.test(sampleVal) && colMap.name_ar === undefined) {
+                        colMap.name_ar = idx;
+                        currentSectionCategory = h;
+                    } else if (colMap.category === undefined) {
+                        colMap.category = idx;
+                    }
+                } else if (/calories|kcal|سعرات|السعرات/i.test(hl)) {
+                    if (!/option/i.test(hl) && colMap.calories === undefined) colMap.calories = idx;
+                } else if (/price|سعر|مبلغ|cost|sar/i.test(hl) && !/سعرات/i.test(hl)) {
                     if (/option/i.test(hl)) {
                         colMap.option_price = idx;
                     } else if (/pickup|استلام|محلي/i.test(hl)) {
@@ -9650,8 +9660,6 @@ function processVendorMenuWorkbook(workbook) {
                     } else if (colMap.price === undefined) {
                         colMap.price = idx;
                     }
-                } else if (/calories|kcal|سعرات|السعرات/i.test(hl)) {
-                    if (!/option/i.test(hl) && colMap.calories === undefined) colMap.calories = idx;
                 } else if (/description|وصف/i.test(hl)) {
                     if (/ar|عربي/i.test(hl)) colMap.desc_ar = idx;
                     else if (/en|english/i.test(hl)) colMap.desc_en = idx;
@@ -9673,11 +9681,9 @@ function processVendorMenuWorkbook(workbook) {
                 } else if (/add|إضافات|اضافات|extras/i.test(hl)) {
                     if (/ar|عربي/i.test(hl)) colMap.add_ar = idx;
                     else colMap.add_cols.push(idx);
-                } else if (/choice|خيارات|اختيار|نوع|تفضيل/i.test(hl)) {
+                } else if (/choice|خيارات|اختيار|نوع|النوع|تفضيل|size|حجم/i.test(hl)) {
                     colMap.choice_cols.push(idx);
-                } else if (/size|حجم/i.test(hl)) {
-                    if (/ar|عربي/i.test(hl)) colMap.size_ar = idx;
-                    else if (colMap.size === undefined) colMap.size = idx;
+                    if (colMap.size_ar === undefined) colMap.size_ar = idx;
                 } else if (/image|photo|picture|صورة|صوره|رابط|link|url|drive/i.test(hl)) {
                     if (colMap.image === undefined) colMap.image = idx;
                 }
@@ -9707,8 +9713,7 @@ function processVendorMenuWorkbook(workbook) {
             if (colMap.name_en === undefined && colMap.name_ar !== undefined) colMap.name_en = colMap.name_ar;
             if (colMap.name_ar === undefined && colMap.name_en !== undefined) colMap.name_ar = colMap.name_en;
 
-            // Sheet category default (e.g. if workbook has sheets "فطائر" and "فلافل")
-            let currentSectionCategory = sheetsToProcess.length > 1 ? sname : 'Main Menu';
+            // Sheet category tracking
             let lastItemNameEn = '';
             let lastItemNameAr = '';
 
@@ -9717,34 +9722,44 @@ function processVendorMenuWorkbook(workbook) {
                 const rowStr = r.join(' ').trim();
                 if (!rowStr) return;
 
-                // Check for section divider rows (e.g. "القسم: البرجر | Burgers")
-                if (/^(?:القسم|category)[:\s]/i.test(rowStr) || (r.filter(Boolean).length === 1 && rowStr.length < 50 && !/\d/.test(rowStr))) {
-                    currentSectionCategory = rowStr.replace(/^(?:القسم|category)[:\s]*/i, '').trim();
+                // Check for section divider rows (e.g. "قسم البروست", "القسم: البرجر | Burgers")
+                if (/^(?:القسم|قسم|category)[:\s]/i.test(rowStr) || (r.filter(Boolean).length === 1 && rowStr.length < 50 && !/\d/.test(rowStr))) {
+                    currentSectionCategory = rowStr.replace(/^(?:القسم|قسم|category)[:\s]*/i, '').trim();
+                    lastItemNameEn = '';
+                    lastItemNameAr = '';
                     return;
                 }
 
                 let nameEn = colMap.name_en !== undefined ? cleanStr(r[colMap.name_en]) : '';
                 let nameAr = colMap.name_ar !== undefined ? cleanStr(r[colMap.name_ar]) : '';
 
-                const p = colMap.price !== undefined ? cleanNum(r[colMap.price], 15) : 15;
+                let p = (colMap.price !== undefined && r[colMap.price] !== '') ? cleanNum(r[colMap.price], 15) : 0;
                 const sizeEn = colMap.size !== undefined ? cleanStr(r[colMap.size]) : '';
                 const sizeAr = colMap.size_ar !== undefined ? cleanStr(r[colMap.size_ar]) : '';
                 const sizeDesc = sizeAr || sizeEn;
 
                 // Handle Merged cell / Size variation rows (e.g. row has price & size but empty name)
+                let isVariantRow = false;
                 if (!nameEn && !nameAr) {
                     if ((p > 0 || sizeDesc) && (lastItemNameAr || lastItemNameEn)) {
+                        if (p === 0 && items.length > 0) p = items[items.length - 1].price;
+                        isVariantRow = true;
                         nameAr = lastItemNameAr + (sizeDesc ? ` (${sizeDesc})` : '');
-                        nameEn = lastItemNameEn + (sizeEn || sizeDesc ? ` (${sizeEn || sizeDesc})` : '');
+                        nameEn = lastItemNameEn ? lastItemNameEn + (sizeEn || sizeDesc ? ` (${sizeEn || sizeDesc})` : '') : smartTranslateFoodName(nameAr);
                     } else {
                         return; // skip truly empty row
                     }
                 } else {
                     lastItemNameEn = nameEn;
                     lastItemNameAr = nameAr;
+                    if (sizeDesc && !nameAr.includes(sizeDesc) && sizeDesc !== 'عادي') {
+                        nameAr = nameAr + " (" + sizeDesc + ")";
+                    }
                 }
 
-                if (!nameEn) nameEn = nameAr;
+                if (!nameEn || /[\u0600-\u06FF]/.test(nameEn)) {
+                    nameEn = smartTranslateFoodName(nameAr);
+                }
                 if (!nameAr) nameAr = nameEn;
 
                 // Category resolution
@@ -9765,7 +9780,10 @@ function processVendorMenuWorkbook(workbook) {
                 }
                 const grp = groupsMap.get(catPair.en);
 
-                const k = colMap.calories !== undefined ? Math.round(cleanNum(r[colMap.calories], 0)) : 0;
+                let k = colMap.calories !== undefined ? Math.round(cleanNum(r[colMap.calories], 0)) : 0;
+                if (isVariantRow && !k && items.length > 0) {
+                    k = items[items.length - 1].kcal || items[items.length - 1].calories || 0;
+                }
 
                 let descAr = colMap.desc_ar !== undefined ? cleanStr(r[colMap.desc_ar]) : '';
                 let descEn = colMap.desc_en !== undefined ? cleanStr(r[colMap.desc_en]) : '';
@@ -9779,6 +9797,13 @@ function processVendorMenuWorkbook(workbook) {
                         if (/[\u0600-\u06FF]/.test(rawDesc)) descAr = descAr || rawDesc;
                         else descEn = descEn || rawDesc;
                     }
+                }
+                // Inherit description for variant rows if empty
+                if (isVariantRow && !descAr && items.length > 0) {
+                    descAr = items[items.length - 1].desc_ar || items[items.length - 1].item_ar_desc || '';
+                }
+                if (!descEn || /[\u0600-\u06FF]/.test(descEn)) {
+                    descEn = smartTranslateFoodDescription(descAr);
                 }
 
                 // If sizes were not merged in name
@@ -10094,37 +10119,267 @@ function handleStudioDroppedFiles(event) {
 }
 
 
+// =========================================================================
+// 🌐 SMART ARABIC -> ENGLISH FOOD TRANSLATION & DICTIONARY ENGINE
+// =========================================================================
+
+const FOOD_ITEMS_DICT = {
+    'دجاج فرايز': 'Chicken Fries',
+    'جمبري فرايز': 'Shrimp Fries',
+    'زنجر فرايز': 'Zinger Fries',
+    'شاورما فرايز': 'Shawarma Fries',
+    'صحن بطاطس': 'French Fries Plate',
+    'بروست جمبري': 'Shrimp Broast',
+    'مسحب سمك': 'Fish Nuggets',
+    'مسحب دجاج': 'Chicken Nuggets',
+    'بروست دجاج 4 قطع': 'Chicken Broast 4 Pieces',
+    'بروست دجاج 8 قطع': 'Chicken Broast 8 Pieces',
+    'بروست دجاج': 'Chicken Broast',
+    'برجر لحم': 'Beef Burger',
+    'برجر تويستر': 'Twister Burger',
+    'برجر زنجر': 'Zinger Burger',
+    'برجر دجاج': 'Chicken Burger',
+    'زنجر كلوب': 'Zinger Club',
+    'زنجر صحن': 'Zinger Plate',
+    'زنجر عربي': 'Arabic Zinger',
+    'زنجر سوبريم': 'Zinger Supreme',
+    'زنجر راب': 'Zinger Wrap',
+    'شاورما صاروخ': 'Sarokh Shawarma',
+    'شاورما باشكا': 'Bashka Shawarma',
+    'شاورما شرائح': 'Sliced Shawarma',
+    'شاورما عربي': 'Arabic Shawarma',
+    'شاورما عربي دبل': 'Double Arabic Shawarma',
+    'شاورما جامبو ساندوتش': 'Jumbo Shawarma Sandwich',
+    'شيش طاووق راب': 'Shish Tawook Wrap',
+    'شيش طاووق': 'Shish Tawook',
+    'تيكا سوبريم': 'Tikka Supreme',
+    'دجاج تيكا راب': 'Chicken Tikka Wrap',
+    'دجاج تيكا': 'Chicken Tikka',
+    'سوبر كرانجي': 'Super Crunchy',
+    'زيان سبيشل سوبريم': 'Zayan Special Supreme',
+    'زيان سبيشل راب': 'Zayan Special Wrap',
+    'فيلية سمك راب': 'Fish Fillet Wrap',
+    'فيلية سمك': 'Fish Fillet',
+    'مسحب دجاج راب': 'Chicken Musahab Wrap',
+    'مسحب سمك راب': 'Fish Musahab Wrap',
+    'مسحب سوبريم': 'Musahab Supreme',
+    'تويستر راب': 'Twister Wrap',
+    'جمبري راب': 'Shrimp Wrap',
+    'رول رقائق بطاطس': 'Potato Chips Roll',
+    'فطيرة بالبيض': 'Egg Pie',
+    'فطيرة مسحب': 'Musahab Pie',
+    'فطيرة بالطعمية': 'Falafel Pie',
+    'فطيرة بالجمبري': 'Shrimp Pie',
+    'فطيرة بالزنجر': 'Zinger Pie'
+};
+
+const FOOD_TERMS_DICT = {
+    'برجر': 'Burger', 'برقر': 'Burger', 'ساندوتش': 'Sandwich', 'ساندوتشات': 'Sandwiches', 'شطائر': 'Sandwiches',
+    'شاورما': 'Shawarma', 'فرايز': 'Fries', 'بطاطس': 'Fries', 'دجاج': 'Chicken', 'لحم': 'Beef', 'سمك': 'Fish',
+    'جمبري': 'Shrimp', 'روبيان': 'Shrimp', 'مسحب': 'Nuggets', 'بروست': 'Broast', 'بروستد': 'Broasted',
+    'فطيرة': 'Pie', 'فطائر': 'Pies', 'طعمية': 'Falafel', 'فلافل': 'Falafel', 'بيض': 'Egg', 'جبن': 'Cheese',
+    'جبنة': 'Cheese', 'بالجبن': 'With Cheese', 'تويستر': 'Twister', 'زنجر': 'Zinger', 'كرسبي': 'Crispy',
+    'كرانشي': 'Crunchy', 'كرانجي': 'Crunchy', 'مشوي': 'Grilled', 'مشاوي': 'Grill', 'مقلي': 'Fried',
+    'صحن': 'Plate', 'طبق': 'Plate', 'وجبة': 'Meal', 'وجبات': 'Meals', 'بوكس': 'Box', 'بوكسات': 'Boxes',
+    'مشروب': 'Drink', 'مشروبات': 'Drinks', 'عصير': 'Juice', 'ماء': 'Water', 'كبير': 'Large', 'وسط': 'Medium',
+    'صغير': 'Small', 'عادي': 'Regular', 'حراق': 'Spicy', 'سبايسي': 'Spicy', 'دبل': 'Double', 'قطع': 'Pieces',
+    'حبات': 'Pieces', 'رول': 'Roll', 'راب': 'Wrap', 'كلوب': 'Club', 'صاروخ': 'Sarokh', 'سوبريم': 'Supreme',
+    'سبيشل': 'Special', 'مكس': 'Mix', 'مشكل': 'Mixed', 'شيش طاووق': 'Shish Tawook', 'كباب': 'Kebab',
+    'كفتة': 'Kofta', 'تيكا': 'Tikka', 'تيكة': 'Tikka', 'فيلية': 'Fillet', 'فيليه': 'Fillet', 'شباتي': 'Chapati'
+};
+
+const FOOD_DESCS_DICT = {
+    'قطع الدجاج المقلية المقرمشة مع صوص الجبنة و البطاطس و الكاتشب': 'Crispy fried chicken pieces served with cheese sauce, french fries, and ketchup.',
+    'قطع الجمبري المقلية المقرمشة مع صوص الجبنة و البطاطس و الكاتشب': 'Crispy fried shrimp pieces served with cheese sauce, french fries, and ketchup.',
+    'قطع الدجاج الكرانشي المقلية المقرمشة مع صوص الجبنة و البطاطس و الكاتشب': 'Crunchy fried chicken pieces served with cheese sauce, french fries, and ketchup.',
+    'صحن بطاطس مقلي ومقرمش يقدم ساخن': 'Crispy golden french fries plate served hot.',
+    '10حبات من الجمبري المقلي يقدم مع البطاطس و الخبز و الصوصات': '10 pieces of fried shrimp served with french fries, bread, and assorted sauces.',
+    'عدد 8 قطع من مسحب السمك المقرمش مع الخبز و البطاطس و الصوصات': '8 pieces of crispy fish nuggets served with bread, french fries, and assorted sauces.',
+    'عدد 8 قطع من مسحب الدجاج المقرمش مع الخبز و البطاطس و الصوصات': '8 pieces of crispy chicken nuggets served with bread, french fries, and assorted sauces.',
+    'عدد 4 قطع من الدجاج المقلي المقرمش مع الخبز و البطاطس و الصوصات': '4 pieces of crispy fried chicken broast served with bread, french fries, and sauces.',
+    'عدد 8 قطع من الدجاج المقلي المقرمش مع الخبز و البطاطس و الصوصات': '8 pieces of crispy fried chicken broast served with bread, french fries, and sauces.',
+    'خبز برجر مع برجر اللحم المشوي مع المايونيز و الكاتشب و السلطة': 'Burger bun with grilled beef patty, mayonnaise, ketchup, and fresh salad.',
+    'خبز برجر مع الدجاج التويستر مع المايونيز و الكاتشب و السلطة': 'Burger bun with twister chicken, mayonnaise, ketchup, and fresh salad.',
+    'خبز برجر مع قطع الدجاج الكرسبي مع المايونيز و الكاتشب و السلطة': 'Burger bun with crispy chicken pieces, mayonnaise, ketchup, and fresh salad.',
+    'خبز برجر مع برجر الدجاج مع المايونيز و الكاتشب و السلطة': 'Burger bun with chicken patty, mayonnaise, ketchup, and fresh salad.',
+    'خبز توست مقطع مع الدجاج الكرسبي و البطاطس و الصوصات': 'Sliced toast bread with crispy chicken, french fries, and signature sauces.',
+    'قطع الدجاج الكرسبي المقرمشة تقدم مع البطاطس و الخبز و الصوصات': 'Crispy chicken pieces served with french fries, bread, and signature sauces.',
+    'صاروخ عربي بحشو الدجاج المقرمش مقطع ويقدم مع البطاطس و الصوصات': 'Arabic sarokh wrap stuffed with crispy chicken, sliced and served with fries and sauces.',
+    'خبز صامولي بحشو الدجاج الكرسبي مع الجبن و البطاطس و الصوصات': 'Samoli bread stuffed with crispy chicken, cheese, french fries, and sauces.',
+    'خبز تورتيلا بحشو الدجاج الكرسبي مع الجبن و البطاطس و الصوصات': 'Tortilla bread stuffed with crispy chicken, cheese, french fries, and sauces.',
+    'خبز تورتيلا بحشو الشاورما مع الثوم و البطاطس و الصوصات': 'Tortilla bread stuffed with chicken shawarma, garlic dip, french fries, and sauces.',
+    'خبز تركي بحشو الشاورما مع الثوم و البطاطس و الصوصات': 'Turkish bread stuffed with chicken shawarma, garlic dip, french fries, and sauces.',
+    'قطع الشاورما مع البطاطس وصوص الجبن': 'Shawarma slices layered with french fries and melted cheese sauce.',
+    'شرائح شاورما فرط تقدم مع الخبز و البطاطس و الثوم و الكاتشب': 'Loose chicken shawarma slices served with bread, french fries, garlic dip, and ketchup.',
+    'صاروخ تورتيلا بحشو الشاورما و الثوم مقطع يقدم مع البطاطس و الصوصات': 'Tortilla sarokh stuffed with shawarma and garlic, sliced and served with fries and sauces.',
+    'عدد 2 صاروخ شاورما بحشو الشاورما و الثوم مقطع يقدم مع البطاطس و الصوصات': '2 shawarma sarokh rolls stuffed with garlic sauce, sliced and served with fries and sauces.',
+    'خبز صامولي الشاورما و الثوم مقطع يقدم مع البطاطس و الصوصات': 'Jumbo samoli bread stuffed with shawarma and garlic dip, served with fries and sauces.',
+    'خبز تورتيلا مع قطع الشيش طاووق و السلطة و الصوصات': 'Tortilla wrap stuffed with grilled shish tawook pieces, salad, and sauces.',
+    'خبز صامولي مع دجاج التيكة الشهي و السلطة و الصوصات': 'Samoli sandwich stuffed with delicious chicken tikka, fresh salad, and sauces.',
+    'خبز صامولي مع قطع المسحب الشهي و السلطة و الصوصات': 'Samoli sandwich stuffed with tasty chicken nuggets, salad, and sauces.',
+    'خبز صامولي مع قطع الدجاج الكرانجي الشهي و السلطة و الصوصات': 'Samoli sandwich with crunchy chicken pieces, fresh salad, and sauces.',
+    'خبز صامولي مع خلطة زيان الخاصة و الشهية و السلطة و الصوصات': 'Samoli sandwich with Zayan special signature mix, fresh salad, and sauces.',
+    'خبز تورتيلا مع قطع الفيلية المقلية و السلطة و الصوصات': 'Tortilla wrap with crispy fried fish fillet pieces, salad, and sauces.',
+    'خبز تورتيلا مع قطع مسحب الدجاج و السلطة و الصوصات': 'Tortilla wrap with chicken nuggets, fresh salad, and delicious sauces.',
+    'خبز تورتيلا مع قطع مسحب السمك المقلية و السلطة و الصوصات': 'Tortilla wrap with crispy fish nuggets, fresh salad, and sauces.',
+    'خبز تورتيلا مع قطع دجاج تيكة و السلطة و الصوصات': 'Tortilla wrap with flavorful chicken tikka pieces, salad, and sauces.',
+    'خبز تورتيلا مع قطع دجاج التويستر و السلطة و الصوصات': 'Tortilla wrap with twister chicken, fresh salad, and signature sauces.',
+    'خبز تورتيلا مع خلطة زيان الخاصة و الشهية و السلطة و الصوصات': 'Tortilla wrap with Zayan special signature recipe, salad, and sauces.',
+    'خبز تورتيلا مع قطع الجمبري المقلية و الشهية و السلطة و الصوصات': 'Tortilla wrap with crispy fried shrimp pieces, salad, and sauces.',
+    'خبز تورتيلا مع أصابع البطاطس المقلية و الشهية و السلطة و الصوصات': 'Tortilla roll stuffed with golden fried potato chips, salad, and sauces.',
+    'فطيرة شباتي و بيض مقلي على الصاج مع التوابل وبعض البهارات': 'Chapati pie stuffed with pan-fried eggs, spices, and seasonings.',
+    'فطيرة شباتي و قطع المسحب مقلي على الصاج مع التوابل وبعض البهارات': 'Chapati pie with grilled chicken nuggets, spices, and seasonings.',
+    'فطيرة شباتي و حبات الطعمية المقلية على الصاج مع السلطة و التوابل وبعض البهارات': 'Chapati pie with fried falafel pieces, fresh salad, and traditional spices.',
+    'فطيرة شباتي و قطع الجمبري مقلي على الصاج مع التوابل وبعض البهارات': 'Chapati pie with grilled shrimp pieces, special spices, and seasonings.',
+    'فطيرة شباتي و قطع الدجاج الكرانشي مقلي على الصاج مع التوابل وبعض البهارات': 'Chapati pie with crunchy chicken pieces, spices, and special seasonings.'
+};
+
+function smartTranslateFoodName(arName) {
+    if (!arName) return 'Special Item';
+    let s = String(arName).trim();
+    if (!/[\u0600-\u06FF]/.test(s)) return toEnglishProper(s);
+
+    let variantEn = '';
+    const matchVar = s.match(/\(([^)]+)\)/);
+    if (matchVar) {
+        const rawVar = matchVar[1].trim();
+        const varMap = {
+            'صغير': 'Small', 'كبير': 'Large', 'وسط': 'Medium', 'عادي': 'Regular',
+            'حراق': 'Spicy', 'سبايسي': 'Spicy', 'بالجبن': 'With Cheese',
+            'صغير بالجبن': 'Small with Cheese', 'كبير بالجبن': 'Large with Cheese',
+            'دبل': 'Double', 'دبل بالجبن': 'Double with Cheese'
+        };
+        variantEn = varMap[rawVar] || smartTranslateFoodName(rawVar);
+        s = s.replace(/\([^)]+\)/, '').trim();
+    }
+
+    let translatedBase = FOOD_ITEMS_DICT[s];
+    if (!translatedBase) {
+        const cleaned = s.replace(/^(صحن|وجبة|طبق|ساندوتش|فطيرة)\s+/, '').trim();
+        if (FOOD_ITEMS_DICT[cleaned]) {
+            translatedBase = FOOD_ITEMS_DICT[cleaned];
+        }
+    }
+
+    if (!translatedBase) {
+        let words = s.split(/\s+/);
+        let transWords = words.map(w => FOOD_TERMS_DICT[w] || w);
+        translatedBase = transWords.join(' ');
+        if (/[\u0600-\u06FF]/.test(translatedBase)) {
+            const arLetters = {'ا':'a','أ':'a','إ':'e','آ':'aa','ب':'b','ت':'t','ث':'th','ج':'j','ح':'h','خ':'kh','د':'d','ذ':'th','ر':'r','ز':'z','س':'s','ش':'sh','ص':'s','ض':'d','ط':'t','ظ':'z','ع':'a','غ':'gh','ف':'f','ق':'q','ك':'k','ل':'l','م':'m','ن':'n','ه':'h','و':'w','ي':'y','ى':'a','ة':'a','ء':'','ؤ':'u','ئ':'e'};
+            translatedBase = translatedBase.split('').map(c => arLetters[c] !== undefined ? arLetters[c] : c).join('');
+        }
+    }
+
+    translatedBase = toEnglishProper(translatedBase.trim());
+    if (variantEn) {
+        return `${translatedBase} (${toEnglishProper(variantEn)})`;
+    }
+    return translatedBase;
+}
+
+function smartTranslateFoodDescription(arDesc) {
+    if (!arDesc) return '';
+    let s = String(arDesc).trim();
+    if (!/[\u0600-\u06FF]/.test(s)) return s;
+
+    if (FOOD_DESCS_DICT[s]) return FOOD_DESCS_DICT[s];
+
+    const PHRASES = [
+        ['قطع الدجاج المقلية المقرمشة', 'Crispy fried chicken pieces'],
+        ['قطع الجمبري المقلية المقرمشة', 'Crispy fried shrimp pieces'],
+        ['قطع الدجاج الكرانشي المقلية المقرمشة', 'Crunchy fried chicken pieces'],
+        ['مع صوص الجبنة و البطاطس و الكاتشب', 'served with cheese sauce, french fries, and ketchup'],
+        ['مع صوص الجبنة', 'with cheese sauce'],
+        ['مع البطاطس و الخبز و الصوصات', 'served with french fries, bread, and assorted sauces'],
+        ['مع المايونيز و الكاتشب و السلطة', 'with mayonnaise, ketchup, and fresh salad'],
+        ['مع الثوم و البطاطس و الصوصات', 'with garlic dip, french fries, and sauces'],
+        ['يقدم ساخن', 'served hot'],
+        ['يقدم مع', 'served with'],
+        ['خبز برجر', 'Burger bun'],
+        ['خبز تورتيلا', 'Tortilla bread'],
+        ['خبز توست', 'Sliced toast bread'],
+        ['خبز صامولي', 'Samoli bread'],
+        ['خبز تركي', 'Turkish bread'],
+        ['فطيرة شباتي', 'Chapati pie'],
+        ['مقلي على الصاج', 'pan-fried on the griddle'],
+        ['مع التوابل وبعض البهارات', 'with spices and seasonings'],
+        ['حبات من الجمبري المقلي', 'pieces of fried shrimp'],
+        ['قطع من مسحب السمك المقرمش', 'pieces of crispy fish nuggets'],
+        ['قطع من مسحب الدجاج المقرمش', 'pieces of crispy chicken nuggets'],
+        ['قطع من الدجاج المقلي المقرمش', 'pieces of crispy fried chicken'],
+        ['لحم المشوي', 'grilled beef patty'],
+        ['دجاج الكرسبي', 'crispy chicken'],
+        ['دجاج المقرمش', 'crispy chicken'],
+        ['دجاج المقلي', 'fried chicken'],
+        ['دجاج التويستر', 'twister chicken'],
+        ['دجاج التيكة', 'chicken tikka'],
+        ['دجاج تيكة', 'chicken tikka'],
+        ['مسحب الشهي', 'delicious chicken nuggets'],
+        ['خلطة زيان الخاصة و الشهية', 'Zayan special signature recipe'],
+        ['قطع الفيلية المقلية', 'crispy fried fish fillet pieces'],
+        ['أصابع البطاطس المقلية', 'golden french fries'],
+        ['حبات الطعمية المقلية', 'crispy fried falafel pieces'],
+        ['بيض مقلي', 'fried eggs'],
+        ['شاورما', 'chicken shawarma'],
+        ['سلطة', 'salad'],
+        ['توابل', 'seasonings'],
+        ['بهارات', 'spices'],
+        ['طعمية', 'falafel']
+    ];
+
+    let translated = s;
+    for (const [ar, en] of PHRASES) {
+        translated = translated.split(ar).join(en);
+    }
+
+    if (/[\u0600-\u06FF]/.test(translated)) {
+        for (const [k, v] of Object.entries(FOOD_TERMS_DICT)) {
+            translated = translated.split(k).join(v);
+        }
+        translated = translated.replace(/[\u0600-\u06FF]/g, '').replace(/\s+/g, ' ').trim();
+    }
+    return translated.charAt(0).toUpperCase() + translated.slice(1);
+}
+
 function getEnglishCategory(cat) {
     if (!cat) return 'General';
     let s = String(cat).trim();
     if (/^[a-zA-Z\s&-]+$/.test(s)) return toEnglishProper(s);
     const map = {
+        'فرايز': 'Fries', 'بطاطس': 'Fries',
+        'بروست': 'Broasted Chicken', 'بروستد': 'Broasted Chicken', 'فرايد تشيكن': 'Fried Chicken',
+        'برجر': 'Burgers', 'برقر': 'Burgers', 'ساندوتش': 'Sandwiches & Wraps', 'ساندوتشات': 'Sandwiches & Wraps', 'شطائر': 'Sandwiches & Wraps',
+        'زنجر': 'Zinger', 'تويستر': 'Twister',
+        'شاورما': 'Shawarma',
+        'فطائر': 'Pies & Pastries', 'فطاير': 'Pies & Pastries', 'معجنات': 'Pies & Pastries', 'مخبوزات': 'Bakery',
         'طقوم ساعات': 'Watch Sets', 'طقم ساعات': 'Watch Sets', 'ساعات': 'Watches',
         'هدايا': 'Gifts', 'ورد': 'Flowers', 'زهور': 'Flowers', 'باقات': 'Bouquets',
         'اكسسوارات': 'Accessories', 'إكسسوارات': 'Accessories',
         'عطور': 'Perfumes', 'عطورات': 'Perfumes', 'بخور': 'Incense',
         'قهوة': 'Coffee', 'قهوه': 'Coffee', 'كافيه': 'Coffee', 'شاي': 'Tea',
         'مشروبات ساخنة': 'Hot Drinks', 'مشروبات باردة': 'Cold Drinks', 'مشروبات': 'Beverages', 'عصائر': 'Juices',
-        'برجر': 'Burgers', 'برقر': 'Burgers', 'ساندوتش': 'Sandwiches', 'ساندوتشات': 'Sandwiches', 'شطائر': 'Sandwiches',
-        'بيتزا': 'Pizza', 'شاورما': 'Shawarma', 'مشويات': 'Grills', 'مشاوي': 'Grills', 'كباب': 'Grills',
-        'دجاج': 'Chicken', 'بروستد': 'Broasted', 'فرايد تشيكن': 'Fried Chicken',
-        'مأكولات بحرية': 'Seafood', 'سمك': 'Seafood', 'بحريات': 'Seafood',
+        'بيتزا': 'Pizza', 'مشويات': 'Grills', 'مشاوي': 'Grills', 'كباب': 'Grills',
+        'دجاج': 'Chicken',
+        'مأكولات بحرية': 'Seafood', 'سمك': 'Seafood', 'بحريات': 'Seafood', 'جمبري': 'Seafood',
         'باستا': 'Pasta', 'مكرونة': 'Pasta', 'معكرونة': 'Pasta',
         'رز': 'Rice Dishes', 'برياني': 'Biryani', 'كبسة': 'Kabsa',
         'مقبلات': 'Appetizers', 'سناك': 'Snacks', 'سلطات': 'Salads', 'سلطة': 'Salads',
         'شوربة': 'Soups', 'شوربات': 'Soups',
-        'حلويات': 'Desserts', 'حلى': 'Desserts', 'كيك': 'Cakes', 'مخبوزات': 'Bakery', 'معجنات': 'Pastries', 'فطائر': 'Pies',
+        'حلويات': 'Desserts', 'حلى': 'Desserts', 'كيك': 'Cakes',
         'صوصات': 'Sauces', 'صلصات': 'Sauces', 'إضافات': 'Add-ons', 'اضافات': 'Add-ons', 'خيارات': 'Options',
         'بوكسات': 'Boxes', 'عروض': 'Special Offers', 'وجبات': 'Meals', 'اطباق رئيسية': 'Main Courses',
         'فطور': 'Breakfast', 'إفطار': 'Breakfast', 'وجبات أطفال': 'Kids Meals'
     };
+    const cleanCat = s.replace(/^(قسم|فئة|تصنيف|مجموعة)\s+/, '').trim();
     const sortedKeys = Object.keys(map).sort((a, b) => b.length - a.length);
     for (let k of sortedKeys) {
-        if (s.includes(k)) return map[k];
+        if (s.includes(k) || cleanCat.includes(k)) return map[k];
     }
     const fallback = toEnglishProper(s.replace(/[\u0600-\u06FF]/g, ''));
     return fallback && fallback.length > 1 ? fallback : 'Special Items';
 }
+
 
 
 // =========================================================================
@@ -10789,17 +11044,31 @@ function createOfficialMenuWorkbook() {
         const pEn = (it.prod_en && it.prod_en !== '-') ? toEnglishProper(it.prod_en) : '-';
         const pAr = (it.prod_ar && it.prod_ar !== '-') ? cleanProperTrim(it.prod_ar) : '-';
         const numPrice = Number(it.price) || 0;
+        const safeItemAr = cleanProperTrim(it.item_ar || it.name_ar || pAr);
+        let safeItemEn = it.item_en || it.name_en || pEn;
+        if (!safeItemEn || /[\u0600-\u06FF]/.test(safeItemEn) || safeItemEn === '-') {
+            safeItemEn = smartTranslateFoodName(safeItemAr);
+        } else {
+            safeItemEn = toEnglishProper(safeItemEn);
+        }
+
+        const safeDescAr = cleanProperTrim(it.item_ar_desc || it.desc_ar || '');
+        let safeDescEn = cleanProperTrim(it.item_en_desc || it.desc_en || '');
+        if (!safeDescEn || /[\u0600-\u06FF]/.test(safeDescEn)) {
+            safeDescEn = smartTranslateFoodDescription(safeDescAr);
+        }
+
         ws3_data.push([
             idx + 1,
             Number(it.group_id) || 1,
-            pEn,
+            (pEn !== '-' && !/[\u0600-\u06FF]/.test(pEn)) ? pEn : '-',
             pAr,
             cleanProperTrim(it.prod_en_desc || ''),
             cleanProperTrim(it.prod_ar_desc || ''),
-            toEnglishProper(it.item_en || it.name_en || pEn),
-            cleanProperTrim(it.item_ar || it.name_ar || pAr),
-            cleanProperTrim(it.item_en_desc || it.desc_en || ''),
-            cleanProperTrim(it.item_ar_desc || it.desc_ar || ''),
+            safeItemEn,
+            safeItemAr,
+            safeDescEn,
+            safeDescAr,
             numPrice,
             it.pickup_price ? Number(it.pickup_price) : numPrice,
             parseInt(it.kcal || it.calories || 0, 10),
