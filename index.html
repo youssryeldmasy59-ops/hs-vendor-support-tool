@@ -2295,158 +2295,127 @@
             <!-- Studio Hero Header -->
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
                 <div style="display: flex; align-items: center; gap: 14px;">
-                    <div style="width: 50px; height: 50px; border-radius: 12px; background: linear-gradient(135deg, #10B981, #059669); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #FFF; box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #10B981, #059669); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #FFF; box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);">
                         <i class="fa-solid fa-file-excel"></i>
                     </div>
                     <div>
-                        <h2 style="font-size: 1.35rem; font-weight: 800; color: #F8FAFC; margin: 0; display: flex; align-items: center; gap: 10px;">
-                            استوديو بناء وتجهيز المنيو الرسمي (Hungerstation Menu Excel Builder)
-                            <span style="font-size: 0.75rem; background: #10B981; color: #000; padding: 2px 10px; border-radius: 12px; font-weight: 800;">Template _MenuUpload.xlsx 100%</span>
+                        <h2 style="font-size: 1.3rem; font-weight: 800; color: #F8FAFC; margin: 0; display: flex; align-items: center; gap: 10px;">
+                            استوديو المنيو الذكي الموحد (Unified Menu Studio)
+                            <span style="font-size: 0.72rem; background: #10B981; color: #000; padding: 2px 10px; border-radius: 12px; font-weight: 800;">جاهز 100% لبورتال هنقرستيشن</span>
                         </h2>
-                        <p style="font-size: 0.82rem; color: #94A3B8; margin: 4px 0 0 0;">استخراج الأصناف، الأقسام، الإضافات، الأسعار، السعرات، وعزل صور Google Drive في شيت إكسيل رسمي فوري بدون أخطاء.</p>
+                        <p style="font-size: 0.8rem; color: #94A3B8; margin: 3px 0 0 0;">المعالجة التلقائية الشاملة: تنظيف اللغتين، عزل وضبط صور درايف لـ 640×480، وتوليد شيت الإكسيل والتذكرة فوراً.</p>
                     </div>
                 </div>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button onclick="runMenuAutoPilot()" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #000; border: none; padding: 10px 22px; border-radius: 10px; font-weight: 900; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.5); " title="1-Click Auto-Pilot: يحول الشيت + ينزل _MenuUpload.xlsx + يختار CCR التذكرة + ينسخ الماكرو في ثانية واحدة!">
-                        <i class="fa-solid fa-bolt" style="font-size: 1.1rem;"></i> ⚡ الطيار الآلي الشامل (1-Click Auto-Pilot)
+
+                <!-- Sleek Primary Actions Bar (3 Core Actions + More Tools) -->
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <!-- 1. The Master 1-Click Auto-Pilot -->
+                    <button onclick="runMenuAutoPilot()" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #000; border: none; padding: 10px 22px; border-radius: 10px; font-weight: 900; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.45); transition: transform 0.15s ease;" title="الطيار الآلي الشامل: يحلل ويصلح اللغتين + ينزل شيت _MenuUpload.xlsx + ينزل صور 640x480 + يجهز التذكرة والماكرو بضغطة واحدة!">
+                        <i class="fa-solid fa-bolt" style="font-size: 1.1rem;"></i> ⚡ الطيار الآلي الشامل (الكل في واحد)
                     </button>
-                    <button onclick="smartAutoFillAndTranslateBilingual()" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: #FFF; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);" title="إصلاح المنيو بالكامل وتعبئة النواقص والترجمة ثنائية الاتجاه بنقرة واحدة">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> 🛠️ تصليح وإكمال النواقص باللغتين (1-Click Fix)
+
+                    <!-- 2. Download Official Excel Sheet -->
+                    <button onclick="downloadOfficialMenuExcel()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);">
+                        <i class="fa-solid fa-cloud-arrow-down"></i> شيت الإكسيل (_MenuUpload.xlsx)
                     </button>
-                    <button onclick="downloadOfficialMenuExcel()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
-                        <i class="fa-solid fa-cloud-arrow-down"></i> تنزيل شيت الإكسيل الرسمي (_MenuUpload.xlsx)
+
+                    <!-- 3. Download All Images 640x480 Zip -->
+                    <button onclick="downloadAllMenuImagesZip640x480()" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFF; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);" title="تنزيل جميع صور المنيو بمقاس 640×480 جاهزة بالترتيب والأقسام في ملف ZIP واحد">
+                        <i class="fa-solid fa-file-zipper"></i> حزمة الصور 640×480 (ZIP)
                     </button>
-                    <button onclick="downloadAllMenuImagesZip640x480()" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFF; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.4);" title="تنزيل جميع الصور المرفقة بمقاس 640×480 مع تسمية كل صورة باسم الصنف وضغطها في ملف ZIP واحد">
-                        <i class="fa-solid fa-file-zipper"></i> 🖼️ تنزيل كل الصور 640×480 (ZIP مسمى)
-                    </button>
-                    <button onclick="runMenuPreflightSanityCheck()" style="background: linear-gradient(135deg, #6366F1, #4F46E5); color: #FFF; border: none; padding: 10px 16px; border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);" title="تدقيق أوتوماتيكي لشيت المنيو لمنع ظهور خطأ Error 422">
-                        <i class="fa-solid fa-stethoscope"></i> فاحص سلامة الشيت 🩺
-                    </button>
-                    <button onclick="toggleMobileAppMockup()" style="background: linear-gradient(135deg, #0EA5E9, #0284C7); color: #FFF; border: none; padding: 10px 16px; border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(14, 165, 233, 0.4);" title="عرض محاكي هاتف ذكي تفاعلي يعرض شكل المنيو داخل تطبيق هنقرستيشن لايف">
-                        <i class="fa-solid fa-mobile-screen"></i> محاكي التطبيق لايف 📱
-                    </button>
-                    <button onclick="quickAddCustomItem()" style="background: rgba(59, 130, 246, 0.2); color: #60A5FA; border: 1px solid #3B82F6; padding: 10px 14px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa-solid fa-plus-circle"></i> إضافة صنف يدوي
-                    </button>
-                    <button onclick="aiBulkGenerateDescriptions()" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #FFF; border: none; padding: 10px 16px; border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);" title="الذكاء الاصطناعي يكتب وصف احترافي لكل صنف تلقائياً">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> 🤖 توليد أوصاف AI
-                    </button>
-                    <button onclick="aiAuditMenu()" style="background: linear-gradient(135deg, #EF4444, #DC2626); color: #FFF; border: none; padding: 10px 16px; border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);" title="مراجعة شاملة للمنيو بالذكاء الاصطناعي">
-                        <i class="fa-solid fa-magnifying-glass-chart"></i> 🔍 مراجعة AI
-                    </button>
-                    <button onclick="switchMainWorkspace('TICKETS')" style="background: rgba(255,255,255,0.08); color: #CBD5E1; border: 1px solid rgba(255,255,255,0.15); padding: 10px 16px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer;">
-                        <i class="fa-solid fa-arrow-right"></i> مولد التذاكر
-                    </button>
+
+                    <!-- 4. Compact More Tools Dropdown -->
+                    <div style="position: relative; display: inline-block;">
+                        <button onclick="toggleStudioMoreToolsMenu(event)" id="btnStudioMoreTools" style="background: rgba(255,255,255,0.08); color: #E2E8F0; border: 1px solid rgba(255,255,255,0.15); padding: 10px 14px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-ellipsis-vertical"></i> أدوات إضافية ⚙️
+                        </button>
+                        <div id="studioMoreToolsDropdown" style="display: none; position: absolute; left: 0; top: 110%; z-index: 999; background: #0F172A; border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; padding: 8px; min-width: 230px; box-shadow: 0 12px 32px rgba(0,0,0,0.6); backdrop-filter: blur(14px);">
+                            <button onclick="smartAutoFillAndTranslateBilingual(); toggleStudioMoreToolsMenu();" style="width: 100%; text-align: right; background: none; border: none; color: #60A5FA; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> 🛠️ تصليح وإكمال النواقص باللغتين
+                            </button>
+                            <button onclick="runMenuPreflightSanityCheck(); toggleStudioMoreToolsMenu();" style="width: 100%; text-align: right; background: none; border: none; color: #34D399; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-stethoscope"></i> 🩺 فاحص سلامة الشيت (منع 422)
+                            </button>
+                            <button onclick="toggleMobileAppMockup(); toggleStudioMoreToolsMenu();" style="width: 100%; text-align: right; background: none; border: none; color: #38BDF8; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-mobile-screen"></i> 📱 محاكي التطبيق لايف
+                            </button>
+                            <button onclick="quickAddCustomItem(); toggleStudioMoreToolsMenu();" style="width: 100%; text-align: right; background: none; border: none; color: #FCD34D; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-plus-circle"></i> ➕ إضافة صنف يدوي
+                            </button>
+                            <button onclick="aiBulkGenerateDescriptions(); toggleStudioMoreToolsMenu();" style="width: 100%; text-align: right; background: none; border: none; color: #C084FC; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-robot"></i> 🤖 توليد أوصاف بالذكاء الاصطناعي
+                            </button>
+                            <button onclick="aiAuditMenu(); toggleStudioMoreToolsMenu();" style="width: 100%; text-align: right; background: none; border: none; color: #F87171; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-magnifying-glass-chart"></i> 🔍 مراجعة شاملة AI
+                            </button>
+                            <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 4px 0;"></div>
+                            <button onclick="switchMainWorkspace('TICKETS'); toggleStudioMoreToolsMenu();" style="width: 100%; text-align: right; background: none; border: none; color: #CBD5E1; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-ticket"></i> 🎫 الانتقال لمولد التذاكر
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Workflow Guidance Cards -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 20px;">
-                <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #10B981; color: #000; font-weight: 800; display: flex; align-items: center; justify-content: center;">1</div>
-                    <div style="font-size: 0.8rem; color: #E2E8F0;"><strong>الصق بيانات المنيو أو ارفع ملف الشريك</strong> (نصوص، واتساب، كشوف، إكسيل، CSV)</div>
-                </div>
-                <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #8B5CF6; color: #FFF; font-weight: 800; display: flex; align-items: center; justify-content: center;">2</div>
-                    <div style="font-size: 0.8rem; color: #E2E8F0;"><strong>عزل روابط صور Google Drive</strong> لحماية شيت الإكسيل من أخطاء الرفع (Error 422)</div>
-                </div>
-                <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #3B82F6; color: #FFF; font-weight: 800; display: flex; align-items: center; justify-content: center;">3</div>
-                    <div style="font-size: 0.8rem; color: #E2E8F0;"><strong>قاعدة الـ 30 صنف:</strong> أقل من 30 صنف ➔ Add items (#38) | 30 فأكثر ➔ Full menu (#40)</div>
-                </div>
-            </div>
-
-            <!-- Input Section (2 Columns) -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
-                <!-- Left Box: Text / WhatsApp / Links Input -->
-                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px;">
-                    <div style="font-size: 0.85rem; font-weight: 700; color: #F59E0B; margin-bottom: 8px; display: flex; justify-content: space-between;">
-                        <span><i class="fa-solid fa-paste"></i> 1. الصق بيانات المنيو الخام أو المحادثة أو روابط الصور:</span>
+            <!-- Unified Single Ingestion Hub (2 Clean Functional Columns) -->
+            <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 16px; margin-bottom: 20px;">
+                
+                <!-- Left: Unified Drag & Dropzone for Files (Excel, CSV, ZIP, Images) -->
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="font-size: 0.88rem; font-weight: 800; color: #38BDF8; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                        <span><i class="fa-solid fa-cloud-arrow-up"></i> 1. سحب وإسقاط الملفات (إكسيل أو صور ZIP):</span>
+                        <span style="font-size: 0.72rem; color: #94A3B8;">شيت الإكسيل أو حزمة الصور</span>
                     </div>
-                    <textarea id="studioRawMenuInput" style="width: 100%; height: 170px; background: #0F172A; color: #F8FAFC; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px; font-family: monospace; font-size: 0.82rem; resize: vertical;" placeholder="قسم المشويات / Grills:
-- كباب لحم (Meat Kebab) - السعر: 35 ريال - السعرات: 450 kcal
-- شيش طاووق (Shish Tawook) - السعر: 30 ريال - السعرات: 380 kcal
-إضافات / Add-ons:
-- جبنة إضافية (Extra Cheese) - 4 ريال
-- ثومية (Garlic Sauce) - 2 ريال
-روابط الصور: https://drive.google.com/drive/folders/..."></textarea>
-                    
+
+                    <div id="studioUnifiedDropzone" onclick="document.getElementById('studioRawMenuFileInput').click()" ondragover="event.preventDefault(); this.style.borderColor='#10B981'; this.style.background='rgba(16,185,129,0.08)';" ondragleave="this.style.borderColor='rgba(56, 189, 248, 0.4)'; this.style.background='rgba(56, 189, 248, 0.03)';" ondrop="handleUnifiedDrop(event);" style="border: 2px dashed rgba(56, 189, 248, 0.4); border-radius: 10px; padding: 26px 16px; text-align: center; cursor: pointer; background: rgba(56, 189, 248, 0.03); transition: all 0.2s;">
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.2rem; color: #38BDF8; margin-bottom: 8px;"></i>
+                        <div style="font-size: 0.95rem; font-weight: 800; color: #F1F5F9;">
+                            اسحب وأفلت شيت الفيندور (.xlsx, .csv) أو ملف ZIP لصور Drive هنا
+                        </div>
+                        <div style="font-size: 0.76rem; color: #94A3B8; margin-top: 4px;">
+                            يقوم النظام تلقائياً بفرز الأقسام، ترجمة الأسماء، تنظيف السعرات، وتجهيز الصور بمقاس 640×480
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 14px;" onclick="event.stopPropagation()">
+                            <button type="button" onclick="document.getElementById('studioRawMenuFileInput').click();" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #34D399; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-file-excel"></i> اختيار شيت إكسيل
+                            </button>
+                            <button type="button" onclick="document.getElementById('studioDriveZipInput').click();" style="background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.4); color: #C4B5FD; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-file-zipper"></i> اختيار ZIP / صور
+                            </button>
+                        </div>
+                    </div>
+
+                    <input type="file" id="studioRawMenuFileInput" accept=".xlsx,.xls,.csv,.txt" multiple style="display: none;" onchange="handleBatchMultiMenuUpload(event)">
+                    <input type="file" id="studioDriveZipInput" accept=".zip,image/*" multiple style="display: none;" onchange="handleDriveFileInput(event)">
+                    <input type="file" id="studioDriveFolderInput" webkitdirectory directory multiple style="display: none;" onchange="handleDriveFileInput(event)">
+                </div>
+
+                <!-- Right: Text & Google Drive Links Input -->
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="font-size: 0.88rem; font-weight: 800; color: #F59E0B; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                        <span><i class="fa-solid fa-paste"></i> 2. أو الصق نصوص المنيو / روابط درايف:</span>
+                        <span style="font-size: 0.72rem; color: #94A3B8;">واتساب أو Drive</span>
+                    </div>
+
+                    <textarea id="studioRawMenuInput" style="width: 100%; height: 135px; background: #0F172A; color: #F8FAFC; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px; font-family: monospace; font-size: 0.82rem; resize: vertical;" placeholder="الصق المنيو الخام أو روابط الصور، مثلاً:
+قسم البرجر / Burgers:
+- برجر دجاج - 25 ريال - 450 سعرة
+رابط مجلد الصور: https://drive.google.com/drive/folders/..."></textarea>
+
                     <div style="display: flex; gap: 8px; margin-top: 10px;">
-                        <button onclick="aiEnhancedParseMenu()" style="flex: 1; background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px; border-radius: 8px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> 🤖 معالجة وتوليد الشيت بالذكاء الاصطناعي
+                        <button onclick="handleStudioUnifiedTextInput()" style="flex: 1; background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px; border-radius: 8px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> ✨ معالجة فورية للمدخلات والروابط
                         </button>
-                        <button onclick="loadStudioSampleMenuData()" style="background: rgba(255,255,255,0.08); color: #CBD5E1; border: 1px solid rgba(255,255,255,0.12); padding: 10px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
-                            📋 تجربة بيانات نموذجية
+                        <button onclick="loadStudioSampleMenuData()" style="background: rgba(255,255,255,0.08); color: #CBD5E1; border: 1px solid rgba(255,255,255,0.12); padding: 10px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer;" title="تجربة منيو افتراضي">
+                            📋 تجربة نموذج
                         </button>
-                    </div>
-                </div>
-
-                <!-- Right Box: Upload Raw Excel / CSV -->
-                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div>
-                        <div style="font-size: 0.85rem; font-weight: 700; color: #38BDF8; margin-bottom: 8px;">
-                            <i class="fa-solid fa-upload"></i> 2. أو ارفع شيت إكسيل خام / CSV من الشريك:
-                        </div>
-                        <div onclick="document.getElementById('studioRawMenuFileInput').click()" ondragover="event.preventDefault(); this.style.borderColor='#10B981'; this.style.background='rgba(16,185,129,0.1)';" ondragleave="this.style.borderColor='rgba(56, 189, 248, 0.4)'; this.style.background='rgba(56, 189, 248, 0.03)';" ondrop="event.preventDefault(); this.style.borderColor='rgba(56, 189, 248, 0.4)'; this.style.background='rgba(56, 189, 248, 0.03)'; handleStudioDroppedFiles(event);" style="border: 2px dashed rgba(56, 189, 248, 0.4); border-radius: 10px; padding: 28px 16px; text-align: center; cursor: pointer; background: rgba(56, 189, 248, 0.03); transition: all 0.2s;">
-                            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.2rem; color: #38BDF8; margin-bottom: 8px;"></i>
-                            <div style="font-size: 0.92rem; font-weight: 800; color: #F1F5F9;">انقر لاختيار أو إسقاط ملف إكسيل الشريك (.xlsx, .xls, .csv)</div>
-                            <div style="font-size: 0.75rem; color: #94A3B8; margin-top: 4px;">سيقوم النظام تلقائياً بتنظيفه، تصحيح الحروف الإنجليزية، وضبط السعرات وفقاً لدليل هنقرستيشن</div>
-                            <input type="file" id="studioRawMenuFileInput" accept=".xlsx,.xls,.csv,.txt" multiple style="display: none;" onchange="handleBatchMultiMenuUpload(event)">
-                        </div>
-                    </div>
-
-                    <!-- Guidelines Alert -->
-                    <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 8px; padding: 10px; margin-top: 12px; font-size: 0.78rem; color: #FDE68A;">
-                        <i class="fa-solid fa-shield-halved"></i> <strong>قواعد التنظيف الآلي:</strong> إزالة الرموز المحظورة (&, %, @, /)، تطبيق كابيتال الحرف الأول Proper Case، حذف الفواصل في السعرات، وعزل الروابط لتفادي رفض النظام.
                     </div>
                 </div>
             </div>
 
-            <!-- 🖼️ Google Drive Folder & Image Extractor Hub -->
-            <div id="studioDriveImageHub" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(139, 92, 246, 0.35); border-radius: 14px; padding: 18px; margin-bottom: 22px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35); backdrop-filter: blur(8px);">
-                <!-- Header -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div style="width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #EC4899, #8B5CF6); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.45);">
-                            <i class="fa-brands fa-google-drive" style="color: #FFF; font-size: 1.25rem;"></i>
-                        </div>
-                        <div>
-                            <div style="font-size: 0.95rem; font-weight: 800; color: #FFF; display: flex; align-items: center; gap: 8px;">
-                                <span>مستخرج ومعالج صور Google Drive (Drive Folder & Image Hub)</span>
-                                <span id="studioDriveCountBadge" style="background: rgba(139, 92, 246, 0.25); color: #C4B5FD; border: 1px solid rgba(139, 92, 246, 0.4); font-size: 0.72rem; padding: 2px 10px; border-radius: 12px; font-weight: 800;">0 صورة</span>
-                            </div>
-                            <div style="font-size: 0.76rem; color: #94A3B8; margin-top: 2px;">
-                                استخراج الصور من روابط ومجلدات Google Drive، التعرف على الأقسام، تحويل المقاس لـ 640×480 وحفظها بملف ZIP مسمى لهنقرستيشن
-                            </div>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button onclick="downloadAllProcessedDriveImagesZip()" id="btnDownloadDriveZip" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 8px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);">
-                            <i class="fa-solid fa-file-zipper"></i> ⚡ تنزيل حزمة الصور 640×480 (ZIP مسمى)
-                        </button>
-                        <button onclick="autoBuildMenuFromDriveImages()" id="btnBuildMenuFromImages" style="background: linear-gradient(135deg, #6366F1, #4F46E5); color: #FFF; border: none; padding: 8px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="إنشاء أقسام وأصناف المنيو في الشيت تلقائياً بناءً على أسماء المجلدات والصور">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> ✨ بناء المنيو من الصور
-                        </button>
-                        <button onclick="clearProcessedDriveImages()" style="background: rgba(239, 68, 68, 0.15); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer;">
-                            <i class="fa-solid fa-trash-can"></i> مسح
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Input Row: Link paste + Check -->
-                <div style="display: flex; gap: 8px; margin-bottom: 12px; align-items: flex-start;">
-                    <div style="position: relative; flex: 1;">
-                        <textarea id="studioDriveUrlInput" rows="3" placeholder="الصق روابط مجلدات درايف مع أسماء التصنيفات، مثلاً:
-[البرجر](https://drive.google.com/open?id=...)
-[البروست](https://drive.google.com/open?id=...)
-أو رابط المجلد الرئيسي للصور..." style="width: 100%; background: #0F172A; border: 1px solid rgba(255,255,255,0.15); color: #FFF; padding: 10px 12px; border-radius: 8px; font-size: 0.82rem; outline: none; font-family: monospace; resize: vertical;"></textarea>
-                    </div>
-                    <button onclick="handleDriveUrlFetch()" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #FFF; border: none; padding: 12px 18px; border-radius: 8px; font-weight: 800; font-size: 0.84rem; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; height: fit-content;">
-                        <i class="fa-solid fa-magnifying-glass"></i> فحص واستخراج
-                    </button>
-                </div>
-
-                <!-- Private Folder Notice Box (Hidden by default, shown when folder is private) -->
+            <!-- Smart Feedback & Image Processing Status (Hidden when idle) -->
+            <div id="studioDriveImageHub" style="display: none; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 12px; padding: 14px; margin-bottom: 20px;">
+                <!-- Drive Auth Helper for Private Folders -->
                 <div id="studioDriveAuthHelper" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 12px; margin-bottom: 12px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                         <span style="font-weight: 800; color: #FCD34D; font-size: 0.85rem;"><i class="fa-solid fa-folder-tree"></i> مجلدات وتصنيفات Google Drive المكتشفة:</span>
@@ -2455,36 +2424,10 @@
                         </a>
                     </div>
                     <div id="studioDriveCategoriesList" style="margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px;"></div>
-                    <p style="font-size: 0.8rem; color: #FEF3C7; margin: 10px 0 0 0; line-height: 1.5;">
-                        💡 <strong>طريقة التنزيل والتقسيم في فايلز مخصصة:</strong><br>
-                        1. اضغط على أي قسم أعلاه لفتحه أو نزّل المجلد الرئيسي من درايف كـ ZIP.<br>
-                        2. اسحب ملف الـ <strong>ZIP</strong> أو مجلد الصور إلى المربع أدناه 👇 — وسيقوم النظام فوراً بفرز كل قسم، تعديل المقاس لـ 640×480 بدون جوانب بيضاء، وتنزيل حزمة ZIP بفايلز ومجلدات منفصلة لكل تصنيف!
-                    </p>
-                </div>
-
-                <!-- Dropzone Area -->
-                <div id="studioDriveDropzone" onclick="document.getElementById('studioDriveZipInput').click()" ondragover="event.preventDefault(); this.style.borderColor='#8B5CF6'; this.style.background='rgba(139, 92, 246, 0.1)';" ondragleave="this.style.borderColor='rgba(139, 92, 246, 0.35)'; this.style.background='rgba(15, 23, 42, 0.5)';" ondrop="handleDriveDrop(event);" style="border: 2px dashed rgba(139, 92, 246, 0.35); border-radius: 10px; padding: 20px 16px; text-align: center; cursor: pointer; background: rgba(15, 23, 42, 0.5); transition: all 0.2s;">
-                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: #A78BFA; margin-bottom: 6px;"></i>
-                    <div style="font-size: 0.92rem; font-weight: 800; color: #F1F5F9;">
-                        اسحب وأفلت ملف الـ ZIP أو مجلد الصور من درايف هنا (أو انقر للاختيار)
-                    </div>
-                    <div style="font-size: 0.76rem; color: #94A3B8; margin-top: 4px;">
-                        يدعم ملفات ZIP المنزلة من Google Drive، أو مجلد الصور بالكامل، أو صور متعددة دفعة واحدة.
-                    </div>
-                    <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
-                        <button type="button" onclick="event.stopPropagation(); document.getElementById('studioDriveFolderInput').click();" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #CBD5E1; padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;">
-                            <i class="fa-solid fa-folder-open"></i> اختيار مجلد من الجهاز
-                        </button>
-                        <button type="button" onclick="event.stopPropagation(); document.getElementById('studioDriveZipInput').click();" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #CBD5E1; padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;">
-                            <i class="fa-solid fa-file-zipper"></i> اختيار ملف ZIP أو صور
-                        </button>
-                    </div>
-                    <input type="file" id="studioDriveZipInput" accept=".zip,image/*" multiple style="display: none;" onchange="handleDriveFileInput(event)">
-                    <input type="file" id="studioDriveFolderInput" webkitdirectory directory multiple style="display: none;" onchange="handleDriveFileInput(event)">
                 </div>
 
                 <!-- Progress Bar -->
-                <div id="studioDriveProgressBar" style="display: none; margin-top: 12px;">
+                <div id="studioDriveProgressBar" style="display: none; margin-bottom: 10px;">
                     <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: #CBD5E1; margin-bottom: 4px;">
                         <span id="studioDriveProgressText">جاري المعالجة...</span>
                         <span id="studioDriveProgressPercent">0%</span>
@@ -2494,17 +2437,17 @@
                     </div>
                 </div>
 
-                <!-- Extracted Image URLs from text (Backward-compatible) -->
-                <div id="studioExtractedImagesContainer" style="display: none; margin-top: 12px; background: #0F172A; border-radius: 8px; padding: 10px;">
+                <!-- Extracted Image URLs -->
+                <div id="studioExtractedImagesContainer" style="display: none; margin-top: 8px; background: #0F172A; border-radius: 8px; padding: 10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <span style="font-size: 0.78rem; color: #94A3B8;">روابط الصور المستخرجة من النصوص:</span>
+                        <span style="font-size: 0.78rem; color: #94A3B8;">روابط الصور المستخرجة من المنيو:</span>
                         <span id="studioImgCountBadge" style="font-size: 0.72rem; color: #8B5CF6;">0 رابط</span>
                     </div>
                     <div id="studioExtractedImagesList" style="max-height: 80px; overflow-y: auto; font-size: 0.75rem; color: #93C5FD; font-family: monospace;"></div>
                 </div>
 
                 <!-- Processed Gallery Section -->
-                <div id="studioDriveGallerySection" style="display: none; margin-top: 16px;">
+                <div id="studioDriveGallerySection" style="display: none; margin-top: 12px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
                         <div style="font-size: 0.85rem; font-weight: 800; color: #E2E8F0; display: flex; align-items: center; gap: 8px;">
                             <i class="fa-solid fa-images" style="color: #38BDF8;"></i>
@@ -2516,7 +2459,7 @@
                 </div>
             </div>
 
-            <!-- Preview 4-Sheets Section -->
+                        <!-- Preview 4-Sheets Section -->
             <div id="studioMenuPreviewSection" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px;">
                 <!-- Smart Toolbar & Health Radar -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 14px;">
@@ -4284,7 +4227,65 @@ Example: [{"idx": 0, "ar": "برجر دجاج مشوي", "en": "Grilled Chicken 
 // =========================================================================
 
 // 1. One-Click Complete Auto-Pilot
-async function runMenuAutoPilot() {
+async 
+// Unified Studio Modern Handlers
+function toggleStudioMoreToolsMenu(e) {
+    if (e) e.stopPropagation();
+    const d = document.getElementById('studioMoreToolsDropdown');
+    if (d) d.style.display = d.style.display === 'block' ? 'none' : 'block';
+}
+
+function handleUnifiedDrop(event) {
+    event.preventDefault();
+    const dropzone = document.getElementById('studioUnifiedDropzone');
+    if (dropzone) {
+        dropzone.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+        dropzone.style.background = 'rgba(56, 189, 248, 0.03)';
+    }
+    if (!event.dataTransfer || !event.dataTransfer.files || !event.dataTransfer.files.length) return;
+    const files = Array.from(event.dataTransfer.files);
+    const hasZip = files.some(f => f.name.toLowerCase().endsWith('.zip'));
+    const hasImages = files.some(f => f.type && f.type.startsWith('image/'));
+    const hasExcel = files.some(f => /\.(xlsx|xls|csv)$/i.test(f.name));
+
+    if (hasZip || hasImages) {
+        const hub = document.getElementById('studioDriveImageHub');
+        if (hub) hub.style.display = 'block';
+        if (typeof handleDriveDrop === 'function') handleDriveDrop(event);
+    }
+    if (hasExcel) {
+        if (typeof handleStudioDroppedFiles === 'function') handleStudioDroppedFiles(event);
+    }
+}
+
+function handleStudioUnifiedTextInput() {
+    const val = (document.getElementById('studioRawMenuInput') ? document.getElementById('studioRawMenuInput').value : '').trim();
+    if (!val) {
+        showToast('⚠️ برجاء كتابة أو لصق بيانات المنيو أو روابط درايف أولاً!');
+        return;
+    }
+    if (val.includes('drive.google.com') && (val.includes('folders') || val.includes('/d/'))) {
+        const hub = document.getElementById('studioDriveImageHub');
+        if (hub) hub.style.display = 'block';
+        const driveInput = document.getElementById('studioDriveUrlInput');
+        if (driveInput) driveInput.value = val;
+        if (typeof handleDriveUrlFetch === 'function') handleDriveUrlFetch();
+    }
+    if (typeof parseStudioRawMenuInput === 'function') {
+        parseStudioRawMenuInput();
+    }
+}
+
+// Global click listener for closing dropdown
+document.addEventListener('click', (e) => {
+    const d = document.getElementById('studioMoreToolsDropdown');
+    const btn = document.getElementById('btnStudioMoreTools');
+    if (d && btn && !btn.contains(e.target) && !d.contains(e.target)) {
+        d.style.display = 'none';
+    }
+});
+
+function runMenuAutoPilot() {
     const inputVal = (document.getElementById('studioRawMenuInput') ? document.getElementById('studioRawMenuInput').value : '') || (document.getElementById('rawMenuInput') ? document.getElementById('rawMenuInput').value : '');
     
     if (!inputVal.trim() && (!window.menuBuilderData || window.menuBuilderData.items.length === 0)) {
@@ -9544,12 +9545,23 @@ function processVendorMenuWorkbook(workbook) {
         'sandwiches': 'سندوتشات', 'pizza': 'بيتزا', 'desserts': 'حلويات', 'salads': 'سلطات',
         'appetizers': 'مقبلات', 'breakfast': 'إفطار', 'rice': 'أرز', 'kabsa': 'كبسة',
         'seafood': 'مأكولات بحرية', 'grills': 'مشويات', 'pasta': 'باستا', 'pastries': 'فطائر',
-        'falafel': 'فلافل', 'gifts': 'هدايا', 'flowers': 'زهور', 'watches': 'ساعات'
+        'falafel': 'فلافل', 'gifts': 'هدايا', 'flowers': 'زهور', 'watches': 'ساعات',
+        "teacher's day": 'يوم المعلم', 'teachers day': 'يوم المعلم',
+        'breast cancer awareness': 'التوعية لسرطان الثدي', 'breast cancer': 'سرطان الثدي',
+        'national day': 'اليوم الوطني', 'founding day': 'يوم التأسيس', 'giveaways': 'توزيعات',
+        'bouquets': 'باقات / بوكيهات', 'stands': 'استاندات', 'chocolates': 'شوكولاته'
     };
+
+    function isGenericSheetName(name) {
+        if (!name) return true;
+        const clean = cleanStr(name).toLowerCase();
+        return /^(?:menu|the menu|المنيو|منيو|المنيو التوضيحي|المنيو المعتمد|sheet\d*|ورقة\d*|page\d*|صفحة\d*|table|جدول|items|أصناف|اصناف|products|منتجات|data|بيانات|upload|template|تيمبلت|draft|final|معتمد|توضيحي)$/i.test(clean) ||
+               /(?:المنيو التوضيحي|المنيو المعتمد)/i.test(clean);
+    }
 
     function getCategoryPair(rawCat) {
         const norm = cleanStr(rawCat);
-        if (!norm) return { en: 'General', ar: 'عام' };
+        if (!norm || isGenericSheetName(norm)) return { en: 'General', ar: 'عام' };
         if (norm.includes('/') || norm.includes(' - ')) {
             const parts = norm.split(/[\/\-]/).map(p => cleanStr(p));
             const arPart = parts.find(p => /[\u0600-\u06FF]/.test(p)) || '';
@@ -9558,7 +9570,7 @@ function processVendorMenuWorkbook(workbook) {
         }
         const isAr = /[\u0600-\u06FF]/.test(norm);
         if (isAr) {
-            const en = typeof getEnglishCategory === 'function' ? getEnglishCategory(norm) : 'Main Menu';
+            const en = typeof getEnglishCategory === 'function' ? getEnglishCategory(norm) : 'General';
             return { en: en, ar: norm };
         } else {
             const lower = norm.toLowerCase();
@@ -9706,7 +9718,22 @@ function processVendorMenuWorkbook(workbook) {
         const modifierSheetNames = contentSheetNames.filter(s => s.toLowerCase().includes('modifier') || s.toLowerCase().includes('addon') || s.toLowerCase().includes('إضافات'));
         const itemSheetNames = contentSheetNames.filter(s => !modifierSheetNames.includes(s));
 
-        const sheetsToProcess = itemSheetNames.length > 0 ? itemSheetNames : (contentSheetNames.length > 0 ? contentSheetNames : sheetNames);
+        // Filter candidate sheets that actually contain real menu rows (have both text and prices)
+        const validItemSheets = itemSheetNames.filter(sname => {
+            const ws = workbook.Sheets[sname];
+            if (!ws) return false;
+            const rows = XLSX.utils.sheet_to_json(ws, { header: 1, blankrows: false, defval: '' });
+            if (!rows || rows.length < 2) return false;
+            let priced = 0;
+            rows.forEach(r => {
+                if (Array.isArray(r) && r.some(c => typeof c === 'number' || (typeof c === 'string' && /^\d+(?:\.\d+)?$/.test(c.trim())))) {
+                    priced++;
+                }
+            });
+            return priced >= 1;
+        });
+
+        const sheetsToProcess = validItemSheets.length > 0 ? validItemSheets : (itemSheetNames.length > 0 ? itemSheetNames : (contentSheetNames.length > 0 ? contentSheetNames : sheetNames));
         console.log("Item sheets to process:", sheetsToProcess, "| Dedicated modifier sheets:", modifierSheetNames);
 
         const groupsMap = new Map();
@@ -9740,7 +9767,7 @@ function processVendorMenuWorkbook(workbook) {
                 }
             }
 
-            let currentSectionCategory = sheetsToProcess.length > 1 ? sname : 'Main Menu';
+            let currentSectionCategory = (sheetsToProcess.length > 1 && !isGenericSheetName(sname)) ? sname : 'General';
             const headers = rows[bestHeaderRow].map(v => cleanStr(v));
             const colMap = { allergen_cols: [], choice_cols: [], add_cols: [] };
 
@@ -9839,16 +9866,19 @@ function processVendorMenuWorkbook(workbook) {
                 const rowStr = r.join(' ').trim();
                 if (!rowStr) return;
 
-                // Check for section divider rows (e.g. "قسم البروست", "القسم: البرجر | Burgers")
+                // Check for section divider rows (e.g. "قسم البروست", "القسم: البرجر | Burgers", "Appetizers - المقبلات")
+                const nonBlankCells = r.filter(c => cleanStr(c) !== '');
                 const isSectionDivider = /^(?:القسم|قسم|category)[:\s]/i.test(rowStr) || (
-                    r.filter(Boolean).length === 1 &&
-                    rowStr.length < 50 &&
+                    nonBlankCells.length === 1 &&
+                    rowStr.length < 60 &&
                     !/\d/.test(rowStr) &&
-                    !['حراق', 'عادي', 'صغير', 'وسط', 'كبير', 'دبل', 'بالجبن', 'سبايسي', 'small', 'medium', 'large', 'regular', 'spicy'].includes(rowStr.toLowerCase()) &&
-                    /^(?:القسم|قسم|فئة|تصنيف|category)\s*/i.test(rowStr)
+                    !['حراق', 'عادي', 'صغير', 'وسط', 'كبير', 'دبل', 'بالجبن', 'سبايسي', 'small', 'medium', 'large', 'regular', 'spicy'].includes(rowStr.toLowerCase())
                 );
                 if (isSectionDivider) {
-                    currentSectionCategory = rowStr.replace(/^(?:القسم|قسم|فئة|تصنيف|category)[:\s]*/i, '').trim();
+                    const cleanDivider = rowStr.replace(/^(?:القسم|قسم|فئة|تصنيف|category)[:\s]*/i, '').trim();
+                    if (!isGenericSheetName(cleanDivider)) {
+                        currentSectionCategory = cleanDivider;
+                    }
                     lastItemNameEn = '';
                     lastItemNameAr = '';
                     return;
@@ -9886,12 +9916,21 @@ function processVendorMenuWorkbook(workbook) {
                 }
                 if (!nameAr) nameAr = nameEn;
 
-                // Category resolution
-                const rawCat = (colMap.category !== undefined && cleanStr(r[colMap.category])) ? cleanStr(r[colMap.category]) : currentSectionCategory;
+                // Category resolution with Forward-Fill (Carry forward category from previous row when merged/blank in Excel)
+                if (colMap.category !== undefined && cleanStr(r[colMap.category])) {
+                    const candidateCat = cleanStr(r[colMap.category]);
+                    if (!/^(?:category|قسم|تصنيف|فئة|القسم)$/i.test(candidateCat) && !isGenericSheetName(candidateCat)) {
+                        currentSectionCategory = candidateCat;
+                    }
+                }
+                const rawCat = (!isGenericSheetName(currentSectionCategory) ? currentSectionCategory : '') || 'General';
                 const catPair = getCategoryPair(rawCat);
 
-                if (!groupsMap.has(catPair.en)) {
-                    groupsMap.set(catPair.en, {
+                // Grouping MUST be keyed by the unique category name (Arabic or raw) so distinct categories NEVER merge!
+                const groupKey = (catPair.ar || rawCat || catPair.en).trim().toLowerCase();
+
+                if (!groupsMap.has(groupKey)) {
+                    groupsMap.set(groupKey, {
                         id: groupIdCounter++,
                         en_name: catPair.en,
                         ar_name: catPair.ar,
@@ -9902,7 +9941,7 @@ function processVendorMenuWorkbook(workbook) {
                         order: groupsMap.size + 1
                     });
                 }
-                const grp = groupsMap.get(catPair.en);
+                const grp = groupsMap.get(groupKey);
 
                 let k = colMap.calories !== undefined ? Math.round(cleanNum(r[colMap.calories], 0)) : 0;
                 if (isVariantRow && !k && items.length > 0) {
@@ -10356,6 +10395,14 @@ function smartAutoFillAndTranslateBilingual() {
             ar = smartTranslateToAr(ar);
         }
 
+        if (/^(?:المنيو التوضيحي|المنيو المعتمد|المنيو|منيو)$/i.test(ar)) {
+            ar = 'عام';
+        }
+        if (/special items?/i.test(en)) {
+            en = getEnglishCategory(ar);
+            if (/special items?/i.test(en)) en = 'General';
+        }
+
         g.ar_name = ar || 'عام';
         g.name_ar = ar || 'عام';
         g.en_name = toEnglishProper(en || 'General');
@@ -10541,7 +10588,12 @@ const FOOD_TERMS_DICT = {
     'صغير': 'Small', 'عادي': 'Regular', 'حراق': 'Spicy', 'سبايسي': 'Spicy', 'دبل': 'Double', 'قطع': 'Pieces',
     'حبات': 'Pieces', 'رول': 'Roll', 'راب': 'Wrap', 'كلوب': 'Club', 'صاروخ': 'Sarokh', 'سوبريم': 'Supreme',
     'سبيشل': 'Special', 'مكس': 'Mix', 'مشكل': 'Mixed', 'شيش طاووق': 'Shish Tawook', 'كباب': 'Kebab',
-    'كفتة': 'Kofta', 'تيكا': 'Tikka', 'تيكة': 'Tikka', 'فيلية': 'Fillet', 'فيليه': 'Fillet', 'شباتي': 'Chapati'
+    'كفتة': 'Kofta', 'تيكا': 'Tikka', 'تيكة': 'Tikka', 'فيلية': 'Fillet', 'فيليه': 'Fillet', 'شباتي': 'Chapati',
+    'ورد': 'Rose', 'وردة': 'Rose', 'زهور': 'Flowers', 'باقة': 'Bouquet', 'باقات': 'Bouquets', 'بوكيه': 'Bouquet', 'بوكية': 'Bouquet', 'بوكيهات': 'Bouquets',
+    'استاند': 'Stand', 'استاندات': 'Stands', 'هدايا': 'Gifts', 'هدية': 'Gift', 'توزيعات': 'Giveaways', 'توزيعة': 'Giveaway',
+    'معلم': 'Teacher', 'المعلم': 'Teacher', 'يوم': 'Day', 'سرطان': 'Cancer', 'الثدي': 'Breast', 'توعية': 'Awareness',
+    'الوطني': 'National', 'تأسيس': 'Founding', 'عيد': 'Eid', 'فطر': 'Fitr', 'أضحى': 'Adha', 'رمضان': 'Ramadan',
+    'شوكولاته': 'Chocolate', 'شوكولاتة': 'Chocolate', 'شوكلت': 'Chocolate', 'كوكيز': 'Cookies', 'كيك': 'Cake', 'كيكة': 'Cake'
 };
 
 const FOOD_DESCS_DICT = {
@@ -10703,6 +10755,11 @@ function getEnglishCategory(cat) {
     let s = String(cat).trim();
     if (/^[a-zA-Z\s&-]+$/.test(s)) return toEnglishProper(s);
     const map = {
+        'يوم المعلم': "Teacher's Day", 'المعلم': "Teacher's Day", 'هدايا المعلم': "Teacher's Gifts",
+        'سرطان الثدي': 'Breast Cancer Awareness', 'التوعية لسرطان الثدي': 'Breast Cancer Awareness', 'توعية سرطان الثدي': 'Breast Cancer Awareness',
+        'اليوم الوطني': 'National Day', 'يوم التأسيس': 'Founding Day',
+        'عيد الفطر': 'Eid Al-Fitr', 'عيد الأضحى': 'Eid Al-Adha', 'رمضان': 'Ramadan Offers',
+        'توزيعات': 'Gifts & Giveaways', 'توزيعة': 'Giveaways',
         'فرايز': 'Fries', 'بطاطس': 'Fries',
         'بروست': 'Broasted Chicken', 'بروستد': 'Broasted Chicken', 'فرايد تشيكن': 'Fried Chicken',
         'برجر': 'Burgers', 'برقر': 'Burgers', 'ساندوتش': 'Sandwiches & Wraps', 'ساندوتشات': 'Sandwiches & Wraps', 'شطائر': 'Sandwiches & Wraps',
@@ -10710,7 +10767,7 @@ function getEnglishCategory(cat) {
         'شاورما': 'Shawarma',
         'فطائر': 'Pies & Pastries', 'فطاير': 'Pies & Pastries', 'معجنات': 'Pies & Pastries', 'مخبوزات': 'Bakery',
         'طقوم ساعات': 'Watch Sets', 'طقم ساعات': 'Watch Sets', 'ساعات': 'Watches',
-        'هدايا': 'Gifts', 'ورد': 'Flowers', 'زهور': 'Flowers', 'باقات': 'Bouquets',
+        'هدايا': 'Gifts', 'ورد': 'Flowers', 'زهور': 'Flowers', 'باقات': 'Bouquets', 'بوكيه': 'Bouquets', 'بوكية': 'Bouquets', 'استاند': 'Stands', 'استاندات': 'Stands',
         'اكسسوارات': 'Accessories', 'إكسسوارات': 'Accessories',
         'عطور': 'Perfumes', 'عطورات': 'Perfumes', 'بخور': 'Incense',
         'قهوة': 'Coffee', 'قهوه': 'Coffee', 'كافيه': 'Coffee', 'شاي': 'Tea',
@@ -10722,7 +10779,7 @@ function getEnglishCategory(cat) {
         'رز': 'Rice Dishes', 'برياني': 'Biryani', 'كبسة': 'Kabsa',
         'مقبلات': 'Appetizers', 'سناك': 'Snacks', 'سلطات': 'Salads', 'سلطة': 'Salads',
         'شوربة': 'Soups', 'شوربات': 'Soups',
-        'حلويات': 'Desserts', 'حلى': 'Desserts', 'كيك': 'Cakes',
+        'حلويات': 'Desserts', 'حلى': 'Desserts', 'كيك': 'Cakes', 'شوكولاته': 'Chocolates', 'شوكولاتة': 'Chocolates', 'شوكلت': 'Chocolates',
         'صوصات': 'Sauces', 'صلصات': 'Sauces', 'إضافات': 'Add-ons', 'اضافات': 'Add-ons', 'خيارات': 'Options',
         'بوكسات': 'Boxes', 'عروض': 'Special Offers', 'وجبات': 'Meals', 'اطباق رئيسية': 'Main Courses',
         'فطور': 'Breakfast', 'إفطار': 'Breakfast', 'وجبات أطفال': 'Kids Meals'
@@ -10733,7 +10790,21 @@ function getEnglishCategory(cat) {
         if (s.includes(k) || cleanCat.includes(k)) return map[k];
     }
     const fallback = toEnglishProper(s.replace(/[\u0600-\u06FF]/g, ''));
-    return fallback && fallback.length > 1 ? fallback : 'Special Items';
+    if (fallback && fallback.length > 1) return fallback;
+
+    if (typeof smartTranslateFoodName === 'function') {
+        const trans = smartTranslateFoodName(s);
+        if (trans && !/[\u0600-\u06FF]/.test(trans) && trans.length > 1 && trans !== 'Special Item') {
+            return toEnglishProper(trans);
+        }
+    }
+
+    const arLetters = {'ا':'a','أ':'a','إ':'e','آ':'aa','ب':'b','ت':'t','ث':'th','ج':'j','ح':'h','خ':'kh','د':'d','ذ':'th','ر':'r','ز':'z','س':'s','ش':'sh','ص':'s','ض':'d','ط':'t','ظ':'z','ع':'a','غ':'gh','ف':'f','ق':'q','ك':'k','ل':'l','م':'m','ن':'n','ه':'h','و':'w','ي':'y','ى':'a','ة':'a','ء':'','ؤ':'u','ئ':'e'};
+    let translit = s.split('').map(c => arLetters[c] !== undefined ? arLetters[c] : c).join('').replace(/[^a-zA-Z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+    if (translit && translit.length > 1) {
+        return toEnglishProper(translit);
+    }
+    return cleanCat || 'Category';
 }
 
 
@@ -12146,8 +12217,12 @@ function createOfficialMenuWorkbook() {
         let arName = g.ar_name || g.name_ar || `قسم ${idx + 1}`;
         let enName = g.en_name || g.name_en || '';
         arName = cleanProperTrim(arName);
-        if (!enName || enName === '-' || /^[\u0600-\u06FF]/.test(enName)) {
+        if (/^(?:المنيو التوضيحي|المنيو المعتمد|المنيو|منيو)$/i.test(arName)) {
+            arName = 'عام';
+        }
+        if (!enName || enName === '-' || /^[\u0600-\u06FF]/.test(enName) || /special items?/i.test(enName)) {
             enName = typeof getEnglishCategory === 'function' ? getEnglishCategory(arName) : `Category ${idx + 1}`;
+            if (/special items?/i.test(enName)) enName = 'General';
         } else {
             enName = toEnglishProper(enName);
         }
