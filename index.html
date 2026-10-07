@@ -6,6 +6,26 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // Force Purge Stale Service Workers & Caches v36
+        (function() {
+            const BUILD = 'v36_instant_fix';
+            if (localStorage.getItem('hs_build_id') !== BUILD) {
+                localStorage.setItem('hs_build_id', BUILD);
+                if ('caches' in window) {
+                    caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))));
+                }
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(regs => {
+                        regs.forEach(r => r.unregister());
+                    });
+                }
+            }
+            window.FOOD_ITEMS_DICT = window.FOOD_ITEMS_DICT || {};
+            window.FOOD_TERMS_DICT = window.FOOD_TERMS_DICT || {};
+            window.FOOD_DESCS_DICT = window.FOOD_DESCS_DICT || {};
+        })();
+    </script>
     <title>Hungerstation Vendor Support AI Suite v3.0 | المنصة الذكية لدعم الشركاء</title>
     <!-- Google Fonts: Cairo & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -9910,7 +9930,11 @@ function processVendorMenuWorkbook(workbook) {
                 }
 
                 if (!nameEn || /[\u0600-\u06FF]/.test(nameEn)) {
-                    nameEn = smartTranslateFoodName(nameAr);
+                    try {
+                        nameEn = (typeof smartTranslateFoodName === 'function') ? smartTranslateFoodName(nameAr) : (nameEn || nameAr);
+                    } catch(e) {
+                        nameEn = nameEn || nameAr;
+                    }
                 }
                 if (!nameAr) nameAr = nameEn;
 
@@ -9964,7 +9988,11 @@ function processVendorMenuWorkbook(workbook) {
                     descAr = items[items.length - 1].desc_ar || items[items.length - 1].item_ar_desc || '';
                 }
                 if (!descEn || /[\u0600-\u06FF]/.test(descEn)) {
-                    descEn = smartTranslateFoodDescription(descAr);
+                    try {
+                        descEn = (typeof smartTranslateFoodDescription === 'function') ? smartTranslateFoodDescription(descAr) : descAr;
+                    } catch(e) {
+                        descEn = descAr;
+                    }
                 }
 
                 // If sizes were not merged in name
@@ -10744,21 +10772,24 @@ function smartTranslateFoodName(arName) {
         s = s.replace(/\([^)]+\)/, '').trim();
     }
 
+    const itemsDict = (typeof FOOD_ITEMS_DICT !== 'undefined' && FOOD_ITEMS_DICT) ? FOOD_ITEMS_DICT : (window.FOOD_ITEMS_DICT || {});
+    const termsDict = (typeof FOOD_TERMS_DICT !== 'undefined' && FOOD_TERMS_DICT) ? FOOD_TERMS_DICT : (window.FOOD_TERMS_DICT || {});
+
     // Direct dictionary match
-    let translatedBase = FOOD_ITEMS_DICT[s];
+    let translatedBase = itemsDict[s];
     if (!translatedBase) {
         const cleaned = s.replace(/^(صحن|وجبة|طبق|ساندوتش|فطيرة|مشروب|عصير|علبة)\s+/, '').trim();
-        if (FOOD_ITEMS_DICT[cleaned]) {
-            translatedBase = FOOD_ITEMS_DICT[cleaned];
+        if (itemsDict[cleaned]) {
+            translatedBase = itemsDict[cleaned];
         }
     }
 
     if (!translatedBase) {
         // Multi-word phrase matching from FOOD_ITEMS_DICT
-        const sortedItems = Object.keys(FOOD_ITEMS_DICT).sort((a, b) => b.length - a.length);
+        const sortedItems = Object.keys(itemsDict).sort((a, b) => b.length - a.length);
         for (const k of sortedItems) {
             if (s.includes(k)) {
-                translatedBase = s.replace(k, FOOD_ITEMS_DICT[k]);
+                translatedBase = s.replace(k, itemsDict[k]);
                 break;
             }
         }
@@ -10766,24 +10797,24 @@ function smartTranslateFoodName(arName) {
 
     if (!translatedBase) {
         let words = s.split(/\s+/);
-        let transWords = words.map(w => FOOD_TERMS_DICT[w] || w);
+        let transWords = words.map(w => termsDict[w] || w);
         translatedBase = transWords.join(' ');
         
         // Clean remaining Arabic safely with dictionary terms, avoiding character transliteration
         if (/[\u0600-\u06FF]/.test(translatedBase)) {
-            const sortedTerms = Object.keys(FOOD_TERMS_DICT).sort((a, b) => b.length - a.length);
+            const sortedTerms = Object.keys(termsDict).sort((a, b) => b.length - a.length);
             for (const k of sortedTerms) {
                 const reg = new RegExp(`(^|[\\s,.\-!?:;()\/])${k}(?=$|[\\s,.\-!?:;()\/])`, 'g');
-                translatedBase = translatedBase.replace(reg, `$1${FOOD_TERMS_DICT[k]}`);
+                translatedBase = translatedBase.replace(reg, `$1${termsDict[k]}`);
             }
             // Strip remaining unmatchable Arabic characters without leaving garbage
             translatedBase = translatedBase.replace(/[\u0600-\u06FF]/g, '').replace(/\s+/g, ' ').trim();
         }
     }
 
-    translatedBase = toEnglishProper(translatedBase.trim() || 'Menu Item');
+    translatedBase = (typeof toEnglishProper === 'function') ? toEnglishProper(translatedBase.trim() || 'Menu Item') : (translatedBase.trim() || 'Menu Item');
     if (variantEn) {
-        return `${translatedBase} (${toEnglishProper(variantEn)})`;
+        return `${translatedBase} (${(typeof toEnglishProper === 'function') ? toEnglishProper(variantEn) : variantEn})`;
     }
     return translatedBase;
 }
@@ -10793,12 +10824,15 @@ function smartTranslateFoodDescription(arDesc) {
     let s = String(arDesc).replace(/\r\n/g, '\n').trim();
     if (!/[\u0600-\u06FF]/.test(s)) return s;
 
+    const descsDict = (typeof FOOD_DESCS_DICT !== 'undefined' && FOOD_DESCS_DICT) ? FOOD_DESCS_DICT : (window.FOOD_DESCS_DICT || {});
+    const termsDict = (typeof FOOD_TERMS_DICT !== 'undefined' && FOOD_TERMS_DICT) ? FOOD_TERMS_DICT : (window.FOOD_TERMS_DICT || {});
+
     // 1. Direct exact or normalized dictionary match
     const sNorm = s.replace(/\s+/g, ' ');
-    if (FOOD_DESCS_DICT[s]) return FOOD_DESCS_DICT[s];
-    if (FOOD_DESCS_DICT[sNorm]) return FOOD_DESCS_DICT[sNorm];
+    if (descsDict[s]) return descsDict[s];
+    if (descsDict[sNorm]) return descsDict[sNorm];
 
-    for (const [k, v] of Object.entries(FOOD_DESCS_DICT)) {
+    for (const [k, v] of Object.entries(descsDict)) {
         if (k.replace(/\s+/g, ' ') === sNorm) return v;
     }
 
@@ -10854,12 +10888,12 @@ function smartTranslateFoodDescription(arDesc) {
         translated = translated.split(ar).join(en);
     }
 
-    // 3. Word-level replacement with strict word boundary (never replace inside words like 'الحمضيات' with 'Beef')
+    // 3. Word-level replacement with strict word boundary
     if (/[\u0600-\u06FF]/.test(translated)) {
-        const sortedTerms = Object.keys(FOOD_TERMS_DICT).sort((a, b) => b.length - a.length);
+        const sortedTerms = Object.keys(termsDict).sort((a, b) => b.length - a.length);
         for (const k of sortedTerms) {
             const regex = new RegExp(`(^|[\\s,.\-!?:;()\/])${k}(?=$|[\\s,.\-!?:;()\/])`, 'gi');
-            translated = translated.replace(regex, `$1${FOOD_TERMS_DICT[k]}`);
+            translated = translated.replace(regex, `$1${termsDict[k]}`);
         }
         // Clean remaining Arabic and broken empty brackets cleanly
         translated = translated.replace(/[\u0600-\u06FF]/g, '')
@@ -16668,7 +16702,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=12')
+        navigator.serviceWorker.register('./sw.js?v=35')
             .then(() => console.log('✓ Service Worker Registered successfully.'))
             .catch(err => console.log('SW registration error:', err));
     });
