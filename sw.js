@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hs-vendor-suite-v35-auto-purge';
+const CACHE_NAME = 'hs-vendor-suite-v37-audit-release';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
