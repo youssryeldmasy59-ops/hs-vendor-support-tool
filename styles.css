@@ -2765,3 +2765,69 @@ select:focus {
     font-size: 0.72rem;
     color: #64748B;
 }
+
+
+/* ── MENU STUDIO PRO & EXECUTIVE OBSIDIAN REFINEMENTS ─────────────────────── */
+.menu-status-pill {
+    transition: all 0.15s ease;
+}
+.menu-status-pill:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+#studioTbodyItems tr:hover {
+    background: rgba(245, 158, 11, 0.04) !important;
+}
+
+#studioTbodyItems td[contenteditable="true"]:hover {
+    outline: 1px dashed rgba(245, 158, 11, 0.5);
+    background: rgba(245, 158, 11, 0.08);
+    cursor: text;
+}
+
+#studioTbodyItems td[contenteditable="true"]:focus {
+    outline: 1.5px solid #F59E0B;
+    background: rgba(245, 158, 11, 0.15);
+}
+
+/* Category Tabs Refinement - Linear Style */
+.category-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 6px 2px;
+    margin-bottom: 12px;
+}
+.category-tabs .tab-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #94A3B8;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: all 0.15s ease;
+}
+.category-tabs .tab-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #F8FAFC;
+}
+.category-tabs .tab-btn.active {
+    background: rgba(245, 158, 11, 0.12) !important;
+    border-color: #F59E0B !important;
+    color: #FCD34D !important;
+    font-weight: 700 !important;
+}
+
+/* Operations Dropdown */
+#opsDropdownMenu.show {
+    display: block !important;
+    animation: fadeInDropdown 0.18s ease-out;
+}

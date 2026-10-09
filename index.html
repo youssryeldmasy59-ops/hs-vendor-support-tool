@@ -196,119 +196,72 @@
     <header class="main-header">
         <div class="logo-area">
             <div class="logo-badge">
-                <i class="fa-solid fa-headset"></i>
-                <span>HS VENDOR AI</span>
+                <i class="fa-solid fa-bolt"></i>
+                <span>HS OS</span>
             </div>
             <div class="logo-title">
                 <h1>Hungerstation Vendor Support Suite</h1>
-                <p>المنصة المعتمدة للردود التلقائية، المنيو، وقاعدة المعرفة (102 حالة معتمدة)</p>
+                <p>المنصة التشغيلية المعتمدة لعمليات الدعم والمنيو وحالات الشركاء</p>
             </div>
-            <span class="version-badge">v22 Luxury Suite ✨</span>
+            <span class="version-badge">Production v22</span>
         </div>
 
         <div class="header-controls">
-                        <!-- 👤 Agent Profile Chip -->
-            <div class="agent-chip" onclick="promptChangeName()" title="تعديل اسم الموظف">
-                <i class="fa-solid fa-circle-user"></i>
-                <span id="displayAgentName">الموظف: عمر</span>
-                <i class="fa-solid fa-pen" style="font-size: 0.65rem; opacity: 0.5;"></i>
-            </div>
-
-                        <!-- Spotlight Command Palette -->
+            <!-- Spotlight Command Palette Trigger -->
             <button type="button" class="header-btn" onclick="toggleCommandPalette()" id="cmdPaletteHeaderBtn" title="شريط الأوامر السريع (Cmd+K / Ctrl+K)">
-                <i class="fa-solid fa-terminal" style="color: #F59E0B;"></i> <span>الأوامر</span>
-                <kbd style="font-size: 0.65rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); padding: 1px 5px; border-radius: 4px; font-family: monospace; color: #FCD34D;">⌘K</kbd>
+                <i class="fa-solid fa-terminal" style="color: #F59E0B;"></i>
+                <span>الأوامر</span>
+                <kbd style="font-size: 0.65rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); padding: 1px 5px; border-radius: 4px; font-family: monospace; color: #FCD34D;">⌘K</kbd>
             </button>
 
-            <!-- Desktop Ghost PiP -->
-            <button type="button" class="header-btn" onclick="toggleDesktopGhostPip()" id="ghostPipHeaderBtn" title="الوضع الشبحي: نافذة ديسكتوب عائمة فوق الشاشات (Always on Top)">
-                <i class="fa-solid fa-clone"></i> <span id="ghostPipHeaderLabel">وضع الشبح</span>
-            </button>
-
-            <!-- Angry Partner Simulator -->
-            <button type="button" class="header-btn" onclick="openPartnerSimulatorModal()" id="partnerSimHeaderBtn" title="محاكي تدريب الشركاء التفاعلي وغرفة تقييم الـ QA">
-                <i class="fa-solid fa-gamepad"></i> <span id="partnerSimHeaderLabel">محاكي الشركاء</span>
-            </button>
-
-            <!-- Clipboard Sniper -->
-            <button type="button" class="header-btn" onclick="toggleClipboardSniper()" id="clipboardSniperBtn" title="رادار الحافظة الذكي: يراقب الحافظة تلقائياً وينسخ الرد فوراً">
-                <i class="fa-solid fa-crosshairs"></i> <span id="clipboardSniperLabel">رادار الحافظة</span>
-            </button>
-
-            <!-- Smart Rider Operations Hub -->
-            <button type="button" class="header-btn" onclick="openRiderOperationsModal()" id="riderOpsHeaderBtn" title="مركز عمليات وحلول الرايدر واللوجستيك (تأخير، استلام خاطئ، هروب دون دفع)">
-                <i class="fa-solid fa-motorcycle"></i> <span id="riderOpsHeaderLabel">عمليات الرايدر</span>
-            </button>
-
-            <!-- Live Call Whisperer -->
-            <button type="button" class="header-btn" onclick="openLiveCallWhispererModal()" id="callWhispererBtn" title="الملقّن الحي لمكالمات الشركاء (يسمع المكالمة لايف ويمليك الرد المعتمد)">
-                <i class="fa-solid fa-headset"></i> <span id="whispererBtnLabel">ملقّن المكالمات</span>
-            </button>
-
-            <!-- Voice Assistant -->
-            <button type="button" class="header-btn" onclick="toggleVoiceAiDrawer()" id="voiceAiTriggerBtn" title="المساعد الصوتي الذكي (AR+EN)">
-                <i class="fa-solid fa-microphone"></i> <span id="voiceBadgeText">المساعد الصوتي</span>
-            </button>
-
-            <!-- Cloud AI Settings & Model Selector -->
-            <button type="button" class="header-btn" onclick="openCloudAiSettingsModal()" id="cloudAiHeaderBtn" title="إعدادات وتشغيل الـ AI السحابي المباشر (علّام / Groq / DeepSeek)">
-                <i class="fa-solid fa-brain"></i> <span id="cloudAiHeaderLabel">الذكاء الاصطناعي</span>
-            </button>
-
-            <!-- Force Refresh / Cache Purge -->
-            <button type="button" class="header-btn" onclick="forcePurgeAndReload()" title="تحديث فوري وحذف الكاش القديم">
-                <i class="fa-solid fa-rotate"></i> <span>تحديث</span>
-            </button>
-
-            <!-- Theme Switcher -->
-            <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" id="themeToggleBtn" title="تبديل مظهر الواجهة">
-                <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
-                <span id="themeToggleText">المظهر</span>
-            </button>
-
-            <!-- ⚡ Consolidated Enterprise Tools Dropdown -->
-            <div class="tools-dropdown-wrapper" id="toolsDropdownWrapper">
-                <button type="button" class="header-btn tools-dropdown-btn" onclick="toggleToolsMenu(event)" id="toolsMenuBtn" title="جميع الأدوات والخدمات المساعدة">
-                    <i class="fa-solid fa-grid-2"></i>
-                    <span>⚡ الأدوات ▾</span>
+            <!-- 1. Live Operations Dropdown -->
+            <div class="tools-dropdown-wrapper" id="opsDropdownWrapper">
+                <button type="button" class="header-btn" onclick="toggleOpsMenu(event)" id="opsMenuBtn" title="مركز العمليات الحية ودعم الشركاء">
+                    <i class="fa-solid fa-headset" style="color: #F59E0B;"></i>
+                    <span>مركز العمليات ▾</span>
                 </button>
-                <div class="tools-dropdown-menu" id="toolsDropdownMenu">
-                    <!-- Category 1: Tickets & Operations -->
-                    <div class="tools-dropdown-group-title">🎯 التذاكر والعمليات اليومية</div>
-                    <div class="tools-dropdown-item" onclick="openRiderOperationsModal(); closeToolsMenu();" title="مركز عمليات وحلول الرايدر الذكي (حاسبة التأخير، المندوب الهارب، الاستلام الخاطئ)">
+                <div class="tools-dropdown-menu" id="opsDropdownMenu">
+                    <div class="tools-dropdown-group-title">دعم الشركاء والعمليات الحية</div>
+                    <div class="tools-dropdown-item" onclick="openLiveCallWhispererModal(); closeOpsMenu();" title="الملقّن الحي لمكالمات الشركاء (يسمع المكالمة لايف ويمليك الرد المعتمد)">
+                        <i class="fa-solid fa-phone-volume" style="color: #10B981;"></i>
+                        <span style="flex: 1;">الملقّن الحي لمكالمات الشركاء</span>
+                        <span class="tools-item-tag" style="background: rgba(16, 185, 129, 0.2); color: #34D399;">مباشر</span>
+                    </div>
+                    <div class="tools-dropdown-item" onclick="openRiderOperationsModal(); closeOpsMenu();" title="مركز عمليات وحلول الرايدر (حاسبة التأخير، المندوب الهارب، الاستلام الخاطئ)">
                         <i class="fa-solid fa-motorcycle" style="color: #F59E0B;"></i>
-                        <span style="flex: 1;">مركز عمليات وحلول الرايدر 🛵</span>
+                        <span style="flex: 1;">مركز عمليات وحلول الرايدر</span>
                         <span class="tools-item-tag" style="background: rgba(245, 158, 11, 0.2); color: #FCD34D;">لوجستيك</span>
                     </div>
-                    <div class="tools-dropdown-item" onclick="toggleDockMode(); closeToolsMenu();" title="وضع نصف الشاشة للعمل بجانب Zendesk (Alt+D)">
-                        <i class="fa-solid fa-table-columns" style="color: #38BDF8;"></i>
-                        <span style="flex: 1;" id="dockToggleText">وضع الدوك (نصف شاشة)</span>
+                    <div class="tools-dropdown-item" onclick="openPartnerSimulatorModal(); closeOpsMenu();" title="محاكي تدريب الشركاء التفاعلي (Angry Partner)">
+                        <i class="fa-solid fa-user-ninja" style="color: #EF4444;"></i>
+                        <span style="flex: 1;">محاكي تدريب الشركاء (Angry Partner)</span>
                     </div>
-                    <div class="tools-dropdown-item" onclick="openHotkeysModal(); closeToolsMenu();" title="اختصارات لوحة المفاتيح السريعة (Alt+1, Alt+2, Alt+C)">
-                        <i class="fa-solid fa-keyboard" style="color: #FCD34D;"></i>
-                        <span style="flex: 1;">دليل اختصارات الكيبورد</span>
+                    <div class="tools-dropdown-item" onclick="toggleClipboardSniper(); closeOpsMenu();" id="clipboardSniperMenuItem" title="رادار الحافظة الذكي: يراقب الحافظة تلقائياً وينسخ الرد فوراً">
+                        <i class="fa-solid fa-crosshairs" style="color: #38BDF8;"></i>
+                        <span style="flex: 1;" id="clipboardSniperLabel">رادار الحافظة الذكي</span>
                     </div>
-                    <div class="tools-dropdown-item" onclick="openAiSettingsModal(); closeToolsMenu();" title="إعدادات نماذج الذكاء الاصطناعي">
-                        <i class="fa-solid fa-wand-magic-sparkles" style="color: #A78BFA;"></i>
-                        <span style="flex: 1;">إعدادات الذكاء الاصطناعي (AI)</span>
+                    <div class="tools-dropdown-item" onclick="toggleVoiceAiDrawer(); closeOpsMenu();" title="المساعد الصوتي الذكي (AR+EN)">
+                        <i class="fa-solid fa-microphone" style="color: #A855F7;"></i>
+                        <span style="flex: 1;">المساعد الصوتي الذكي (Voice AI)</span>
                     </div>
-                    <div class="tools-dropdown-item" onclick="openPendingVaultModal(); closeToolsMenu();" title="حافظة التذاكر المعلقة وتفادي كسر الـ SLA">
-                        <i class="fa-solid fa-clock-rotate-left" style="color: #F59E0B;"></i>
-                        <span style="flex: 1;">حافظة التذاكر المعلقة</span>
-                        <span class="tools-item-badge" id="pendingVaultHeaderBadge">معلقة (0)</span>
+                    <div class="tools-dropdown-item" onclick="toggleDesktopGhostPip(); closeOpsMenu();" title="الوضع الشبحي: نافذة ديسكتوب عائمة فوق الشاشات">
+                        <i class="fa-solid fa-clone" style="color: #94A3B8;"></i>
+                        <span style="flex: 1;">الوضع الشبحي (نافذة عائمة Always on Top)</span>
                     </div>
-                    <div class="tools-dropdown-item" onclick="openShiftReportModal(); closeToolsMenu();" title="تقرير إنجاز نهاية الشفت">
-                        <i class="fa-solid fa-chart-pie" style="color: #10B981;"></i>
-                        <span style="flex: 1;">تقرير إنجاز الشفت</span>
-                        <span class="tools-item-tag">تقرير</span>
-                    </div>
-                    <div class="tools-dropdown-item" onclick="openBatchTicketsModal(); closeToolsMenu();" title="توليد ردود مجمعة لعدة طلبات دفعة واحدة">
-                        <i class="fa-solid fa-layer-group" style="color: #A855F7;"></i>
-                        <span style="flex: 1;">الرد المجمع (Batch Mode)</span>
-                    </div>
-                    <div class="tools-dropdown-item" onclick="openDecisionTreeModal(); closeToolsMenu();" title="شجرة القرارات التفاعلية للحالات المعقدة">
-                        <i class="fa-solid fa-sitemap" style="color: #EC4899;"></i>
-                        <span style="flex: 1;">شجرة القرارات التفاعلية</span>
+                </div>
+            </div>
+
+            <!-- 2. System & Tools Dropdown -->
+            <div class="tools-dropdown-wrapper" id="toolsDropdownWrapper">
+                <button type="button" class="header-btn tools-dropdown-btn" onclick="toggleToolsMenu(event)" id="toolsMenuBtn" title="جميع الأدوات والأنظمة والخدمات المساعدة">
+                    <i class="fa-solid fa-screwdriver-wrench" style="color: #94A3B8;"></i>
+                    <span>الأدوات والأنظمة ▾</span>
+                </button>
+                <div class="tools-dropdown-menu" id="toolsDropdownMenu">
+                    <div class="tools-dropdown-group-title">الأنظمة والخدمات المساعدة</div>
+                    <div class="tools-dropdown-item" onclick="openCloudAiSettingsModal(); closeToolsMenu();" title="إعدادات وتشغيل الـ AI السحابي المباشر (علّام / Groq / DeepSeek)">
+                        <i class="fa-solid fa-brain" style="color: #F59E0B;"></i>
+                        <span style="flex: 1;">إعدادات الذكاء الاصطناعي (AI Cloud)</span>
                     </div>
                     <div class="tools-dropdown-item" onclick="openPolicyCalculatorModal(); closeToolsMenu();" title="حاسبة تعويضات الطلبات ومواعيد الفواتير">
                         <i class="fa-solid fa-calculator" style="color: #10B981;"></i>
@@ -318,56 +271,50 @@
                         <i class="fa-solid fa-receipt" style="color: #0EA5E9;"></i>
                         <span style="flex: 1;">مفكك الفواتير والخصومات</span>
                     </div>
-                    <div class="tools-dropdown-item" onclick="toggleZeroClickSolver(); closeToolsMenu();" id="zeroClickToggleBtn" title="تفعيل الحل التلقائي بمجرد نسخ شكوى التاجر">
-                        <i class="fa-solid fa-bolt-lightning" style="color: #10B981;"></i>
-                        <span style="flex: 1;" id="zeroClickBadgeText">حل تلقائي للحافظة (معطّل)</span>
+                    <div class="tools-dropdown-item" onclick="openDecisionTreeModal(); closeToolsMenu();" title="شجرة القرارات التفاعلية للحالات المعقدة">
+                        <i class="fa-solid fa-sitemap" style="color: #EC4899;"></i>
+                        <span style="flex: 1;">شجرة القرارات التفاعلية</span>
                     </div>
-
-                    <div class="tools-dropdown-divider"></div>
-
-                    <!-- Category 2: Sync & System Tools -->
-                    <div class="tools-dropdown-group-title">⚙️ المزامنة والأدوات المساعدة</div>
-                    <div class="tools-dropdown-item" onclick="openTeamSyncModal(); closeToolsMenu();" title="مزامنة وتصدير تحديثات الفريق">
-                        <i class="fa-solid fa-arrows-rotate" style="color: #8B5CF6;"></i>
-                        <span style="flex: 1;">مزامنة تحديثات الفريق (JSON)</span>
-                        <span class="tools-item-tag" style="background: rgba(139, 92, 246, 0.2); color: #C4B5FD;">جديد</span>
+                    <div class="tools-dropdown-item" onclick="openPendingVaultModal(); closeToolsMenu();" title="حافظة التذاكر المعلقة وتفادي كسر الـ SLA">
+                        <i class="fa-solid fa-clock-rotate-left" style="color: #F59E0B;"></i>
+                        <span style="flex: 1;">حافظة التذاكر المعلقة</span>
+                        <span class="tools-item-badge" id="pendingVaultHeaderBadge">معلقة (0)</span>
                     </div>
-                    <div class="tools-dropdown-item" onclick="showLearningModal(); closeToolsMenu();" title="قواعد الذاكرة المكتسبة">
-                        <i class="fa-solid fa-brain" style="color: #34D399;"></i>
-                        <span style="flex: 1;">ذاكرة القواعد المكتسبة</span>
-                        <span class="tools-item-badge" id="learnedRulesCountBadge" style="background: rgba(52, 211, 153, 0.15); color: #34D399;">ذاكرة (5)</span>
+                    <div class="tools-dropdown-item" onclick="openShiftReportModal(); closeToolsMenu();" title="تقرير إنجاز نهاية الشفت">
+                        <i class="fa-solid fa-chart-pie" style="color: #10B981;"></i>
+                        <span style="flex: 1;">تقرير إنجاز الشفت</span>
                     </div>
-                    <div class="tools-dropdown-item" onclick="showHistoryModal(); closeToolsMenu();" title="سجل التذاكر المستعلم عنها">
-                        <i class="fa-solid fa-clock-rotate-left" style="color: #60A5FA;"></i>
-                        <span style="flex: 1;">سجل التذاكر اليومي</span>
-                        <span class="tools-item-badge" id="historyCountBadge" style="background: rgba(96, 165, 250, 0.15); color: #60A5FA;">السجل (9)</span>
+                    <div class="tools-dropdown-item" onclick="openBatchTicketsModal(); closeToolsMenu();" title="توليد ردود مجمعة لعدة طلبات دفعة واحدة">
+                        <i class="fa-solid fa-layer-group" style="color: #A855F7;"></i>
+                        <span style="flex: 1;">الرد المجمع (Batch Mode)</span>
                     </div>
-                    <div class="tools-dropdown-item" onclick="showResizerModal(); closeToolsMenu();" title="محرر ومحول أبعاد الصور">
+                    <div class="tools-dropdown-item" onclick="showResizerModal(); closeToolsMenu();" title="محرر ومحول أبعاد الصور بمقاس 640×480">
                         <i class="fa-solid fa-crop-simple" style="color: #F43F5E;"></i>
-                        <span style="flex: 1;">محرر وقاص الصور</span>
+                        <span style="flex: 1;">محرر وقاص الصور 640×480</span>
                     </div>
-                    <div class="tools-dropdown-item" onclick="toggleFloatingGlassHud(); closeToolsMenu();" title="النافذة العائمة فوق Zendesk">
-                        <i class="fa-solid fa-window-restore" style="color: #38BDF8;"></i>
-                        <span style="flex: 1;">نافذة عائمة شبحية (HUD)</span>
+                    <div class="tools-dropdown-item" onclick="openHotkeysModal(); closeToolsMenu();" title="دليل اختصارات لوحة المفاتيح">
+                        <i class="fa-solid fa-keyboard" style="color: #FCD34D;"></i>
+                        <span style="flex: 1;">دليل اختصارات الكيبورد</span>
                     </div>
-                    <div class="tools-dropdown-item" onclick="downloadStandaloneFile(); closeToolsMenu();" title="تنزيل نسخة أوفلاين">
-                        <i class="fa-solid fa-cloud-arrow-down" style="color: #38BDF8;"></i>
-                        <span style="flex: 1;">تحميل نسخة أوفلاين كاملة</span>
-                    </div>
-                    <div class="tools-dropdown-item" onclick="installDesktopPwa(); closeToolsMenu();" id="pwaInstallBtn" title="تثبيت التطبيق على جهاز الكمبيوتر">
-                        <i class="fa-solid fa-laptop-code" style="color: #EC4899;"></i>
-                        <span style="flex: 1;">تثبيت كتطبيق مكتبي مستقل</span>
-                    </div>
-                    <div class="tools-dropdown-item" onclick="toggleAutoCopy(); closeToolsMenu();" id="autoCopyMenuItem" title="تفعيل النسخ الفوري للماكرو المعتمد فور اختياره">
-                        <i class="fa-solid fa-clipboard-check" style="color: #10B981;"></i>
-                        <span style="flex: 1;" id="autoCopyMenuText">النسخ التلقائي فور التحديد (معطّل)</span>
-                    </div>
-                    <div class="tools-dropdown-item" onclick="toggleSoundMute(); closeToolsMenu();" id="soundMuteMenuItem" title="كتم أو تشغيل أصوات النجاح والتنبيهات">
-                        <i class="fa-solid fa-volume-high" style="color: #10B981;"></i>
-                        <span style="flex: 1;" id="soundMuteMenuText">التنبيهات الصوتية (مفعلة 🔊)</span>
+                    <div class="tools-dropdown-item" onclick="forcePurgeAndReload(); closeToolsMenu();" title="تحديث فوري وحذف الكاش القديم">
+                        <i class="fa-solid fa-rotate" style="color: #38BDF8;"></i>
+                        <span style="flex: 1;">تحديث النظام ومسح الكاش</span>
                     </div>
                 </div>
             </div>
+
+            <!-- 👤 Agent Profile Chip -->
+            <div class="agent-chip" onclick="promptChangeName()" title="تعديل اسم الموظف">
+                <i class="fa-solid fa-circle-user"></i>
+                <span id="displayAgentName">الموظف: عمر</span>
+                <i class="fa-solid fa-pen" style="font-size: 0.65rem; opacity: 0.5;"></i>
+            </div>
+
+            <!-- Theme Switcher -->
+            <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" id="themeToggleBtn" title="تبديل مظهر الواجهة">
+                <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
+                <span id="themeToggleText">المظهر</span>
+            </button>
         </div>
     </header>
 
@@ -391,278 +338,239 @@
         </button>
     </div>
 
-    <!-- 🍽️ DEDICATED MENU BUILDER STUDIO WORKSPACE -->
-    <div id="menuStudioWorkspace" style="display: none; max-width: 1400px; margin: 16px auto; padding: 0 20px;">
-        <div style="background: var(--bg-card, #1E293B); border: 1px solid var(--border-color, rgba(255,255,255,0.12)); border-radius: 16px; padding: 24px; color: var(--text-main, #FFF); box-shadow: 0 20px 40px rgba(0,0,0,0.3); backdrop-filter: blur(16px);">
+        <!-- 🍽️ DEDICATED MENU BUILDER STUDIO WORKSPACE -->
+    <div id="menuStudioWorkspace" style="display: none; max-width: 1480px; margin: 16px auto; padding: 0 20px;">
+        <div style="background: var(--bg-card, #101422); border: 1px solid var(--border, rgba(255,255,255,0.08)); border-radius: 16px; padding: 24px; color: var(--text-main, #FFF); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
             
-            <!-- Studio Hero Header -->
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+            <!-- Studio Executive Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 18px; margin-bottom: 20px; flex-wrap: wrap; gap: 14px;">
                 <div style="display: flex; align-items: center; gap: 14px;">
-                    <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #10B981, #059669); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #FFF; box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);">
-                        <i class="fa-solid fa-file-excel"></i>
+                    <div style="width: 44px; height: 44px; border-radius: 10px; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.3); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #F59E0B;">
+                        <i class="fa-solid fa-utensils"></i>
                     </div>
                     <div>
-                        <h2 style="font-size: 1.3rem; font-weight: 800; color: #F8FAFC; margin: 0; display: flex; align-items: center; gap: 10px;">
-                            استوديو المنيو الذكي الموحد (Unified Menu Studio)
-                            <span style="font-size: 0.72rem; background: #10B981; color: #000; padding: 2px 10px; border-radius: 12px; font-weight: 800;">جاهز 100% لبورتال هنقرستيشن</span>
+                        <h2 style="font-size: 1.25rem; font-weight: 800; color: #F8FAFC; margin: 0; display: flex; align-items: center; gap: 10px;">
+                            استوديو المنيو ومطابقة المواصفات (Menu Studio Pro)
+                            <span id="studioMetricSanityBadge" style="font-size: 0.72rem; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34D399; padding: 2px 10px; border-radius: 6px; font-weight: 700;">جاهز للرفع 100%</span>
                         </h2>
-                        <p style="font-size: 0.8rem; color: #94A3B8; margin: 3px 0 0 0;">المعالجة التلقائية الشاملة: تنظيف اللغتين، عزل وضبط صور درايف لـ 640×480، وتوليد شيت الإكسيل والتذكرة فوراً.</p>
+                        <p style="font-size: 0.78rem; color: #94A3B8; margin: 3px 0 0 0;">فحص واعتماد المنيو وفق متطلبات هنقرستيشن، ترجمة ثنائية فورية، مطابقة السعرات مع هيئة الغذاء والدواء (SFDA)، وتوليد شيت الإكسيل الرسمي.</p>
                     </div>
                 </div>
 
-                <!-- Sleek Primary Actions Bar (3 Core Actions + More Tools) -->
-                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                    <!-- 1. The Master 1-Click Auto-Pilot -->
-                    <button onclick="runMenuAutoPilot()" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #000; border: none; padding: 10px 22px; border-radius: 10px; font-weight: 900; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.45); transition: transform 0.15s ease;" title="الطيار الآلي الشامل: يحلل ويصلح اللغتين + ينزل شيت _MenuUpload.xlsx + ينزل صور 640x480 + يجهز التذكرة والماكرو بضغطة واحدة!">
-                        <i class="fa-solid fa-bolt" style="font-size: 1.1rem;"></i> ⚡ الطيار الآلي الشامل (الكل في واحد)
+                <!-- Primary Action Buttons (Clean Executive Obsidian Styling) -->
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <button onclick="runMenuAutoPilot()" class="header-btn" style="background: #F59E0B; color: #000; border: none; font-weight: 800; padding: 8px 16px; border-radius: 8px;" title="تشغيل الطيار الآلي الشامل لتنزيل الإكسيل والماكرو فوراً">
+                        <i class="fa-solid fa-bolt"></i> الطيار الآلي الشامل
                     </button>
-
-                    <!-- 2. Download Official Excel Sheet -->
-                    <button onclick="downloadOfficialMenuExcel()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);">
-                        <i class="fa-solid fa-cloud-arrow-down"></i> شيت الإكسيل (_MenuUpload.xlsx)
+                    <button onclick="downloadOfficialMenuExcel()" class="header-btn" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34D399; font-weight: 700; padding: 8px 14px; border-radius: 8px;">
+                        <i class="fa-solid fa-file-excel"></i> تنزيل شيت الإكسيل (_MenuUpload.xlsx)
                     </button>
-
-                    <!-- 3. Download All Images 640x480 Zip -->
-                    <button onclick="downloadAllMenuImagesZip640x480()" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFF; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);" title="تنزيل جميع صور المنيو بمقاس 640×480 جاهزة بالترتيب والأقسام في ملف ZIP واحد">
-                        <i class="fa-solid fa-file-zipper"></i> حزمة الصور 640×480 (ZIP)
+                    <button onclick="generateMacroFromMenuCount()" class="header-btn" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); color: #FCD34D; font-weight: 700; padding: 8px 14px; border-radius: 8px;">
+                        <i class="fa-solid fa-ticket"></i> توليد ماكرو التذكرة
                     </button>
-
-                    <!-- 4. Compact More Tools Dropdown -->
-                    <div style="position: relative; display: inline-block;">
-                        <button onclick="toggleStudioMoreToolsMenu(event)" id="btnStudioMoreTools" style="background: rgba(255,255,255,0.08); color: #E2E8F0; border: 1px solid rgba(255,255,255,0.15); padding: 10px 14px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                            <i class="fa-solid fa-ellipsis-vertical"></i> أدوات إضافية ⚙️
-                        </button>
-                        <div id="studioMoreToolsDropdown" style="display: none; position: absolute; left: 0; top: 110%; z-index: 999; background: #0F172A; border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; padding: 8px; min-width: 230px; box-shadow: 0 12px 32px rgba(0,0,0,0.6); backdrop-filter: blur(14px);">
-                            <button onclick="smartAutoFillAndTranslateBilingual(); toggleStudioMoreToolsMenu();" style="width: 100%; text-align: right; background: none; border: none; color: #60A5FA; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> 🛠️ تصليح وإكمال النواقص باللغتين
-                            </button>
-                            <button onclick="runMenuPreflightSanityCheck(); toggleStudioMoreToolsMenu();" style="width: 100%; text-align: right; background: none; border: none; color: #34D399; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                                <i class="fa-solid fa-stethoscope"></i> 🩺 فاحص سلامة الشيت (منع 422)
-                            </button>
-                            <button onclick="toggleMobileAppMockup(); toggleStudioMoreToolsMenu();" style="width: 100%; text-align: right; background: none; border: none; color: #38BDF8; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                                <i class="fa-solid fa-mobile-screen"></i> 📱 محاكي التطبيق لايف
-                            </button>
-                            <button onclick="quickAddCustomItem(); toggleStudioMoreToolsMenu();" style="width: 100%; text-align: right; background: none; border: none; color: #FCD34D; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                                <i class="fa-solid fa-plus-circle"></i> ➕ إضافة صنف يدوي
-                            </button>
-                            <button onclick="aiBulkGenerateDescriptions(); toggleStudioMoreToolsMenu();" style="width: 100%; text-align: right; background: none; border: none; color: #C084FC; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                                <i class="fa-solid fa-robot"></i> 🤖 توليد أوصاف بالذكاء الاصطناعي
-                            </button>
-                            <button onclick="aiAuditMenu(); toggleStudioMoreToolsMenu();" style="width: 100%; text-align: right; background: none; border: none; color: #F87171; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                                <i class="fa-solid fa-magnifying-glass-chart"></i> 🔍 مراجعة شاملة AI
-                            </button>
-                            <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 4px 0;"></div>
-                            <button onclick="switchMainWorkspace('TICKETS'); toggleStudioMoreToolsMenu();" style="width: 100%; text-align: right; background: none; border: none; color: #CBD5E1; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                                <i class="fa-solid fa-ticket"></i> 🎫 الانتقال لمولد التذاكر
-                            </button>
-                        </div>
-                    </div>
+                    <button onclick="runMenuPreflightSanityCheck()" class="header-btn" style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); color: #38BDF8; font-weight: 700; padding: 8px 14px; border-radius: 8px;" title="فحص الأخطاء لمنع كود 422">
+                        <i class="fa-solid fa-stethoscope"></i> فاحص 422
+                    </button>
+                    <button onclick="downloadAllMenuImagesZip640x480()" class="header-btn" style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.25); color: #C084FC; font-weight: 700; padding: 8px 14px; border-radius: 8px;">
+                        <i class="fa-solid fa-file-zipper"></i> حزمة الصور 640×480
+                    </button>
+                    <button onclick="toggleMobileAppMockup()" class="header-btn" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #E2E8F0; font-weight: 700; padding: 8px 12px; border-radius: 8px;" title="محاكي تطبيق هنقرستيشن">
+                        <i class="fa-solid fa-mobile-screen"></i> محاكي التطبيق
+                    </button>
                 </div>
             </div>
 
-            <!-- Unified Single Ingestion Hub (2 Clean Functional Columns) -->
-            <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 16px; margin-bottom: 20px;">
-                
-                <!-- Left: Unified Drag & Dropzone for Files (Excel, CSV, ZIP, Images) -->
-                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div style="font-size: 0.88rem; font-weight: 800; color: #38BDF8; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
-                        <span><i class="fa-solid fa-cloud-arrow-up"></i> 1. سحب وإسقاط الملفات (إكسيل أو صور ZIP):</span>
-                        <span style="font-size: 0.72rem; color: #94A3B8;">شيت الإكسيل أو حزمة الصور</span>
-                    </div>
+            <!-- Health & Metrics Radar -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px;">
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px 16px;">
+                    <div style="font-size: 0.72rem; color: #94A3B8; font-weight: 600;">إجمالي الأصناف</div>
+                    <div style="font-size: 1.4rem; font-weight: 800; color: #F8FAFC; margin-top: 4px;" id="studioMetricTotalItems">0</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px 16px;">
+                    <div style="font-size: 0.72rem; color: #94A3B8; font-weight: 600;">الأقسام والتصنيفات</div>
+                    <div style="font-size: 1.4rem; font-weight: 800; color: #F59E0B; margin-top: 4px;" id="studioMetricTotalGroups">0</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px 16px;">
+                    <div style="font-size: 0.72rem; color: #94A3B8; font-weight: 600;">مطابقة السعرات (SFDA)</div>
+                    <div style="font-size: 1.4rem; font-weight: 800; color: #10B981; margin-top: 4px;" id="studioMetricSfdaPercent">0%</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px 16px;">
+                    <div style="font-size: 0.72rem; color: #94A3B8; font-weight: 600;">الجاهزية الثنائية (عربي + إنجليزي)</div>
+                    <div style="font-size: 1.4rem; font-weight: 800; color: #38BDF8; margin-top: 4px;" id="studioMetricBilingualPercent">0%</div>
+                </div>
+            </div>
 
-                    <div id="studioUnifiedDropzone" onclick="document.getElementById('studioRawMenuFileInput').click()" ondragover="event.preventDefault(); this.style.borderColor='#10B981'; this.style.background='rgba(16,185,129,0.08)';" ondragleave="this.style.borderColor='rgba(56, 189, 248, 0.4)'; this.style.background='rgba(56, 189, 248, 0.03)';" ondrop="handleUnifiedDrop(event);" style="border: 2px dashed rgba(56, 189, 248, 0.4); border-radius: 10px; padding: 26px 16px; text-align: center; cursor: pointer; background: rgba(56, 189, 248, 0.03); transition: all 0.2s;">
-                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.2rem; color: #38BDF8; margin-bottom: 8px;"></i>
-                        <div style="font-size: 0.95rem; font-weight: 800; color: #F1F5F9;">
-                            اسحب وأفلت شيت الفيندور (.xlsx, .csv) أو ملف ZIP لصور Drive هنا
-                        </div>
-                        <div style="font-size: 0.76rem; color: #94A3B8; margin-top: 4px;">
-                            يقوم النظام تلقائياً بفرز الأقسام، ترجمة الأسماء، تنظيف السعرات، وتجهيز الصور بمقاس 640×480
-                        </div>
-                        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 14px;" onclick="event.stopPropagation()">
-                            <button type="button" onclick="document.getElementById('studioRawMenuFileInput').click();" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #34D399; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                                <i class="fa-solid fa-file-excel"></i> اختيار شيت إكسيل
-                            </button>
-                            <button type="button" onclick="document.getElementById('studioDriveZipInput').click();" style="background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.4); color: #C4B5FD; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                                <i class="fa-solid fa-file-zipper"></i> اختيار ZIP / صور
-                            </button>
-                        </div>
+            <!-- Ingestion Hub (Collapsible / Clean Switcher) -->
+            <div style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <button type="button" onclick="toggleIngestionDrawer()" id="btnToggleIngestion" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #E2E8F0; padding: 6px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-cloud-arrow-up" style="color: #F59E0B;"></i>
+                        <span>إدخال واستيراد بيانات المنيو (ملفات، نص، أو روابط Drive)</span>
+                        <i class="fa-solid fa-chevron-down" id="ingestionChevron" style="font-size: 0.7rem;"></i>
+                    </button>
+                    <div style="display: flex; gap: 6px;">
+                        <button onclick="loadStudioSampleMenuData()" class="header-btn" style="font-size: 0.75rem; padding: 5px 10px; border-radius: 6px;">
+                            <i class="fa-solid fa-table-list"></i> تجربة نموذج افتراضي
+                        </button>
+                        <button onclick="clearStudioMenuData()" class="header-btn" style="font-size: 0.75rem; padding: 5px 10px; border-radius: 6px; color: #EF4444;" title="مسح المنيو والبدء من جديد">
+                            <i class="fa-solid fa-trash-can"></i> تفريغ المنيو
+                        </button>
                     </div>
-
-                    <input type="file" id="studioRawMenuFileInput" accept=".xlsx,.xls,.csv,.txt" multiple style="display: none;" onchange="handleBatchMultiMenuUpload(event)">
-                    <input type="file" id="studioDriveZipInput" accept=".zip,image/*" multiple style="display: none;" onchange="handleDriveFileInput(event)">
-                    <input type="file" id="studioDriveFolderInput" webkitdirectory directory multiple style="display: none;" onchange="handleDriveFileInput(event)">
                 </div>
 
-                <!-- Right: Text & Google Drive Links Input -->
-                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div style="font-size: 0.88rem; font-weight: 800; color: #F59E0B; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
-                        <span><i class="fa-solid fa-paste"></i> 2. أو الصق نصوص المنيو / روابط درايف:</span>
-                        <span style="font-size: 0.72rem; color: #94A3B8;">واتساب أو Drive</span>
+                <div id="studioIngestionDrawer" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px;">
+                    <!-- Left: Drag & Drop Files -->
+                    <div id="studioUnifiedDropzone" onclick="document.getElementById('studioRawMenuFileInput').click()" ondragover="event.preventDefault(); this.style.borderColor='#F59E0B'; this.style.background='rgba(245,158,11,0.05)';" ondragleave="this.style.borderColor='rgba(255,255,255,0.15)'; this.style.background='transparent';" ondrop="handleUnifiedDrop(event);" style="border: 2px dashed rgba(255,255,255,0.15); border-radius: 10px; padding: 24px 16px; text-align: center; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-file-arrow-up" style="font-size: 2rem; color: #94A3B8; margin-bottom: 8px;"></i>
+                        <div style="font-size: 0.88rem; font-weight: 700; color: #F1F5F9;">اسحب وأفلت شيت الفيندور (.xlsx, .csv) أو ملف ZIP لصور Drive</div>
+                        <div style="font-size: 0.72rem; color: #64748B; margin-top: 4px;">يتم الفرز التلقائي للأقسام والأصناف والأسعار بدون برامج وسيطة</div>
+                        <input type="file" id="studioRawMenuFileInput" style="display: none;" accept=".xlsx, .xls, .csv, .zip" onchange="handleStudioRawMenuFileUpload(event)">
                     </div>
 
-                    <textarea id="studioRawMenuInput" style="width: 100%; height: 135px; background: #0F172A; color: #F8FAFC; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px; font-family: monospace; font-size: 0.82rem; resize: vertical;" placeholder="الصق المنيو الخام أو روابط الصور، مثلاً:
+                    <!-- Right: Raw Text Paste -->
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <textarea id="studioRawMenuInput" style="width: 100%; height: 95px; background: rgba(11, 15, 25, 0.9); color: #F8FAFC; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px; font-size: 0.78rem; resize: vertical;" placeholder="الصق المنيو الخام أو روابط الصور، مثلاً:
 قسم البرجر / Burgers:
 - برجر دجاج - 25 ريال - 450 سعرة
 رابط مجلد الصور: https://drive.google.com/drive/folders/..."></textarea>
-
-                    <div style="display: flex; gap: 8px; margin-top: 10px;">
-                        <button onclick="handleStudioUnifiedTextInput()" style="flex: 1; background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 10px; border-radius: 8px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> ✨ معالجة فورية للمدخلات والروابط
-                        </button>
-                        <button onclick="loadStudioSampleMenuData()" style="background: rgba(255,255,255,0.08); color: #CBD5E1; border: 1px solid rgba(255,255,255,0.12); padding: 10px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer;" title="تجربة منيو افتراضي">
-                            📋 تجربة نموذج
-                        </button>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="handleStudioUnifiedTextInput()" style="flex: 1; background: #F59E0B; color: #000; border: none; padding: 8px; border-radius: 6px; font-weight: 800; font-size: 0.82rem; cursor: pointer;">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> معالجة فورية للمدخلات
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Smart Feedback & Image Processing Status (Hidden when idle) -->
-            <div id="studioDriveImageHub" style="display: none; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 12px; padding: 14px; margin-bottom: 20px;">
-                <!-- Drive Auth Helper for Private Folders -->
-                <div id="studioDriveAuthHelper" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 12px; margin-bottom: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                        <span style="font-weight: 800; color: #FCD34D; font-size: 0.85rem;"><i class="fa-solid fa-folder-tree"></i> مجلدات وتصنيفات Google Drive المكتشفة:</span>
-                        <a id="btnOpenDriveFolder" href="#" target="_blank" style="background: #F59E0B; color: #000; padding: 5px 12px; border-radius: 6px; font-weight: 800; text-decoration: none; font-size: 0.78rem; display: flex; align-items: center; gap: 5px;">
-                            <i class="fa-brands fa-google-drive"></i> فتح المجلد في Drive
-                        </a>
-                    </div>
-                    <div id="studioDriveCategoriesList" style="margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px;"></div>
-                </div>
-
-                <!-- Progress Bar -->
-                <div id="studioDriveProgressBar" style="display: none; margin-bottom: 10px;">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: #CBD5E1; margin-bottom: 4px;">
+            <!-- Drive Status Section (When Drive URL Detected) -->
+            <div id="studioDriveImageHub" style="display: none; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; margin-bottom: 20px;">
+                <div id="studioDriveProgressBar" style="display: none; margin-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #94A3B8; margin-bottom: 4px;">
                         <span id="studioDriveProgressText">جاري المعالجة...</span>
                         <span id="studioDriveProgressPercent">0%</span>
                     </div>
-                    <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
-                        <div id="studioDriveProgressFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #EC4899, #8B5CF6); transition: width 0.2s;"></div>
+                    <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden;">
+                        <div id="studioDriveProgressFill" style="width: 0%; height: 100%; background: #F59E0B; transition: width 0.2s;"></div>
                     </div>
                 </div>
-
-                <!-- Extracted Image URLs -->
-                <div id="studioExtractedImagesContainer" style="display: none; margin-top: 8px; background: #0F172A; border-radius: 8px; padding: 10px;">
+                <div id="studioExtractedImagesContainer" style="display: none;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <span style="font-size: 0.78rem; color: #94A3B8;">روابط الصور المستخرجة من المنيو:</span>
-                        <span id="studioImgCountBadge" style="font-size: 0.72rem; color: #8B5CF6;">0 رابط</span>
+                        <span style="font-size: 0.75rem; color: #94A3B8;">روابط الصور المستخرجة:</span>
+                        <span id="studioImgCountBadge" style="font-size: 0.72rem; color: #F59E0B;">0 رابط</span>
                     </div>
-                    <div id="studioExtractedImagesList" style="max-height: 80px; overflow-y: auto; font-size: 0.75rem; color: #93C5FD; font-family: monospace;"></div>
-                </div>
-
-                <!-- Processed Gallery Section -->
-                <div id="studioDriveGallerySection" style="display: none; margin-top: 12px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
-                        <div style="font-size: 0.85rem; font-weight: 800; color: #E2E8F0; display: flex; align-items: center; gap: 8px;">
-                            <i class="fa-solid fa-images" style="color: #38BDF8;"></i>
-                            <span>الصور المعالجة والمربوطة بالأقسام (640×480):</span>
-                        </div>
-                        <div id="studioDriveCategoryFilters" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
-                    </div>
-                    <div id="studioDriveGalleryGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; max-height: 480px; overflow-y: auto; padding: 4px;"></div>
+                    <div id="studioExtractedImagesList" style="max-height: 70px; overflow-y: auto; font-size: 0.72rem; color: #93C5FD; font-family: monospace;"></div>
                 </div>
             </div>
 
-                        <!-- Preview 4-Sheets Section -->
-            <div id="studioMenuPreviewSection" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px;">
-                <!-- Smart Toolbar & Health Radar -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 14px;">
-                    <!-- Health Radar Badge -->
-                    <div id="studioHealthScoreBadge" style="display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #34D399;">
-                        <i class="fa-solid fa-shield-check"></i> جاهزية الرفع لبورتال هنقرستيشن: <strong>100%</strong> (خالي من الأخطاء)
+            <!-- Master Interactive Data Grid Container -->
+            <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 18px;">
+                
+                <!-- Table View Switcher & Bulk Operations Strip -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+                    <!-- Sheet Tabs (Items, Groups, Modifiers) -->
+                    <div style="display: flex; gap: 6px;">
+                        <button id="studioTabBtnItems" onclick="showStudioMenuPreviewTab('items')" class="ws-tab-btn active" style="padding: 7px 16px; font-size: 0.82rem; font-weight: 700; border-radius: 8px;">
+                            <i class="fa-solid fa-list-check"></i> الأصناف والمنتجات <span id="studioBadgeItemsCount">(0)</span>
+                        </button>
+                        <button id="studioTabBtnGroups" onclick="showStudioMenuPreviewTab('groups')" class="ws-tab-btn" style="padding: 7px 16px; font-size: 0.82rem; font-weight: 700; border-radius: 8px;">
+                            <i class="fa-solid fa-folder"></i> أقسام المنيو <span id="studioBadgeGroupsCount">(0)</span>
+                        </button>
+                        <button id="studioTabBtnModifiers" onclick="showStudioMenuPreviewTab('modifiers')" class="ws-tab-btn" style="padding: 7px 16px; font-size: 0.82rem; font-weight: 700; border-radius: 8px;">
+                            <i class="fa-solid fa-sliders"></i> مجموعات الخيارات <span id="studioBadgeModifiersCount">(0)</span>
+                        </button>
                     </div>
 
-                    <!-- Smart Fast Actions -->
+                    <!-- Batch Operations Buttons -->
                     <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                        <button onclick="aiTranslateEntireMenu()" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #FFF; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.35);" title="ترجمة ذكية فورية عبر الذكاء الاصطناعي (Groq 120B)">
-                            <i class="fa-solid fa-brain"></i> ترجمة ذكية بالـ AI 🤖
+                        <button onclick="openAddMenuItemModal()" class="header-btn" style="background: #F59E0B; color: #000; font-weight: 800; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem;">
+                            <i class="fa-solid fa-plus"></i> إضافة صنف يدوي
                         </button>
-                        <button onclick="autoFillMissingBilingualNames()" style="background: linear-gradient(135deg, #6366F1, #4F46E5); color: #FFF; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;">
-                            <i class="fa-solid fa-language"></i> إكمال وترجمة الإنجليزية/العربية
+                        <button onclick="estimateAllMissingKcal()" class="header-btn" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); color: #34D399; font-weight: 700; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem;" title="تقدير السعرات تلقائياً لجميع الأصناف الناقصة بناءً على مواصفات SFDA">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> تقدير سعرات SFDA للكل
                         </button>
-                        <button onclick="bulkAdjustMenuPrices('VAT_15')" style="background: rgba(245, 158, 11, 0.15); color: #FCD34D; border: 1px solid #F59E0B; padding: 6px 10px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">
-                            +15% إضافة ضريبة VAT
+                        <button onclick="smartAutoFillAndTranslateBilingual()" class="header-btn" style="background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); color: #38BDF8; font-weight: 700; padding: 6px 12px; border-radius: 6px; font-size: 0.78rem;" title="ترجمة الأسماء الناقصة بين العربية والإنجليزية">
+                            <i class="fa-solid fa-language"></i> إكمال وترجمة الأسماء
                         </button>
-                        <button onclick="bulkAdjustMenuPrices('ROUND')" style="background: rgba(59, 130, 246, 0.15); color: #93C5FD; border: 1px solid #3B82F6; padding: 6px 10px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer;">
-                            🔢 تقريب الأسعار
+                        <button onclick="bulkAdjustMenuPrices('VAT_15')" class="header-btn" style="font-size: 0.78rem; padding: 6px 10px; border-radius: 6px;">
+                            +15% ضريبة VAT
                         </button>
-                    </div>
-                </div>
-
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
-                    <!-- Sheet Tabs -->
-                    <div style="display: flex; gap: 8px;">
-                        <button id="studioTabBtnGroups" onclick="showStudioMenuPreviewTab('groups')" style="background: #3B82F6; color: #FFF; border: none; padding: 8px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer;">
-                            1️⃣ أقسام المنيو menu group <span id="studioBadgeGroupsCount">(0)</span>
-                        </button>
-                        <button id="studioTabBtnItems" onclick="showStudioMenuPreviewTab('items')" style="background: rgba(255,255,255,0.1); color: #94A3B8; border: none; padding: 8px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer;">
-                            2️⃣ الأصناف والمنتجات Menu productsitems <span id="studioBadgeItemsCount">(0)</span>
-                        </button>
-                        <button id="studioTabBtnModifiers" onclick="showStudioMenuPreviewTab('modifiers')" style="background: rgba(255,255,255,0.1); color: #94A3B8; border: none; padding: 8px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer;">
-                            3️⃣ مجموعات الخيارات Modifier groupsmodifiers <span id="studioBadgeModifiersCount">(0)</span>
-                        </button>
-                    </div>
-
-                    <!-- Download & Macro Actions -->
-                    <div style="display: flex; gap: 8px;">
-                        <button onclick="downloadOfficialMenuExcel()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);">
-                            <i class="fa-solid fa-file-excel"></i> تنزيل شيت الإكسيل الرسمي (_MenuUpload.xlsx) 🚀
-                        </button>
-                        <button onclick="generateMacroFromMenuCount()" style="background: #8B5CF6; color: #FFF; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> توليد ماكرو التذكرة
+                        <button onclick="bulkAdjustMenuPrices('ROUND')" class="header-btn" style="font-size: 0.78rem; padding: 6px 10px; border-radius: 6px;">
+                            تقريب الأسعار
                         </button>
                     </div>
                 </div>
 
-                <!-- Table 1: Groups -->
-                <div id="studioTableContainerGroups" style="display: block; max-height: 320px; overflow-y: auto; overflow-x: auto;">
+                <!-- Interactive Filters Toolbar for Items Table -->
+                <div id="studioItemsToolbar" style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                    <!-- Search Input -->
+                    <div style="position: relative; min-width: 220px; flex: 1;">
+                        <input type="text" id="studioMenuSearchInput" placeholder="بحث فوري عن صنف (عربي أو إنجليزي)..." oninput="filterStudioMenuItemsLive()" style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 6px 30px 6px 10px; color: #FFF; font-size: 0.78rem;">
+                        <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #64748B; font-size: 0.75rem;"></i>
+                    </div>
+
+                    <!-- Category Dropdown Filter -->
+                    <select id="studioMenuCategoryFilter" onchange="filterStudioMenuItemsLive()" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 6px 10px; color: #F1F5F9; font-size: 0.78rem;">
+                        <option value="ALL">جميع الأقسام</option>
+                    </select>
+
+                    <!-- Status Filter Badges -->
+                    <div style="display: flex; gap: 4px;" id="menuStatusFilterPills">
+                        <button type="button" onclick="setMenuStatusFilter('ALL', this)" class="menu-status-pill active" style="background: rgba(245,158,11,0.15); border: 1px solid #F59E0B; color: #FCD34D; padding: 4px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 700; cursor: pointer;">الكل (<span id="countPillAll">0</span>)</button>
+                        <button type="button" onclick="setMenuStatusFilter('MISSING_EN', this)" class="menu-status-pill" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #94A3B8; padding: 4px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 600; cursor: pointer;">ينقصه إنجليزي (<span id="countPillEn">0</span>)</button>
+                        <button type="button" onclick="setMenuStatusFilter('MISSING_SFDA', this)" class="menu-status-pill" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #94A3B8; padding: 4px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 600; cursor: pointer;">ينقصه سعرات (<span id="countPillSfda">0</span>)</button>
+                        <button type="button" onclick="setMenuStatusFilter('READY', this)" class="menu-status-pill" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #94A3B8; padding: 4px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 600; cursor: pointer;">مكتمل (<span id="countPillReady">0</span>)</button>
+                    </div>
+                </div>
+
+                <!-- Table 1: Items (Master View) -->
+                <div id="studioTableContainerItems" style="display: block; max-height: 480px; overflow-y: auto; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px;">
                     <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: right;">
-                        <thead>
-                            <tr style="background: #0F172A; color: #94A3B8; border-bottom: 2px solid rgba(255,255,255,0.1);">
-                                <th style="padding: 10px;">ID</th>
-                                <th style="padding: 10px;">Name (English)</th>
-                                <th style="padding: 10px;">الاسم بالعربي</th>
-                                <th style="padding: 10px;">Order</th>
-                                <th style="padding: 10px;">Status</th>
+                        <thead style="position: sticky; top: 0; z-index: 10; background: #0A0D18;">
+                            <tr style="color: #94A3B8; border-bottom: 2px solid rgba(255,255,255,0.08);">
+                                <th style="padding: 10px 8px; width: 45px;">#</th>
+                                <th style="padding: 10px 8px; width: 130px;">القسم Group</th>
+                                <th style="padding: 10px 8px;">الاسم (English)</th>
+                                <th style="padding: 10px 8px;">الاسم (عربي)</th>
+                                <th style="padding: 10px 8px; width: 90px;">السعر Price</th>
+                                <th style="padding: 10px 8px; width: 120px;">السعرات (SFDA)</th>
+                                <th style="padding: 10px 8px;">مسببات الحساسية</th>
+                                <th style="padding: 10px 8px;">الوصف</th>
+                                <th style="padding: 10px 8px; width: 95px; text-align: center;">إجراءات</th>
                             </tr>
                         </thead>
-                        <tbody id="studioTbodyGroups">
-                            <tr><td colspan="5" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال أقسام بعد. الصق بيانات المنيو أو اضغط "تجربة بيانات نموذجية".</td></tr>
+                        <tbody id="studioTbodyItems">
+                            <tr><td colspan="9" style="padding: 30px; text-align: center; color: #64748B;">لم يتم إدخال أصناف بعد. الصق بيانات المنيو أو اضغط "تجربة نموذج افتراضي".</td></tr>
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Table 2: Items -->
-                <div id="studioTableContainerItems" style="display: none; max-height: 320px; overflow-y: auto; overflow-x: auto;">
+                <!-- Table 2: Groups -->
+                <div id="studioTableContainerGroups" style="display: none; max-height: 380px; overflow-y: auto; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px;">
                     <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: right;">
-                        <thead>
-                            <tr style="background: #0F172A; color: #94A3B8; border-bottom: 2px solid rgba(255,255,255,0.1);">
+                        <thead style="position: sticky; top: 0; z-index: 10; background: #0A0D18;">
+                            <tr style="color: #94A3B8; border-bottom: 2px solid rgba(255,255,255,0.08);">
                                 <th style="padding: 10px;">ID</th>
-                                <th style="padding: 10px;">القسم Group</th>
-                                <th style="padding: 10px;">Name (En)</th>
-                                <th style="padding: 10px;">الاسم (Ar)</th>
-                                <th style="padding: 10px;">السعر Price</th>
-                                <th style="padding: 10px;">السعرات Calories</th>
-                                <th style="padding: 10px;">🛡️ الحساسية Allergens</th>
-                                <th style="padding: 10px;">🥗 القيم الغذائية</th>
-                                <th style="padding: 10px;">🍟 الإضافات</th>
-                                <th style="padding: 10px;">الوصف Description</th>
+                                <th style="padding: 10px;">Group Name (English)</th>
+                                <th style="padding: 10px;">اسم القسم بالعربي</th>
+                                <th style="padding: 10px;">الترتيب Order</th>
+                                <th style="padding: 10px;">الحالة Status</th>
                             </tr>
                         </thead>
-                        <tbody id="studioTbodyItems">
-                            <tr><td colspan="7" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال أصناف بعد.</td></tr>
+                        <tbody id="studioTbodyGroups">
+                            <tr><td colspan="5" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال أقسام بعد.</td></tr>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Table 3: Modifiers -->
-                <div id="studioTableContainerModifiers" style="display: none; max-height: 320px; overflow-y: auto; overflow-x: auto;">
+                <div id="studioTableContainerModifiers" style="display: none; max-height: 380px; overflow-y: auto; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px;">
                     <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: right;">
-                        <thead>
-                            <tr style="background: #0F172A; color: #94A3B8; border-bottom: 2px solid rgba(255,255,255,0.1);">
+                        <thead style="position: sticky; top: 0; z-index: 10; background: #0A0D18;">
+                            <tr style="color: #94A3B8; border-bottom: 2px solid rgba(255,255,255,0.08);">
                                 <th style="padding: 10px;">ID</th>
                                 <th style="padding: 10px;">Modifier Group</th>
                                 <th style="padding: 10px;">Option Name (En)</th>
-                                <th style="padding: 10px;">اسم الخيار (Ar)</th>
+                                <th style="padding: 10px;">اسم الخيار (عربي)</th>
                                 <th style="padding: 10px;">السعر الإضافي</th>
                                 <th style="padding: 10px;">النوع Type</th>
                             </tr>
@@ -675,71 +583,40 @@
 
             </div>
 
-        
             <!-- 📱 LIVE MOBILE APP MOCKUP (HUNGERSTATION CUSTOMER VIEW) -->
-            <div id="studioMobileMockupWrapper" style="display: none; margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <div id="studioMobileMockupWrapper" style="display: none; margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                     <div>
-                        <h3 style="margin: 0; font-size: 1.15rem; color: #38BDF8; display: flex; align-items: center; gap: 8px;">
-                            <i class="fa-solid fa-mobile-screen-button"></i> محاكي شكل المنيو في تطبيق هنقرستيشن لايف (Customer Mobile Preview)
+                        <h3 style="margin: 0; font-size: 1.1rem; color: #F8FAFC; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-mobile-screen-button" style="color: #F59E0B;"></i> محاكي شكل المنيو في تطبيق هنقرستيشن لايف
                         </h3>
-                        <p style="margin: 4px 0 0 0; font-size: 0.78rem; color: #94A3B8;">تأكد بالعين من شكل المتجر، الأقسام، والأسعار كما ستظهر لعملاء التطبيق قبل رفع الشيت.</p>
+                        <p style="margin: 3px 0 0 0; font-size: 0.75rem; color: #94A3B8;">معاينة حية للمتجر والأصناف كما يراها عملاء التطبيق مع السعرات والأسعار الرسمية.</p>
                     </div>
-                    <button onclick="toggleMobileAppMockup()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #FFF; padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">
-                        إخفاء المحاكي ✕
+                    <button onclick="toggleMobileAppMockup()" class="header-btn" style="font-size: 0.78rem;">
+                        إغلاق المحاكي ✕
                     </button>
                 </div>
 
-                <div class="mobile-mockup-frame">
-                    <div class="mobile-notch"></div>
-                    <div class="mobile-screen" id="mobileMockupScreen">
-                        <!-- Top status bar -->
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 16px; font-size: 0.7rem; color: #94A3B8; margin-top: 6px;">
+                <div style="display: flex; justify-content: center; padding: 10px 0;">
+                    <!-- Phone Frame -->
+                    <div style="width: 360px; height: 620px; background: #000; border: 8px solid #1E293B; border-radius: 40px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); overflow: hidden; display: flex; flex-direction: column; position: relative;">
+                        <!-- Status Bar -->
+                        <div style="height: 24px; background: #000; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; font-size: 0.65rem; color: #FFF;">
                             <span>9:41</span>
-                            <div style="display: flex; gap: 5px;"><i class="fa-solid fa-signal"></i><i class="fa-solid fa-wifi"></i><i class="fa-solid fa-battery-full"></i></div>
+                            <div style="width: 60px; height: 12px; background: #1E293B; border-radius: 6px;"></div>
+                            <span>5G 100%</span>
                         </div>
-
-                        <!-- Top Nav -->
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 14px;">
-                            <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 0.8rem;"><i class="fa-solid fa-arrow-right"></i></div>
-                            <span style="font-size: 0.85rem; font-weight: 800; color: #FFC400;"><i class="fa-solid fa-utensils"></i> HUNGERSTATION</span>
-                            <div style="width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 0.8rem;"><i class="fa-solid fa-magnifying-glass"></i></div>
+                        <!-- Hungerstation App Top Bar -->
+                        <div style="background: #F59E0B; padding: 10px 14px; color: #000; display: flex; justify-content: space-between; align-items: center;">
+                            <div style="font-weight: 800; font-size: 0.95rem;"><i class="fa-solid fa-arrow-right"></i> متجر الشريك (Hungerstation)</div>
+                            <i class="fa-solid fa-share-nodes"></i>
                         </div>
-
-                        <!-- Store Banner -->
-                        <div class="mobile-cover" id="mockupCoverBanner">
-                            <div class="mobile-logo-circle" id="mockupStoreLogo">
-                                <i class="fa-solid fa-store" style="font-size: 1.4rem; color: #FFC400;"></i>
-                            </div>
+                        <!-- Categories Navigation Pills in Mockup -->
+                        <div id="mockupCategoriesPills" style="display: flex; gap: 6px; padding: 8px 12px; background: #111827; overflow-x: auto; white-space: nowrap; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                            <span style="font-size: 0.72rem; color: #94A3B8;">جاري التحميل...</span>
                         </div>
-
-                        <!-- Store Header Info -->
-                        <div style="padding: 28px 14px 10px 14px;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                <div>
-                                    <h4 id="mockupStoreName" style="margin: 0; font-size: 0.95rem; font-weight: 800; color: #FFF;">مطعم الشريك المعتمد</h4>
-                                    <span style="font-size: 0.72rem; color: #94A3B8;">مأكولات سريعة • مشويات • عصائر</span>
-                                </div>
-                                <div style="background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 6px; padding: 2px 6px; font-size: 0.72rem; font-weight: 800;">
-                                    ⭐ 4.8 (500+)
-                                </div>
-                            </div>
-                            <div style="display: flex; gap: 8px; margin-top: 8px; font-size: 0.68rem; color: #CBD5E1;">
-                                <span>⚡ 25-35 دقيقة</span>
-                                <span>•</span>
-                                <span>🛵 توصيل هنقرستيشن</span>
-                                <span>•</span>
-                                <span style="color: #10B981;">مفتوح الآن</span>
-                            </div>
-                        </div>
-
-                        <!-- Categories tabs in mockup -->
-                        <div id="mockupCategoryPills" style="display: flex; gap: 6px; overflow-x: auto; padding: 6px 14px; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap;">
-                            <div style="background: #FFC400; color: #000; font-weight: 800; font-size: 0.72rem; padding: 4px 10px; border-radius: 12px;">الأكثر طلباً</div>
-                        </div>
-
                         <!-- Items List in Mockup -->
-                        <div id="mockupItemsList" style="padding: 10px 14px; flex: 1;">
+                        <div id="mockupItemsList" style="padding: 10px 14px; flex: 1; overflow-y: auto; background: #090D1A;">
                             <div style="text-align: center; color: #64748B; padding: 20px; font-size: 0.78rem;">
                                 قم بمعالجة بيانات المنيو لتظهر الأصناف هنا مباشرة.
                             </div>
@@ -751,8 +628,60 @@
         </div>
     </div>
 
-    <!-- 🚀 Motivational Productivity Hero Bar (تحفيز وإنجاز الشفت) -->
-    
+    <!-- ➕ MODAL: ADD CUSTOM MENU ITEM (REPLACES WINDOW.PROMPT) -->
+    <div id="modalAddMenuItem" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999999; backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: #101422; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; width: 100%; max-width: 520px; padding: 24px; color: #FFF; box-shadow: 0 25px 60px rgba(0,0,0,0.8);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; margin-bottom: 16px;">
+                <h3 style="margin: 0; font-size: 1.1rem; color: #F8FAFC; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-circle-plus" style="color: #F59E0B;"></i> إضافة صنف جديد للمنيو
+                </h3>
+                <button type="button" onclick="closeAddMenuItemModal()" style="background: none; border: none; color: #94A3B8; font-size: 1.2rem; cursor: pointer;">✕</button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div>
+                    <label style="font-size: 0.75rem; color: #94A3B8; display: block; margin-bottom: 4px;">اسم الصنف بالعربي <span style="color:#EF4444;">*</span></label>
+                    <input type="text" id="addModalItemAr" placeholder="مثال: برجر لحم كلاسيك" oninput="autoSuggestEnItemName(this.value)" style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 8px 12px; color: #FFF; font-size: 0.85rem;">
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; color: #94A3B8; display: block; margin-bottom: 4px;">Item Name (English)</label>
+                    <input type="text" id="addModalItemEn" placeholder="e.g. Classic Beef Burger" style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 8px 12px; color: #FFF; font-size: 0.85rem;">
+                </div>
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 10px;">
+                    <div>
+                        <label style="font-size: 0.75rem; color: #94A3B8; display: block; margin-bottom: 4px;">القسم / التصنيف</label>
+                        <input type="text" id="addModalCategory" placeholder="مثال: برجر أو اختر من القائمة" list="existingGroupsDataList" style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 8px 12px; color: #FFF; font-size: 0.85rem;">
+                        <datalist id="existingGroupsDataList"></datalist>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; color: #94A3B8; display: block; margin-bottom: 4px;">السعر (ريال SAR) <span style="color:#EF4444;">*</span></label>
+                        <input type="number" id="addModalPrice" placeholder="25" min="0" step="0.5" style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 8px 12px; color: #34D399; font-weight: 700; font-size: 0.85rem;">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 10px; align-items: end;">
+                    <div>
+                        <label style="font-size: 0.75rem; color: #94A3B8; display: block; margin-bottom: 4px;">السعرات الحرارية (Kcal - SFDA)</label>
+                        <input type="number" id="addModalKcal" placeholder="520" min="0" style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 8px 12px; color: #FCD34D; font-size: 0.85rem;">
+                    </div>
+                    <button type="button" onclick="autoEstimateAddModalKcal()" class="header-btn" style="height: 38px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34D399; font-size: 0.76rem; font-weight: 700; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> تقدير SFDA تلقائي
+                    </button>
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; color: #94A3B8; display: block; margin-bottom: 4px;">الوصف (Description)</label>
+                    <input type="text" id="addModalDesc" placeholder="مكونات الصنف، الحجم، إلخ..." style="width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 8px 12px; color: #FFF; font-size: 0.82rem;">
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
+                <button type="button" onclick="closeAddMenuItemModal()" class="header-btn" style="padding: 8px 16px; border-radius: 8px; font-size: 0.82rem;">إلغاء</button>
+                <button type="button" onclick="saveCustomMenuItemFromModal()" style="background: #F59E0B; color: #000; border: none; font-weight: 800; padding: 8px 20px; border-radius: 8px; font-size: 0.85rem; cursor: pointer;">
+                    <i class="fa-solid fa-check"></i> إضافة الصنف للمنيو
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- 📚 DEDICATED SUPPORT POLICIES WORKSPACE (BITE HUB SOP & POLICIES) -->
     <div id="policiesWorkspace" style="display: none; max-width: 1560px; margin: 16px auto; padding: 0 20px;">
         <div style="background: var(--bg-card, #1E293B); border: 1px solid var(--border-color, rgba(255,255,255,0.12)); border-radius: 16px; padding: 26px; color: var(--text-main, #FFF); box-shadow: 0 20px 40px rgba(0,0,0,0.3); backdrop-filter: blur(16px);">
@@ -1179,14 +1108,14 @@
 
                 <!-- Category Tabs Carousel (Quick Filter Pills) -->
                 <div class="category-tabs" id="categoryTabs">
-                    <button type="button" class="tab-btn active" onclick="filterCategory('ALL', event)">🌟 الكل</button>
-                    <button type="button" class="tab-btn" onclick="filterCategory('Technical Inquiry', event)">🖨️ أجهزة وطابعات</button>
-                    <button type="button" class="tab-btn" onclick="filterCategory('Live Order Inquiries', event)">🛵 طلبات وإلغاءات</button>
-                    <button type="button" class="tab-btn" onclick="filterCategory('Billing Inquiries', event)">💰 فواتير وعمولات</button>
-                    <button type="button" class="tab-btn" onclick="filterCategory('Content Update', event)">🍔 منيو وأصناف</button>
-                    <button type="button" class="tab-btn" onclick="filterCategory('Partner Data Update', event)">🏢 بيانات وآيبان</button>
-                    <button type="button" class="tab-btn" onclick="filterCategory('Contract and Sales Inquiries', event)">📝 عقود ومبيعات</button>
-                    <button type="button" class="tab-btn" onclick="filterCategory('Partner Feedback', event)">💬 تقييمات وشكاوى</button>
+                    <button type="button" class="tab-btn active" onclick="filterCategory('ALL', event)"><i class="fa-solid fa-layer-group"></i> الكل</button>
+                    <button type="button" class="tab-btn" onclick="filterCategory('Technical Inquiry', event)"><i class="fa-solid fa-print"></i> أجهزة وطابعات</button>
+                    <button type="button" class="tab-btn" onclick="filterCategory('Live Order Inquiries', event)"><i class="fa-solid fa-motorcycle"></i> طلبات وإلغاءات</button>
+                    <button type="button" class="tab-btn" onclick="filterCategory('Billing Inquiries', event)"><i class="fa-solid fa-file-invoice-dollar"></i> فواتير وعمولات</button>
+                    <button type="button" class="tab-btn" onclick="filterCategory('Content Update', event)"><i class="fa-solid fa-utensils"></i> منيو وأصناف</button>
+                    <button type="button" class="tab-btn" onclick="filterCategory('Partner Data Update', event)"><i class="fa-solid fa-building-columns"></i> بيانات وآيبان</button>
+                    <button type="button" class="tab-btn" onclick="filterCategory('Contract and Sales Inquiries', event)"><i class="fa-solid fa-file-contract"></i> عقود ومبيعات</button>
+                    <button type="button" class="tab-btn" onclick="filterCategory('Partner Feedback', event)"><i class="fa-solid fa-comments"></i> تقييمات وشكاوى</button>
                 </div>
 
                 <!-- 3-Level Quick Hierarchy Dropdowns -->
@@ -17880,7 +17809,548 @@ function copyTabletDiagResult() {
     showToast('📋 تم نسخ خطوات فحص وحل عطل التابلت!');
     if (typeof playSuccessChime === 'function') playSuccessChime();
 }
-</script>\n<!-- AI Settings Modal -->
+
+
+// ─────────────────────────────────────────────────────────────────────────
+// 🍽️ MENU STUDIO PRO ENGINE (INTERACTIVE DATA GRID & SFDA COMPLIANCE)
+// ─────────────────────────────────────────────────────────────────────────
+
+window.studioMenuFilterState = {
+    search: '',
+    category: 'ALL',
+    status: 'ALL'
+};
+
+// Operations Dropdown Menu Toggle
+window.toggleOpsMenu = function(e) {
+    if (e) { e.stopPropagation(); e.preventDefault(); }
+    const menu = document.getElementById('opsDropdownMenu');
+    if (menu) menu.classList.toggle('show');
+};
+window.closeOpsMenu = function() {
+    const menu = document.getElementById('opsDropdownMenu');
+    if (menu) menu.classList.remove('show');
+};
+
+document.addEventListener('click', function(e) {
+    const opsWrapper = document.getElementById('opsDropdownWrapper');
+    if (opsWrapper && !opsWrapper.contains(e.target)) {
+        window.closeOpsMenu();
+    }
+});
+
+// Ingestion Drawer Toggle
+function toggleIngestionDrawer() {
+    const drawer = document.getElementById('studioIngestionDrawer');
+    const chev = document.getElementById('ingestionChevron');
+    if (!drawer) return;
+    if (drawer.style.display === 'none') {
+        drawer.style.display = 'grid';
+        if (chev) chev.className = 'fa-solid fa-chevron-up';
+    } else {
+        drawer.style.display = 'none';
+        if (chev) chev.className = 'fa-solid fa-chevron-down';
+    }
+}
+
+// Add Item Modal Controllers
+function openAddMenuItemModal() {
+    const modal = document.getElementById('modalAddMenuItem');
+    if (!modal) return;
+    modal.style.display = 'flex';
+    // Populate existing categories datalist
+    const dl = document.getElementById('existingGroupsDataList');
+    if (dl && window.menuBuilderData && window.menuBuilderData.groups) {
+        dl.innerHTML = window.menuBuilderData.groups.map(g => `<option value="${g.name_ar || g.ar_name}">`).join('');
+    }
+    const arInput = document.getElementById('addModalItemAr');
+    if (arInput) {
+        arInput.value = '';
+        setTimeout(() => arInput.focus(), 100);
+    }
+    if (document.getElementById('addModalItemEn')) document.getElementById('addModalItemEn').value = '';
+    if (document.getElementById('addModalPrice')) document.getElementById('addModalPrice').value = '';
+    if (document.getElementById('addModalKcal')) document.getElementById('addModalKcal').value = '';
+    if (document.getElementById('addModalCategory')) document.getElementById('addModalCategory').value = '';
+    if (document.getElementById('addModalDesc')) document.getElementById('addModalDesc').value = '';
+}
+
+function closeAddMenuItemModal() {
+    const modal = document.getElementById('modalAddMenuItem');
+    if (modal) modal.style.display = 'none';
+}
+
+function autoSuggestEnItemName(arVal) {
+    if (!arVal || !arVal.trim()) return;
+    const enField = document.getElementById('addModalItemEn');
+    if (enField && !enField.value.trim()) {
+        if (typeof toEnglishProper === 'function') {
+            enField.value = toEnglishProper(arVal);
+        }
+    }
+}
+
+// Saudi SFDA Culinary Calorie Database
+const SFDA_CALORIE_KNOWLEDGE = [
+    { regex: /بروست|broast|fried chicken/i, kcal: 850, allergens: 'Gluten, Milk' },
+    { regex: /شاورما لحم|meat shawarma|beef shawarma/i, kcal: 540, allergens: 'Gluten, Milk, Sesame' },
+    { regex: /شاورما|shawarma/i, kcal: 480, allergens: 'Gluten, Milk' },
+    { regex: /دبل.*برجر|double.*burger/i, kcal: 790, allergens: 'Gluten, Milk' },
+    { regex: /برجر لحم|beef burger/i, kcal: 560, allergens: 'Gluten, Milk' },
+    { regex: /برجر دجاج|chicken burger/i, kcal: 490, allergens: 'Gluten' },
+    { regex: /برجر|burger/i, kcal: 520, allergens: 'Gluten, Milk' },
+    { regex: /كرسبي|crispy|تندرز|tenders/i, kcal: 520, allergens: 'Gluten' },
+    { regex: /بطاطس.*جبن|cheese fries/i, kcal: 460, allergens: 'Gluten, Milk' },
+    { regex: /بطاطس|fries/i, kcal: 320, allergens: 'Gluten' },
+    { regex: /بيتزا.*مارغريتا|margherita/i, kcal: 680, allergens: 'Gluten, Milk' },
+    { regex: /بيتزا.*ببروني|pepperoni/i, kcal: 780, allergens: 'Gluten, Milk' },
+    { regex: /بيتزا|pizza/i, kcal: 720, allergens: 'Gluten, Milk' },
+    { regex: /شيش طاووق|shish tawook/i, kcal: 420, allergens: 'Milk' },
+    { regex: /كباب لحم|meat kebab|beef kebab/i, kcal: 580, allergens: 'No Allergens' },
+    { regex: /كباب دجاج|chicken kebab/i, kcal: 450, allergens: 'No Allergens' },
+    { regex: /كباب|kebab|مشويات|grills/i, kcal: 520, allergens: 'No Allergens' },
+    { regex: /كبسة|kabsa/i, kcal: 620, allergens: 'No Allergens' },
+    { regex: /مندي|mandi/i, kcal: 680, allergens: 'No Allergens' },
+    { regex: /برياني|biryani/i, kcal: 590, allergens: 'Milk, Nuts' },
+    { regex: /عصير برتقال|orange juice/i, kcal: 120, allergens: 'No Allergens' },
+    { regex: /عصير|juice/i, kcal: 130, allergens: 'No Allergens' },
+    { regex: /دايت|diet|زيرو|zero/i, kcal: 0, allergens: 'No Allergens' },
+    { regex: /غازي|بيبسي|كولا|pepsi|cola|سبرايت|سفن/i, kcal: 140, allergens: 'No Allergens' },
+    { regex: /مياه|ماء|water/i, kcal: 0, allergens: 'No Allergens' },
+    { regex: /سلطة سيزر|caesar salad/i, kcal: 280, allergens: 'Milk, Egg, Gluten' },
+    { regex: /سلطة|salad/i, kcal: 110, allergens: 'No Allergens' },
+    { regex: /كنافة|kunafa|حلى|dessert|كيك|cake/i, kcal: 440, allergens: 'Gluten, Milk, Nuts' }
+];
+
+function estimateDishKcalAndAllergens(name) {
+    if (!name) return { kcal: 450, allergens: 'No Allergens' };
+    for (const entry of SFDA_CALORIE_KNOWLEDGE) {
+        if (entry.regex.test(name)) {
+            return { kcal: entry.kcal, allergens: entry.allergens };
+        }
+    }
+    return { kcal: 450, allergens: 'No Allergens' };
+}
+
+function autoEstimateAddModalKcal() {
+    const arName = (document.getElementById('addModalItemAr') ? document.getElementById('addModalItemAr').value : '').trim();
+    const enName = (document.getElementById('addModalItemEn') ? document.getElementById('addModalItemEn').value : '').trim();
+    const name = arName || enName;
+    if (!name) {
+        showToast('⚠️ يرجى كتابة اسم الصنف أولاً لتقدير السعرات!');
+        return;
+    }
+    const result = estimateDishKcalAndAllergens(name);
+    const kcalInput = document.getElementById('addModalKcal');
+    if (kcalInput) kcalInput.value = result.kcal;
+    showToast(`✓ تم تقدير السعرات بموجب SFDA: ${result.kcal} سعرة حرارية`);
+}
+
+function saveCustomMenuItemFromModal() {
+    const arName = (document.getElementById('addModalItemAr') ? document.getElementById('addModalItemAr').value : '').trim();
+    const enName = (document.getElementById('addModalItemEn') ? document.getElementById('addModalItemEn').value : '').trim() || (typeof toEnglishProper === 'function' ? toEnglishProper(arName) : arName);
+    const catName = (document.getElementById('addModalCategory') ? document.getElementById('addModalCategory').value : '').trim() || 'عام / General';
+    const priceVal = parseFloat(document.getElementById('addModalPrice') ? document.getElementById('addModalPrice').value : '0') || 0;
+    let kcalVal = parseInt(document.getElementById('addModalKcal') ? document.getElementById('addModalKcal').value : '0', 10);
+    const descVal = (document.getElementById('addModalDesc') ? document.getElementById('addModalDesc').value : '').trim();
+
+    if (!arName) {
+        showToast('⚠️ يرجى إدخال اسم الصنف بالعربي على الأقل!');
+        return;
+    }
+    if (priceVal <= 0) {
+        showToast('⚠️ يرجى إدخال سعر صحيح للصنف (أكبر من 0)!');
+        return;
+    }
+
+    if (!kcalVal || isNaN(kcalVal)) {
+        const est = estimateDishKcalAndAllergens(arName);
+        kcalVal = est.kcal;
+    }
+
+    if (!window.menuBuilderData) {
+        window.menuBuilderData = { groups: [], items: [], modifiers: [], imageLinks: [] };
+    }
+
+    // Match or create group
+    let group = window.menuBuilderData.groups.find(g => (g.name_ar === catName || g.ar_name === catName || g.name_en === catName));
+    let groupId = 1;
+    if (!group) {
+        groupId = window.menuBuilderData.groups.length + 1;
+        window.menuBuilderData.groups.push({
+            id: groupId,
+            name_en: typeof toEnglishProper === 'function' ? toEnglishProper(catName) : catName,
+            name_ar: catName,
+            en_name: typeof toEnglishProper === 'function' ? toEnglishProper(catName) : catName,
+            ar_name: catName,
+            order: groupId
+        });
+    } else {
+        groupId = group.id;
+    }
+
+    const newItemId = window.menuBuilderData.items.length + 1;
+    const estAllergens = estimateDishKcalAndAllergens(arName).allergens;
+
+    window.menuBuilderData.items.push({
+        id: newItemId,
+        group_id: groupId,
+        group_name: catName,
+        name_en: enName,
+        name_ar: arName,
+        item_en: enName,
+        item_ar: arName,
+        price: priceVal,
+        calories: kcalVal,
+        kcal: kcalVal,
+        allergens: estAllergens,
+        desc_ar: descVal,
+        desc_en: descVal
+    });
+
+    closeAddMenuItemModal();
+    renderStudioMenuPreviewTables();
+    showToast(`✓ تم إضافة صنف (${arName}) بنجاح! إجمالي الأصناف: ${window.menuBuilderData.items.length}`);
+}
+
+// Real Item Actions
+function deleteMenuItem(id) {
+    if (!window.menuBuilderData || !window.menuBuilderData.items) return;
+    const idx = window.menuBuilderData.items.findIndex(it => it.id === id);
+    if (idx === -1) return;
+    const deletedName = window.menuBuilderData.items[idx].name_ar || window.menuBuilderData.items[idx].item_ar;
+    window.menuBuilderData.items.splice(idx, 1);
+    renderStudioMenuPreviewTables();
+    showToast(`🗑️ تم حذف الصنف (${deletedName})`);
+}
+
+function duplicateMenuItem(id) {
+    if (!window.menuBuilderData || !window.menuBuilderData.items) return;
+    const original = window.menuBuilderData.items.find(it => it.id === id);
+    if (!original) return;
+    const copy = JSON.parse(JSON.stringify(original));
+    copy.id = window.menuBuilderData.items.length + 1;
+    copy.name_ar = (copy.name_ar || copy.item_ar) + ' (نسخة)';
+    copy.item_ar = copy.name_ar;
+    copy.name_en = (copy.name_en || copy.item_en) + ' (Copy)';
+    copy.item_en = copy.name_en;
+    window.menuBuilderData.items.push(copy);
+    renderStudioMenuPreviewTables();
+    showToast(`📋 تم نسخ الصنف بنجاح!`);
+}
+
+function estimateSingleItemKcal(id) {
+    if (!window.menuBuilderData || !window.menuBuilderData.items) return;
+    const item = window.menuBuilderData.items.find(it => it.id === id);
+    if (!item) return;
+    const est = estimateDishKcalAndAllergens(item.name_ar || item.item_ar || item.name_en || item.item_en);
+    item.calories = est.kcal;
+    item.kcal = est.kcal;
+    if (!item.allergens || item.allergens === 'No Allergens') item.allergens = est.allergens;
+    renderStudioMenuPreviewTables();
+    showToast(`🪄 تم تقدير السعرات لصنف (${item.name_ar || item.item_ar}): ${est.kcal} kcal بموجب SFDA`);
+}
+
+function estimateAllMissingKcal() {
+    if (!window.menuBuilderData || !window.menuBuilderData.items || window.menuBuilderData.items.length === 0) {
+        showToast('⚠️ لا توجد أصناف مسجلة بالمنيو!');
+        return;
+    }
+    let updatedCount = 0;
+    window.menuBuilderData.items.forEach(it => {
+        if (!it.calories || it.calories === 0 || !it.kcal || it.kcal === 0) {
+            const est = estimateDishKcalAndAllergens(it.name_ar || it.item_ar || it.name_en || it.item_en);
+            it.calories = est.kcal;
+            it.kcal = est.kcal;
+            if (!it.allergens || it.allergens === 'No Allergens') it.allergens = est.allergens;
+            updatedCount++;
+        }
+    });
+    renderStudioMenuPreviewTables();
+    if (updatedCount > 0) {
+        showToast(`✓ تم تقدير وتحديث السعرات ومواصفات SFDA لـ ${updatedCount} صنف بنجاح!`);
+    } else {
+        showToast(`✓ جميع الأصناف تحتوي بالفعل على سعرات حرارية مطابقة لـ SFDA.`);
+    }
+}
+
+function clearStudioMenuData() {
+    if (confirm('هل أنت متأكد من تفريغ بيانات المنيو بالكامل والبدء من جديد؟')) {
+        window.menuBuilderData = { groups: [], items: [], modifiers: [], imageLinks: [] };
+        if (document.getElementById('studioRawMenuInput')) document.getElementById('studioRawMenuInput').value = '';
+        renderStudioMenuPreviewTables();
+        showToast('تم تفريغ المنيو بالكامل.');
+    }
+}
+
+// Live Filtering Engine
+function filterStudioMenuItemsLive() {
+    const searchVal = (document.getElementById('studioMenuSearchInput') ? document.getElementById('studioMenuSearchInput').value : '').toLowerCase().trim();
+    const catVal = document.getElementById('studioMenuCategoryFilter') ? document.getElementById('studioMenuCategoryFilter').value : 'ALL';
+    window.studioMenuFilterState.search = searchVal;
+    window.studioMenuFilterState.category = catVal;
+    renderFilteredItemsTableRows();
+}
+
+function setMenuStatusFilter(status, btn) {
+    window.studioMenuFilterState.status = status;
+    document.querySelectorAll('.menu-status-pill').forEach(b => {
+        b.style.background = 'rgba(255,255,255,0.04)';
+        b.style.borderColor = 'rgba(255,255,255,0.08)';
+        b.style.color = '#94A3B8';
+        b.classList.remove('active');
+    });
+    if (btn) {
+        btn.style.background = 'rgba(245,158,11,0.15)';
+        btn.style.borderColor = '#F59E0B';
+        btn.style.color = '#FCD34D';
+        btn.classList.add('active');
+    }
+    renderFilteredItemsTableRows();
+}
+
+function renderFilteredItemsTableRows() {
+    const tbodyI = document.getElementById('studioTbodyItems');
+    if (!tbodyI) return;
+    const items = (window.menuBuilderData && window.menuBuilderData.items) ? window.menuBuilderData.items : [];
+    if (!items.length) {
+        tbodyI.innerHTML = '<tr><td colspan="9" style="padding: 30px; text-align: center; color: #64748B;">لم يتم إدخال أصناف بعد. الصق بيانات المنيو أو اضغط "تجربة نموذج افتراضي".</td></tr>';
+        return;
+    }
+
+    const { search, category, status } = window.studioMenuFilterState;
+
+    const filtered = items.filter(it => {
+        const ar = (it.name_ar || it.item_ar || '').toLowerCase();
+        const en = (it.name_en || it.item_en || '').toLowerCase();
+        const group = (it.group_name || '').toLowerCase();
+
+        // Search match
+        if (search && !ar.includes(search) && !en.includes(search) && !group.includes(search)) {
+            return false;
+        }
+
+        // Category match
+        if (category !== 'ALL' && it.group_name !== category && (it.group_id + '') !== category) {
+            return false;
+        }
+
+        // Status match
+        if (status === 'MISSING_EN') {
+            return !it.name_en && !it.item_en;
+        } else if (status === 'MISSING_SFDA') {
+            return !it.calories || it.calories === 0 || !it.kcal || it.kcal === 0;
+        } else if (status === 'READY') {
+            const hasEn = !!(it.name_en || it.item_en);
+            const hasKcal = !!(it.calories || it.kcal);
+            const hasPrice = it.price > 0;
+            return hasEn && hasKcal && hasPrice;
+        }
+
+        return true;
+    });
+
+    if (!filtered.length) {
+        tbodyI.innerHTML = '<tr><td colspan="9" style="padding: 24px; text-align: center; color: #64748B;">لا توجد أصناف مطابقة لخيارات البحث أو الفلترة المحددة.</td></tr>';
+        return;
+    }
+
+    tbodyI.innerHTML = filtered.map((it, i) => {
+        const globalIdx = items.indexOf(it);
+        const kcalVal = it.kcal || it.calories || 0;
+        const sfdaBadge = kcalVal > 0 
+            ? `<span style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); color:#34D399; font-size:0.68rem; padding:1px 5px; border-radius:4px; margin-right:4px;">SFDA ✓</span>` 
+            : `<span style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#EF4444; font-size:0.68rem; padding:1px 5px; border-radius:4px; margin-right:4px;">ناقص</span>`;
+        
+        let allergenStr = it.allergens || 'No Allergens';
+        if (allergenStr === 'No Allergens') {
+            allergenStr = '<span style="color:#64748B; font-size:0.72rem;">سليم / خالي</span>';
+        } else {
+            allergenStr = `<span style="background:rgba(245,158,11,0.1); color:#FCD34D; border:1px solid rgba(245,158,11,0.25); padding:1px 6px; border-radius:4px; font-size:0.7rem;">${allergenStr}</span>`;
+        }
+
+        return `
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${i % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'transparent'};">
+            <td style="padding: 10px 8px; color: #F59E0B; font-weight: 700; font-family: monospace;">#${it.id}</td>
+            <td style="padding: 10px 8px; color: #A78BFA; font-weight: 600; font-size: 0.78rem;">${it.group_name || 'عام'}</td>
+            <td style="padding: 10px 8px; font-weight: 600; color: #FFF;" contenteditable="true" onblur="updateItemCellLive(${globalIdx}, 'item_en', this.innerText)" title="انقر لتعديل الاسم">${it.name_en || it.item_en || '<span style="color:#EF4444;">-- ناقص --</span>'}</td>
+            <td style="padding: 10px 8px; color: #93C5FD; font-weight: 600;" contenteditable="true" onblur="updateItemCellLive(${globalIdx}, 'item_ar', this.innerText)" title="انقر لتعديل الاسم">${it.name_ar || it.item_ar}</td>
+            <td style="padding: 10px 8px; color: #34D399; font-weight: 700;" contenteditable="true" onblur="updateItemCellLive(${globalIdx}, 'price', this.innerText)" title="انقر لتعديل السعر">${it.price} SAR</td>
+            <td style="padding: 10px 8px; color: #FCD34D; font-weight: 700;" contenteditable="true" onblur="updateItemCellLive(${globalIdx}, 'kcal', this.innerText)" title="انقر لتعديل السعرات">${sfdaBadge} ${kcalVal ? kcalVal + ' kcal' : '-'}</td>
+            <td style="padding: 10px 8px;">${allergenStr}</td>
+            <td style="padding: 10px 8px; font-size: 0.72rem; color: #94A3B8; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${it.desc_ar || it.desc_en || '-'}</td>
+            <td style="padding: 10px 8px; text-align: center; white-space: nowrap;">
+                <button type="button" onclick="estimateSingleItemKcal(${it.id})" title="تقدير سعرات هذا الصنف SFDA" style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); color: #34D399; border-radius: 4px; padding: 3px 6px; cursor: pointer; margin-left: 2px;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+                <button type="button" onclick="duplicateMenuItem(${it.id})" title="نسخ الصنف" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: #CBD5E1; border-radius: 4px; padding: 3px 6px; cursor: pointer; margin-left: 2px;">
+                    <i class="fa-solid fa-clone"></i>
+                </button>
+                <button type="button" onclick="deleteMenuItem(${it.id})" title="حذف الصنف" style="background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #EF4444; border-radius: 4px; padding: 3px 6px; cursor: pointer;">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </td>
+        </tr>
+        `;
+    }).join('');
+}
+
+// Master Tables Renderer
+window.renderStudioMenuPreviewTables = function() {
+    const data = window.menuBuilderData || { groups: [], items: [], modifiers: [], imageLinks: [] };
+    const groups = data.groups || [];
+    const items = data.items || [];
+    const modifiers = data.modifiers || [];
+    const imageLinks = data.imageLinks || [];
+
+    // 1. Update Metrics Badges
+    const totalItems = items.length;
+    const totalGroups = groups.length;
+    let sfdaCount = 0;
+    let bilingualCount = 0;
+
+    items.forEach(it => {
+        if ((it.kcal && it.kcal > 0) || (it.calories && it.calories > 0)) sfdaCount++;
+        const hasAr = !!(it.name_ar || it.item_ar);
+        const hasEn = !!(it.name_en || it.item_en);
+        if (hasAr && hasEn) bilingualCount++;
+    });
+
+    const sfdaPercent = totalItems > 0 ? Math.round((sfdaCount / totalItems) * 100) : 0;
+    const bilingualPercent = totalItems > 0 ? Math.round((bilingualCount / totalItems) * 100) : 0;
+
+    if (document.getElementById('studioMetricTotalItems')) document.getElementById('studioMetricTotalItems').textContent = totalItems;
+    if (document.getElementById('studioMetricTotalGroups')) document.getElementById('studioMetricTotalGroups').textContent = totalGroups;
+    if (document.getElementById('studioMetricSfdaPercent')) document.getElementById('studioMetricSfdaPercent').textContent = `${sfdaPercent}%`;
+    if (document.getElementById('studioMetricBilingualPercent')) document.getElementById('studioMetricBilingualPercent').textContent = `${bilingualPercent}%`;
+
+    // 2. Update Table Badges & Count Pills
+    if (document.getElementById('studioBadgeItemsCount')) document.getElementById('studioBadgeItemsCount').textContent = `(${totalItems})`;
+    if (document.getElementById('studioBadgeGroupsCount')) document.getElementById('studioBadgeGroupsCount').textContent = `(${totalGroups})`;
+    if (document.getElementById('studioBadgeModifiersCount')) document.getElementById('studioBadgeModifiersCount').textContent = `(${modifiers.length})`;
+
+    if (document.getElementById('countPillAll')) document.getElementById('countPillAll').textContent = totalItems;
+    if (document.getElementById('countPillEn')) document.getElementById('countPillEn').textContent = totalItems - bilingualCount;
+    if (document.getElementById('countPillSfda')) document.getElementById('countPillSfda').textContent = totalItems - sfdaCount;
+    if (document.getElementById('countPillReady')) document.getElementById('countPillReady').textContent = Math.min(sfdaCount, bilingualCount);
+
+    // 3. Populate Category Filter Dropdown
+    const catSelect = document.getElementById('studioMenuCategoryFilter');
+    if (catSelect) {
+        const currentVal = catSelect.value;
+        const uniqueGroups = Array.from(new Set(groups.map(g => g.name_ar || g.ar_name).filter(Boolean)));
+        catSelect.innerHTML = `<option value="ALL">جميع الأقسام (${uniqueGroups.length})</option>` +
+            uniqueGroups.map(name => `<option value="${name}">${name}</option>`).join('');
+        if (uniqueGroups.includes(currentVal)) catSelect.value = currentVal;
+    }
+
+    // 4. Render Items Table
+    renderFilteredItemsTableRows();
+
+    // 5. Render Groups Table
+    const tbodyG = document.getElementById('studioTbodyGroups');
+    if (tbodyG) {
+        if (!groups.length) {
+            tbodyG.innerHTML = '<tr><td colspan="5" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال أقسام بعد.</td></tr>';
+        } else {
+            tbodyG.innerHTML = groups.map((g, i) => `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${i % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'transparent'};">
+                    <td style="padding: 10px; color: #F59E0B; font-weight: 700; font-family: monospace;">#${g.id}</td>
+                    <td style="padding: 10px; font-weight: 600; color: #FFF;">${g.name_en || g.en_name}</td>
+                    <td style="padding: 10px; color: #93C5FD; font-weight: 600;">${g.name_ar || g.ar_name}</td>
+                    <td style="padding: 10px; color: #CBD5E1;">${g.order || g.id}</td>
+                    <td style="padding: 10px;"><span style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); color: #34D399; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem;">نشط Active</span></td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    // 6. Render Modifiers Table
+    const tbodyM = document.getElementById('studioTbodyModifiers');
+    if (tbodyM) {
+        if (!modifiers.length) {
+            tbodyM.innerHTML = '<tr><td colspan="6" style="padding: 20px; text-align: center; color: #64748B;">لم يتم إدخال إضافات أو خيارات بعد.</td></tr>';
+        } else {
+            tbodyM.innerHTML = modifiers.map((m, i) => `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${i % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'transparent'};">
+                    <td style="padding: 10px; color: #F59E0B; font-weight: 700; font-family: monospace;">#${m.id}</td>
+                    <td style="padding: 10px; color: #C084FC; font-weight: 600;">${m.group_name || m.group_ar}</td>
+                    <td style="padding: 10px; font-weight: 600; color: #FFF;">${m.option_en || m.mod_en}</td>
+                    <td style="padding: 10px; color: #93C5FD;">${m.option_ar || m.mod_ar}</td>
+                    <td style="padding: 10px; color: #34D399; font-weight: 700;">+${m.price} SAR</td>
+                    <td style="padding: 10px;"><span style="background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.3); color: #38BDF8; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem;">${m.type || 'Optional'}</span></td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    // 7. Update Live Mobile Mockup if open
+    updateMobileMockup();
+};
+
+window.renderMenuPreviewTables = window.renderStudioMenuPreviewTables;
+
+// Update Customer Mobile Mockup
+function updateMobileMockup() {
+    const wrapper = document.getElementById('studioMobileMockupWrapper');
+    if (!wrapper || wrapper.style.display === 'none') return;
+    const items = (window.menuBuilderData && window.menuBuilderData.items) ? window.menuBuilderData.items : [];
+    const groups = (window.menuBuilderData && window.menuBuilderData.groups) ? window.menuBuilderData.groups : [];
+
+    const pillsEl = document.getElementById('mockupCategoriesPills');
+    if (pillsEl) {
+        if (!groups.length) {
+            pillsEl.innerHTML = '<span style="font-size:0.72rem;color:#64748B;">لا توجد أقسام</span>';
+        } else {
+            pillsEl.innerHTML = groups.map((g, i) => `
+                <span style="font-size: 0.72rem; padding: 3px 10px; border-radius: 12px; background: ${i === 0 ? '#F59E0B' : 'rgba(255,255,255,0.06)'}; color: ${i === 0 ? '#000' : '#E2E8F0'}; font-weight: 700; display: inline-block;">
+                    ${g.name_ar || g.ar_name}
+                </span>
+            `).join('');
+        }
+    }
+
+    const itemsEl = document.getElementById('mockupItemsList');
+    if (itemsEl) {
+        if (!items.length) {
+            itemsEl.innerHTML = '<div style="text-align:center;color:#64748B;padding:20px;font-size:0.78rem;">لا توجد أصناف معروضة.</div>';
+        } else {
+            itemsEl.innerHTML = items.slice(0, 15).map(it => `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px; margin-bottom:8px;">
+                    <div>
+                        <div style="font-size:0.82rem; font-weight:800; color:#F8FAFC;">${it.name_ar || it.item_ar}</div>
+                        <div style="font-size:0.7rem; color:#94A3B8;">${it.name_en || it.item_en || ''}</div>
+                        <div style="font-size:0.7rem; color:#F59E0B; margin-top:3px; font-weight:700;">${it.price} SAR ${it.kcal || it.calories ? '• ' + (it.kcal || it.calories) + ' kcal' : ''}</div>
+                    </div>
+                    <button style="background:#F59E0B; color:#000; border:none; border-radius:6px; padding:4px 8px; font-size:0.75rem; font-weight:800; cursor:pointer;">
+                        + إضافة
+                    </button>
+                </div>
+            `).join('');
+        }
+    }
+}
+
+
+// Global Window Scope Bindings
+window.estimateAllMissingKcal = estimateAllMissingKcal;
+window.estimateSingleItemKcal = estimateSingleItemKcal;
+window.deleteMenuItem = deleteMenuItem;
+window.duplicateMenuItem = duplicateMenuItem;
+window.openAddMenuItemModal = openAddMenuItemModal;
+window.closeAddMenuItemModal = closeAddMenuItemModal;
+window.saveCustomMenuItemFromModal = saveCustomMenuItemFromModal;
+window.autoEstimateAddModalKcal = autoEstimateAddModalKcal;
+window.autoSuggestEnItemName = autoSuggestEnItemName;
+window.filterStudioMenuItemsLive = filterStudioMenuItemsLive;
+window.setMenuStatusFilter = setMenuStatusFilter;
+window.clearStudioMenuData = clearStudioMenuData;
+window.toggleIngestionDrawer = toggleIngestionDrawer;
+window.toggleOpsMenu = toggleOpsMenu;
+window.closeOpsMenu = closeOpsMenu;
+</script>
+
+<!-- AI Settings Modal -->
     <div id="aiSettingsModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 99999; align-items: center; justify-content: center; padding: 15px;">
         <div style="background: #1E293B; border: 1px solid var(--border-color); width: 100%; max-width: 520px; border-radius: 16px; padding: 24px; color: #FFF; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
