@@ -207,60 +207,57 @@
         </div>
 
         <div class="header-controls">
-            <!-- 👤 Agent Profile Chip -->
+                        <!-- 👤 Agent Profile Chip -->
             <div class="agent-chip" onclick="promptChangeName()" title="تعديل اسم الموظف">
                 <i class="fa-solid fa-circle-user"></i>
                 <span id="displayAgentName">الموظف: عمر</span>
-                <i class="fa-solid fa-pen" style="font-size: 0.68rem; opacity: 0.6;"></i>
+                <i class="fa-solid fa-pen" style="font-size: 0.65rem; opacity: 0.5;"></i>
             </div>
 
-            
-            
-            <!-- 🛸 Desktop Ghost PiP -->
-            <button type="button" class="header-btn" onclick="toggleDesktopGhostPip()" id="ghostPipHeaderBtn" title="الوضع الشبحي: نافذة ديسكتوب حقيقية عايمة فوق الشاشات كلها (Always on Top)" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(79, 70, 229, 0.35)); border: 1.5px solid #6366F1; color: #A5B4FC; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-clone"></i> <span id="ghostPipHeaderLabel">وضع الشبح 🛸</span>
+            <!-- Desktop Ghost PiP -->
+            <button type="button" class="header-btn" onclick="toggleDesktopGhostPip()" id="ghostPipHeaderBtn" title="الوضع الشبحي: نافذة ديسكتوب عائمة فوق الشاشات (Always on Top)">
+                <i class="fa-solid fa-clone"></i> <span id="ghostPipHeaderLabel">وضع الشبح</span>
             </button>
 
-            <!-- 🥊 Angry Partner Simulator & QA Arena -->
-            <button type="button" class="header-btn" onclick="openPartnerSimulatorModal()" id="partnerSimHeaderBtn" title="محاكي تدريب الشركاء التفاعلي وغرفة تقييم الـ QA" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(219, 39, 119, 0.35)); border: 1.5px solid #EC4899; color: #F472B6; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-gamepad"></i> <span id="partnerSimHeaderLabel">محاكي الشركاء 🥊</span>
+            <!-- Angry Partner Simulator -->
+            <button type="button" class="header-btn" onclick="openPartnerSimulatorModal()" id="partnerSimHeaderBtn" title="محاكي تدريب الشركاء التفاعلي وغرفة تقييم الـ QA">
+                <i class="fa-solid fa-gamepad"></i> <span id="partnerSimHeaderLabel">محاكي الشركاء</span>
             </button>
 
-            <!-- 🎯 Clipboard Sniper -->
-            <button type="button" class="header-btn" onclick="toggleClipboardSniper()" id="clipboardSniperBtn" title="رادار الحافظة الذكي: يراقب الحافظة تلقائياً وينسخ الرد المعتمد فوراً!" style="background: rgba(239, 68, 68, 0.15); border: 1.5px solid #EF4444; color: #FCA5A5; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-crosshairs"></i> <span id="clipboardSniperLabel">رادار الحافظة 🎯</span>
+            <!-- Clipboard Sniper -->
+            <button type="button" class="header-btn" onclick="toggleClipboardSniper()" id="clipboardSniperBtn" title="رادار الحافظة الذكي: يراقب الحافظة تلقائياً وينسخ الرد فوراً">
+                <i class="fa-solid fa-crosshairs"></i> <span id="clipboardSniperLabel">رادار الحافظة</span>
             </button>
 
-            <!-- 🛵 Smart Rider Operations & Dispatch Hub -->
-            <button type="button" class="header-btn" onclick="openRiderOperationsModal()" id="riderOpsHeaderBtn" title="مركز عمليات وحلول الرايدر واللوجستيك (تأخير، استلام خاطئ، هروب دون دفع)" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.35)); border: 1.5px solid #F59E0B; color: #FCD34D; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-motorcycle"></i> <span id="riderOpsHeaderLabel">🛵 عمليات الرايدر</span>
+            <!-- Smart Rider Operations Hub -->
+            <button type="button" class="header-btn" onclick="openRiderOperationsModal()" id="riderOpsHeaderBtn" title="مركز عمليات وحلول الرايدر واللوجستيك (تأخير، استلام خاطئ، هروب دون دفع)">
+                <i class="fa-solid fa-motorcycle"></i> <span id="riderOpsHeaderLabel">عمليات الرايدر</span>
             </button>
 
-            <!-- 🎙️ Live Call Whisperer -->
-            <button type="button" class="header-btn" onclick="openLiveCallWhispererModal()" id="callWhispererBtn" title="الملقّن الحي لمكالمات الشركاء (يسمع المكالمة لايف ويمليك الرد المعتمد)" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.35)); border: 1.5px solid #10B981; color: #6EE7B7; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-headset"></i> <span id="whispererBtnLabel">🎙️ ملقّن المكالمة</span>
+            <!-- Live Call Whisperer -->
+            <button type="button" class="header-btn" onclick="openLiveCallWhispererModal()" id="callWhispererBtn" title="الملقّن الحي لمكالمات الشركاء (يسمع المكالمة لايف ويمليك الرد المعتمد)">
+                <i class="fa-solid fa-headset"></i> <span id="whispererBtnLabel">ملقّن المكالمات</span>
             </button>
 
-            <!-- 🎙️ Voice Assistant -->
-            <button type="button" class="header-btn" onclick="toggleVoiceAiDrawer()" id="voiceAiTriggerBtn" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); color: #FFF; border: none; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);" title="المساعد الصوتي الذكي (AR+EN)">
-                <i class="fa-solid fa-microphone"></i> <span id="voiceBadgeText">🎙️ صوتي</span>
+            <!-- Voice Assistant -->
+            <button type="button" class="header-btn" onclick="toggleVoiceAiDrawer()" id="voiceAiTriggerBtn" title="المساعد الصوتي الذكي (AR+EN)">
+                <i class="fa-solid fa-microphone"></i> <span id="voiceBadgeText">المساعد الصوتي</span>
             </button>
 
-            <!-- 🤖 Cloud AI Settings & Model Selector -->
-            <button type="button" class="header-btn" onclick="openCloudAiSettingsModal()" id="cloudAiHeaderBtn" title="إعدادات وتشغيل الـ AI السحابي المباشر (Groq / DeepSeek / Claude)" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(124, 58, 237, 0.4)); border: 1.5px solid #A855F7; color: #F3E8FF; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-brain" style="color: #C084FC;"></i>
-                <span id="cloudAiHeaderLabel">الـ AI السحابي ⚡</span>
+            <!-- Cloud AI Settings & Model Selector -->
+            <button type="button" class="header-btn" onclick="openCloudAiSettingsModal()" id="cloudAiHeaderBtn" title="إعدادات وتشغيل الـ AI السحابي المباشر (علّام / Groq / DeepSeek)">
+                <i class="fa-solid fa-brain"></i> <span id="cloudAiHeaderLabel">الذكاء الاصطناعي</span>
             </button>
 
-            <!-- 🔄 Force Refresh / Cache Purge -->
-            <button type="button" class="header-btn" onclick="forcePurgeAndReload()" style="color: #10B981; border: 1px solid rgba(16,185,129,0.3); font-weight: 800; background: rgba(16, 185, 129, 0.08);" title="تحديث فوري وحذف الكاش القديم (v22)">
-                <i class="fa-solid fa-rotate"></i> <span>تحديث v22 🔄</span>
+            <!-- Force Refresh / Cache Purge -->
+            <button type="button" class="header-btn" onclick="forcePurgeAndReload()" title="تحديث فوري وحذف الكاش القديم">
+                <i class="fa-solid fa-rotate"></i> <span>تحديث</span>
             </button>
 
-            <!-- 🌙 / ☀️ Theme Switcher -->
+            <!-- Theme Switcher -->
             <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" id="themeToggleBtn" title="تبديل مظهر الواجهة">
-                <i class="fa-solid fa-moon" style="color: #818CF8;" id="themeToggleIcon"></i>
-                <span id="themeToggleText">الوضع الفاخر 🌙</span>
+                <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
+                <span id="themeToggleText">المظهر</span>
             </button>
 
             <!-- ⚡ Consolidated Enterprise Tools Dropdown -->
@@ -368,27 +365,24 @@
         </div>
     </header>
 
-        <!-- 🧭 Main Workspace View Switcher -->
+                <!-- 🧭 Main Workspace View Switcher -->
     <div class="workspace-bar">
         <button id="viewBtnTickets" onclick="switchMainWorkspace('TICKETS')" class="ws-tab-btn active">
-            <i class="fa-solid fa-comment-dots" style="color: #60A5FA;"></i>
-            <span>💬 مولد ردود التذاكر وقاعدة المعرفة (102 حالة معتمدة)</span>
+            <i class="fa-solid fa-comment-dots"></i>
+            <span>مولد الردود وقاعدة المعرفة</span>
         </button>
-                <button id="viewBtnPolicies" onclick="switchMainWorkspace('POLICIES')" class="ws-tab-btn policy-tab" style="background: rgba(168, 85, 247, 0.12); color: #A855F7; border: 2px solid #A855F7;">
-            <i class="fa-solid fa-book-bookmark" style="color: #C084FC;"></i>
-            <span>📚 سياسات الدعم المعتمدة (Bite Hub Policies - 13 سياسة رسمية)</span>
+        <button id="viewBtnPolicies" onclick="switchMainWorkspace('POLICIES')" class="ws-tab-btn policy-tab">
+            <i class="fa-solid fa-book-bookmark"></i>
+            <span>سياسات الدعم المعتمدة</span>
         </button>
-
-<button id="viewBtnMenu" onclick="switchMainWorkspace('MENU_STUDIO')" class="ws-tab-btn menu-tab">
-            <i class="fa-solid fa-file-excel" style="color: #34D399;"></i>
-            <span>🍽️ استوديو إنشاء وتجهيز المنيو الرسمي (_MenuUpload.xlsx)</span>
+        <button id="viewBtnMenu" onclick="switchMainWorkspace('MENU_STUDIO')" class="ws-tab-btn menu-tab">
+            <i class="fa-solid fa-file-excel"></i>
+            <span>استوديو المنيو الذكي</span>
         </button>
-
-        <button id="viewBtnForensics" onclick="switchMainWorkspace('FORENSICS')" class="ws-tab-btn forensics-tab" style="background: rgba(245, 158, 11, 0.12); color: #F59E0B; border: 2px solid #F59E0B;">
-            <i class="fa-solid fa-scale-balanced" style="color: #FCD34D;"></i>
-            <span>🔍 المحقق الجنائي للاعتراضات والفواتير (Dispute Forensics AI) ⚖️</span>
+        <button id="viewBtnForensics" onclick="switchMainWorkspace('FORENSICS')" class="ws-tab-btn forensics-tab">
+            <i class="fa-solid fa-scale-balanced"></i>
+            <span>المحقق الجنائي للاعتراضات</span>
         </button>
-
     </div>
 
     <!-- 🍽️ DEDICATED MENU BUILDER STUDIO WORKSPACE -->
@@ -1007,7 +1001,7 @@
                 <div style="display: flex; flex-direction: column; gap: 16px;">
                     
                     <!-- Verdict Banner -->
-                    <div id="forensicsVerdictBanner" style="background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.3)); border: 2px solid #10B981; border-radius: 14px; padding: 18px; display: flex; align-items: center; gap: 16px; box-shadow: 0 6px 20px rgba(16,185,129,0.2);">
+                    <div id="forensicsVerdictBanner" style="background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.3)); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 14px; padding: 18px; display: flex; align-items: center; gap: 16px; box-shadow: 0 6px 20px rgba(16,185,129,0.2);">
                         <div id="forensicsVerdictIcon" style="width: 48px; height: 48px; border-radius: 12px; background: #10B981; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #FFF;">
                             <i class="fa-solid fa-check"></i>
                         </div>
@@ -18792,7 +18786,7 @@ Strict Rules:
     
     <!-- 🛵 SMART RIDER OPERATIONS & DISPATCH HUB MODAL -->
     <div id="riderOperationsModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999996; backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px;">
-        <div style="background: #0F172A; border: 2px solid #F59E0B; border-radius: 20px; width: 100%; max-width: 1050px; max-height: 92vh; display: flex; flex-direction: column; padding: 24px; color: #FFF; box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 35px rgba(245,158,11,0.3);">
+        <div style="background: #0F172A; border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 20px; width: 100%; max-width: 1050px; max-height: 92vh; display: flex; flex-direction: column; padding: 24px; color: #FFF; box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 35px rgba(245,158,11,0.3);">
             
             <!-- Modal Header -->
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 16px;">
@@ -19034,7 +19028,7 @@ Strict Rules:
 
     <!-- 🎙️ LIVE CALL WHISPERER MODAL -->
     <div id="liveCallWhispererModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999998; backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px;">
-        <div style="background: #0F172A; border: 2px solid #10B981; border-radius: 20px; width: 100%; max-width: 900px; max-height: 90vh; display: flex; flex-direction: column; padding: 24px; color: #FFF; box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 30px rgba(16,185,129,0.25);">
+        <div style="background: #0F172A; border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 20px; width: 100%; max-width: 900px; max-height: 90vh; display: flex; flex-direction: column; padding: 24px; color: #FFF; box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 30px rgba(16,185,129,0.25);">
             
             <!-- Modal Header -->
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 18px;">
@@ -19147,7 +19141,7 @@ Strict Rules:
 
     <!-- 🥊 ANGRY PARTNER SIMULATOR & QA ARENA MODAL -->
     <div id="partnerSimulatorModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999997; backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px;">
-        <div style="background: #0B1120; border: 2px solid #EC4899; border-radius: 20px; width: 100%; max-width: 960px; max-height: 90vh; display: flex; flex-direction: column; padding: 24px; color: #FFF; box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 35px rgba(236,72,153,0.3);">
+        <div style="background: #0B1120; border: 1px solid rgba(236, 72, 153, 0.4); border-radius: 20px; width: 100%; max-width: 960px; max-height: 90vh; display: flex; flex-direction: column; padding: 24px; color: #FFF; box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 35px rgba(236,72,153,0.3);">
             
             <!-- Modal Header -->
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 16px;">
@@ -19261,7 +19255,7 @@ Strict Rules:
 
     <!-- 📸 AR CAMERA RECEIPT SCANNER MODAL -->
     <div id="arCameraReceiptModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 999999; backdrop-filter: blur(12px); align-items: center; justify-content: center; padding: 20px;">
-        <div style="background: #0B1120; border: 2px solid #10B981; border-radius: 20px; width: 100%; max-width: 680px; display: flex; flex-direction: column; padding: 20px; color: #FFF; box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 35px rgba(16,185,129,0.3); position: relative;">
+        <div style="background: #0B1120; border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 20px; width: 100%; max-width: 680px; display: flex; flex-direction: column; padding: 20px; color: #FFF; box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 35px rgba(16,185,129,0.3); position: relative;">
             
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <div style="display: flex; align-items: center; gap: 10px;">
