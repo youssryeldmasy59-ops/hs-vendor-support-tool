@@ -1200,20 +1200,14 @@ function extractAiResponseContent(data) {
 // 🛡️ Security Guard & LocalStorage Auto-Pruning Engine (v2026)
 // 🛡️ Security Guard & LocalStorage Auto-Pruning Engine (v2026)
 function getActiveGroqKey() {
-    let k = localStorage.getItem("hs_cloud_ai_key");
-    if (!k || k === "null" || k === "undefined" || k.trim() === "") {
-        // Obfuscated base64 payload to prevent plain-text repo scraping
-        try {
-            const _p1 = "Z3NrX1B4S1E3UTFOS0h5bWRiOW1m";
-            const _p2 = "SFFUV0dkeWIwRllrRXF0RHgxbzVN";
-            const _p3 = "TWRKbmQ4eEVlblJTY2Y=";
-            k = atob(_p1) + atob(_p2) + atob(_p3);
-            localStorage.setItem("hs_cloud_ai_key", k);
-        } catch(e) {
-            k = "";
-        }
+    let k = localStorage.getItem("hs_cloud_ai_key") || "";
+    // Auto-purge the old revoked key if lingering in client storage
+    if (k.includes("PxKQ7Q") || k.includes("RScf") || k === "null" || k === "undefined") {
+        console.warn("[SecurityGuard] Purged revoked dead Groq key from localStorage.");
+        localStorage.removeItem("hs_cloud_ai_key");
+        k = "";
     }
-    return k;
+    return k.trim();
 }
 
 // 🧹 LocalStorage Auto-Pruner (Prevents QuotaExceededError crashes at 3.5MB threshold)
@@ -1247,6 +1241,85 @@ function checkAndPruneLocalStorage() {
     }
 }
 window.addEventListener('DOMContentLoaded', checkAndPruneLocalStorage);
+
+
+// =========================================================================
+// 🚀 RESILIENT CLOUD AI DISPATCHER (GROQ TURBO + ZERO-KEY FREE FALLBACK)
+// =========================================================================
+
+window.executeCloudAiCompletion = async function({ messages, temperature = 0.2, maxTokens = 600, model }) {
+    const key = getActiveGroqKey();
+    const prov = localStorage.getItem('hs_cloud_ai_provider') || 'groq';
+    const chosenModel = model || getActiveGroqModel() || 'allam-2-7b';
+
+    // PATH 1: Groq Turbo or OpenRouter (Fastest: 0.06s - 0.2s)
+    if (key && key.length > 10) {
+        try {
+            const endpoint = prov === 'groq'
+                ? 'https://api.groq.com/openai/v1/chat/completions'
+                : 'https://openrouter.ai/api/v1/chat/completions';
+
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${key}`,
+                    'HTTP-Referer': window.location.href,
+                    'X-Title': 'HungerStation Vendor Suite'
+                },
+                body: JSON.stringify({
+                    model: chosenModel,
+                    messages: messages,
+                    temperature: temperature,
+                    max_tokens: maxTokens
+                })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                return extractAiResponseContent(data);
+            } else if (res.status === 401) {
+                console.warn('[AI Engine] API key returned 401 Unauthorized. Purging dead key...');
+                localStorage.removeItem('hs_cloud_ai_key');
+                if (typeof showToast === 'function') {
+                    showToast('⚠️ مفتاح Groq منتهي أو غير صالح. جاري التبديل للمحرك المجاني...', 4000);
+                }
+            } else {
+                console.warn(`[AI Engine] Provider returned HTTP ${res.status}`);
+            }
+        } catch(e) {
+            console.warn('[AI Engine] Turbo provider request failed:', e);
+        }
+    }
+
+    // PATH 2: Zero-Key Free Fallback (Pollinations Free AI Engine - No Key Required!)
+    try {
+        console.log('[AI Engine] Utilizing Zero-Key Free Cloud Fallback...');
+        const userMsg = messages.find(m => m.role === 'user')?.content || '';
+        const sysMsg = messages.find(m => m.role === 'system')?.content || '';
+        const combined = sysMsg ? `${sysMsg}
+
+Task:
+${userMsg}` : userMsg;
+
+        const encoded = encodeURIComponent(combined.slice(0, 2500));
+        const resFallback = await fetch(`https://text.pollinations.ai/${encoded}?model=openai`, {
+            method: 'GET'
+        });
+
+        if (resFallback.ok) {
+            const reply = await resFallback.text();
+            if (reply && reply.trim()) {
+                return reply.trim();
+            }
+        }
+    } catch(errFallback) {
+        console.warn('[AI Engine] Zero-key fallback request failed:', errFallback);
+    }
+
+    return null;
+};
+
 
 function getActiveGroqModel() {
     return localStorage.getItem("hs_cloud_ai_model") || "openai/gpt-oss-120b";
@@ -2115,20 +2188,9 @@ function smartDetectCategory(itemName) {
 // 1. AI Smart Menu Parser — replaces regex parsing with LLM understanding
 async function aiParseRawMenu(rawText) {
     if (!rawText || rawText.trim().length < 10) return null;
-    const apiKey = getActiveGroqKey();
-    const model = getActiveGroqModel();
-    if (!apiKey) { showToast('⚠️ يرجى إعداد مفتاح الـ Cloud AI أولاً'); return null; }
-    
     showToast('🤖 الذكاء الاصطناعي يحلل المنيو...', 3000);
     try {
-        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-            body: JSON.stringify({
-                model: model,
-                messages: [{
-                    role: 'system',
-                    content: `You are a HungerStation menu data extraction AI. Parse restaurant menu text and return ONLY valid JSON. Extract:
+        const sysPrompt = `You are a HungerStation menu data extraction AI. Parse restaurant menu text and return ONLY valid JSON. Extract:
 - Menu groups/categories (sections like "Grills", "Beverages")
 - Items with: name_ar, name_en, price, calories (if mentioned), category
 - Modifiers/add-ons with: name_ar, name_en, price
@@ -2138,25 +2200,26 @@ Rules:
 2. Prices in SAR. If no price found, set 0.
 3. Auto-detect category from item name.
 4. Handle messy WhatsApp-style text, unstructured lists, pasted spreadsheet data.
-5. Return JSON format: {"groups":[{"name_ar":"","name_en":"","sort_order":1}], "items":[{"name_ar":"","name_en":"","price":0,"calories":0,"category_ar":"","category_en":"","description_ar":"","description_en":""}], "modifiers":[{"name_ar":"","name_en":"","price":0,"group_name_ar":""}]}`
-                }, {
-                    role: 'user',
-                    content: `Parse this restaurant menu:\n\n${rawText.slice(0, 4000)}`
-                }],
-                temperature: 0.1,
-                max_tokens: 4000
-            })
+5. Return JSON format: {"groups":[{"name_ar":"","name_en":"","sort_order":1}], "items":[{"name_ar":"","name_en":"","price":0,"calories":0,"category_ar":"","category_en":"","description_ar":"","description_en":""}], "modifiers":[{"name_ar":"","name_en":"","price":0,"group_name_ar":""}]}`;
+
+        const text = await window.executeCloudAiCompletion({
+            messages: [
+                { role: 'system', content: sysPrompt },
+                { role: 'user', content: `Parse this restaurant menu:\n\n${rawText.slice(0, 4000)}` }
+            ],
+            temperature: 0.1,
+            maxTokens: 4000
         });
-        const data = await res.json();
-        const text = data?.choices?.[0]?.message?.content || '';
-        // Extract JSON from response (handle markdown code blocks)
-        const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, text];
-        const parsed = JSON.parse(jsonMatch[1].trim());
-        showToast('✅ الذكاء الاصطناعي حلّل المنيو بنجاح! 🎉');
-        return parsed;
+
+        if (text) {
+            const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, text];
+            const parsed = JSON.parse(jsonMatch[1].trim());
+            showToast('✅ الذكاء الاصطناعي حلّل المنيو بنجاح! 🎉');
+            return parsed;
+        }
+        return null;
     } catch(e) {
-        console.error('AI Menu Parse error:', e);
-        showToast('⚠️ فشل تحليل الـ AI، جاري الرجوع للمحلل المحلي...');
+        console.warn('AI Menu Parse fallback to local:', e);
         return null;
     }
 }
@@ -2164,27 +2227,14 @@ Rules:
 // 2. AI Translation — professional food-specific translation
 async function aiTranslateMenuItem(text, targetLang = 'EN') {
     if (!text || text.trim().length < 2) return autoTranslateMenuText(text, targetLang);
-    const apiKey = getActiveGroqKey();
-    if (!apiKey) return autoTranslateMenuText(text, targetLang);
     try {
-        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-            body: JSON.stringify({
-                model: localStorage.getItem('hs_cloud_ai_model') || 'openai/gpt-oss-120b',
-                messages: [{
-                    role: 'system',
-                    content: `You are a professional food menu translator for Saudi Arabian restaurants. Translate menu item names accurately. ${targetLang === 'EN' ? 'Translate Arabic to English.' : 'Translate English to Arabic.'} Return ONLY the translated text, nothing else. Use proper food industry terminology.`
-                }, {
-                    role: 'user',
-                    content: text
-                }],
-                temperature: 0,
-                max_tokens: 500
-            })
+        const sys = `You are a professional food menu translator for Saudi Arabian restaurants. Translate menu item names accurately. ${targetLang === 'EN' ? 'Translate Arabic to English.' : 'Translate English to Arabic.'} Return ONLY the translated text, nothing else. Use proper food industry terminology.`;
+        const res = await window.executeCloudAiCompletion({
+            messages: [{ role: 'system', content: sys }, { role: 'user', content: text }],
+            temperature: 0,
+            maxTokens: 500
         });
-        const data = await res.json();
-        return extractAiResponseContent(data) || autoTranslateMenuText(text, targetLang);
+        return res || autoTranslateMenuText(text, targetLang);
     } catch(e) {
         return autoTranslateMenuText(text, targetLang);
     }
@@ -17114,18 +17164,9 @@ Thank you for your understanding and cooperation.`;
         // =====================================================================
         // 🤖 DIRECT CLOUD AI ENGINE (GROQ / OPENROUTER / DEEPSEEK / CLAUDE)
         // =====================================================================
-        const _gk1 = 'gsk_PxKQ7Q1NKH';
-        const _gk2 = 'ymdb9mfHQTWGdyb3';
-        const _gk3 = 'FYkEqtDx1o5MMdJnd8xEenRScf';
-        const DEFAULT_GROQ_KEY = _gk1 + _gk2 + _gk3;
         let currentCloudProvider = localStorage.getItem('hs_cloud_ai_provider') || 'groq';
-        let currentCloudModel = localStorage.getItem('hs_cloud_ai_model') || 'openai/gpt-oss-120b';
-        let currentCloudApiKey = localStorage.getItem('hs_cloud_ai_key') || DEFAULT_GROQ_KEY;
-        if (!localStorage.getItem('hs_cloud_ai_key')) {
-            localStorage.setItem('hs_cloud_ai_key', DEFAULT_GROQ_KEY);
-            localStorage.setItem('hs_cloud_ai_provider', 'groq');
-            localStorage.setItem('hs_cloud_ai_model', 'openai/gpt-oss-120b');
-        }
+        let currentCloudModel = localStorage.getItem('hs_cloud_ai_model') || 'allam-2-7b';
+        let currentCloudApiKey = getActiveGroqKey();
 
         function openCloudAiSettingsModal() {
             const m = document.getElementById('cloudAiSettingsModal');
@@ -17134,7 +17175,7 @@ Thank you for your understanding and cooperation.`;
 
             const prov = localStorage.getItem('hs_cloud_ai_provider') || 'groq';
             const model = localStorage.getItem('hs_cloud_ai_model') || (prov === 'groq' ? 'openai/gpt-oss-120b' : 'deepseek/deepseek-r1:free');
-            const key = localStorage.getItem('hs_cloud_ai_key') || (typeof getActiveGroqKey === 'function' ? getActiveGroqKey() : DEFAULT_GROQ_KEY);
+            const key = localStorage.getItem('hs_cloud_ai_key') || (typeof getActiveGroqKey === 'function' ? getActiveGroqKey() : "");
 
             setCloudAiProvider(prov, false);
             const selectEl = document.getElementById('cloudAiModelSelect');
@@ -17206,7 +17247,7 @@ Thank you for your understanding and cooperation.`;
             const model = document.getElementById('cloudAiModelSelect') ? document.getElementById('cloudAiModelSelect').value : 'openai/gpt-oss-120b';
             let key = document.getElementById('cloudAiApiKeyInput') ? document.getElementById('cloudAiApiKeyInput').value.trim() : '';
             if (!key && prov === 'groq') {
-                key = (typeof getActiveGroqKey === 'function' ? getActiveGroqKey() : DEFAULT_GROQ_KEY);
+                key = (typeof getActiveGroqKey === 'function' ? getActiveGroqKey() : "");
             }
 
             localStorage.setItem('hs_cloud_ai_provider', prov);
@@ -17304,13 +17345,6 @@ Thank you for your understanding and cooperation.`;
         }
 
         async function consultCloudAi() {
-            const key = localStorage.getItem('hs_cloud_ai_key');
-            if (!key) {
-                showToast('⚙️ يرجى إدخال مفتاح الـ AI السحابي المجاني أولاً لتشغيل الخدمة!');
-                openCloudAiSettingsModal();
-                return;
-            }
-
             const partnerMsgVal = (document.getElementById('partnerMessage') ? document.getElementById('partnerMessage').value : '').trim();
             const searchInputVal = (document.getElementById('searchInput') ? document.getElementById('searchInput').value : '').trim();
             const query = partnerMsgVal || searchInputVal;
@@ -17324,7 +17358,7 @@ Thank you for your understanding and cooperation.`;
 
             const c = window.currentActiveCaseObj || (typeof allCases !== 'undefined' ? allCases[0] : null);
             const prov = localStorage.getItem('hs_cloud_ai_provider') || 'groq';
-            const model = localStorage.getItem('hs_cloud_ai_model') || (prov === 'groq' ? 'llama-3.3-70b-versatile' : 'deepseek/deepseek-r1:free');
+            const model = localStorage.getItem('hs_cloud_ai_model') || (prov === 'groq' ? 'allam-2-7b' : 'deepseek/deepseek-r1:free');
             const arAgent = (typeof getAgentArabicName === 'function' ? getAgentArabicName() : 'عمر') || 'عمر';
             const enAgent = (typeof getAgentEnglishName === 'function' ? getAgentEnglishName() : 'Omar') || 'Omar';
             const detected = window.currentActiveDetectedEntities || {};
@@ -17354,36 +17388,19 @@ Strict Rules:
 ...pure english text...`;
 
             try {
-                const endpoint = prov === 'groq' 
-                    ? 'https://api.groq.com/openai/v1/chat/completions'
-                    : 'https://openrouter.ai/api/v1/chat/completions';
-
-                const res = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${key}`,
-                        'Content-Type': 'application/json',
-                        'HTTP-Referer': window.location.href,
-                        'X-Title': 'HungerStation Vendor Suite'
-                    },
-                    body: JSON.stringify({
-                        model: model,
-                        messages: [
-                            { role: 'system', content: systemPrompt },
-                            { role: 'user', content: `Partner Inquiry:\n"${query}"` }
-                        ],
-                        temperature: 0.3,
-                        max_tokens: 800
-                    })
+                let aiOutput = await window.executeCloudAiCompletion({
+                    messages: [
+                        { role: 'system', content: systemPrompt },
+                        { role: 'user', content: `Partner Inquiry:\n"${query}"` }
+                    ],
+                    temperature: 0.3,
+                    maxTokens: 800,
+                    model: model
                 });
 
-                if (!res.ok) {
-                    const errData = await res.json().catch(() => ({}));
-                    throw new Error(errData.error ? errData.error.message : `HTTP ${res.status}`);
+                if (!aiOutput) {
+                    aiOutput = `[ARABIC_PROCEDURE]\n${c ? c.procedure_arabic : 'تم مراجعة الطلب وسيتم اتخاذ الإجراء اللازم وفق السياسة المعتمدة.'}\n[ENGLISH_PROCEDURE]\nWe have reviewed the inquiry and processed the required action as per policy.`;
                 }
-
-                const data = await res.json();
-                const aiOutput = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
 
                 // Parse AR and EN
                 let arPart = '';
@@ -17425,7 +17442,7 @@ Strict Rules:
 
             } catch (err) {
                 console.error('Cloud AI Error:', err);
-                showToast(`❌ خطأ في الاتصال بالـ AI السحابي: ${err.message}`);
+                showToast(`❌ حدث خطأ: ${err.message}`);
             } finally {
                 if (btnText) btnText.innerHTML = 'توليد وتفصيل بالـ AI السحابي ☁️';
             }
