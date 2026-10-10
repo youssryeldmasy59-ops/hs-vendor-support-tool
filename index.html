@@ -9228,7 +9228,8 @@ function smartTranslateFoodName(arName) {
         if (/[\u0600-\u06FF]/.test(translatedBase)) {
             const sortedTerms = Object.keys(termsDict).sort((a, b) => b.length - a.length);
             for (const k of sortedTerms) {
-                const reg = new RegExp(`(^|[\\s,.\-!?:;()\/])${k}(?=$|[\\s,.\-!?:;()\/])`, 'g');
+                const escapedK = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const reg = new RegExp(`(^|[\\s,.!?:;()\\/\\-])${escapedK}(?=$|[\\s,.!?:;()\\/\\-])`, 'g');
                 translatedBase = translatedBase.replace(reg, `$1${termsDict[k]}`);
             }
             // Strip remaining unmatchable Arabic characters without leaving garbage
@@ -9316,7 +9317,8 @@ function smartTranslateFoodDescription(arDesc) {
     if (/[\u0600-\u06FF]/.test(translated)) {
         const sortedTerms = Object.keys(termsDict).sort((a, b) => b.length - a.length);
         for (const k of sortedTerms) {
-            const regex = new RegExp(`(^|[\\s,.\-!?:;()\/])${k}(?=$|[\\s,.\-!?:;()\/])`, 'gi');
+            const escapedK = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(^|[\\s,.!?:;()\\/\\-])${escapedK}(?=$|[\\s,.!?:;()\\/\\-])`, 'gi');
             translated = translated.replace(regex, `$1${termsDict[k]}`);
         }
         // Clean remaining Arabic and broken empty brackets cleanly
