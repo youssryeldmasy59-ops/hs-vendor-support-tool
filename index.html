@@ -442,23 +442,71 @@
                 </div>
             </div>
 
-            <!-- Drive Status Section (When Drive URL Detected) -->
-            <div id="studioDriveImageHub" style="display: none; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; margin-bottom: 20px;">
-                <div id="studioDriveProgressBar" style="display: none; margin-bottom: 8px;">
+            <!-- 🖼️ HUNGERSTATION PORTAL BULK IMAGE HUB (640x480 CATEGORIZED) -->
+            <div id="studioDriveImageHub" style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 14px; padding: 18px; margin-bottom: 20px; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); display: flex; align-items: center; justify-content: center; color: #C084FC; font-size: 1.1rem;">
+                            <i class="fa-solid fa-images"></i>
+                        </div>
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <h3 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: #F8FAFC;">مركز حزم صور بورتال هنقرستيشن (640×480 مقسمة بالتصنيفات)</h3>
+                                <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34D399; font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 6px;">جاهز للرفع المجمع (Upload Bulk Image)</span>
+                            </div>
+                            <p style="margin: 2px 0 0 0; font-size: 0.75rem; color: #94A3B8;">فرز وتقسيم وتنزيل جميع صور المنيو في مجلدات حسب الأقسام (Categories) بمقاس 640×480 المعتمد لبورتال هنقرستيشن (Aspect Fill - بدون حواف بيضاء).</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <input type="file" id="studioImageBulkFileInput" multiple accept="image/*,.zip" onchange="handleStudioBulkFileInput(event)" style="display: none;">
+                        <button type="button" onclick="document.getElementById('studioImageBulkFileInput').click()" class="header-btn" style="background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.4); color: #E9D5FF; font-weight: 700; padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">
+                            <i class="fa-solid fa-folder-open"></i> اختيار صور أو ZIP من الجهاز
+                        </button>
+                        <button type="button" onclick="fetchImagesFromMenuSheetRows()" class="header-btn" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38BDF8; font-weight: 700; padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; cursor: pointer;" title="سحب الصور من روابط الإكسل أو مجلدات درايف">
+                            <i class="fa-solid fa-cloud-arrow-down"></i> سحب من روابط الإكسل / درايف
+                        </button>
+                        <button type="button" onclick="downloadAllMenuImagesZip640x480()" class="header-btn" style="background: linear-gradient(135deg, #A855F7, #7C3AED); color: #FFF; font-weight: 800; border: none; padding: 8px 16px; border-radius: 8px; font-size: 0.82rem; cursor: pointer; box-shadow: 0 4px 14px rgba(168, 85, 247, 0.4);">
+                            <i class="fa-solid fa-file-zipper"></i> تنزيل حزمة الصور 640×480 (ZIP مقسم بالتصنيفات)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dropzone Area -->
+                <div id="studioDriveDropzone" ondragover="event.preventDefault(); this.style.borderColor='#A855F7'; this.style.background='rgba(168,85,247,0.08)';" ondragleave="this.style.borderColor='rgba(168,85,247,0.25)'; this.style.background='rgba(0,0,0,0.2)';" ondrop="handleDriveDrop(event)" onclick="document.getElementById('studioImageBulkFileInput').click()" style="border: 2px dashed rgba(168, 85, 247, 0.25); background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 18px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 12px;">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.8rem; color: #C084FC; margin-bottom: 6px;"></i>
+                    <div style="font-size: 0.85rem; font-weight: 700; color: #F1F5F9;">اسحب صور الأصناف أو مجلدات أو ملفات ZIP هنا مباشرة (أو اضغط لاختيارها)</div>
+                    <div style="font-size: 0.72rem; color: #94A3B8; margin-top: 4px;">السيستم يقوم تلقائياً بفرز كل صورة حسب قسمها (برجر، مشروبات، شاورما...) وتعديل المقاس إلى 640×480 بدون حواف بيضاء.</div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div id="studioDriveProgressBar" style="display: none; margin-bottom: 10px;">
                     <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #94A3B8; margin-bottom: 4px;">
                         <span id="studioDriveProgressText">جاري المعالجة...</span>
                         <span id="studioDriveProgressPercent">0%</span>
                     </div>
-                    <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden;">
-                        <div id="studioDriveProgressFill" style="width: 0%; height: 100%; background: #F59E0B; transition: width 0.2s;"></div>
+                    <div style="width: 100%; height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden;">
+                        <div id="studioDriveProgressFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #A855F7, #38BDF8); transition: width 0.2s;"></div>
                     </div>
                 </div>
-                <div id="studioExtractedImagesContainer" style="display: none;">
+
+                <div id="studioExtractedImagesContainer" style="display: none; margin-bottom: 10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <span style="font-size: 0.75rem; color: #94A3B8;">روابط الصور المستخرجة:</span>
+                        <span style="font-size: 0.75rem; color: #94A3B8;">روابط الصور المستخرجة من الشيت:</span>
                         <span id="studioImgCountBadge" style="font-size: 0.72rem; color: #F59E0B;">0 رابط</span>
                     </div>
                     <div id="studioExtractedImagesList" style="max-height: 70px; overflow-y: auto; font-size: 0.72rem; color: #93C5FD; font-family: monospace;"></div>
+                </div>
+
+                <!-- Gallery Section -->
+                <div id="studioDriveGallerySection" style="display: none; margin-top: 14px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #E2E8F0;">معاينة الصور المعالجة:</span>
+                            <span id="studioDriveCountBadge" style="background: rgba(168, 85, 247, 0.2); color: #C084FC; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 10px;">0 صورة</span>
+                        </div>
+                        <div id="studioDriveCategoryFilters" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
+                    </div>
+                    <div id="studioDriveGalleryGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; max-height: 280px; overflow-y: auto; padding: 4px;"></div>
                 </div>
             </div>
 
@@ -9177,8 +9225,24 @@ var FOOD_DESCS_DICT = window.FOOD_DESCS_DICT = {
     'فطيرة شباتي و قطع الدجاج الكرانشي مقلي على الصاج مع التوابل وبعض البهارات': 'Chapati pie with crunchy chicken pieces, spices, and special seasonings.'
 };
 
+function transliterateArabicWord(word) {
+    if (!word) return '';
+    const charMap = {
+        'ا':'a','أ':'a','إ':'e','آ':'aa','ء':'','ؤ':'u','ئ':'e',
+        'ب':'b','ت':'t','ث':'th','ج':'j','ح':'h','خ':'kh',
+        'د':'d','ذ':'th','ر':'r','ز':'z','س':'s','ش':'sh',
+        'ص':'s','ض':'d','ط':'t','ظ':'z','ع':'a','غ':'gh',
+        'ف':'f','ق':'q','ك':'k','ل':'l','م':'m','ن':'n',
+        'ه':'h','و':'w','ي':'y','ى':'a','ة':'a','گ':'g','پ':'p','چ':'ch'
+    };
+    let clean = word.replace(/^(?:ال|وال|بال|فال|كال)/, '');
+    let prefix = word.startsWith('ال') ? 'Al ' : '';
+    let res = clean.split('').map(c => charMap[c] !== undefined ? charMap[c] : c).join('');
+    return prefix + res;
+}
+
 function smartTranslateFoodName(arName) {
-    if (!arName) return 'Custom Item';
+    if (!arName) return 'Item';
     let s = String(arName).trim();
     if (!/[\u0600-\u06FF]/.test(s)) return toEnglishProper(s);
 
@@ -9199,7 +9263,7 @@ function smartTranslateFoodName(arName) {
     const itemsDict = (typeof FOOD_ITEMS_DICT !== 'undefined' && FOOD_ITEMS_DICT) ? FOOD_ITEMS_DICT : (window.FOOD_ITEMS_DICT || {});
     const termsDict = (typeof FOOD_TERMS_DICT !== 'undefined' && FOOD_TERMS_DICT) ? FOOD_TERMS_DICT : (window.FOOD_TERMS_DICT || {});
 
-    // Direct dictionary match
+    // 1. Direct dictionary match
     let translatedBase = itemsDict[s];
     if (!translatedBase) {
         const cleaned = s.replace(/^(صحن|وجبة|طبق|ساندوتش|فطيرة|مشروب|عصير|علبة)\s+/, '').trim();
@@ -9208,8 +9272,8 @@ function smartTranslateFoodName(arName) {
         }
     }
 
+    // 2. Multi-word phrase matching from FOOD_ITEMS_DICT
     if (!translatedBase) {
-        // Multi-word phrase matching from FOOD_ITEMS_DICT
         const sortedItems = Object.keys(itemsDict).sort((a, b) => b.length - a.length);
         for (const k of sortedItems) {
             if (s.includes(k)) {
@@ -9219,25 +9283,38 @@ function smartTranslateFoodName(arName) {
         }
     }
 
+    // 3. Word-by-word with prefix handling (الـ، والـ، بالـ)
     if (!translatedBase) {
         let words = s.split(/\s+/);
-        let transWords = words.map(w => termsDict[w] || w);
+        let transWords = words.map(w => {
+            if (termsDict[w]) return termsDict[w];
+            const cleanW = w.replace(/^(?:ال|وال|بال|فال|كال)/, '');
+            if (termsDict[cleanW]) return termsDict[cleanW];
+            return transliterateArabicWord(w);
+        });
         translatedBase = transWords.join(' ');
         
-        // Clean remaining Arabic safely with dictionary terms, avoiding character transliteration
+        // Clean remaining Arabic safely with dictionary terms
         if (/[\u0600-\u06FF]/.test(translatedBase)) {
             const sortedTerms = Object.keys(termsDict).sort((a, b) => b.length - a.length);
             for (const k of sortedTerms) {
                 const escapedK = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                const reg = new RegExp(`(^|[\\s,.!?:;()\\/\\-])${escapedK}(?=$|[\\s,.!?:;()\\/\\-])`, 'g');
+                const reg = new RegExp(`(^|[\\s,.!?:;()\\/\\-])(?:ال)?${escapedK}(?=$|[\\s,.!?:;()\\/\\-])`, 'g');
                 translatedBase = translatedBase.replace(reg, `$1${termsDict[k]}`);
             }
-            // Strip remaining unmatchable Arabic characters without leaving garbage
-            translatedBase = translatedBase.replace(/[\u0600-\u06FF]/g, '').replace(/\s+/g, ' ').trim();
+            if (/[\u0600-\u06FF]/.test(translatedBase)) {
+                translatedBase = transliterateArabicWord(translatedBase);
+            }
         }
     }
 
-    translatedBase = (typeof toEnglishProper === 'function') ? toEnglishProper(translatedBase.trim() || 'Menu Item') : (translatedBase.trim() || 'Menu Item');
+    // Never return 'Menu Item'
+    let cleanFinal = translatedBase ? translatedBase.replace(/[\u0600-\u06FF]/g, '').trim() : '';
+    if (!cleanFinal || cleanFinal.length < 2 || cleanFinal.toLowerCase() === 'menu item') {
+        cleanFinal = transliterateArabicWord(s);
+    }
+    translatedBase = (typeof toEnglishProper === 'function') ? toEnglishProper(cleanFinal || 'Item') : (cleanFinal || 'Item');
+    if (translatedBase.toLowerCase() === 'menu item') translatedBase = 'Special Item';
     if (variantEn) {
         return `${translatedBase} (${(typeof toEnglishProper === 'function') ? toEnglishProper(variantEn) : variantEn})`;
     }
@@ -9335,56 +9412,71 @@ function getEnglishCategory(cat) {
     if (!cat) return 'General';
     let s = String(cat).trim();
     if (/^[a-zA-Z\s&-]+$/.test(s)) return toEnglishProper(s);
+
     const map = {
         'يوم المعلم': "Teacher's Day", 'المعلم': "Teacher's Day", 'هدايا المعلم': "Teacher's Gifts",
         'سرطان الثدي': 'Breast Cancer Awareness', 'التوعية لسرطان الثدي': 'Breast Cancer Awareness', 'توعية سرطان الثدي': 'Breast Cancer Awareness',
         'اليوم الوطني': 'National Day', 'يوم التأسيس': 'Founding Day',
         'عيد الفطر': 'Eid Al-Fitr', 'عيد الأضحى': 'Eid Al-Adha', 'رمضان': 'Ramadan Offers',
         'توزيعات': 'Gifts & Giveaways', 'توزيعة': 'Giveaways',
-        'فرايز': 'Fries', 'بطاطس': 'Fries',
-        'بروست': 'Broasted Chicken', 'بروستد': 'Broasted Chicken', 'فرايد تشيكن': 'Fried Chicken',
-        'برجر': 'Burgers', 'برقر': 'Burgers', 'ساندوتش': 'Sandwiches & Wraps', 'ساندوتشات': 'Sandwiches & Wraps', 'شطائر': 'Sandwiches & Wraps',
+        'فرايز': 'Fries', 'بطاطس': 'Fries', 'البطاطس': 'Fries', 'المقبلات والبطاطس': 'Appetizers & Fries',
+        'بروست': 'Broasted Chicken', 'بروستد': 'Broasted Chicken', 'البروست': 'Broasted Chicken', 'البروستد': 'Broasted Chicken', 'فرايد تشيكن': 'Fried Chicken',
+        'برجر': 'Burgers', 'البرجر': 'Burgers', 'برقر': 'Burgers', 'البرقر': 'Burgers', 'برجرات': 'Burgers', 'البرجرات': 'Burgers',
+        'وجبات البرجر': 'Burger Meals', 'سندوتشات البرجر': 'Burger Sandwiches',
+        'ساندوتش': 'Sandwiches & Wraps', 'ساندوتشات': 'Sandwiches & Wraps', 'الساندوتشات': 'Sandwiches & Wraps', 'شطائر': 'Sandwiches & Wraps',
         'زنجر': 'Zinger', 'تويستر': 'Twister',
-        'شاورما': 'Shawarma',
+        'شاورما': 'Shawarma', 'الشاورما': 'Shawarma', 'وجبات الشاورما': 'Shawarma Meals',
         'فطائر': 'Pies & Pastries', 'فطاير': 'Pies & Pastries', 'معجنات': 'Pies & Pastries', 'مخبوزات': 'Bakery',
         'طقوم ساعات': 'Watch Sets', 'طقم ساعات': 'Watch Sets', 'ساعات': 'Watches',
         'هدايا': 'Gifts', 'ورد': 'Flowers', 'زهور': 'Flowers', 'باقات': 'Bouquets', 'بوكيه': 'Bouquets', 'بوكية': 'Bouquets', 'استاند': 'Stands', 'استاندات': 'Stands',
         'اكسسوارات': 'Accessories', 'إكسسوارات': 'Accessories',
         'عطور': 'Perfumes', 'عطورات': 'Perfumes', 'بخور': 'Incense',
         'قهوة': 'Coffee', 'قهوه': 'Coffee', 'كافيه': 'Coffee', 'شاي': 'Tea',
-        'مشروبات ساخنة': 'Hot Drinks', 'مشروبات باردة': 'Cold Drinks', 'مشروبات': 'Beverages', 'عصائر': 'Juices',
-        'بيتزا': 'Pizza', 'مشويات': 'Grills', 'مشاوي': 'Grills', 'كباب': 'Grills',
-        'دجاج': 'Chicken',
+        'مشروبات ساخنة': 'Hot Drinks', 'مشروبات باردة': 'Cold Drinks', 'مشروبات': 'Beverages', 'المشروبات': 'Beverages', 'عصائر': 'Juices', 'العصائر': 'Juices', 'عصيرات': 'Juices', 'العصيرات': 'Juices',
+        'بيتزا': 'Pizza', 'البيتزا': 'Pizza', 'مشويات': 'Grills', 'مشاوي': 'Grills', 'المشويات': 'Grills', 'كباب': 'Grills',
+        'دجاج': 'Chicken', 'الدجاج': 'Chicken', 'لحوم': 'Meat & Grills',
         'مأكولات بحرية': 'Seafood', 'سمك': 'Seafood', 'بحريات': 'Seafood', 'جمبري': 'Seafood',
         'باستا': 'Pasta', 'مكرونة': 'Pasta', 'معكرونة': 'Pasta',
-        'رز': 'Rice Dishes', 'برياني': 'Biryani', 'كبسة': 'Kabsa',
-        'مقبلات': 'Appetizers', 'سناك': 'Snacks', 'سلطات': 'Salads', 'سلطة': 'Salads',
+        'رز': 'Rice Dishes', 'الرز': 'Rice Dishes', 'برياني': 'Biryani', 'كبسة': 'Kabsa',
+        'مقبلات': 'Appetizers', 'المقبلات': 'Appetizers', 'سناك': 'Snacks', 'سلطات': 'Salads', 'السلطات': 'Salads', 'سلطة': 'Salads',
         'شوربة': 'Soups', 'شوربات': 'Soups',
-        'حلويات': 'Desserts', 'حلى': 'Desserts', 'كيك': 'Cakes', 'شوكولاته': 'Chocolates', 'شوكولاتة': 'Chocolates', 'شوكلت': 'Chocolates',
-        'صوصات': 'Sauces', 'صلصات': 'Sauces', 'إضافات': 'Add-ons', 'اضافات': 'Add-ons', 'خيارات': 'Options',
-        'بوكسات': 'Boxes', 'عروض': 'Special Offers', 'وجبات': 'Meals', 'اطباق رئيسية': 'Main Courses',
-        'فطور': 'Breakfast', 'إفطار': 'Breakfast', 'وجبات أطفال': 'Kids Meals'
+        'حلويات': 'Desserts', 'الحلويات': 'Desserts', 'حلى': 'Desserts', 'كيك': 'Cakes', 'شوكولاته': 'Chocolates', 'شوكولاتة': 'Chocolates', 'شوكلت': 'Chocolates',
+        'صوصات': 'Sauces', 'صلصات': 'Sauces', 'الصوصات': 'Sauces', 'إضافات': 'Add-ons', 'اضافات': 'Add-ons', 'خيارات': 'Options',
+        'بوكسات': 'Boxes', 'عروض': 'Special Offers', 'وجبات': 'Meals', 'اطباق رئيسية': 'Main Courses', 'الاطباق الرئيسية': 'Main Courses',
+        'فطور': 'Breakfast', 'إفطار': 'Breakfast', 'الفطور': 'Breakfast', 'وجبات أطفال': 'Kids Meals'
     };
-    const cleanCat = s.replace(/^(قسم|فئة|تصنيف|مجموعة)\s+/, '').trim();
+
+    let cleanCat = s.replace(/^(قسم|فئة|تصنيف|تصنيفات|مجموعة|ركن|قائمة|منيو)\s+/, '').trim();
+    let bareCat = cleanCat.replace(/^ال/, '').trim();
+
+    // 1. Direct or substring match in map
     const sortedKeys = Object.keys(map).sort((a, b) => b.length - a.length);
     for (let k of sortedKeys) {
-        if (s.includes(k) || cleanCat.includes(k)) return map[k];
+        if (s === k || cleanCat === k || bareCat === k || s.includes(k) || cleanCat.includes(k) || bareCat.includes(k)) {
+            return map[k];
+        }
     }
-    const fallback = toEnglishProper(s.replace(/[\u0600-\u06FF]/g, ''));
-    if (fallback && fallback.length > 1) return fallback;
+
+    const fallback = toEnglishProper(s.replace(/[\u0600-\u06FF]/g, '').trim());
+    if (fallback && fallback.length > 1 && !/menu items?/i.test(fallback) && !/special items?/i.test(fallback)) {
+        return fallback;
+    }
 
     if (typeof smartTranslateFoodName === 'function') {
-        const trans = smartTranslateFoodName(s);
-        if (trans && !/[\u0600-\u06FF]/.test(trans) && trans.length > 1 && trans !== 'Special Item') {
+        const trans = smartTranslateFoodName(cleanCat);
+        const forbidden = ['Menu Item', 'Special Item', 'Custom Item', 'Item', 'General Item', 'Special Items'];
+        if (trans && !/[\u0600-\u06FF]/.test(trans) && trans.length > 1 && !forbidden.includes(trans)) {
             return toEnglishProper(trans);
         }
     }
 
-    const arLetters = {'ا':'a','أ':'a','إ':'e','آ':'aa','ب':'b','ت':'t','ث':'th','ج':'j','ح':'h','خ':'kh','د':'d','ذ':'th','ر':'r','ز':'z','س':'s','ش':'sh','ص':'s','ض':'d','ط':'t','ظ':'z','ع':'a','غ':'gh','ف':'f','ق':'q','ك':'k','ل':'l','م':'m','ن':'n','ه':'h','و':'w','ي':'y','ى':'a','ة':'a','ء':'','ؤ':'u','ئ':'e'};
-    let translit = s.split('').map(c => arLetters[c] !== undefined ? arLetters[c] : c).join('').replace(/[^a-zA-Z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
-    if (translit && translit.length > 1) {
-        return toEnglishProper(translit);
+    if (typeof transliterateArabicWord === 'function') {
+        let translit = transliterateArabicWord(cleanCat);
+        if (translit && translit.length > 1) {
+            return toEnglishProper(translit);
+        }
     }
+
     return cleanCat || 'Category';
 }
 
@@ -9501,6 +9593,37 @@ function fetchAndProcessImage640x480(directUrl) {
     });
 }
 
+async function handleStudioBulkFileInput(event) {
+    const files = event.target.files;
+    if (!files || !files.length) return;
+    showToast(`📦 جاري استلام ${files.length} ملف للفحص والفرز 640×480...`);
+    const mockEvent = {
+        preventDefault: () => {},
+        dataTransfer: {
+            files: files,
+            items: []
+        }
+    };
+    await handleDriveDrop(mockEvent);
+    event.target.value = '';
+}
+
+async function fetchImagesFromMenuSheetRows() {
+    const { items, groups, imageLinks } = window.menuBuilderData || {};
+    if (!items || !items.length) {
+        showToast('⚠️ لا توجد أصناف مسجلة بالمنيو حالياً! قم باستيراد شيت الإكسل أولاً أو اسحب صورك.');
+        return;
+    }
+    const count = items.filter(it => it.image_url && it.image_url.includes('http')).length;
+    if (count === 0 && (!imageLinks || !imageLinks.length)) {
+        showToast('💡 لم يتم العثور على روابط صور في شيت المنيو. يمكنك اختيار الصور أو ملف ZIP مباشرة من جهازك!');
+        const fileInput = document.getElementById('studioImageBulkFileInput');
+        if (fileInput) fileInput.click();
+        return;
+    }
+    await downloadAllMenuImagesZip640x480();
+}
+
 async function downloadAllMenuImagesZip640x480() {
     if (window.menuBuilderData && window.menuBuilderData.processedDriveImages && window.menuBuilderData.processedDriveImages.length > 0) {
         return downloadAllProcessedDriveImagesZip();
@@ -9512,106 +9635,90 @@ async function downloadAllMenuImagesZip640x480() {
     }
 
     const { items, groups, imageLinks } = window.menuBuilderData || {};
-    if (!items || !items.length) {
-        showToast('⚠️ لا توجد أصناف في المنيو لمعالجة صورها! يمكنك سحب مجلد درايف أو ملف ZIP في المركز أدناه.');
-        return;
+    const targetItems = [];
+    if (items && items.length) {
+        items.forEach((it, idx) => {
+            let rawLink = it.image_url || it.img_url || (imageLinks && imageLinks[idx]) || '';
+            if (rawLink && (rawLink.includes('http') || rawLink.includes('drive.google.com'))) {
+                let catName = 'عام';
+                if (it.group_name) {
+                    catName = String(it.group_name).split('/')[0].trim();
+                } else if (it.group_id && groups && groups.length) {
+                    const grp = groups.find(g => g.id === it.group_id);
+                    if (grp) catName = grp.ar_name || grp.name_ar || grp.en_name || 'قسم';
+                }
+
+                targetItems.push({
+                    index: idx + 1,
+                    category: catName,
+                    name_ar: it.item_ar || it.name_ar || ('صنف_' + (idx + 1)),
+                    name_en: it.item_en || it.name_en || ('Item_' + (idx + 1)),
+                    url: rawLink
+                });
+            }
+        });
     }
 
-    // Match each item with its image link and category in exact menu sequence
-    const targetItems = [];
-    items.forEach((it, idx) => {
-        let rawLink = it.image_url || it.img_url || (imageLinks && imageLinks[idx]) || '';
-        if (rawLink && (rawLink.includes('http') || rawLink.includes('drive.google.com'))) {
-            let catName = 'عام';
-            if (it.group_name) {
-                catName = String(it.group_name).split('/')[0].trim();
-            } else if (it.group_id && groups && groups.length) {
-                const grp = groups.find(g => g.id === it.group_id);
-                if (grp) catName = grp.ar_name || grp.en_name || 'قسم';
-            }
-
-            targetItems.push({
-                index: idx + 1,
-                category: catName,
-                name_ar: it.item_ar || it.name_ar || ('صنف_' + (idx + 1)),
-                name_en: it.item_en || it.name_en || ('Item_' + (idx + 1)),
-                url: rawLink
-            });
-        }
-    });
-
     if (targetItems.length === 0) {
-        showToast('💡 برجاء سحب ملف ZIP أو مجلد صور Google Drive في مركز الصور أدناه!');
+        showToast('💡 يرجى اختيار صور الأصناف أو ملف ZIP من جهازك لفرزها وتنزيلها 640×480!');
+        const fileInput = document.getElementById('studioImageBulkFileInput');
+        if (fileInput) fileInput.click();
         const hub = document.getElementById('studioDriveImageHub');
         if (hub) hub.scrollIntoView({ behavior: 'smooth' });
         return;
     }
 
     const total = targetItems.length;
-    showToast(`🚀 جاري فحص ومعالجة ${total} صورة مرتبة حسب المنيو والتصنيف...`);
+    showToast(`🚀 جاري سحب ومعالجة ${total} صورة مرتبة ومقسمة بالتصنيف...`);
 
-    const zip = new JSZip();
-    const rootFolder = zip.folder('Menu_Images_Sorted_640x480');
-    const categoryFolder = zip.folder('Menu_Images_By_Category');
+    const pb = document.getElementById('studioDriveProgressBar');
+    const pFill = document.getElementById('studioDriveProgressFill');
+    const pText = document.getElementById('studioDriveProgressText');
+    const pPct = document.getElementById('studioDriveProgressPercent');
+    if (pb) pb.style.display = 'block';
+
+    if (!window.menuBuilderData.processedDriveImages) window.menuBuilderData.processedDriveImages = [];
 
     let completed = 0;
-    let failed = 0;
-    let untouchedCount = 0;
-
-    for (let i = 0; i < targetItems.length; i++) {
+    for (let i = 0; i < total; i++) {
         const item = targetItems[i];
-        const directUrl = convertToDirectImageUrl(item.url);
-        
-        showToast(`🖼️ صورة ${i + 1}/${total} [${item.category}] : ${item.name_ar}...`);
+        if (pText) pText.textContent = `معالجة ${i + 1}/${total} [${item.category}] : ${item.name_ar}...`;
+        const pct = Math.round(((i + 1) / total) * 100);
+        if (pFill) pFill.style.width = pct + '%';
+        if (pPct) pPct.textContent = pct + '%';
 
         try {
+            const directUrl = convertToDirectImageUrl(item.url);
             const res = await fetchAndProcessImage640x480(directUrl);
-            if (!res.wasResized) untouchedCount++;
-
-            const safeCat = (item.category || 'عام')
-                .replace(/[^\u0600-\u06FFa-zA-Z0-9_-]/g, '_')
-                .replace(/_+/g, '_')
-                .slice(0, 20);
-            const safeName = (item.name_ar || item.name_en || 'صنف')
-                .replace(/[^\u0600-\u06FFa-zA-Z0-9_-]/g, '_')
-                .replace(/_+/g, '_')
-                .slice(0, 35);
-            
-            const numStr = String(item.index).padStart(2, '0');
-            const fileName = `${numStr}_[${safeCat}]_${safeName}.jpg`;
-
-            rootFolder.file(fileName, res.blob);
-            const subCatFolder = categoryFolder.folder(safeCat);
-            subCatFolder.file(`${numStr}_${safeName}.jpg`, res.blob);
-
+            window.menuBuilderData.processedDriveImages.push({
+                id: window.menuBuilderData.processedDriveImages.length + 1,
+                name: item.name_ar,
+                category: item.category || 'عام',
+                blob: res.blob,
+                previewUrl: URL.createObjectURL(res.blob),
+                origW: 640,
+                origH: 480,
+                wasResized: res.wasResized,
+                matchedItemId: item.index,
+                matchedItemName: item.name_ar
+            });
             completed++;
         } catch (e) {
-            console.warn('Image download warning for', item, e);
-            failed++;
+            console.warn('Image fetch warning for', item, e);
         }
     }
 
+    if (pb) pb.style.display = 'none';
+    if (typeof renderDriveGallery === 'function') renderDriveGallery();
+
     if (completed === 0) {
-        showToast('❌ تعذر تحميل الصور تلقائياً بسبب حماية روابط درايف. اسحب ملف ZIP مباشرة في مربع السحب!');
+        showToast('❌ تعذر تحميل الصور تلقائياً بسبب حماية الروابط. اختر صورك أو ملف ZIP مباشرة!');
+        const fileInput = document.getElementById('studioImageBulkFileInput');
+        if (fileInput) fileInput.click();
         return;
     }
 
-    showToast(`📦 جاري تجميع ${completed} صورة في ملف ZIP مرتب بالتصنيف والتسلسل...`);
-    const content = await zip.generateAsync({ type: 'blob' });
-    const url = URL.createObjectURL(content);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Hungerstation_Images_640x480.zip`;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }, 10000);
-
-    playSuccessChime();
-    const note = untouchedCount > 0 ? ` (${untouchedCount} صورة كانت جاهزة 640×480 ولم يتم تعديلها)` : '';
-    showToast(`✅ تم تنزيل ${completed} صورة مرتبة ومسماة بالتصنيف ورقم الصنف بنجاح!${note}`);
+    return downloadAllProcessedDriveImagesZip();
 }
 
 
@@ -9993,10 +10100,32 @@ async function handleDriveDrop(event) {
         for (let i = 0; i < files.length; i++) {
             const f = files[i];
             if (/\.(jpe?g|png|webp|bmp)$/i.test(f.name)) {
+                const baseName = f.name.replace(/\.[^/.]+$/, '');
+                let detectedCat = 'عام';
+                const matched = (typeof matchImageWithMenuItem === 'function') ? matchImageWithMenuItem(baseName, '') : null;
+                if (matched) {
+                    if (matched.group_name) detectedCat = matched.group_name.split('/')[0].trim();
+                    else if (matched.group_id && window.menuBuilderData && window.menuBuilderData.groups) {
+                        const grp = window.menuBuilderData.groups.find(g => g.id === matched.group_id);
+                        if (grp) detectedCat = grp.ar_name || grp.name_ar || grp.en_name;
+                    }
+                }
+                if (detectedCat === 'عام') {
+                    if (/(برجر|برقر|burger)/i.test(baseName)) detectedCat = 'البرجر';
+                    else if (/(شاورما|shawarma)/i.test(baseName)) detectedCat = 'الشاورما';
+                    else if (/(عصير|مشروب|بيبسي|كولا|شاي|قهوة|juice|drink)/i.test(baseName)) detectedCat = 'المشروبات';
+                    else if (/(بيتزا|pizza)/i.test(baseName)) detectedCat = 'البيتزا';
+                    else if (/(بروست|بروستد|مسحب|broast)/i.test(baseName)) detectedCat = 'البروستد';
+                    else if (/(فرايز|بطاطس|fries)/i.test(baseName)) detectedCat = 'المقبلات والبطاطس';
+                    else if (/(سلطة|سلطات|salad)/i.test(baseName)) detectedCat = 'السلطات';
+                    else if (/(حلا|كيك|وافل|كريب|dessert|cake)/i.test(baseName)) detectedCat = 'الحلويات';
+                    else if (/(مشاوي|مشويات|كباب|grill)/i.test(baseName)) detectedCat = 'المشويات';
+                    else if (/(ساندوتش|صاروخ|wrap|sandwich)/i.test(baseName)) detectedCat = 'الساندوتشات';
+                }
                 entries.push({
                     file: f,
-                    name: f.name.replace(/\.[^/.]+$/, ''),
-                    category: 'عام'
+                    name: baseName,
+                    category: detectedCat
                 });
             }
         }
@@ -10177,11 +10306,31 @@ async function processExtractedEntries(entries) {
             if (res.wasResized) resizedCount++;
 
             const matched = matchImageWithMenuItem(item.name, item.category);
+            let finalCat = item.category || 'عام';
+            if (matched && (!finalCat || finalCat === 'عام')) {
+                if (matched.group_name) finalCat = matched.group_name.split('/')[0].trim();
+                else if (matched.group_id && window.menuBuilderData && window.menuBuilderData.groups) {
+                    const grp = window.menuBuilderData.groups.find(g => g.id === matched.group_id);
+                    if (grp) finalCat = grp.ar_name || grp.name_ar || grp.en_name;
+                }
+            }
+            if (finalCat === 'عام') {
+                if (/(برجر|برقر|burger)/i.test(item.name)) finalCat = 'البرجر';
+                else if (/(شاورما|shawarma)/i.test(item.name)) finalCat = 'الشاورما';
+                else if (/(عصير|مشروب|بيبسي|كولا|شاي|قهوة|juice|drink)/i.test(item.name)) finalCat = 'المشروبات';
+                else if (/(بيتزا|pizza)/i.test(item.name)) finalCat = 'البيتزا';
+                else if (/(بروست|بروستد|مسحب|broast)/i.test(item.name)) finalCat = 'البروستد';
+                else if (/(فرايز|بطاطس|fries)/i.test(item.name)) finalCat = 'المقبلات والبطاطس';
+                else if (/(سلطة|سلطات|salad)/i.test(item.name)) finalCat = 'السلطات';
+                else if (/(حلا|كيك|وافل|كريب|dessert|cake)/i.test(item.name)) finalCat = 'الحلويات';
+                else if (/(مشاوي|مشويات|كباب|grill)/i.test(item.name)) finalCat = 'المشويات';
+                else if (/(ساندوتش|صاروخ|wrap|sandwich)/i.test(item.name)) finalCat = 'الساندوتشات';
+            }
 
             window.menuBuilderData.processedDriveImages.push({
                 id: window.menuBuilderData.processedDriveImages.length + 1,
                 name: item.name,
-                category: item.category || 'عام',
+                category: finalCat,
                 blob: res.blob,
                 previewUrl: res.previewUrl,
                 origW: res.origW,
@@ -10292,7 +10441,7 @@ function rebindImageWithItem(imgId, itemId) {
 async function downloadAllProcessedDriveImagesZip() {
     const list = (window.menuBuilderData && window.menuBuilderData.processedDriveImages) || [];
     if (!list.length) {
-        showToast("⚠️ لا توجد صور معالجة لتنزيلها! اسحب ملف ZIP أو المجلد أولاً.");
+        showToast("⚠️ لا توجد صور معالجة لتنزيلها! اسحب الصور أو ملف ZIP أولاً.");
         return;
     }
 
@@ -10301,34 +10450,40 @@ async function downloadAllProcessedDriveImagesZip() {
         await new Promise(r => setTimeout(r, 1000));
     }
 
-    showToast(`📦 جاري تجهيز حزمة ${list.length} صورة 640×480 لبورتال هنقرستيشن...`);
+    showToast(`📦 جاري تجهيز حزمة ${list.length} صورة 640×480 مقسمة بالتصنيفات لبورتال هنقرستيشن...`);
     const zip = new JSZip();
-    const rootFolder = zip.folder('Menu_Images_Sorted_640x480');
-    const categoryFolder = zip.folder('Menu_Images_By_Category');
+    const portalUploadFolder = zip.folder('Hungerstation_Portal_Bulk_Upload');
 
     list.forEach((img, i) => {
         const numStr = String(i + 1).padStart(2, '0');
-        const safeCat = (img.category || 'عام').replace(/[^\u0600-\u06FFa-zA-Z0-9_-]/g, '_');
-        const safeName = (img.matchedItemName || img.name || `صنف_${i + 1}`).replace(/[^\u0600-\u06FFa-zA-Z0-9_-]/g, '_');
-        
-        // 1. Direct Category Folder at root level (e.g. البرجر/01_برجر_لحم.jpg)
-        const directCat = zip.folder(safeCat);
-        directCat.file(`${numStr}_${safeName}.jpg`, img.blob);
+        const arCat = (img.category || 'عام').trim();
+        const enCat = (typeof getEnglishCategory === 'function') ? getEnglishCategory(arCat) : 'General';
 
-        // 2. In Category subfolder inside Menu_Images_By_Category
-        const sub = categoryFolder.folder(safeCat);
-        sub.file(`${numStr}_${safeName}.jpg`, img.blob);
+        const safeArCat = arCat.replace(/[^\u0600-\u06FFa-zA-Z0-9_-]/g, '_').replace(/_+/g, '_').slice(0, 30) || 'عام';
+        const safeEnCat = enCat.replace(/[^a-zA-Z0-9_-]/g, '_').replace(/_+/g, '_').slice(0, 30) || 'General';
 
-        // 3. In rootFolder sorted sequentially
-        const fname = `${numStr}_[${safeCat}]_${safeName}.jpg`;
-        rootFolder.file(fname, img.blob);
+        const safeName = (img.matchedItemName || img.name || `صنف_${i + 1}`)
+            .replace(/[^\u0600-\u06FFa-zA-Z0-9_-]/g, '_')
+            .replace(/_+/g, '_')
+            .slice(0, 40);
+
+        // 1. Folders by Arabic Category at root: e.g. البرجر/01_برجر_لحم.jpg
+        const arCatFolder = zip.folder(safeArCat);
+        arCatFolder.file(`${numStr}_${safeName}.jpg`, img.blob);
+
+        // 2. Folders by English Category at root: e.g. Burgers/01_برجر_لحم.jpg
+        const enCatFolder = zip.folder(safeEnCat);
+        enCatFolder.file(`${numStr}_${safeName}.jpg`, img.blob);
+
+        // 3. Flat folder for Hungerstation Portal Bulk Upload: e.g. 01_[البرجر]_برجر_لحم.jpg
+        portalUploadFolder.file(`${numStr}_[${safeArCat}]_${safeName}.jpg`, img.blob);
     });
 
     const content = await zip.generateAsync({ type: 'blob' });
     const url = URL.createObjectURL(content);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Hungerstation_Menu_Images_640x480.zip`;
+    a.download = `Hungerstation_Menu_Images_Categorized_640x480.zip`;
     document.body.appendChild(a);
     a.click();
     setTimeout(() => {
@@ -10336,8 +10491,8 @@ async function downloadAllProcessedDriveImagesZip() {
         URL.revokeObjectURL(url);
     }, 10000);
 
-    playSuccessChime();
-    showToast(`🎉 تم تنزيل حزمة ${list.length} صورة 640×480 بنجاح!`);
+    if (typeof playSuccessChime === 'function') playSuccessChime();
+    showToast(`🎉 تم تنزيل حزمة ${list.length} صورة 640×480 مقسمة بالتصنيفات بنجاح! جاهزة لزر Upload Bulk Image 🚀`);
 }
 
 function autoBuildMenuFromDriveImages() {
@@ -17903,8 +18058,11 @@ function autoSuggestEnItemName(arVal) {
     if (!arVal || !arVal.trim()) return;
     const enField = document.getElementById('addModalItemEn');
     if (enField && !enField.value.trim()) {
-        if (typeof toEnglishProper === 'function') {
-            enField.value = toEnglishProper(arVal);
+        if (typeof smartTranslateFoodName === 'function') {
+            const trans = smartTranslateFoodName(arVal);
+            if (trans && trans !== 'Item' && trans !== 'Custom Item') {
+                enField.value = trans;
+            }
         }
     }
 }
@@ -17967,8 +18125,22 @@ function autoEstimateAddModalKcal() {
 
 function saveCustomMenuItemFromModal() {
     const arName = (document.getElementById('addModalItemAr') ? document.getElementById('addModalItemAr').value : '').trim();
-    const enName = (document.getElementById('addModalItemEn') ? document.getElementById('addModalItemEn').value : '').trim() || (typeof toEnglishProper === 'function' ? toEnglishProper(arName) : arName);
-    const catName = (document.getElementById('addModalCategory') ? document.getElementById('addModalCategory').value : '').trim() || 'عام / General';
+    let enName = (document.getElementById('addModalItemEn') ? document.getElementById('addModalItemEn').value : '').trim();
+    if (!enName || /[\u0600-\u06FF]/.test(enName)) {
+        enName = typeof smartTranslateFoodName === 'function' ? smartTranslateFoodName(arName) : (typeof toEnglishProper === 'function' ? toEnglishProper(arName) : arName);
+    }
+    let catInput = (document.getElementById('addModalCategory') ? document.getElementById('addModalCategory').value : '').trim() || 'عام / General';
+    let catAr = catInput;
+    let catEn = '';
+    if (catInput.includes('/')) {
+        const parts = catInput.split('/');
+        catAr = parts[0].trim();
+        catEn = parts[1].trim();
+    }
+    if (!catEn || /[\u0600-\u06FF]/.test(catEn)) {
+        catEn = typeof getEnglishCategory === 'function' ? getEnglishCategory(catAr) : 'General';
+    }
+
     const priceVal = parseFloat(document.getElementById('addModalPrice') ? document.getElementById('addModalPrice').value : '0') || 0;
     let kcalVal = parseInt(document.getElementById('addModalKcal') ? document.getElementById('addModalKcal').value : '0', 10);
     const descVal = (document.getElementById('addModalDesc') ? document.getElementById('addModalDesc').value : '').trim();
@@ -17991,17 +18163,19 @@ function saveCustomMenuItemFromModal() {
         window.menuBuilderData = { groups: [], items: [], modifiers: [], imageLinks: [] };
     }
 
-    // Match or create group
-    let group = window.menuBuilderData.groups.find(g => (g.name_ar === catName || g.ar_name === catName || g.name_en === catName));
+    // Match or create group with clean English category name
+    let group = window.menuBuilderData.groups.find(g => (g.name_ar === catAr || g.ar_name === catAr || g.name_en === catEn || g.en_name === catEn));
     let groupId = 1;
     if (!group) {
         groupId = window.menuBuilderData.groups.length + 1;
         window.menuBuilderData.groups.push({
             id: groupId,
-            name_en: typeof toEnglishProper === 'function' ? toEnglishProper(catName) : catName,
-            name_ar: catName,
-            en_name: typeof toEnglishProper === 'function' ? toEnglishProper(catName) : catName,
-            ar_name: catName,
+            name_en: catEn,
+            name_ar: catAr,
+            en_name: catEn,
+            ar_name: catAr,
+            en_type: 'General',
+            ar_type: 'عام',
             order: groupId
         });
     } else {
@@ -18014,7 +18188,7 @@ function saveCustomMenuItemFromModal() {
     window.menuBuilderData.items.push({
         id: newItemId,
         group_id: groupId,
-        group_name: catName,
+        group_name: catAr + ' / ' + catEn,
         name_en: enName,
         name_ar: arName,
         item_en: enName,
