@@ -1202,7 +1202,7 @@
     "case_title": "Request Rider ETA to Pickup | وقت وصول المندوب للاستلام",
     "url": "https://hungerstation.knowledgeowl.com/home/delivery-inquiries-",
     "ccr": "Live Order Inquiries -> Delivery inquiries |  الاستفسار عن التوصيل -> Delivery late / Rider ETA | تأخر في التوصيل / الوقت المتوقع للوصول",
-    "procedure_arabic": "نعتذر لك عن التأخير 💛\n\nحرصًا منا على سرعة وصول الطلب، تم تحويله إلى مندوب أقرب لموقعك.\n\nبإذن الله يوصلك في أسرع وقت ممكن.",
+    "procedure_arabic": "⚠️ تحديث QA صارم لشات وقت وصول المندوب (0% عند المخالفة):\n1. الاتصال بالمندوب:\n   - إذا رد: نؤكد معه وقت الوصول بالدقائق (Minutes) ونبلغ الشريك به.\n   - إذا لم يرد: ⛔ يمنع منعاً باتاً إبلاغ الشريك بأن المندوب لم يرد!\n2. فحص 1VU فوراً:\n   - إذا كان المندوب على مسافة 1 كم أو أقل: نبلغ الشريك أن المندوب بالطريق وسيستلم الطلب في أقرب وقت (لا نعمل Re-dispatch).\n   - إذا كان أبعد من 1 كم: نعمل Re-dispatch فوراً لمندوب آخر.",
     "procedure_english": "Apologies for the delay 💛\n\nTo ensure faster delivery, the order has been reassigned to a closer rider.\n\nThey will arrive at your branch as soon as possible.",
     "full_content": "Request Rider ETA to Pickup Policy and Macro",
     "sub_macros": [
@@ -1249,7 +1249,9 @@
         ]
       }
     ],
-    "internal_sop": "إجراء وقت وصول المندوب للاستلام (Rider ETA):\n1. التواصل مع المندوب المعين هاتفياً:\n- في حال الرد: التأكد من وقت الوصول المتوقع (ETA)، وتحديث التاجر بالوقت المتوقع بالدقائق.\n- في حال عدم الرد: يُمنع نهائياً إبلاغ الشريك بأننا تواصلنا مع المندوب ولم يرد! يتم فوراً تحويل الطلب لمندوب أقرب وإرسال ماكرو الاعتذار والتحويل."
+    "internal_sop": "إجراء وقت وصول المندوب للاستلام (Rider ETA):\n1. التواصل مع المندوب المعين هاتفياً:\n- في حال الرد: التأكد من وقت الوصول المتوقع (ETA)، وتحديث التاجر بالوقت المتوقع بالدقائق.\n- في حال عدم الرد: يُمنع نهائياً إبلاغ الشريك بأننا تواصلنا مع المندوب ولم يرد! يتم فوراً تحويل الطلب لمندوب أقرب وإرسال ماكرو الاعتذار والتحويل.",
+    "qa_override": true,
+    "qa_badge": "🟢 محدث رسميًا من QA البريد (تنبيه 0%)"
   },
   {
     "id": 51,
@@ -1537,19 +1539,21 @@
     "case_title": "Payment Cycle Inquiry | الاستعلام عن وقت الدفع",
     "url": "https://hungerstation.knowledgeowl.com/home/payment-inquiries-",
     "ccr": "Billing Inquiries -> Payment inquiries | الاستفسار  عن طرق الدفع -> Payment Cycle Inquiry | الاستعلام عن وقت الدفع",
-    "procedure_arabic": ".نحيطكم علماً بأنه التحويلات المالية تتم خلال الفترات الموضحة أدناه :\n\n. الدفعة الثانية تشمل المبيعات من تاريخ اليوم 16 إلى نهاية الشهر، و يتم التحويل خلال الاسبوع الأول من الشهرالتالي  .\n\nنعتذر عن أي إزعاج تسبب لكم.",
-    "procedure_english": "We would like to inform you that money transfers cycle shown below:\n\n- The first payment batch includes sales from 1st to 15th of the month, and the transfer will be during third of the same month.\n\n- The second payment batch includes sales from 16th to the end of the month, and the transfer will be during first week of the next month.\n\nApologies for any inconvenience caused to you.",
+    "procedure_arabic": "⚠️ تنبيه QA صارم (أكتوبر 2026 - 0% عند الخطأ):\nمواعيد التحويلات المالية تتم وفقًا للجدول الجديد التالي:\n• الدفعة الأولى: تشمل مبيعات من 1 إلى 15 من الشهر، والتحويل خلال الأسبوع الرابع من نفس الشهر (باستثناء الجمعة والسبت).\n• الدفعة الثانية: تشمل مبيعات من 16 إلى نهاية الشهر، والتحويل خلال الأسبوع الثاني من الشهر التالي (باستثناء الجمعة والسبت).\nنعتذر عن أي إزعاج، ونشكركم على تفهمكم.",
+    "procedure_english": "⚠️ Strict QA Warning (October 2026 - 0% on Error):\nPayments schedule cycle:\n• First Payment: Sales from 1st to 15th, transferred during the 4th week of the same month (excluding Fri/Sat).\n• Second Payment: Sales from 16th to end of month, transferred during the 2nd week of the next month (excluding Fri/Sat).",
     "full_content": "Payment Cycle Inquiry | الاستعلام عن وقت الدفع\nProcedure (English)\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\nProcedure (Arabic)\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nWe would like to inform you that money transfers cycle shown below:\n- The first payment batch includes sales from 1st to 15th of the month, and the transfer will be during third of the same month.\n- The second payment batch includes sales from 16th to the end of the month, and the transfer will be during first week of the next month.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\n.نحيطكم علماً بأنه التحويلات المالية تتم خلال الفترات الموضحة أدناه :\n- الدفعة الأولى تشمل المبيعات من تاريخ 1 إلى 15 من الشهر، و يتم التحويل خلال الاسبوع الثالث  من نفس الشهر\n. الدفعة الثانية تشمل المبيعات من تاريخ اليوم 16 إلى نهاية الشهر، و يتم التحويل خلال الاسبوع الأول من الشهرالتالي  .\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample",
     "sub_macros": [
       {
         "id": 1,
-        "title_arabic": "الرد الرسمي المعتمد",
+        "title_arabic": "الرد الرسمي المعتمد (الجدول الجديد أكتوبر 2026)",
         "title_english": "Primary Official Macro",
-        "macro_arabic": ".نحيطكم علماً بأنه التحويلات المالية تتم خلال الفترات الموضحة أدناه :\n\n. الدفعة الثانية تشمل المبيعات من تاريخ اليوم 16 إلى نهاية الشهر، و يتم التحويل خلال الاسبوع الأول من الشهرالتالي  .\n\nنعتذر عن أي إزعاج تسبب لكم.",
-        "macro_english": "We would like to inform you that money transfers cycle shown below:\n\n- The first payment batch includes sales from 1st to 15th of the month, and the transfer will be during third of the same month.\n\n- The second payment batch includes sales from 16th to the end of the month, and the transfer will be during first week of the next month.\n\nApologies for any inconvenience caused to you.",
+        "macro_arabic": "شريكنا ( اسم الشريك ) العزيز,\n\nشكراً لتواصلكم مع هنقرستيشن\n\nنود إفادتكم بأن مواعيد التحويلات المالية تتم وفقًا للجدول التالي:\n\nالدفعة الأولى : تشمل المبيعات من 1 إلى 15 من الشهر، على أن يتم تحويل المستحقات خلال الاسبوع الرابع من نفس الشهر، باستثناء يومي الجمعة والسبت.\nالدفعة الثانية : تشمل المبيعات من 16 إلى نهاية الشهر، على أن يتم تحويل المستحقات خلال الاسبوع الثاني من الشهر التالي، باستثناء يومي الجمعة والسبت.\n\nنعتذر عن أي إزعاج، ونشكركم على تفهمكم.\n\nبعد إغلاق التذكرة، سيظهر لكم إشعار لتقييم مستوى الخدمة من 1 إلى 5، حيث:\n⭐⭐⭐⭐⭐ راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐ غير راض تماما\n\nشكرًا لتواصلكم معنا، ونتمنى لكم دوام الصحة والعافية.\n\nمع خالص التحية،\n*اسم الموظف*\nهنقرستيشن\n\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
+        "macro_english": "Dear (Partner Name) Valued Partner,\n\nThank you for contacting HungerStation.\n\nWe would like to inform you that payments are processed according to the following schedule:\n\nFirst Payment: Covers sales from the 1st to the 15th of the month. And the transfer will be during the fourth week of the same month, excluding Fridays and Saturdays.\n\nSecond Payment: Covers sales from the 16th to the end of the month. And the transfer will be during the second week of the next month, excluding Fridays and Saturdays.\n\nWe apologize for any inconvenience and appreciate your understanding.\n\nThank you,\n*Employee Name*\nHungerstation\n\nContact Details:\nIssues with Orders: 920033935",
         "keywords": []
       }
-    ]
+    ],
+    "qa_override": true,
+    "qa_badge": "🟢 محدث رسميًا من QA البريد (أكتوبر 2026)"
   },
   {
     "id": 62,
@@ -1641,19 +1645,21 @@
     "case_title": "Termination notice given by partner | إشعار الإنهاء المقدم من الشريك",
     "url": "https://hungerstation.knowledgeowl.com/home/termination-",
     "ccr": "Contract and Sales Inquiries -> Termination | انهاء الشراكة -> Termination notice given by partner | إشعار الإنهاء المقدم من الشريك",
-    "procedure_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب  حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال 3 ايام عمل في حال وجود أي استفسارات.\n\nنعتذر عن أي إزعاج تسبب لكم.",
+    "procedure_arabic": "📌 تحديث الجودة (أكتوبر 2026) لإجراءات إنهاء العقد:\n1. التحقق الإلزامي قبل التصعيد: يجب التأكد من توفر 3 عناصر إلزامية في التذكرة:\n   - رقم الفرع (Branch ID)\n   - اسم المطعم / المنشأة التجاري\n   - سبب طلب إنهاء العقد\n* في حال نقص أي عنصر، يجب متابعة الشريك للحصول عليه قبل التصعيد.\n2. قالب التصعيد: في الموضوع: Termination Notice – [Branch ID / Restaurant Name]\n3. الرد على الشريك: إبلاغه بأن مدة المتابعة 3 أيام عمل وأن إجراءات الإنهاء قد تستغرق حتى 30 يوماً.",
     "procedure_english": "Your request has been forwarded to your Account Manager before. He/she will assist in resolving the request and may contact you if needed within three working days.\n\nApologies for any inconvenience caused to you.",
     "full_content": "Termination notice given by partner | إشعار الإنهاء المقدم من الشريك\nProcedure (English)\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\nProcedure (Arabic)\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nYour request has been forwarded to your Account Manager before. He/she will assist in resolving the request and may contact you if needed within three working days.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nلقد تم تحويل طلبكم إلى مدير الحساب  حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال 3 ايام عمل في حال وجود أي استفسارات.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample",
     "sub_macros": [
       {
         "id": 1,
-        "title_arabic": "الرد الرسمي المعتمد",
+        "title_arabic": "الرد المعتمد مع الالتزام بمهلة الـ 30 يوماً",
         "title_english": "Primary Official Macro",
-        "macro_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب  حيث سيقوم مدير الحساب بمتابعة طلبكم وسيتم التواصل معكم خلال 3 ايام عمل في حال وجود أي استفسارات.\n\nنعتذر عن أي إزعاج تسبب لكم.",
-        "macro_english": "Your request has been forwarded to your Account Manager before. He/she will assist in resolving the request and may contact you if needed within three working days.\n\nApologies for any inconvenience caused to you.",
+        "macro_arabic": "شريكنا العزيز،\n\nتم تحويل طلبكم إلى مدير حسابكم، حيث سيقوم بمتابعة الطلب واتخاذ الإجراءات اللازمة. وسيتم التواصل معكم خلال 3 أيام عمل (باستثناء يومي الجمعة والسبت).\n\nيرجى العلم بأن إجراءات إنهاء العقد قد تستغرق حتى 30 يوماً، وذلك وفقاً للشروط والأحكام الموضحة في الاتفاقية الموقعة بين الطرفين.\n\nبعد إغلاق التذكرة، سيظهر لكم إشعار لتقييم مستوى الخدمة من 1 إلى 5.\n\nشكراً لتواصلكم معنا،\nهنقرستيشن",
+        "macro_english": "Dear Partner,\n\nYour request has been forwarded to your Account Manager, who will follow up on it and take the necessary actions. You will be contacted within 3 business days excluding Fridays and Saturdays.\n\nPlease note that the contract termination process may take up to 30 days, in accordance with the terms and conditions outlined in the agreement signed between both parties.\n\nThank you for contacting HungerStation.",
         "keywords": []
       }
-    ]
+    ],
+    "qa_override": true,
+    "qa_badge": "🟢 محدث رسميًا من QA البريد (أكتوبر 2026)"
   },
   {
     "id": 66,
@@ -1726,11 +1732,27 @@
     "case_title": "Renegotiation Commission | اعادة التفاوض على العمولة",
     "url": "https://hungerstation.knowledgeowl.com/home/terms-",
     "ccr": "Contract and Sales Inquiries -> Terms | البنود -> Renegotiation Commission | اعادة التفاوض على العمولة",
-    "procedure_arabic": "نحيطكم علماً بأنه بخصوص طلب إعادة التفاوض على نسبة العمولة، فإن النسب والرسوم التشغيلية معتمدة وفقاً للعقد الرسمي الساري. وقد تم رفع طلبكم إلى إدارة الحسابات والمدير التجاري لمراجعة حجم المبيعات ونشاط الفروع والتواصل معكم مباشرة خلال 3 أيام عمل.",
+    "procedure_arabic": "تحديث الـ QA لرسوم الـ 2.5% المطبقة كعمولة دفع إلكتروني:\n• يستخدم الماكرو المخصص عند تواصل الشريك لأول مرة.\n• في حال أعاد الشريك فتح التذكرة اعتراضا، يتم التصعيد لمدير الحساب (AM).",
     "procedure_english": "Please be informed that regarding your commission renegotiation request, current rates are established according to your valid partnership contract. Your request has been escalated to your Account Manager and the Commercial Team to assess store sales volume and get in touch with you within 3 business days.",
     "full_content": "Renegotiation Commission | اعادة التفاوض على العمولة\nProcedure (English)\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\nProcedure (Arabic)\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nWe would like to inform you that the HungerStation commission is fixed and cannot be changed. If you have any other questions, do not hesitate to contact us.\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nنحيطكم علماً بأنه نسبة هنقرستيشن ثابتة لا يمكن تغيرها في حال وجود استفسار اخر لا تتردد في التواصل معنا.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nExample",
     "internal_sop": "التحقق من شروط العقد وحجم المبيعات الشهري وتصعيد التذكرة لمدير الحساب.",
     "sub_macros": [
+      {
+        "id": 99,
+        "title_arabic": "رد استفسار رسوم الدفع الإلكتروني 2.5% (تحديث سبتمبر 2026)",
+        "title_english": "2.5% Online Payment Fee Reply (Sep 2026 Update)",
+        "macro_arabic": "شريكنا العزيز،\n\nشكرًا لتواصلك معنا. نحن نتفهم تمامًا استفسارك بشأن رسوم الـ 2.5%، ونأسف لأي إرباك قد سببه ذلك.\n\nنود التوضيح بأنه تم إرسال إشعار مسبق عبر البريد الإلكتروني يتضمن التفاصيل المتعلقة برسوم الدفع الإلكتروني. وكجزء من هذا التحديث، تم إيقاف التعاملات النقدية بين مندوب التوصيل وأمين الصندوق نهائياً، وأصبحت جميع معاملات الطلبات تتم رقمياً بالكامل.\n\nيرجى إعلامنا إذا كان لديك أي استفسار آخر أو كنت بحاجة إلى مساعدة إضافية.\n\nمع أطيب التحيات،\nهنقرستيشن",
+        "macro_english": "Dear Partner,\n\nThank you for reaching out. We completely understand your concern regarding the 2.5% fees, and we apologize for any confusion this may have caused.\n\nWe would like to clarify that an advance email notice was previously shared regarding this online payment fee. As part of this update, cash transactions between riders and cashiers have been fully discontinued, and all order transactions are now processed digitally.\n\nPlease let us know if you have any questions or require further assistance.\n\nBest regards,\nHungerstation",
+        "keywords": [
+          "2.5%",
+          "رسوم",
+          "عمولة",
+          "دفع الكتروني",
+          "كاشير",
+          "رسوم الدفع",
+          "online payment fee"
+        ]
+      },
       {
         "id": 1,
         "title_arabic": "الرد الرسمي المعتمد",
@@ -1739,7 +1761,9 @@
         "macro_english": "Please be informed that regarding your commission renegotiation request, current rates are established according to your valid partnership contract. Your request has been escalated to your Account Manager and the Commercial Team to assess store sales volume and get in touch with you within 3 business days.",
         "keywords": []
       }
-    ]
+    ],
+    "qa_override": true,
+    "qa_badge": "🟢 ماكرو جديد معتمد لرسوم 2.5%"
   },
   {
     "id": 70,
