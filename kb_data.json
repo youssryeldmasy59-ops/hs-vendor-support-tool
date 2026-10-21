@@ -1556,7 +1556,17 @@
         "title_english": "Primary Official Macro",
         "macro_arabic": "شريكنا ( اسم الشريك ) العزيز,\n\nشكراً لتواصلكم مع هنقرستيشن\n\nنود إفادتكم بأن مواعيد التحويلات المالية تتم وفقًا للجدول التالي:\n\nالدفعة الأولى : تشمل المبيعات من 1 إلى 15 من الشهر، على أن يتم تحويل المستحقات خلال الاسبوع الرابع من نفس الشهر، باستثناء يومي الجمعة والسبت.\nالدفعة الثانية : تشمل المبيعات من 16 إلى نهاية الشهر، على أن يتم تحويل المستحقات خلال الاسبوع الثاني من الشهر التالي، باستثناء يومي الجمعة والسبت.\n\nنعتذر عن أي إزعاج، ونشكركم على تفهمكم.\n\nبعد إغلاق التذكرة، سيظهر لكم إشعار لتقييم مستوى الخدمة من 1 إلى 5، حيث:\n⭐⭐⭐⭐⭐ راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐ غير راض تماما\n\nشكرًا لتواصلكم معنا، ونتمنى لكم دوام الصحة والعافية.\n\nمع خالص التحية،\n*اسم الموظف*\nهنقرستيشن\n\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935",
         "macro_english": "Dear (Partner Name) Valued Partner,\n\nThank you for contacting HungerStation.\n\nWe would like to inform you that payments are processed according to the following schedule:\n\nFirst Payment: Covers sales from the 1st to the 15th of the month. And the transfer will be during the fourth week of the same month, excluding Fridays and Saturdays.\n\nSecond Payment: Covers sales from the 16th to the end of the month. And the transfer will be during the second week of the next month, excluding Fridays and Saturdays.\n\nWe apologize for any inconvenience and appreciate your understanding.\n\nThank you,\n*Employee Name*\nHungerstation\n\nContact Details:\nIssues with Orders: 920033935",
-        "keywords": []
+        "keywords": [
+          "مواعيد الدفع",
+          "وقت الدفع",
+          "متى تنزل الحوالات",
+          "دورة الدفع",
+          "وقت نزول الحوالة",
+          "payment cycle",
+          "transfer schedule",
+          "payout cycle",
+          "متى تنزل"
+        ]
       }
     ],
     "qa_override": true,
