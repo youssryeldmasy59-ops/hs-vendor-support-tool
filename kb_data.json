@@ -1043,30 +1043,24 @@
     "case_title": "Customer cancellation | إلغاء العميل والاعتراض على الطلبات الملغاة",
     "url": "https://hungerstation.knowledgeowl.com/home/issue-with-order--issue-with-order-",
     "ccr": "Live Order Inquiries -> Issue with order | مشكلة في الطلب -> Customer cancellation | إلغاء العميل",
-    "procedure_arabic": "يسعدنا إبلاغكم بأنه يمكنكم الآن تقديم الاعتراضات على الطلبات الملغاة مباشرة من خلال بوابة الشركاء باتباع الخطوات التالية:\n\n1- تسجيل الدخول باستخدام اسم المستخدم وكلمة المرور.\n2- الذهاب إلى قسم المالية.\n3- اختيار قسم مدفوعات طلبات الاعتراض.\n4- الضغط على رفع ملف طلبات اعتراض مجمّعة.\n5- تحميل قالب طلبات الاعتراض المجمّعة (ملف إكسل).\n6- إضافة أرقام الطلبات ورقم الفرع لكل طلب ترغب بالاعتراض عليه.\n7- رفع الملف بعد تعبئته.\n8- الضغط على زر إرسال الطلب لإكمال العملية.\n9- بعد إرسال الطلب.\n10- ستصلك رسالة بريد إلكتروني بمجرد الانتهاء من معالجة الطلب.\n\n- يمكنك أيضًا تحميل تقرير النتائج من قسم مدفوعات طلبات الاعتراض في صفحة المالية.\n- يرجى ملاحظة أن الطلبات المقدمة ستظهر فقط بعد اكتمال عملية المعالجة.\n\n◄ في حال حدوث خطأ عند رفع الملف ولم تتم معالجته يرجى التأكد من:\n1- استخدام قالب طلبات الاعتراض المجمّعة الذي تم تحميله من البوابة.\n2- عدم التعديل على تنسيق القالب.\n3- مراجعة الملف وإعادة رفعه مرة أخرى.",
-    "procedure_english": "We are pleased to inform you that you can now submit objections for canceled orders directly through the Vendor Portal by following these steps:\n\n1- Login using your username and password.\n2- Navigate to the “Finance” plug-in.\n3- Select the “Order Disputes Refund” section.\n4- Click on “Upload Bulk Order Disputes.”\n5- Download the “Bulk Dispute Template File.” (Excel format).\n6- Add the order numbers and branch ID for each order to be disputed.\n7- Upload the completed file.\n8- Click the “Submit Request” button to complete the process.\n9- After Submitting the Request.\n10- You will receive an email notification once the request has been processed.\n\n- You can also download the results report from the \"Order Disputes Refunds\" section in the Finance page.\n- Please note that submitted disputes will only appear after processing is completed.\n\n► If an Error Occurs When Uploading the File and It Cannot Be Processed Ensure:\n1- You are using the Bulk Disputes Template, which can be downloaded from the portal.\n2- Do not modify the template format.\n3- Review the file and try uploading it again.",
+    "procedure_arabic": "⚠️ تنبيه QA صارم لشات إلغاء العميل (Customer Cancellation):\n• في الشات: يمنع منعاً باتاً مشاركة خطوات الاعتراض أو النزاع مع الشريك في الشات!\n• الإجراء الإلزامي: الاكتفاء بإرسال الرد الجاهز المعتمد التالي فقط:\n\"يمكنك العثور على جميع تفاصيل المدفوعات في بوابة الشركاء. وفي حال لاحظت أي خطأ في الحسابات، لا تتردد في رفع تذكرة من هناك، وسنتأكد من حلها قبل دورة الدفع القادمة.\"\n* ملحوظة QA: استفسارات التعويضات (Compensation) هي الحالة الوحيدة المسموح فيها بمشاركة خطوات النزاع في الشات.",
+    "procedure_english": "⚠️ Strict QA Rule for Customer Cancellation inquiries:\n• In chat: Do NOT share dispute steps with the partner!\n• Mandatory Action: Send only the approved canned response:\n\"You can find all payment details in the vendor portal. In case you find a wrong accountability, please feel free to raise a ticket from there and we will make sure it will get resolved before the next payment cycle\"\n* Note: Compensation is the only exception where dispute steps may be shared in chat.",
     "internal_sop": "إجراء الدعم الداخلي المحدث رسمياً (Customer Cancellation New SOP):\n1. ممنوع منعاً باتاً تأكيد أحقية الشريك في التعويض من عدمها من قِبل موظف الدعم.\n2. في حال الإلغاء قبل استلام المندوب: يتم توجيه الشريك لبوابة الشركاء (قسم المالية ➔ مدفوعات طلبات الاعتراض ➔ رفع ملف الإكسل المعتمد).\n3. في حال الإلغاء بعد استلام المندوب: يُعتبر الطلب ناجحاً ويتم احتساب قيمته ضمن الحوالة الشهرية للشريك.\n4. في حال محادثات الشات المباشر: الرد بالماكرو السريع وتأكيد سبب الإلغاء دون توجيه لخطوات قديمة.",
     "full_content": "Customer cancellation | إلغاء العميل والاعتراض على الطلبات الملغاة\nيسعدنا إبلاغكم بأنه يمكنكم الآن تقديم الاعتراضات على الطلبات الملغاة مباشرة من خلال بوابة الشركاء باتباع الخطوات التالية:\n\nالخطوة ١ - الدخول إلى بوابة الشركاء:\n• قم بتسجيل الدخول باستخدام اسم المستخدم وكلمة المرور الخاصة بك.\n• انتقل إلى قسم \"المالية\".\n• اختر قسم \"مدفوعات طلبات الاعتراض\".\n• انقر على \"رفع ملف طلب تعويض على مجموعة طلبات\".\n\nالخطوة ٢ - تعبئة نموذج الطلب:\n• قم بتحميل \"قالب طلب تعويض على مجموعة طلبات\" (بصيغة إكسل).\n• أضف أرقام الطلبات ورقم الفرع لكل طلب ترغب في الاعتراض عليه.\n• قم برفع الملف بعد إكماله.\n\nالخطوة ٣ - إرسال الطلب:\n• اضغط على زر \"إرسال الطلب\" لإتمام العملية.\n\nبعد إرسال الطلب:\n• ستصلك رسالة بريد إلكتروني فور معالجة الطلب.\n• يمكنك أيضاً تنزيل تقرير النتائج من قسم \"مدفوعات طلبات الاعتراض\" في صفحة المالية.\n• يرجى ملاحظة أن الاعتراضات المقدَّمة ستظهر فقط بعد اكتمال المعالجة.\n\n⁂ في حال حدوث خطأ عند رفع الملف وعدم إمكانية معالجته:\n- تأكّد من أنك تستخدم نموذج طلب تعويض على مجموعة طلبات، والذي يمكن تنزيله من البوابة.\n- لا تقم بتغيير تنسيق النموذج.\n- راجع الملف وحاول رفعه مرة أخرى.",
     "sub_macros": [
       {
         "id": 1,
-        "title_arabic": "❌ قبل استلام المندوب (بوابة الشركاء - رفع اعتراض مجمع)",
-        "title_english": "Before Rider Pickup (Vendor Portal Dispute)",
-        "macro_arabic": "يسعدنا إبلاغكم بأنه يمكنكم الآن تقديم الاعتراضات على الطلبات الملغاة مباشرة من خلال بوابة الشركاء باتباع الخطوات التالية:\n\n1- تسجيل الدخول باستخدام اسم المستخدم وكلمة المرور.\n2- الذهاب إلى قسم المالية.\n3- اختيار قسم مدفوعات طلبات الاعتراض.\n4- الضغط على رفع ملف طلبات اعتراض مجمّعة.\n5- تحميل قالب طلبات الاعتراض المجمّعة (ملف إكسل).\n6- إضافة أرقام الطلبات ورقم الفرع لكل طلب ترغب بالاعتراض عليه.\n7- رفع الملف بعد تعبئته.\n8- الضغط على زر إرسال الطلب لإكمال العملية.\n9- بعد إرسال الطلب.\n10- ستصلك رسالة بريد إلكتروني بمجرد الانتهاء من معالجة الطلب.\n\n- يمكنك أيضًا تحميل تقرير النتائج من قسم مدفوعات طلبات الاعتراض في صفحة المالية.\n- يرجى ملاحظة أن الطلبات المقدمة ستظهر فقط بعد اكتمال عملية المعالجة.\n\n◄ في حال حدوث خطأ عند رفع الملف ولم تتم معالجته يرجى التأكد من:\n1- استخدام قالب طلبات الاعتراض المجمّعة الذي تم تحميله من البوابة.\n2- عدم التعديل على تنسيق القالب.\n3- مراجعة الملف وإعادة رفعه مرة أخرى.",
-        "macro_english": "We are pleased to inform you that you can now submit objections for canceled orders directly through the Vendor Portal by following these steps:\n\n1- Login using your username and password.\n2- Navigate to the “Finance” plug-in.\n3- Select the “Order Disputes Refund” section.\n4- Click on “Upload Bulk Order Disputes.”\n5- Download the “Bulk Dispute Template File.” (Excel format).\n6- Add the order numbers and branch ID for each order to be disputed.\n7- Upload the completed file.\n8- Click the “Submit Request” button to complete the process.\n9- After Submitting the Request.\n10- You will receive an email notification once the request has been processed.\n\n- You can also download the results report from the \"Order Disputes Refunds\" section in the Finance page.\n- Please note that submitted disputes will only appear after processing is completed.\n\n► If an Error Occurs When Uploading the File and It Cannot Be Processed Ensure:\n1- You are using the Bulk Disputes Template, which can be downloaded from the portal.\n2- Do not modify the template format.\n3- Review the file and try uploading it again.",
+        "title_arabic": "الرد الإلزامي المعتمد في الشات (حظر مشاركة خطوات النزاع)",
+        "title_english": "Mandatory Chat Canned Response",
+        "macro_arabic": "شريكنا العزيز،\n\nشكراً لتواصلك مع هنقرستيشن.\n\nيمكنك العثور على جميع تفاصيل المدفوعات في بوابة الشركاء. وفي حال لاحظت أي خطأ في الحسابات، لا تتردد في رفع تذكرة من هناك، وسنتأكد من حلها قبل دورة الدفع القادمة.\n\nبعد إغلاق التذكرة، سيظهر لكم إشعار لتقييم مستوى الخدمة من 1 إلى 5.\n\nنتمنى لكم دوام الصحة والعافية،\nهنقرستيشن",
+        "macro_english": "Dear Valued Partner,\n\nThank you for contacting Hungerstation.\n\nYou can find all payment details in the vendor portal. In case you find a wrong accountability, please feel free to raise a ticket from there and we will make sure it will get resolved before the next payment cycle.\n\nThank you for reaching out,\nHungerstation",
         "keywords": [
-          "قبل استلام",
-          "قبل الاستلام",
-          "قبل ما يستلم",
-          "قبل المندوب",
-          "بوابة الشركاء",
-          "اعتراض مجمع",
-          "رفع ملف",
-          "مالية",
-          "bulk dispute",
-          "before pickup",
-          "before rider",
-          "portal dispute"
+          "customer cancellation",
+          "الغاء العميل",
+          "طلب ملغي",
+          "خصم الطلب الملغي",
+          "اعتراض الغاء",
+          "بوابة الشركاء"
         ]
       },
       {
@@ -1106,7 +1100,10 @@
           "اعتذار سريع"
         ]
       }
-    ]
+    ],
+    "qa_override": true,
+    "qa_badge": "🟢 محدث رسميًا من QA البريد (أغسطس/سبتمبر 2026)",
+    "last_qa_date": "2026-08-16"
   },
   {
     "id": 46,
@@ -1440,55 +1437,56 @@
     "case_title": "Compensation | تعويض",
     "url": "https://hungerstation.knowledgeowl.com/home/invoice-inquiries-",
     "ccr": "Billing Inquiries -> Invoice inquiries | الاستعلام عن الفاتوره -> Compensation | تعويض",
-    "procedure_arabic": "شكرًا لتواصلك معنا بخصوص طلب التعويض. يرجى تزويدنا بالأدلة الداعمة (لقطات شاشة، مستندات، أو أي إثبات) حتى نتمكن من معالجة طلبك.",
-    "procedure_english": "your compensation request. Kindly provide supporting evidence (screenshots, documents, or any proof) so we can process your request.",
+    "procedure_arabic": "📌 الدليل الإلزامي لمعالجة طلبات التعويض (توجيهات QA الرسمية):\n1. قبل إرسال خطوات التعويض: يجب فحص رابط حالة الطلب في Operation Portal للتأكد إن كان الشريك قد رفع الطلب مسبقاً، لتجنب إعادة إرسال الماكرو وتكرار الخطوات.\n2. في حال مراجعة طلب تعويض مرفوض (Rejected Compensation):\n   أ) إذا كان الرفض بسبب نقص أو عدم وضوح الأدلة (insufficient/unclear evidence):\n      - نطلب من الشريك تزويدنا بأدلة إضافية أو أوضح، ونخبره بإمكانية إعادة المراجعة فور توفرها.\n      - ثم نقوم بتصعيد التذكرة لفريق الـ Dispute على CCR: [Payment Reconciliation].\n   ب) إذا كان الرفض لمخالفة معايير الجودة (quality standards):\n      - نعتذر للشريك ونوضح أنه لا يمكن اتخاذ إجراء إضافي لأن الطلب روجع بناءً على معايير الجودة المعتمدة.",
+    "procedure_english": "📌 Mandatory QA Guidelines for Compensation Handling:\n1. Before resending steps: Check dispute status link in Operation Portal to verify if ticket was already submitted.\n2. Handling Rejected Compensation:\n   A) If rejected due to insufficient/unclear evidence: Ask partner for clearer evidence, then escalate to Dispute Team on CCR: [Payment Reconciliation].\n   B) If rejected due to quality standards: Apologize and explain that no further action can be taken as decision is final based on approved standards.",
     "full_content": "Compensation Cases Verification and Handling SOP",
     "sub_macros": [
       {
         "id": 1,
-        "title_arabic": "📋 طلب الأدلة والمستندات الداعمة (Require Evidence)",
-        "title_english": "Request Supporting Evidence Macro",
-        "macro_arabic": "بخصوص طلب التعويض للطلب رقم [رقم الطلب]، وتأكيداً على حرصنا لحفظ كامل حقوقكم، يرجى تزويدنا بالفواتير وصور التلف أو الإثباتات المؤيدة لنتمكن من تصعيد التذكرة مباشرة ومتابعتها مع فريق النزاعات (Dispute Team).",
-        "macro_english": "Regarding compensation for order #[Order ID], kindly provide supporting invoices, receipts, or photos so we can escalate your case directly to the Dispute Team.",
+        "title_arabic": "طلب تعويض جديد (مشاركة خطوات البوابة والأدلة المطلوبة)",
+        "title_english": "New Compensation Request (Portal Steps)",
+        "macro_arabic": "شريكنا العزيز،\n\nشكراً لتواصلكم مع هنقرستيشن بخصوص طلب التعويض.\n\nيمكنكم رفع طلب التعويض ومتابعة حالته مباشرة عبر بوابة الشركاء باتباع الخطوات التالية:\n1. تسجيل الدخول إلى بوابة الشركاء (Partner Portal).\n2. الانتقال إلى قسم التقارير المالية والمدفوعات ➔ الاعتراضات والتعويضات.\n3. اختيار الطلب المعني وإرفاق الأدلة الداعمة (صور الفاتورة، تفاصيل الطلب، وملاحظات المشكلة).\n\nسيقوم فريق التعويضات بمراجعة الطلب والإفادة بالقرار النهائي.\n\nشكراً لتعاونكم معنا،\nهنقرستيشن",
+        "macro_english": "Dear Valued Partner,\n\nThank you for contacting Hungerstation regarding your compensation request.\n\nYou can submit and track your compensation request directly through the Partner Portal:\n1. Log in to the Partner Portal.\n2. Go to Financial Reports -> Disputes & Compensations.\n3. Select the affected order and attach supporting evidence (invoice photo, order details, remarks).\n\nOur team will review your submission and revert with the final outcome.\n\nBest regards,\nHungerstation",
         "keywords": [
-          "أدلة",
-          "اثبات",
-          "فواتير",
-          "صور",
-          "evidence",
-          "proof",
-          "receipts"
+          "رفع تعويض",
+          "خطوات التعويض",
+          "طلب تعويض",
+          "بوابة الشركاء تعويض",
+          "compensation steps"
         ]
       },
       {
         "id": 2,
-        "title_arabic": "❌ رفض التعويض لعدم استيفاء الشروط (Rejected Criteria)",
-        "title_english": "Compensation Criteria Not Met Macro",
-        "macro_arabic": "نعتذر لك عن أي إزعاج بخصوص طلب التعويض للطلب رقم [رقم الطلب]. نود إفادتكم بأنه بعد مراجعة الفريق المختص لحالة الطلب، تبيّن عدم استيفاء الشروط المعتمدة لقبول التعويض، ونأسف لعدم التمكن من تعويضكم عن هذا الطلب. شاكرين تفهمكم الدائم.",
-        "macro_english": "We apologize for any inconvenience regarding your compensation claim for order #[Order ID]. After review by the specialized disputes team, we regret to inform you that the order does not meet compensation criteria. Thank you for your understanding.",
+        "title_arabic": "طلب أدلة إضافية لتصعيد التعويض المرفوض (Dispute - Payment Reconciliation)",
+        "title_english": "Request Clearer Evidence for Rejected Compensation",
+        "macro_arabic": "شريكنا العزيز،\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nبالإشارة إلى طلب التعويض المرفوع للطلب رقم المذكور، نود إفادتكم بأنه بعد مراجعة الطلب تبين أن الأدلة المرفقة سابقاً غير مكتملة أو غير واضحة.\n\nيرجى تزويدنا بالمستندات والأدلة الإضافية الواضحة (مثل: صورة واضحة لفاتورة التحضير، لقطة شاشة للطلب، تفاصيل وقت التجهيز) حتى نتمكن من تصعيد التذكرة لفريق مراجعة الاعتراضات المالية والبت فيها في أقرب وقت.\n\nبانتظار تزويدنا بالمطلوب،\nهنقرستيشن",
+        "macro_english": "Dear Valued Partner,\n\nThank you for contacting Hungerstation.\n\nRegarding your compensation request for the specified order, our review indicates that the supporting evidence provided was incomplete or unclear.\n\nPlease provide clearer additional documentation (such as preparation receipt, order timestamps, and relevant proofs) so we can escalate your case to our Financial Dispute Review Team for further assessment.\n\nThank you for your cooperation,\nHungerstation",
         "keywords": [
-          "رفض",
-          "غير مستحق",
-          "شروط التعويض",
-          "rejected",
-          "criteria not met"
+          "مرفوض لعدم وضوح",
+          "أدلة إضافية",
+          "اثباتات",
+          "تصعيد الاعتراض",
+          "payment reconciliation"
         ]
       },
       {
         "id": 3,
-        "title_arabic": "🌐 توجيه لتقديم الاعتراض عبر بوابة الشركاء (خلال 48 ساعة)",
-        "title_english": "Vendor Portal Dispute Submission (48h Window)",
-        "macro_arabic": "يمكنكم تقديم طلب التعويض والاعتراض على الطلب رقم [رقم الطلب] مباشرة عبر بوابة الشركاء (قسم المالية ➔ مدفوعات طلبات الاعتراض) خلال 48 ساعة من تاريخ الطلب وسيتم مراجعتها من الفريق المالي واعتماد المستحق.",
-        "macro_english": "You can submit your compensation claim for order #[Order ID] directly via the Vendor Portal (Finance -> Order Disputes Refund) within 48 hours of order time.",
+        "title_arabic": "رفض التعويض النهائي لعدم مطابقة معايير الجودة المعتمدة",
+        "title_english": "Final Rejection - Quality Standards Not Met",
+        "macro_arabic": "شريكنا العزيز،\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nنعتذر لكم عن أي إزعاج، ونود التوضيح بأنه بعد فحص طلب التعويض من قبل الفريق المختص، تبيّن أن الطلب لا يستوفي معايير وضوابط الجودة المعتمدة للتعويضات، وبناءً على ذلك لا يمكن قبول طلب التعويض أو اتخاذ أي إجراء مالي إضافي.\n\nنقدر تفهمكم وتعاونكم الدائم معنا.\n\nمع أطيب التحيات،\nهنقرستيشن",
+        "macro_english": "Dear Valued Partner,\n\nThank you for contacting Hungerstation.\n\nWe apologize for any inconvenience caused. After thorough review by our specialized quality team, your compensation request was found not to meet the approved quality standards and criteria. Consequently, no compensation or further financial adjustment can be processed for this order.\n\nWe appreciate your understanding and continued partnership.\n\nBest regards,\nHungerstation",
         "keywords": [
-          "بوابة الشركاء",
-          "48 ساعة",
-          "portal",
-          "vendor portal"
+          "رفض نهائي",
+          "معايير الجودة",
+          "لا يستوفي",
+          "رفض التعويض"
         ]
       }
     ],
-    "internal_sop": "إجراءات التعامل مع طلبات التعويض (تحديث لتجنب الـ D-Sats):\n1. التحقق أولاً من حالة الطلب عبر رابط النزاعات (Order Disputes) برقم الطلب قبل إرسال أي خطوات للشريك.\n2. إذا كانت الحالة (Rejected): يتم الاعتذار للشريك مع توضيح سبب الرفض، ويُمنع منعاً باتاً إعادة إرسال خطوات التقديم أو نفس الماكرو.\n3. إذا كانت الحالة (Require Evidence): اطلب المستندات الداعمة باستخدام ماكرو طلب الأدلة ثم صعد التذكرة لفريق النزاعات.\n4. إذا تم تقديم الأدلة: استخدم ماكرو التحويل لقسم النزاعات."
+    "internal_sop": "إجراءات التعامل مع طلبات التعويض (تحديث لتجنب الـ D-Sats):\n1. التحقق أولاً من حالة الطلب عبر رابط النزاعات (Order Disputes) برقم الطلب قبل إرسال أي خطوات للشريك.\n2. إذا كانت الحالة (Rejected): يتم الاعتذار للشريك مع توضيح سبب الرفض، ويُمنع منعاً باتاً إعادة إرسال خطوات التقديم أو نفس الماكرو.\n3. إذا كانت الحالة (Require Evidence): اطلب المستندات الداعمة باستخدام ماكرو طلب الأدلة ثم صعد التذكرة لفريق النزاعات.\n4. إذا تم تقديم الأدلة: استخدم ماكرو التحويل لقسم النزاعات.",
+    "qa_override": true,
+    "qa_badge": "🟢 محدث رسميًا من QA البريد (إجراءات التعويض والنزاع)",
+    "last_qa_date": "2026-07-27"
   },
   {
     "id": 59,
@@ -1518,19 +1516,28 @@
     "case_title": "Payment not received by partner | لم يتم استلام الدفعة من قبل الشريك",
     "url": "https://hungerstation.knowledgeowl.com/home/payment-inquiries-",
     "ccr": "Billing Inquiries -> Payment inquiries | الاستفسار  عن طرق الدفع -> Payment not received by partner | لم يتم استلام الدفعة من قبل الشريك",
-    "procedure_arabic": "نحيطكم علماً بأن بعد الأطلاع على الفاتورة تبين بأن تم تحويل المبالغ المستحقة حيث ان المبيعات الألكترونية هي (  ) ريال يتم انقاص منها اجمالي فاتورة العمولات والرصيد السابق المستحق من الشهر السابق بمبلغ (  ) ريال ويتم انقاص منها مبلغ (  ) ريال وهو مبلغ العروض التي لديكم وصافي الرصيد المستحق هو (   )ريال.\n\nنعتذر عن أي إزعاج تسبب لكم.",
-    "procedure_english": "We would like to inform you that upon reviewing the invoice, it was found that the due amounts have been transferred. The e-sales amount is (  ) SAR, from which the total commission invoice and the previous balance due from the previous month are deducted by (  ) SAR. Additionally, an amount of (  ) SAR is deducted for the offers you have, and the net outstanding balance is (  ) SAR.\"\n\nApologies for any inconvenience caused to you.",
+    "procedure_arabic": "📌 إجراءات معالجة عدم استلام الحوالة أو رفضها من البنك (Rejected by Bank):\n1. التحقق من الحوالة والفاتورة في السيستم.\n2. عند وجود مشكلة في الحوالة أو طلب إعادة التحويل، يلزم إبلاغ الشريك بالشروط الـ 4 الإلزامية:\n   - أن يكون الآيبان (IBAN) مطبوعاً على خطاب رسمي من الشركة وموجهاً لهنقرستيشن.\n   - أن يكون اسم صاحب الحساب مطابقاً تماماً للاسم المسجل في البنك.\n   - أن يحتوي الخطاب على الختم الرسمي للمنشأة.\n   - أن يكون اسم المستفيد مطابقاً لاسم الشركة أو اسم المالك في السجل التجاري.\n3. بعد استلام المستندات والتأكد من صحتها، يتم رفع التذكرة لقسم المالية لإعادة التحويل.",
+    "procedure_english": "📌 SOP for Payment Not Received / Bank Rejection:\n1. Verify payout and invoice records in system.\n2. Require the 4 mandatory criteria for re-transfer:\n   - IBAN on company official letterhead addressed to Hungerstation.\n   - Account holder name exactly matching bank records.\n   - Official company seal/stamp included on the letter.\n   - Beneficiary matching commercial registration (CR) owner/company name.\n3. Escalate to Finance for re-dispatch upon document verification.",
     "full_content": "Payment not received by partner | لم يتم استلام الدفعة من قبل الشريك\nProcedure (English)\nIf the vendor reopen the case after guidance reply stating that they could not do the change from VP or they insisted on doing it from our end,we must do the request and do not reject it again.\nProcedure (Arabic)\nإذا قام الشريك بإعادة فتح التذكرة بعد التوجيه وذكر أنه لم يتمكن من إجراء التغيير من خلال بوابة الشركاء أو أصر على القيام به من جانبنا، يجب علينا تنفيذ الطلب وعدم رفضه مرة أخرى.\nMacro\n(English)\nMacro\n(Arabic)\nDear (Partner Name) Valued Partner,\nThank you for contacting Hungerstation.\nWe would like to inform you that upon reviewing the invoice, it was found that the due amounts have been transferred. The e-sales amount is (  ) SAR, from which the total commission invoice and the previous balance due from the previous month are deducted by (  ) SAR. Additionally, an amount of (  ) SAR is deducted for the offers you have, and the net outstanding balance is (  ) SAR.\"\nApologies for any inconvenience caused to you.\nI was honored to help you today, and I would like to explain to you that a notification will appear to you after the end of the Ticket to rate it from 1 to 5, so that\n⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied\n⭐ ⭐ ⭐ ⭐ Satisfied\n⭐ ⭐ ⭐ Neutral\n⭐ ⭐ Not satisfied\n⭐ Not completely satisfied\nThank you for contacting us\nI wish you good health and well-being\nThank you,\nEmployee Name\nHungerstation\nContact Details:\nIssues with Orders: 920033935\nشريكنا ( اسم الشريك ) العزيز\nشكراً لتواصلكم مع هنقرستيشن.\nنحيطكم علماً بأن بعد الأطلاع على الفاتورة تبين بأن تم تحويل المبالغ المستحقة حيث ان المبيعات الألكترونية هي (  ) ريال يتم انقاص منها اجمالي فاتورة العمولات والرصيد السابق المستحق من الشهر السابق بمبلغ (  ) ريال ويتم انقاص منها مبلغ (  ) ريال وهو مبلغ العروض التي لديكم وصافي الرصيد المستحق هو (   )ريال.\nنعتذر عن أي إزعاج تسبب لكم.\nتشرفت بمساعدتك اليوم، و احب اوضحلك ان راح يظهر لك اشعار بعد اغلاق التذكرة لتقييمها من 1 الى 5 بحيث\n⭐⭐⭐⭐⭐راض جدا\n⭐⭐⭐⭐ راض\n⭐⭐⭐ محايد\n⭐⭐ غير راض\n⭐غير راض تماما\nشكرا لتواصلك معنا اتمنى لك الصحه والعافيه مع السلامه\nشكراً\nاسم الموظف\nهنقرستيشن\nقنوات التواصل:\nشكاوي تتعلق بالطلبات : 920033935\nشكاوي تتعلق بالطلبات : 920033935\nExample\n302270347",
     "sub_macros": [
       {
         "id": 1,
-        "title_arabic": "الرد الرسمي المعتمد",
-        "title_english": "Primary Official Macro",
-        "macro_arabic": "نحيطكم علماً بأن بعد الأطلاع على الفاتورة تبين بأن تم تحويل المبالغ المستحقة حيث ان المبيعات الألكترونية هي (  ) ريال يتم انقاص منها اجمالي فاتورة العمولات والرصيد السابق المستحق من الشهر السابق بمبلغ (  ) ريال ويتم انقاص منها مبلغ (  ) ريال وهو مبلغ العروض التي لديكم وصافي الرصيد المستحق هو (   )ريال.\n\nنعتذر عن أي إزعاج تسبب لكم.",
-        "macro_english": "We would like to inform you that upon reviewing the invoice, it was found that the due amounts have been transferred. The e-sales amount is (  ) SAR, from which the total commission invoice and the previous balance due from the previous month are deducted by (  ) SAR. Additionally, an amount of (  ) SAR is deducted for the offers you have, and the net outstanding balance is (  ) SAR.\"\n\nApologies for any inconvenience caused to you.",
-        "keywords": []
+        "title_arabic": "طلب خطاب وتفاصيل الحساب لإعادة التحويل (الشروط الأربعة)",
+        "title_english": "Requirements for Bank Transfer Re-dispatch",
+        "macro_arabic": "شريكنا العزيز،\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nبخصوص استفساركم حول عدم استلام الحوالة المالية، نود إفادتكم بأنه تم التحقق من الحوالة، ولتتمكن الإدارة المالية من معالجة المشكلة وإعادة التحويل لحسابكم البنكي، نرجو التكرم بتزويدنا بالمستندات التالية:\n\n1. خطاب رسمي من المنشأة يتضمن رقم الآيبان (IBAN) وموجهاً لشركة هنقرستيشن.\n2. أن يكون اسم صاحب الحساب مطابقاً للاسم المعتمد لدى البنك.\n3. أن يحتوي الخطاب على الختم الرسمي المعتمد للمنشأة.\n4. أن يكون اسم المستفيد مطابقاً لاسم الشركة أو اسم المالك في السجل التجاري.\n\nبمجرد تزويدنا بالمطلوب، سنقوم برفع طلبكم للقسم المالي لإعادة التحويل فوراً.\n\nشكراً لتعاونكم معنا،\nهنقرستيشن",
+        "macro_english": "Dear Valued Partner,\n\nThank you for reaching out to Hungerstation.\n\nRegarding your inquiry concerning the unreceived bank transfer, our review indicates an issue with the payout dispatch. To enable our finance department to re-process and dispatch your transfer, kindly provide the following mandatory documents:\n\n1. An official company letter stating the IBAN, addressed to Hungerstation.\n2. Account holder name matching bank records.\n3. Official company stamp/seal on the letter.\n4. Beneficiary name matching the commercial registration (CR) or owner name.\n\nOnce provided, your ticket will be forwarded to Finance for immediate reprocessing.\n\nBest regards,\nHungerstation",
+        "keywords": [
+          "لم يتم استلام الدفعة",
+          "الحوالة مانزلت",
+          "حوالة بنكية",
+          "شروط اعادة التحويل",
+          "rejected by bank",
+          "خطاب ايبان"
+        ]
       }
-    ]
+    ],
+    "qa_override": true,
+    "qa_badge": "🟢 محدث رسميًا من QA البريد (شروط الحوالات المرفوضة)"
   },
   {
     "id": 61,
@@ -2014,29 +2021,30 @@
     "case_title": "Termination of premium listing | إنهاء الإدراج المتميز",
     "url": "https://hungerstation.knowledgeowl.com/home/premium-features-and-promotional-",
     "ccr": "Contract and Sales Inquiries -> Premium features and Promotional  |  الميزات الخاصة والصفقات الترويجية -> Termination of premium listing | إنهاء الإدراج المتميز",
-    "procedure_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
-    "procedure_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+    "procedure_arabic": "📌 تحديث الـ QA الرسمي لإنهاء الصفقات والعروض الترويجية وخدمة الاستلام بنفسك (Self Pick-up):\n• عند تواصل الشريك بخصوص:\n   - إلغاء صفقة أو إنهاء عرض ترويجي.\n   - الاشتراك أو إلغاء الاشتراك في خدمة الاستلام بنفسك (Self Pick-up).\n   - الاستفسار عن نسبة العمولة أو وقت التجهيز للصفقات.\n• ⚠️ يمنع منعاً باتاً تعديل أو إلغاء الصفقة من جانبنا في خدمة العملاء!\n• الإجراء الإلزامي: تصعيد التذكرة فوراً لمدير الحساب (Account Manager) على CCR: [Termination of a deal | إنهاء الصفقة].\n• الـ SLA الرسمي المعتمد لمدير الحساب على العروض والصفقات هو: يومين عمل (2 Business Days).",
+    "procedure_english": "📌 Official QA Update for Deals, Promotions & Self Pick-up Service:\n• When partner requests deal termination, subscribing/unsubscribing to Self Pick-up, or asks about applied commission:\n• Do NOT modify or cancel deals from support end!\n• Mandatory Action: Escalate immediately to Account Manager under CCR: [Termination of a deal].\n• Approved SLA for Account Managers on offers/deals: 2 Business Days.",
     "full_content": "AM Offers and Deals 10 Business Days SLA Policy",
     "sub_macros": [
       {
         "id": 1,
-        "title_arabic": "الرد الرسمي المعتمد (10 أيام عمل وفق اتفاقية العروض)",
-        "title_english": "Official AM Offers Macro (10 Business Days)",
-        "macro_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
-        "macro_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+        "title_arabic": "التصعيد الرسمي لمدير الحساب لإنهاء الصفقة / عرض (SLA يومين عمل)",
+        "title_english": "Escalate Deal Termination to AM (2 Business Days SLA)",
+        "macro_arabic": "شريكنا العزيز،\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nبخصوص طلبكم المتعلق بإنهاء الصفقة / تعديل العرض الترويجي الخاص بفرعكم، نود إفادتكم بأنه قد تم تصعيد الطلب مباشرة إلى مدير حسابكم (Account Manager) لاتخاذ الإجراءات اللازمة.\n\nسيقوم مدير الحساب بمتابعة طلبكم والتواصل معكم خلال يومين عمل.\n\nشكراً لتعاونكم معنا،\nهنقرستيشن",
+        "macro_english": "Dear Valued Partner,\n\nThank you for contacting Hungerstation.\n\nRegarding your request to terminate or adjust your promotional deal / Self Pick-up service, your request has been forwarded directly to your dedicated Account Manager for review and execution.\n\nYour Account Manager will follow up and contact you within two business days.\n\nBest regards,\nHungerstation",
         "keywords": [
-          "عروض",
-          "صفقة",
-          "ترويج",
-          "مدير الحساب",
-          "10 ايام",
-          "offers",
-          "deal",
-          "am"
+          "انهاء الصفقة",
+          "الغاء العرض",
+          "self pickup",
+          "استلم بنفسك",
+          "termination of a deal",
+          "ايقاف العرض الترويجي"
         ]
       }
     ],
-    "internal_sop": "تحديث الـ SLA لمدراء الحسابات (AM - العروض): يطبق على حالات العروض والصفقات والترويج المميز. مدة الاستجابة 10 أيام عمل باستثناء الجمعة والسبت وفق اتفاقية العروض الموقعة."
+    "internal_sop": "تحديث الـ SLA لمدراء الحسابات (AM - العروض): يطبق على حالات العروض والصفقات والترويج المميز. مدة الاستجابة 10 أيام عمل باستثناء الجمعة والسبت وفق اتفاقية العروض الموقعة.",
+    "qa_override": true,
+    "qa_badge": "🟢 محدث رسميًا من QA البريد (إلغاء الصفقات و Self Pick-up)",
+    "last_qa_date": "2026-02-03"
   },
   {
     "id": 79,
@@ -2076,29 +2084,30 @@
     "case_title": "Termination of a deal | إنهاء الصفقة",
     "url": "https://hungerstation.knowledgeowl.com/home/premium-features-and-promotional-",
     "ccr": "Contract and Sales Inquiries -> Premium features and Promotional  |  الميزات الخاصة والصفقات الترويجية -> Termination of a deal | إنهاء الصفقة",
-    "procedure_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
-    "procedure_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+    "procedure_arabic": "📌 تحديث الـ QA الرسمي لإنهاء الصفقات والعروض الترويجية وخدمة الاستلام بنفسك (Self Pick-up):\n• عند تواصل الشريك بخصوص:\n   - إلغاء صفقة أو إنهاء عرض ترويجي.\n   - الاشتراك أو إلغاء الاشتراك في خدمة الاستلام بنفسك (Self Pick-up).\n   - الاستفسار عن نسبة العمولة أو وقت التجهيز للصفقات.\n• ⚠️ يمنع منعاً باتاً تعديل أو إلغاء الصفقة من جانبنا في خدمة العملاء!\n• الإجراء الإلزامي: تصعيد التذكرة فوراً لمدير الحساب (Account Manager) على CCR: [Termination of a deal | إنهاء الصفقة].\n• الـ SLA الرسمي المعتمد لمدير الحساب على العروض والصفقات هو: يومين عمل (2 Business Days).",
+    "procedure_english": "📌 Official QA Update for Deals, Promotions & Self Pick-up Service:\n• When partner requests deal termination, subscribing/unsubscribing to Self Pick-up, or asks about applied commission:\n• Do NOT modify or cancel deals from support end!\n• Mandatory Action: Escalate immediately to Account Manager under CCR: [Termination of a deal].\n• Approved SLA for Account Managers on offers/deals: 2 Business Days.",
     "full_content": "AM Offers and Deals 10 Business Days SLA Policy",
     "sub_macros": [
       {
         "id": 1,
-        "title_arabic": "الرد الرسمي المعتمد (10 أيام عمل وفق اتفاقية العروض)",
-        "title_english": "Official AM Offers Macro (10 Business Days)",
-        "macro_arabic": "لقد تم تحويل طلبكم إلى مدير الحساب، حيث سيقوم بمتابعة طلبكم، وسيتم التواصل معكم خلال 10 أيام عمل باستثناء يومي الجمعة والسبت، وذلك وفق الجدول الزمني المتفق عليه في اتفاقية العروض التي قمتم بالتوقيع عليها.",
-        "macro_english": "Your request has been forwarded to your Account Manager. He/she will assist in resolving the request and contact you within 10 business days excluding Friday and Saturday, according to the signed offers agreement.",
+        "title_arabic": "التصعيد الرسمي لمدير الحساب لإنهاء الصفقة / عرض (SLA يومين عمل)",
+        "title_english": "Escalate Deal Termination to AM (2 Business Days SLA)",
+        "macro_arabic": "شريكنا العزيز،\n\nشكراً لتواصلكم مع هنقرستيشن.\n\nبخصوص طلبكم المتعلق بإنهاء الصفقة / تعديل العرض الترويجي الخاص بفرعكم، نود إفادتكم بأنه قد تم تصعيد الطلب مباشرة إلى مدير حسابكم (Account Manager) لاتخاذ الإجراءات اللازمة.\n\nسيقوم مدير الحساب بمتابعة طلبكم والتواصل معكم خلال يومين عمل.\n\nشكراً لتعاونكم معنا،\nهنقرستيشن",
+        "macro_english": "Dear Valued Partner,\n\nThank you for contacting Hungerstation.\n\nRegarding your request to terminate or adjust your promotional deal / Self Pick-up service, your request has been forwarded directly to your dedicated Account Manager for review and execution.\n\nYour Account Manager will follow up and contact you within two business days.\n\nBest regards,\nHungerstation",
         "keywords": [
-          "عروض",
-          "صفقة",
-          "ترويج",
-          "مدير الحساب",
-          "10 ايام",
-          "offers",
-          "deal",
-          "am"
+          "انهاء الصفقة",
+          "الغاء العرض",
+          "self pickup",
+          "استلم بنفسك",
+          "termination of a deal",
+          "ايقاف العرض الترويجي"
         ]
       }
     ],
-    "internal_sop": "تحديث الـ SLA لمدراء الحسابات (AM - العروض): يطبق على حالات العروض والصفقات والترويج المميز. مدة الاستجابة 10 أيام عمل باستثناء الجمعة والسبت وفق اتفاقية العروض الموقعة."
+    "internal_sop": "تحديث الـ SLA لمدراء الحسابات (AM - العروض): يطبق على حالات العروض والصفقات والترويج المميز. مدة الاستجابة 10 أيام عمل باستثناء الجمعة والسبت وفق اتفاقية العروض الموقعة.",
+    "qa_override": true,
+    "qa_badge": "🟢 محدث رسميًا من QA البريد (إلغاء الصفقات و Self Pick-up)",
+    "last_qa_date": "2026-02-03"
   },
   {
     "id": 82,
