@@ -40,7 +40,6 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <!-- AI-Powered Instant Support & Smart Triage Engine -->
     <script src="ai_smart_support.js"></script>
-    <script src="bilingual_voice_engine.js"></script>
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -204,7 +203,7 @@
                 <h1>Hungerstation Vendor Support Suite</h1>
                 <p>المنصة التشغيلية المعتمدة لعمليات الدعم والمنيو وحالات الشركاء</p>
             </div>
-            <span class="version-badge">Production v22</span>
+            <span class="version-badge">Production v23</span>
         </div>
 
         <div class="header-controls">
@@ -2018,145 +2017,89 @@ var allCases = window.allCases = [];
             const studioCont = document.getElementById('menuStudioWorkspace');
             const policiesCont = document.getElementById('policiesWorkspace');
             const forensicsCont = document.getElementById('forensicsWorkspace');
+            const testBenchCont = document.getElementById('testBenchWorkspace');
+
             const btnTicket = document.getElementById('viewBtnTickets');
             const btnMenu = document.getElementById('viewBtnMenu');
             const btnPolicies = document.getElementById('viewBtnPolicies');
             const btnForensics = document.getElementById('viewBtnForensics');
-
-            
-            const testBenchCont = document.getElementById('testBenchWorkspace');
             const btnTestBench = document.getElementById('viewBtnTestBench');
 
-            if (mode === 'TEST_BENCH') {
-                if (ticketCont) ticketCont.style.display = 'none';
-                if (studioCont) studioCont.style.display = 'none';
-                if (policiesCont) policiesCont.style.display = 'none';
-                if (forensicsCont) forensicsCont.style.display = 'none';
-                if (testBenchCont) testBenchCont.style.display = 'block';
+            const allBtns = [btnTicket, btnMenu, btnPolicies, btnForensics, btnTestBench];
+            allBtns.forEach(b => {
+                if (b) {
+                    b.classList.remove('active');
+                    b.style.borderColor = 'transparent';
+                    b.style.boxShadow = 'none';
+                }
+            });
 
-                if (btnTicket) { btnTicket.style.borderColor = 'transparent'; btnTicket.style.background = '#1E293B'; btnTicket.style.color = '#94A3B8'; }
-                if (btnMenu) { btnMenu.style.borderColor = '#10B981'; btnMenu.style.background = 'rgba(16, 185, 129, 0.15)'; btnMenu.style.color = '#A7F3D0'; }
-                if (btnPolicies) { btnPolicies.style.borderColor = '#A855F7'; btnPolicies.style.background = 'rgba(168, 85, 247, 0.12)'; btnPolicies.style.color = '#C084FC'; }
-                if (btnForensics) { btnForensics.style.borderColor = '#F59E0B'; btnForensics.style.background = 'rgba(245, 158, 11, 0.12)'; btnForensics.style.color = '#F59E0B'; }
+            // 1. Hide all containers first
+            if (ticketCont) ticketCont.style.display = 'none';
+            if (studioCont) studioCont.style.display = 'none';
+            if (policiesCont) policiesCont.style.display = 'none';
+            if (forensicsCont) forensicsCont.style.display = 'none';
+            if (testBenchCont) testBenchCont.style.display = 'none';
+
+            if (mode === 'TEST_BENCH') {
+                if (testBenchCont) testBenchCont.style.display = 'block';
                 if (btnTestBench) {
+                    btnTestBench.classList.add('active');
                     btnTestBench.style.borderColor = '#8B5CF6';
                     btnTestBench.style.background = 'linear-gradient(135deg, rgba(139, 92, 246, 0.35) 0%, rgba(236, 72, 153, 0.45) 100%)';
                     btnTestBench.style.color = '#FFF';
                     btnTestBench.style.boxShadow = '0 4px 16px rgba(139, 92, 246, 0.4)';
                 }
-                if (typeof initTestBenchView === 'function') initTestBenchView();
+                try { if (typeof initTestBenchView === 'function') initTestBenchView(); } catch(e) { console.warn(e); }
                 return;
-            } else if (testBenchCont) {
-                testBenchCont.style.display = 'none';
-                if (btnTestBench) {
-                    btnTestBench.style.borderColor = 'rgba(139, 92, 246, 0.4)';
-                    btnTestBench.style.background = 'rgba(139, 92, 246, 0.15)';
-                    btnTestBench.style.color = '#C084FC';
-                    btnTestBench.style.boxShadow = 'none';
-                }
             }
 
             if (mode === 'FORENSICS') {
-                if (ticketCont) ticketCont.style.display = 'none';
-                if (studioCont) studioCont.style.display = 'none';
-                if (policiesCont) policiesCont.style.display = 'none';
                 if (forensicsCont) forensicsCont.style.display = 'block';
-
-                if (btnTicket) {
-                    btnTicket.style.borderColor = 'transparent';
-                    btnTicket.style.background = '#1E293B';
-                    btnTicket.style.color = '#94A3B8';
-                }
-                if (btnMenu) {
-                    btnMenu.style.borderColor = '#10B981';
-                    btnMenu.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.25) 100%)';
-                    btnMenu.style.color = '#A7F3D0';
-                }
-                if (btnPolicies) {
-                    btnPolicies.style.borderColor = '#A855F7';
-                    btnPolicies.style.background = 'rgba(168, 85, 247, 0.12)';
-                    btnPolicies.style.color = '#C084FC';
-                }
                 if (btnForensics) {
+                    btnForensics.classList.add('active');
                     btnForensics.style.borderColor = '#F59E0B';
                     btnForensics.style.background = 'linear-gradient(135deg, rgba(245, 158, 11, 0.3) 0%, rgba(217, 119, 6, 0.5) 100%)';
                     btnForensics.style.color = '#FFF';
                     btnForensics.style.boxShadow = '0 4px 16px rgba(245, 158, 11, 0.4)';
                 }
                 return;
-            } else if (forensicsCont) {
-                forensicsCont.style.display = 'none';
-                if (btnForensics) {
-                    btnForensics.style.borderColor = '#F59E0B';
-                    btnForensics.style.background = 'rgba(245, 158, 11, 0.12)';
-                    btnForensics.style.color = '#F59E0B';
-                    btnForensics.style.boxShadow = 'none';
-                }
             }
 
             if (mode === 'POLICIES') {
-                if (ticketCont) ticketCont.style.display = 'none';
-                if (studioCont) studioCont.style.display = 'none';
                 if (policiesCont) policiesCont.style.display = 'block';
-                if (forensicsCont) forensicsCont.style.display = 'none';
-
-                if (btnTicket) {
-                    btnTicket.style.borderColor = 'transparent';
-                    btnTicket.style.background = '#1E293B';
-                    btnTicket.style.color = '#94A3B8';
-                }
-                if (btnMenu) {
-                    btnMenu.style.borderColor = '#10B981';
-                    btnMenu.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.25) 100%)';
-                    btnMenu.style.color = '#A7F3D0';
-                }
                 if (btnPolicies) {
+                    btnPolicies.classList.add('active');
                     btnPolicies.style.borderColor = '#A855F7';
                     btnPolicies.style.background = 'linear-gradient(135deg, rgba(168, 85, 247, 0.3) 0%, rgba(124, 58, 237, 0.5) 100%)';
                     btnPolicies.style.color = '#FFF';
                     btnPolicies.style.boxShadow = '0 4px 16px rgba(168, 85, 247, 0.4)';
                 }
-                renderPoliciesCards();
+                try { if (typeof renderPoliciesCards === 'function') renderPoliciesCards(); } catch(e) { console.warn(e); }
                 return;
-            } else if (policiesCont) {
-                policiesCont.style.display = 'none';
-                if (btnPolicies) {
-                    btnPolicies.style.borderColor = '#A855F7';
-                    btnPolicies.style.background = 'rgba(168, 85, 247, 0.12)';
-                    btnPolicies.style.color = '#C084FC';
-                    btnPolicies.style.boxShadow = 'none';
-                }
             }
 
             if (mode === 'MENU_STUDIO') {
-                if (ticketCont) ticketCont.style.display = 'none';
                 if (studioCont) studioCont.style.display = 'block';
-                if (policiesCont) policiesCont.style.display = 'none';
-                if (forensicsCont) forensicsCont.style.display = 'none';
-                if (btnTicket) {
-                    btnTicket.style.borderColor = 'transparent';
-                    btnTicket.style.background = '#1E293B';
-                    btnTicket.style.color = '#94A3B8';
-                }
                 if (btnMenu) {
+                    btnMenu.classList.add('active');
                     btnMenu.style.borderColor = '#10B981';
-                    btnMenu.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.4) 100%)';
+                    btnMenu.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(5, 150, 105, 0.5) 100%)';
                     btnMenu.style.color = '#FFF';
+                    btnMenu.style.boxShadow = '0 4px 16px rgba(16, 185, 129, 0.4)';
                 }
-                renderStudioMenuPreviewTables();
-            } else {
-                if (ticketCont) ticketCont.style.display = 'grid';
-                if (studioCont) studioCont.style.display = 'none';
-                if (btnTicket) {
-                    btnTicket.style.borderColor = '#3B82F6';
-                    btnTicket.style.background = 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)';
-                    btnTicket.style.color = '#F8FAFC';
-                }
-                if (btnMenu) {
-                    btnMenu.style.borderColor = '#10B981';
-                    btnMenu.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.25) 100%)';
-                    btnMenu.style.color = '#A7F3D0';
-                }
+                try { if (typeof renderStudioMenuPreviewTables === 'function') renderStudioMenuPreviewTables(); } catch(e) { console.warn(e); }
+                return;
+            }
+
+            // Default: TICKETS
+            if (ticketCont) ticketCont.style.display = 'grid';
+            if (btnTicket) {
+                btnTicket.classList.add('active');
+                btnTicket.style.borderColor = '#3B82F6';
+                btnTicket.style.background = 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)';
+                btnTicket.style.color = '#F8FAFC';
+                btnTicket.style.boxShadow = '0 4px 16px rgba(59, 130, 246, 0.3)';
             }
         }
 
@@ -7521,7 +7464,8 @@ ${invoiceGuideHtml || ""}
         }
 
         function updateHistoryCount() {
-            document.getElementById('historyCountBadge').innerText = `السجل (${historyLog.length})`;
+            const badge = document.getElementById('historyCountBadge');
+            if (badge) badge.innerText = `السجل (${historyLog.length})`;
         }
 
         function showHistoryModal() {
@@ -18076,10 +18020,10 @@ function matchBilingualKnowledgeIntent(spokenText) {
 }
 
 // ── 3. Voice Language Mode State & Switcher ────────────────────────────
-let currentVoiceLanguageMode = localStorage.getItem('hs_voice_lang_mode') || 'AUTO_BILINGUAL';
+var currentVoiceLanguageMode = window.currentVoiceLanguageMode || localStorage.getItem('hs_voice_lang_mode') || 'AUTO_BILINGUAL';
 
 function changeVoiceLanguageMode(mode) {
-    currentVoiceLanguageMode = mode;
+    currentVoiceLanguageMode = window.currentVoiceLanguageMode = mode;
     localStorage.setItem('hs_voice_lang_mode', mode);
     const badge = document.getElementById('speechDetectedLangBadge');
     if (badge) {
@@ -18091,9 +18035,9 @@ function changeVoiceLanguageMode(mode) {
 }
 
 // ── 4. Main Bilingual Voice Recording Controller ──────────────────────
-let bilingualSpeechRecognizer = null;
-let isBilingualRecording = false;
-let bilingualAccumulatedText = '';
+var bilingualSpeechRecognizer = window.bilingualSpeechRecognizer || null;
+var isBilingualRecording = window.isBilingualRecording || false;
+var bilingualAccumulatedText = window.bilingualAccumulatedText || '';
 
 function toggleMainVoiceRecording() {
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;

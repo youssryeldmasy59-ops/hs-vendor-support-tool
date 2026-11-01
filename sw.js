@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hs-vendor-suite-v37-audit-release';
+const CACHE_NAME = 'hs-vendor-suite-v38-menu-studio-fix';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

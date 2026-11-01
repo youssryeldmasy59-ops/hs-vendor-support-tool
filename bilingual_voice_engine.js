@@ -179,10 +179,10 @@ function matchBilingualKnowledgeIntent(spokenText) {
 }
 
 // ── 3. Voice Language Mode State & Switcher ────────────────────────────
-let currentVoiceLanguageMode = localStorage.getItem('hs_voice_lang_mode') || 'AUTO_BILINGUAL';
+var currentVoiceLanguageMode = window.currentVoiceLanguageMode || localStorage.getItem('hs_voice_lang_mode') || 'AUTO_BILINGUAL';
 
 function changeVoiceLanguageMode(mode) {
-    currentVoiceLanguageMode = mode;
+    currentVoiceLanguageMode = window.currentVoiceLanguageMode = mode;
     localStorage.setItem('hs_voice_lang_mode', mode);
     const badge = document.getElementById('speechDetectedLangBadge');
     if (badge) {
@@ -194,9 +194,9 @@ function changeVoiceLanguageMode(mode) {
 }
 
 // ── 4. Main Bilingual Voice Recording Controller ──────────────────────
-let bilingualSpeechRecognizer = null;
-let isBilingualRecording = false;
-let bilingualAccumulatedText = '';
+var bilingualSpeechRecognizer = window.bilingualSpeechRecognizer || null;
+var isBilingualRecording = window.isBilingualRecording || false;
+var bilingualAccumulatedText = window.bilingualAccumulatedText || '';
 
 
 // ── Safe Lifecycle & Restart Handlers ─────────────────────────────────
