@@ -203,7 +203,7 @@
                 <h1>Hungerstation Vendor Support Suite</h1>
                 <p>المنصة التشغيلية المعتمدة لعمليات الدعم والمنيو وحالات الشركاء</p>
             </div>
-            <span class="version-badge">Production v23</span>
+            <span class="version-badge">Production v24</span>
         </div>
 
         <div class="header-controls">
@@ -8318,6 +8318,181 @@ https://drive.google.com/drive/folders/1A2B3C4D5E6F7G8H9-hungerstation-menu-phot
     parseRawMenuInput();
 }
 
+// 🍽️ UNIVERSAL DELIVERY SPEC & RAW MENU PARSER ENGINE (v2026)
+function parseUniversalDeliverySpecMenu(rawText) {
+    if (!rawText || !rawText.trim()) return null;
+    const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    const groups = [];
+    const items = [];
+    const modifiers = [];
+
+    const hasCategoryHeader = lines.some(l => l.includes('english category type') || l.includes('arabic category type'));
+    const hasProductSpecHeader = lines.some(l => l.includes('Product english name') || l.includes('item english name'));
+    const hasStructureMarkers = rawText.includes('Product ·') || rawText.includes('Choice Group') || rawText.includes('Option ·');
+
+    if (!hasCategoryHeader && !hasProductSpecHeader && !hasStructureMarkers) {
+        return null;
+    }
+
+    let section = 'NONE';
+    let currentChoiceGroup = null;
+
+    for (let line of lines) {
+        if (line.startsWith('#,english name') || line.includes('english category type')) {
+            section = 'GROUPS';
+            continue;
+        }
+        if (line.startsWith('#,Group. english name') || line.includes('max limit')) {
+            section = 'MOD_SPEC';
+            continue;
+        }
+        if (line.startsWith('#,menu group #') || line.includes('Product english name')) {
+            section = 'PRODUCTS';
+            continue;
+        }
+        if (line.startsWith('#') && !line.includes(',')) continue;
+
+        const cols = [];
+        let inQuotes = false;
+        let cur = '';
+        for (let i = 0; i < line.length; i++) {
+            const c = line[i];
+            if (c === '"') {
+                inQuotes = !inQuotes;
+            } else if (c === ',' && !inQuotes) {
+                cols.push(cur.trim());
+                cur = '';
+            } else {
+                cur += c;
+            }
+        }
+        cols.push(cur.trim());
+
+        if (section === 'GROUPS') {
+            const id = parseInt(cols[0], 10);
+            if (!isNaN(id) && cols[1] && cols[2]) {
+                groups.push({
+                    id,
+                    en_name: toEnglishProper(cols[1]),
+                    ar_name: cleanProperTrim(cols[2]),
+                    name_en: toEnglishProper(cols[1]),
+                    name_ar: cleanProperTrim(cols[2]),
+                    en_type: toEnglishProper(cols[3] || 'General'),
+                    ar_type: cleanProperTrim(cols[4] || 'عام'),
+                    order: id
+                });
+            }
+        } else if (section === 'PRODUCTS' || section === 'NONE') {
+            const grpId = parseInt(cols[1], 10) || 1;
+            const prodEn = cols[2] || '';
+            const prodAr = cols[3] || '';
+            const prodDescEn = cols[4] || '';
+            const prodDescAr = cols[5] || '';
+            const itemEn = cols[6] || '';
+            const itemAr = cols[7] || '';
+            const price = parseFloat(cols[10]) || 0;
+            const kcal = parseInt(cols[12], 10) || 0;
+            const allergens = cols[14] || 'No Allergens';
+
+            if (itemEn.toLowerCase() === 'old item' || itemAr.toLowerCase() === 'old item' || prodEn === '-' || prodAr === '-') {
+                continue;
+            }
+
+            const isProductRow = itemEn.includes('Product ·') || itemAr.includes('Product ·') || (!itemEn && !itemAr && prodEn && !prodEn.toLowerCase().includes('choice') && !prodEn.toLowerCase().includes('option'));
+            const isChoiceGroupRow = itemEn.includes('Choice Group') || itemAr.includes('Choice group') || itemAr.includes('مجموعة خيارات') || prodEn.toLowerCase().startsWith('choice') || prodEn.toLowerCase().startsWith('choose');
+            const isOptionRow = itemEn.includes('Option ·') || itemAr.includes('Option ·') || itemEn.includes('Patty') || itemAr.includes('خيار') || (!isProductRow && !isChoiceGroupRow && (itemEn || itemAr));
+
+            if (isProductRow) {
+                items.push({
+                    id: items.length + 1,
+                    group_id: grpId,
+                    prod_en: toEnglishProper(prodEn),
+                    prod_ar: cleanProperTrim(prodAr),
+                    name_en: toEnglishProper(prodEn),
+                    name_ar: cleanProperTrim(prodAr),
+                    item_en: toEnglishProper(prodEn),
+                    item_ar: cleanProperTrim(prodAr),
+                    desc_en: prodDescEn,
+                    desc_ar: prodDescAr,
+                    price: price > 0 ? price : 15,
+                    kcal: kcal > 0 ? kcal : 450,
+                    allergens: allergens || 'No Allergens'
+                });
+            } else if (isChoiceGroupRow) {
+                if (prodEn || prodAr) {
+                    currentChoiceGroup = {
+                        group_en: toEnglishProper(prodEn),
+                        group_ar: cleanProperTrim(prodAr)
+                    };
+                }
+            } else if (isOptionRow) {
+                const optEn = prodEn || itemEn.replace(/Option.*| خيار|\(|\)/gi, '').trim();
+                const optAr = prodAr || itemAr.replace(/Option.*| خيار|\(|\)/gi, '').trim();
+                if (optEn || optAr) {
+                    modifiers.push({
+                        id: modifiers.length + 1,
+                        group_en: currentChoiceGroup ? currentChoiceGroup.group_en : 'Options',
+                        group_ar: currentChoiceGroup ? currentChoiceGroup.group_ar : 'خيارات إضافية',
+                        group_name: (currentChoiceGroup ? currentChoiceGroup.group_ar : 'خيارات') + ' / ' + (currentChoiceGroup ? currentChoiceGroup.group_en : 'Options'),
+                        option_en: toEnglishProper(optEn),
+                        option_ar: cleanProperTrim(optAr),
+                        mod_en: toEnglishProper(optEn),
+                        mod_ar: cleanProperTrim(optAr),
+                        price,
+                        kcal,
+                        type: 'Optional',
+                        min_limit: 0,
+                        max_limit: 1
+                    });
+                }
+            }
+        }
+    }
+
+    if (items.length > 0) {
+        if (groups.length === 0) {
+            groups.push({ id: 1, en_name: 'Main Menu', ar_name: 'القائمة الرئيسية', name_en: 'Main Menu', name_ar: 'القائمة الرئيسية', en_type: 'General', ar_type: 'عام', order: 1 });
+        }
+        return { groups, items, modifiers };
+    }
+    return null;
+}
+window.parseUniversalDeliverySpecMenu = parseUniversalDeliverySpecMenu;
+
+function parseRawLineIntoItem(line) {
+    if (!line || !line.trim()) return null;
+    const s = line.trim();
+    const parts = s.includes('\t') ? s.split('\t') : (s.includes(',') ? s.split(',') : [s]);
+    if (parts.length >= 2) {
+        let name = parts[0].trim();
+        let price = 0;
+        let kcal = 0;
+        for (let i = 1; i < parts.length; i++) {
+            const p = parseFloat(String(parts[i]).replace(/[^0-9.]/g, ''));
+            if (!isNaN(p) && p > 0 && price === 0) price = p;
+            else if (!isNaN(p) && p > 0 && kcal === 0) kcal = Math.round(p);
+        }
+        const isAr = /[\u0600-\u06FF]/.test(name);
+        return {
+            ar_name: isAr ? cleanProperTrim(name) : (typeof smartTranslateToAr === 'function' ? smartTranslateToAr(name) : cleanProperTrim(name)),
+            en_name: isAr ? toEnglishProper(autoTranslateMenuText(name, 'EN') || name) : toEnglishProper(name),
+            price: price || 15,
+            kcal: kcal || 450
+        };
+    }
+    const numMatch = s.match(/\b\d+(\.\d+)?\b/g);
+    const p = numMatch && numMatch[0] ? parseFloat(numMatch[0]) : 15;
+    const cleanName = s.replace(/[-+]?\d+(\.\d+)?|\bSAR\b|\bSR\b|ريال|سعرة|kcal/gi, '').trim();
+    const isAr = /[\u0600-\u06FF]/.test(cleanName);
+    return {
+        ar_name: isAr ? cleanProperTrim(cleanName) : (typeof smartTranslateToAr === 'function' ? smartTranslateToAr(cleanName) : cleanProperTrim(cleanName)),
+        en_name: isAr ? toEnglishProper(autoTranslateMenuText(cleanName, 'EN') || cleanName) : toEnglishProper(cleanName),
+        price: p,
+        kcal: 450
+    };
+}
+window.parseRawLineIntoItem = parseRawLineIntoItem;
+
 function parseRawMenuInput() {
     const rawText = (document.getElementById('studioRawMenuInput') ? document.getElementById('studioRawMenuInput').value : '') || 
                     (document.getElementById('rawMenuInput') ? document.getElementById('rawMenuInput').value : '');
@@ -8328,6 +8503,19 @@ function parseRawMenuInput() {
     const extractedImgs = extractImageUrls(rawText);
     window.menuBuilderData.imageLinks = extractedImgs;
     renderExtractedImages();
+
+    // 1. First, check if input matches Hierarchical Delivery Spec / Multi-Table CSV
+    const specData = parseUniversalDeliverySpecMenu(rawText);
+    if (specData && specData.items.length > 0) {
+        window.menuBuilderData.groups = specData.groups;
+        window.menuBuilderData.items = specData.items;
+        window.menuBuilderData.modifiers = specData.modifiers;
+        if (typeof renderStudioMenuPreviewTables === 'function') renderStudioMenuPreviewTables();
+        if (typeof updateStudioHealthRadar === 'function') updateStudioHealthRadar();
+        runMenuPreflightSanityCheck();
+        showToast(`✨ تم استخراج وتفكيك المنيو الهيكلي بنجاح! (${specData.items.length}) صنف أساسي | (${specData.groups.length}) أقسام | (${specData.modifiers.length}) خيارات إضافات.`);
+        return;
+    }
 
     const lines = rawText.split('\n');
     const groups = [];
@@ -8649,57 +8837,153 @@ function processVendorMenuWorkbook(workbook) {
         const iName = sheetNames.find(s => s.toLowerCase().includes('product') || s.toLowerCase().includes('item'));
         if (iName && workbook.Sheets[iName]) {
             const iRows = XLSX.utils.sheet_to_json(workbook.Sheets[iName]);
-            iRows.forEach((r, idx) => {
-                const gid = parseInt(r['menu group # *'] || r['group_id'] || 1, 10);
-                const prodEn = r['Product english name *'] || '-';
-                const prodAr = r['Product arabic name *'] || '-';
-                const itemEn = cleanStr(r[' item english name *'] || r['item english name *'] || r['Item English'] || (prodEn !== '-' ? prodEn : ''));
-                const itemAr = cleanStr(r[' item arabic name *'] || r['item arabic name *'] || r['Item Arabic'] || (prodAr !== '-' ? prodAr : ''));
-                const descEn = cleanStr(r['item english desc '] || r['item english desc'] || r['Product english desc '] || '');
-                const descAr = cleanStr(r['item arabic desc '] || r['item arabic desc'] || r['Product arabic desc '] || '');
-                const p = cleanNum(r['price*'] || r['price'] || r['Price'] || 15, 15);
-                const k = Math.round(cleanNum(r['kcal '] || r['kcal'] || 0, 0));
-                const grp = groups.find(g => g.id === gid) || { ar_name: `قسم ${gid}`, en_name: `Group ${gid}` };
 
-                const rawAl = r['Allergens'] || r['allergens'] || '';
-                const normAllergens = typeof window.normalizeHungerstationAllergens === 'function' ? window.normalizeHungerstationAllergens(rawAl) : 'No Allergens';
-
-                items.push({
-                    id: idx + 1,
-                    group_id: gid,
-                    group_name: grp.ar_name + ' / ' + grp.en_name,
-                    prod_en: prodEn,
-                    prod_ar: prodAr,
-                    item_en: toEnglishProper(itemEn || itemAr),
-                    item_ar: cleanProperTrim(itemAr || itemEn),
-                    name_en: toEnglishProper(itemEn || itemAr),
-                    name_ar: cleanProperTrim(itemAr || itemEn),
-                    item_en_desc: descEn,
-                    item_ar_desc: descAr,
-                    desc_en: descEn,
-                    desc_ar: descAr,
-                    price: p,
-                    pickup_price: r['pickup_price'] ? cleanNum(r['pickup_price'], p) : '',
-                    kcal: k,
-                    calories: k,
-                    modifier_groups: r['modifier groups #'] || '',
-                    vendor_id: r['Vendor ID'] || `P${idx + 1}`,
-                    allergens: normAllergens,
-                    protein: cleanStr(r['Protein'] || r['protein'] || ''),
-                    full_fat: cleanStr(r['Full Fat'] || r['Fat'] || ''),
-                    saturated_fat: cleanStr(r['Saturated fat'] || ''),
-                    trans_fat: cleanStr(r['Trans Fat'] || ''),
-                    cholesterol: cleanStr(r['Cholesterol'] || ''),
-                    carbs: cleanStr(r['Carbohydrate'] || r['Carbs'] || ''),
-                    fiber: cleanStr(r['Fiber'] || ''),
-                    sugars: cleanStr(r['Total Sugers'] || r['Sugars'] || ''),
-                    added_sugars: cleanStr(r['Added Sugars'] || ''),
-                    salt: cleanStr(r['Salt'] || ''),
-                    sodium: cleanStr(r['Sodiom'] || r['Sodium'] || ''),
-                    caffeine: cleanStr(r['Caffeine'] || ''),
-                    dietary_preferences: cleanStr(r['Dietary Preferences'] || '')
-                });
+            // Check if sheet contains hierarchical delivery spec markers (Product · / Choice Group / Option)
+            const isHierarchicalDeliverySheet = iRows.some(r => {
+                const col = String(r[' item english name *'] || r['item english name *'] || '');
+                const colAr = String(r[' item arabic name *'] || r['item arabic name *'] || '');
+                return col.includes('Product ·') || col.includes('Choice Group') || col.includes('Option ·') || colAr.includes('مجموعة خيارات') || colAr.includes('خيار');
             });
+
+            if (isHierarchicalDeliverySheet) {
+                let curChoiceGroupEn = null;
+                let curChoiceGroupAr = null;
+                iRows.forEach((r, idx) => {
+                    const itemEnCol = cleanStr(r[' item english name *'] || r['item english name *'] || '');
+                    const itemArCol = cleanStr(r[' item arabic name *'] || r['item arabic name *'] || '');
+                    const prodEn = cleanStr(r['Product english name *'] || '');
+                    const prodAr = cleanStr(r['Product arabic name *'] || '');
+                    const gid = parseInt(r['menu group # *'] || r['group_id'] || 1, 10);
+                    const descEn = cleanStr(r['item english desc '] || r['item english desc'] || r['Product english desc '] || '');
+                    const descAr = cleanStr(r['item arabic desc '] || r['item arabic desc'] || r['Product arabic desc '] || '');
+                    const p = cleanNum(r['price*'] || r['price'] || r['Price'] || 0, 0);
+                    const k = Math.round(cleanNum(r['kcal '] || r['kcal'] || 0, 0));
+                    const grp = groups.find(g => g.id === gid) || { ar_name: `قسم ${gid}`, en_name: `Group ${gid}` };
+                    const rawAl = r['Allergens'] || r['allergens'] || '';
+                    const normAllergens = typeof window.normalizeHungerstationAllergens === 'function' ? window.normalizeHungerstationAllergens(rawAl) : 'No Allergens';
+
+                    if (itemEnCol.toLowerCase() === 'old item' || itemArCol.toLowerCase() === 'old item' || prodEn === '-' || prodAr === '-') {
+                        return;
+                    }
+
+                    const isProduct = itemEnCol.includes('Product ·') || itemArCol.includes('Product ·') || (!itemEnCol.includes('Choice Group') && !itemEnCol.includes('Option') && !itemArCol.includes('مجموعة خيارات') && !itemArCol.includes('خيار') && prodEn && !curChoiceGroupEn);
+                    const isChoice = itemEnCol.includes('Choice Group') || itemArCol.includes('مجموعة خيارات') || prodEn.toLowerCase().startsWith('choice group') || prodEn.toLowerCase().startsWith('choose your');
+                    const isOpt = itemEnCol.includes('Option') || itemArCol.includes('خيار') || (!isProduct && !isChoice && (itemEnCol || itemArCol || prodEn));
+
+                    if (isProduct) {
+                        curChoiceGroupEn = null;
+                        curChoiceGroupAr = null;
+                        const finalEn = toEnglishProper(prodEn || itemEnCol.replace(/Product\s*·\s*/i, ''));
+                        const finalAr = cleanProperTrim(prodAr || itemArCol.replace(/Product\s*·\s*صنف/i, ''));
+                        items.push({
+                            id: items.length + 1,
+                            group_id: gid,
+                            group_name: grp.ar_name + ' / ' + grp.en_name,
+                            prod_en: finalEn,
+                            prod_ar: finalAr,
+                            item_en: finalEn,
+                            item_ar: finalAr,
+                            name_en: finalEn,
+                            name_ar: finalAr,
+                            item_en_desc: descEn,
+                            item_ar_desc: descAr,
+                            desc_en: descEn,
+                            desc_ar: descAr,
+                            price: p > 0 ? p : 15,
+                            pickup_price: r['pickup_price'] ? cleanNum(r['pickup_price'], p) : '',
+                            kcal: k,
+                            calories: k,
+                            modifier_groups: r['modifier groups #'] || '',
+                            vendor_id: r['Vendor ID'] || `P${items.length + 1}`,
+                            allergens: normAllergens,
+                            protein: cleanStr(r['Protein'] || r['protein'] || ''),
+                            full_fat: cleanStr(r['Full Fat'] || r['Fat'] || ''),
+                            saturated_fat: cleanStr(r['Saturated fat'] || ''),
+                            trans_fat: cleanStr(r['Trans Fat'] || ''),
+                            cholesterol: cleanStr(r['Cholesterol'] || ''),
+                            carbs: cleanStr(r['Carbohydrate'] || r['Carbs'] || ''),
+                            fiber: cleanStr(r['Fiber'] || ''),
+                            sugars: cleanStr(r['Total Sugers'] || r['Sugars'] || ''),
+                            added_sugars: cleanStr(r['Added Sugars'] || ''),
+                            salt: cleanStr(r['Salt'] || ''),
+                            sodium: cleanStr(r['Sodiom'] || r['Sodium'] || ''),
+                            caffeine: cleanStr(r['Caffeine'] || ''),
+                            dietary_preferences: cleanStr(r['Dietary Preferences'] || '')
+                        });
+                    } else if (isChoice) {
+                        curChoiceGroupEn = prodEn || 'Options';
+                        curChoiceGroupAr = prodAr || 'خيارات';
+                    } else if (isOpt) {
+                        const optEn = toEnglishProper(prodEn || itemEnCol.replace(/Option\s*·\s*/i, '').replace(/\(Option\s*·\s*خيار\)/i, '').trim());
+                        const optAr = cleanProperTrim(prodAr || itemArCol.replace(/Option\s*·\s*/i, '').replace(/\(Option\s*·\s*خيار\)/i, '').trim());
+                        if (optEn || optAr) {
+                            modifiers.push({
+                                id: modifiers.length + 1,
+                                group_en: curChoiceGroupEn || 'Options',
+                                group_ar: curChoiceGroupAr || 'خيارات',
+                                name_en: optEn || optAr,
+                                name_ar: optAr || optEn,
+                                price: p,
+                                max_limit: 5,
+                                min_limit: 0,
+                                type: 'Optional'
+                            });
+                        }
+                    }
+                });
+            } else {
+                iRows.forEach((r, idx) => {
+                    const gid = parseInt(r['menu group # *'] || r['group_id'] || 1, 10);
+                    const prodEn = r['Product english name *'] || '-';
+                    const prodAr = r['Product arabic name *'] || '-';
+                    const itemEn = cleanStr(r[' item english name *'] || r['item english name *'] || r['Item English'] || (prodEn !== '-' ? prodEn : ''));
+                    const itemAr = cleanStr(r[' item arabic name *'] || r['item arabic name *'] || r['Item Arabic'] || (prodAr !== '-' ? prodAr : ''));
+                    const descEn = cleanStr(r['item english desc '] || r['item english desc'] || r['Product english desc '] || '');
+                    const descAr = cleanStr(r['item arabic desc '] || r['item arabic desc'] || r['Product arabic desc '] || '');
+                    const p = cleanNum(r['price*'] || r['price'] || r['Price'] || 15, 15);
+                    const k = Math.round(cleanNum(r['kcal '] || r['kcal'] || 0, 0));
+                    const grp = groups.find(g => g.id === gid) || { ar_name: `قسم ${gid}`, en_name: `Group ${gid}` };
+
+                    const rawAl = r['Allergens'] || r['allergens'] || '';
+                    const normAllergens = typeof window.normalizeHungerstationAllergens === 'function' ? window.normalizeHungerstationAllergens(rawAl) : 'No Allergens';
+
+                    items.push({
+                        id: idx + 1,
+                        group_id: gid,
+                        group_name: grp.ar_name + ' / ' + grp.en_name,
+                        prod_en: prodEn,
+                        prod_ar: prodAr,
+                        item_en: toEnglishProper(itemEn || itemAr),
+                        item_ar: cleanProperTrim(itemAr || itemEn),
+                        name_en: toEnglishProper(itemEn || itemAr),
+                        name_ar: cleanProperTrim(itemAr || itemEn),
+                        item_en_desc: descEn,
+                        item_ar_desc: descAr,
+                        desc_en: descEn,
+                        desc_ar: descAr,
+                        price: p,
+                        pickup_price: r['pickup_price'] ? cleanNum(r['pickup_price'], p) : '',
+                        kcal: k,
+                        calories: k,
+                        modifier_groups: r['modifier groups #'] || '',
+                        vendor_id: r['Vendor ID'] || `P${idx + 1}`,
+                        allergens: normAllergens,
+                        protein: cleanStr(r['Protein'] || r['protein'] || ''),
+                        full_fat: cleanStr(r['Full Fat'] || r['Fat'] || ''),
+                        saturated_fat: cleanStr(r['Saturated fat'] || ''),
+                        trans_fat: cleanStr(r['Trans Fat'] || ''),
+                        cholesterol: cleanStr(r['Cholesterol'] || ''),
+                        carbs: cleanStr(r['Carbohydrate'] || r['Carbs'] || ''),
+                        fiber: cleanStr(r['Fiber'] || ''),
+                        sugars: cleanStr(r['Total Sugers'] || r['Sugars'] || ''),
+                        added_sugars: cleanStr(r['Added Sugars'] || ''),
+                        salt: cleanStr(r['Salt'] || ''),
+                        sodium: cleanStr(r['Sodiom'] || r['Sodium'] || ''),
+                        caffeine: cleanStr(r['Caffeine'] || ''),
+                        dietary_preferences: cleanStr(r['Dietary Preferences'] || '')
+                    });
+                });
+            }
         }
     } else {
         // --- CASE B: UNIVERSAL OMNI-DISSECTOR FOR ALL VENDOR MENUS ---
@@ -16909,13 +17193,33 @@ function runMenuPreflightSanityCheck() {
         return;
     }
 
-    // Check 1: Duplicate Item Names
-    const seenNames = new Map();
+    // Check 0: Detect Misclassified Modifiers / Choice Groups in Items
+    items.forEach((it, idx) => {
+        const ar = (it.name_ar || '').toLowerCase();
+        const en = (it.name_en || '').toLowerCase();
+        if (ar.includes('choice group') || ar.includes('مجموعة خيارات') || 
+            en.includes('choice group') || en.includes('choice_group') ||
+            ar.includes('option ·') || ar.includes('(خيار') || ar.includes('(option') ||
+            en.includes('option ·') || en.includes('(option') || it.isModifier) {
+            currentSanityIssues.push({
+                type: 'ERROR',
+                itemIndex: idx,
+                field: 'type_classification',
+                title: `عنصر خيارات مصنف كصنف رئيسي خطأ: "${it.name_ar || it.name_en}"`,
+                desc: `تم اكتشاف خيار إضافات تم إدراجه كصنف رئيسي بالخطأ مما يسبب تكرار هائل (Error 422).`,
+                fix: 'نقل العنصر تلقائياً لقسم الإضافات والخيارات (1-Click Fix)'
+            });
+        }
+    });
+
+    // Check 1: Duplicate Item Names (Independent Arabic & English tracking)
+    const seenAr = new Map();
+    const seenEn = new Map();
     items.forEach((it, idx) => {
         const ar = (it.name_ar || '').trim().toLowerCase();
         const en = (it.name_en || '').trim().toLowerCase();
         if (ar) {
-            if (seenNames.has(ar)) {
+            if (seenAr.has(ar)) {
                 currentSanityIssues.push({
                     type: 'ERROR',
                     itemIndex: idx,
@@ -16924,10 +17228,10 @@ function runMenuPreflightSanityCheck() {
                     desc: `تكرار الاسم يسبب رفض السيستم Error 422 لعدم التفريق بين الأصناف.`,
                     fix: 'إضافة تمييز أو رقم للصنف المكرر'
                 });
-            } else seenNames.set(ar, idx);
+            } else seenAr.set(ar, idx);
         }
         if (en) {
-            if (seenNames.has(en)) {
+            if (seenEn.has(en)) {
                 currentSanityIssues.push({
                     type: 'ERROR',
                     itemIndex: idx,
@@ -16936,7 +17240,7 @@ function runMenuPreflightSanityCheck() {
                     desc: `System Error 422: duplicate item identity within store catalog.`,
                     fix: 'Append variation or size'
                 });
-            } else seenNames.set(en, idx);
+            } else seenEn.set(en, idx);
         }
     });
 
@@ -16966,7 +17270,7 @@ function runMenuPreflightSanityCheck() {
 
     // Check 3: Fractional or Decimal Calories (Hungerstation expects integers)
     items.forEach((it, idx) => {
-        const cal = String(it.calories || '').trim();
+        const cal = String(it.calories || it.kcal || '').trim();
         if (cal && cal !== '0' && cal.includes('.')) {
             currentSanityIssues.push({
                 type: 'WARNING',
@@ -16981,7 +17285,7 @@ function runMenuPreflightSanityCheck() {
 
     // Check 4: Empty Categories
     groups.forEach((g) => {
-        const gItems = items.filter(it => it.group_id == g.id || it.group_name_ar == g.name_ar);
+        const gItems = items.filter(it => it.group_id == g.id || it.group_name_ar == g.name_ar || (it.group_name && it.group_name.includes(g.name_ar)));
         if (gItems.length === 0) {
             currentSanityIssues.push({
                 type: 'WARNING',
@@ -17064,20 +17368,84 @@ function renderMenuSanityReport(itemCount, groupCount) {
 function autoFixMenuSanityIssues() {
     const data = window.menuBuilderData || { groups: [], items: [], modifiers: [] };
     let items = data.items || [];
+    let modifiers = data.modifiers || [];
 
-    // Fix Duplicate names by appending (2), (3)
-    const nameCount = {};
+    // Step 1: Detect and Purge Misclassified Modifiers / Choice Groups from items
+    const realItems = [];
+    let extractedModsCount = 0;
+    let activeGroupEn = 'Options';
+    let activeGroupAr = 'خيارات';
+
     items.forEach(it => {
-        const ar = (it.name_ar || '').trim();
-        if (ar) {
-            if (nameCount[ar]) {
-                nameCount[ar]++;
-                it.name_ar = `${ar} (${nameCount[ar]})`;
-            } else nameCount[ar] = 1;
+        const ar = (it.name_ar || it.item_ar || '').trim();
+        const en = (it.name_en || it.item_en || '').trim();
+        const lowAr = ar.toLowerCase();
+        const lowEn = en.toLowerCase();
+
+        const isChoiceGroup = lowAr.includes('choice group') || lowAr.includes('مجموعة خيارات') ||
+                              lowEn.includes('choice group') || lowEn.includes('choice_group');
+        const isOption = lowAr.includes('option ·') || lowAr.includes('(خيار') || lowAr.includes('(option') ||
+                         lowEn.includes('option ·') || lowEn.includes('(option') || lowEn.includes('patty)') ||
+                         it.isModifier;
+
+        if (isChoiceGroup) {
+            const cleanAr = ar.replace(/choice\s*group\s*·\s*مجموعة\s*خيارات/gi, '').replace(/choice\s*group/gi, '').trim() || 'خيارات';
+            const cleanEn = en.replace(/choice\s*group\s*·/gi, '').replace(/choice\s*group/gi, '').trim() || 'Options';
+            activeGroupAr = cleanAr || activeGroupAr;
+            activeGroupEn = cleanEn || activeGroupEn;
+            extractedModsCount++;
+        } else if (isOption) {
+            const cleanAr = ar.replace(/option\s*·\s*خيار/gi, '').replace(/\(option\s*·\s*خيار\)/gi, '').replace(/option\s*·/gi, '').trim();
+            const cleanEn = en.replace(/option\s*·/gi, '').replace(/\(option\s*·\s*خيار\)/gi, '').trim();
+            modifiers.push({
+                id: modifiers.length + 1,
+                group_ar: activeGroupAr,
+                group_en: activeGroupEn,
+                name_ar: cleanAr || cleanEn,
+                name_en: cleanEn || cleanAr,
+                price: parseFloat(it.price) || 0,
+                max_limit: 5,
+                min_limit: 0,
+                type: 'Optional'
+            });
+            extractedModsCount++;
+        } else {
+            realItems.push(it);
         }
     });
 
-    // Fix 0 prices to minimum 1.00
+    items = realItems;
+
+    // Step 2: Fix Duplicate Names in BOTH Arabic and English
+    const arCounts = {};
+    const enCounts = {};
+    items.forEach(it => {
+        const ar = (it.name_ar || '').trim();
+        if (ar) {
+            const key = ar.toLowerCase();
+            if (arCounts[key]) {
+                arCounts[key]++;
+                it.name_ar = `${ar} (${arCounts[key]})`;
+                if (it.item_ar) it.item_ar = it.name_ar;
+            } else {
+                arCounts[key] = 1;
+            }
+        }
+
+        const en = (it.name_en || '').trim();
+        if (en) {
+            const key = en.toLowerCase();
+            if (enCounts[key]) {
+                enCounts[key]++;
+                it.name_en = `${en} (${enCounts[key]})`;
+                if (it.item_en) it.item_en = it.name_en;
+            } else {
+                enCounts[key] = 1;
+            }
+        }
+    });
+
+    // Step 3: Fix 0 / Invalid Prices to minimum 1.00 SAR
     items.forEach(it => {
         let p = parseFloat(it.price);
         if (isNaN(p) || p <= 0) {
@@ -17085,22 +17453,34 @@ function autoFixMenuSanityIssues() {
         }
     });
 
-    // Fix fractional calories
+    // Step 4: Fix Fractional Calories (Round to integer)
     items.forEach(it => {
-        if (it.calories) {
-            const num = parseFloat(it.calories);
-            if (!isNaN(num)) it.calories = Math.round(num);
+        if (it.calories || it.kcal) {
+            const num = parseFloat(it.calories || it.kcal);
+            if (!isNaN(num)) {
+                it.calories = Math.round(num);
+                it.kcal = Math.round(num);
+            }
         }
     });
+
+    // Update global state
+    window.menuBuilderData.items = items;
+    window.menuBuilderData.modifiers = modifiers;
 
     // Re-render studio preview tables
     if (typeof window.renderStudioMenuPreviewTables === 'function') {
         window.renderStudioMenuPreviewTables();
     }
+    if (typeof window.updateStudioHealthRadar === 'function') {
+        window.updateStudioHealthRadar();
+    }
+    if (typeof updateMobileMockup === 'function') {
+        updateMobileMockup();
+    }
 
     runMenuPreflightSanityCheck();
-    updateMobileMockup();
-    showToast('تم تصحيح جميع أخطاء شيت المنيو تلقائياً بنجاح! 🛠️✨');
+    showToast(`🛠️ تم تصحيح جميع الأخطاء بنجاح! تم تنقية (${items.length}) صنف حقيقي ونقل (${extractedModsCount}) خيار لقسم الإضافات.`);
 }
 
 
@@ -17409,9 +17789,9 @@ window.addEventListener('beforeinstallprompt', (e) => {
     if (btn) btn.style.display = 'inline-flex';
 });
 
-if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=35')
+        navigator.serviceWorker.register('./sw.js?v=39')
             .then(() => console.log('✓ Service Worker Registered successfully.'))
             .catch(err => console.log('SW registration error:', err));
     });
@@ -20080,6 +20460,164 @@ function copyTabletDiagResult() {
     if (typeof playSuccessChime === 'function') playSuccessChime();
 }
 
+// ─────────────────────────────────────────────────────────────────────────
+// 🎙️ LIVE CALL WHISPERER AI ENGINE
+// ─────────────────────────────────────────────────────────────────────────
+var whispererActive = false;
+var whispererTimerInterval = null;
+var whispererSeconds = 0;
+var whispererRecognitionInstance = null;
+
+function openLiveCallWhispererModal() {
+    const m = document.getElementById('liveCallWhispererModal');
+    if (m) {
+        m.style.display = 'flex';
+        m.classList.add('active');
+    }
+}
+
+function closeLiveCallWhispererModal() {
+    const m = document.getElementById('liveCallWhispererModal');
+    if (m) {
+        m.style.display = 'none';
+        m.classList.remove('active');
+    }
+    if (whispererActive) {
+        toggleWhispererMic();
+    }
+}
+
+function toggleWhispererMic() {
+    const btn = document.getElementById('whispererToggleBtn');
+    const pill = document.getElementById('whispererStatusPill');
+    const timerBadge = document.getElementById('whispererTimerBadge');
+
+    if (!whispererActive) {
+        // Start Listening
+        whispererActive = true;
+        whispererSeconds = 0;
+        if (btn) {
+            btn.style.background = 'linear-gradient(135deg, #EF4444, #DC2626)';
+            btn.innerHTML = '<i class="fa-solid fa-microphone-slash"></i> <span>إيقاف الاستماع (Mic Off)</span>';
+        }
+        if (pill) {
+            pill.style.background = 'rgba(239, 68, 68, 0.2)';
+            pill.style.borderColor = '#EF4444';
+            pill.style.color = '#F87171';
+            pill.innerText = '🔴 جاري الاستماع الحي...';
+        }
+        whispererTimerInterval = setInterval(() => {
+            whispererSeconds++;
+            const mins = String(Math.floor(whispererSeconds / 60)).padStart(2, '0');
+            const secs = String(whispererSeconds % 60).padStart(2, '0');
+            if (timerBadge) timerBadge.innerText = `⏱️ ${mins}:${secs}`;
+        }, 1000);
+
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRec) {
+            try {
+                whispererRecognitionInstance = new SpeechRec();
+                whispererRecognitionInstance.continuous = true;
+                whispererRecognitionInstance.interimResults = true;
+                whispererRecognitionInstance.lang = 'ar-SA';
+                whispererRecognitionInstance.onresult = function(event) {
+                    let trans = '';
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        trans += event.results[i][0].transcript;
+                    }
+                    if (trans.trim()) {
+                        simulateWhispererSpeech(trans.trim(), 'نبرة الشريك: مستفسر 🧐');
+                    }
+                };
+                whispererRecognitionInstance.onerror = function() {};
+                whispererRecognitionInstance.start();
+            } catch(e) {
+                console.warn("SpeechRec error:", e);
+            }
+        }
+    } else {
+        // Stop Listening
+        whispererActive = false;
+        clearInterval(whispererTimerInterval);
+        if (whispererRecognitionInstance) {
+            try { whispererRecognitionInstance.stop(); } catch(e) {}
+            whispererRecognitionInstance = null;
+        }
+        if (btn) {
+            btn.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+            btn.innerHTML = '<i class="fa-solid fa-microphone"></i> <span>بدء الاستماع الحي (Mic On)</span>';
+        }
+        if (pill) {
+            pill.style.background = 'rgba(16,185,129,0.2)';
+            pill.style.borderColor = '#10B981';
+            pill.style.color = '#34D399';
+            pill.innerText = '● جاهز للاستماع';
+        }
+    }
+}
+
+function simulateWhispererSpeech(spokenText, sentiment) {
+    const box = document.getElementById('whispererTranscriptBox');
+    const sent = document.getElementById('whispererSentiment');
+    const promptBox = document.getElementById('whispererPromptText');
+    const badge = document.getElementById('whispererMatchedCaseBadge');
+    const objList = document.getElementById('whispererObjectionList');
+
+    if (box) box.innerText = `"${spokenText}"`;
+    if (sent && sentiment) sent.innerText = sentiment;
+
+    const low = spokenText.toLowerCase();
+    let reply = 'حياك الله شريكنا العزيز، طلبك قيد المتابعة مع الفريق المختص وسنوافيك بالرد فوراً.';
+    let matchedTitle = 'استفسار عام للشركاء';
+    let objectionHtml = '';
+
+    if (low.includes('إلغاء') || low.includes('الطلب اتلغى') || low.includes('مندوب استلم')) {
+        matchedTitle = 'الحالة #45 - إلغاء بعد استلام المندوب';
+        reply = 'حياك الله شريكنا العزيز، نحيطكم علماً بأن الطلب تم إلغاؤه بعد استلامه من المندوب؛ وبالتالي يُعتبر الطلب ناجح وسوف يتم احتساب قيمته كاملة ضمن الحوالة الشهرية الخاصة بكم بإذن الله.';
+        objectionHtml = '<div style="background: rgba(255,255,255,0.04); padding: 6px 10px; border-radius: 6px; border-left: 3px solid #38BDF8;"><strong>إذا قال الشريك "الفلوس مانزلتش في الحساب":</strong> وضح له أن الدورة المالية للتحويل أسبوعية وتظهر بكشف الحساب يوم الثلاثاء.</div>';
+    } else if (low.includes('فلوس') || low.includes('حوالة') || low.includes('مستحقات') || low.includes('رصيد')) {
+        matchedTitle = 'الاستفسارات المالية والمستحقات';
+        reply = 'أهلاً بك شريكنا العزيز، تحويلات المستحقات المالية تتم تلقائياً بحسب الجدول المعتمد. يمكنك الاطلاع على كشف الحساب وتفاصيل الفاتورة عبر بوابة الشركاء الرسمية مباشرة.';
+        objectionHtml = '<div style="background: rgba(255,255,255,0.04); padding: 6px 10px; border-radius: 6px; border-left: 3px solid #F59E0B;"><strong>إذا طالب الشريك بالتحويل الفوري:</strong> وضّح أن النظام البنكي مجدول ولا يمكن استثناء الحوالات يدوياً لحماية المطابقة المحاسبية.</div>';
+    } else if (low.includes('تابلت') || low.includes('طابعة') || low.includes('معلق') || low.includes('مش شغال')) {
+        matchedTitle = 'الدعم الفني للتابلت والطابعة';
+        reply = 'أهلاً بك، يرجى إعادة تشغيل التابلت والتأكد من الاتصال بشبكة Wi-Fi مستقرة، ثم تسجيل الخروج والدخول مجدداً لتحديث قائمة الطلبات فوراً.';
+        objectionHtml = '<div style="background: rgba(255,255,255,0.04); padding: 6px 10px; border-radius: 6px; border-left: 3px solid #10B981;"><strong>إذا قال "جربت ومشتغلش":</strong> قدم له كود الدعم الفني أو اطلب منه التحقق من صلاحية بلوتوث الطابعة.</div>';
+    } else {
+        matchedTitle = 'استفسار تشغيلي عام';
+        reply = `أهلاً بك شريكنا، تم استلام استفسارك بخصوص (${spokenText})، ونعمل على معالجته فوراً وفق السياسات المعتمدة لضمان أفضل تجربة لمتجركم.`;
+        objectionHtml = '<div style="background: rgba(255,255,255,0.04); padding: 6px 10px; border-radius: 6px; border-left: 3px solid #6366F1;"><strong>نصيحة للموظف:</strong> حافظ على نبرة هادئة ومطمئنة، وكرر اسم الشريك لتعزيز الثقة.</div>';
+    }
+
+    if (promptBox) promptBox.innerText = `"${reply}"`;
+    if (badge) badge.innerText = matchedTitle;
+    if (objList && objectionHtml) objList.innerHTML = objectionHtml;
+}
+
+function copyWhispererPrompt() {
+    const box = document.getElementById('whispererPromptText');
+    if (!box) return;
+    const txt = box.innerText.replace(/^"|"$/g, '').trim();
+    navigator.clipboard.writeText(txt);
+    showToast('📋 تم نسخ الرد المعتمد فوراً لحافظتك!');
+    if (typeof playSuccessChime === 'function') playSuccessChime();
+}
+
+function openWhispererCaseInMain() {
+    const box = document.getElementById('whispererTranscriptBox');
+    const text = box ? box.innerText.replace(/^"|"$/g, '').trim() : '';
+    closeLiveCallWhispererModal();
+    if (typeof switchMainWorkspace === 'function') {
+        switchMainWorkspace('tickets');
+    }
+    const qInput = document.getElementById('partnerQueryInput');
+    if (qInput && text) {
+        qInput.value = text;
+        if (typeof handleGenerateMacroClick === 'function') {
+            handleGenerateMacroClick();
+        }
+    }
+}
 
 // ─────────────────────────────────────────────────────────────────────────
 // 🍽️ MENU STUDIO PRO ENGINE (INTERACTIVE DATA GRID & SFDA COMPLIANCE)
