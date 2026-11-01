@@ -3579,6 +3579,23 @@ ${titles}
 // 🧠 UNIVERSAL PERSISTENT TRAINING & KNOWLEDGE MERGE ENGINE (v2026)
 // ═════════════════════════════════════════════════════════════════════════════
 function applyCustomTrainedKnowledge() {
+        // Ensure Special Cases 101, 102, 103 have default official macros
+        const c101 = embeddedKB.find(x => x.id === 101);
+        if (c101 && !c101.arabic_response) {
+            c101.arabic_response = "شريكنا العزيز،\n\nتم استلام طلبكم وتصعيده بنجاح إلى الفريق المعني للمتابعة واتخاذ الإجراء اللازم.\n\nبيانات التصعيد:\n- رقم التذكرة: (Ticket ID)\n- الفرع: (Vendor Name / ID)\n- الإجراء: جاري الفحص والرد خلال مهلة الـ SLA المعتمدة.\n\nشكراً لتواصلكم معنا،\nهنقرستيشن";
+            c101.english_response = "Dear Valued Partner,\n\nYour request has been received and successfully escalated to the concerned team for review and necessary action.\n\nEscalation Details:\n- Ticket ID: (Ticket ID)\n- Branch: (Vendor Name / ID)\n- Status: Under review within approved SLA.\n\nThank you for contacting HungerStation.";
+        }
+        const c102 = embeddedKB.find(x => x.id === 102);
+        if (c102 && !c102.arabic_response) {
+            c102.arabic_response = "شريكنا العزيز،\n\nمرحباً بكم في هنقرستيشن. بخصوص استفساركم حول تفعيل الحساب وبوابة الشركاء، نود إفادتكم بأنه تم التحقق من بيانات الفرع وتوجيه الطلب لفريق الإعداد (Onboarding Team) لمتابعة التفعيل.\n\nفي حال وجود أي نواقص في المستندات، سيتم التواصل معكم مباشرة عبر البريد الإلكتروني المسجل.\n\nشكراً لتواصلكم معنا،\nهنقرستيشن";
+            c102.english_response = "Dear Valued Partner,\n\nWelcome to HungerStation. Regarding your onboarding and portal inquiry, your request has been reviewed and routed to the Onboarding Team to complete the activation process.\n\nIf any additional documents are required, we will reach out to your registered email.\n\nThank you,\nHungerStation.";
+        }
+        const c103 = embeddedKB.find(x => x.id === 103);
+        if (c103 && !c103.arabic_response) {
+            c103.arabic_response = "شريكنا العزيز،\n\nبناءً على مراجعة سجلات الـ Terminal وحالة الفرع، نود توضيح سبب إغلاق الفرع عبر التطبيق:\n\n- السبب المسجل في النظام: يرجى التحقق من تسجيل الدخول (Check-in) والتأكد من اتصال الجهاز بشبكة الإنترنت واستقرار التيار الكهربائي.\n- لإعادة فتح الفرع: يمكنك فتح الفرع مباشرة عبر تطبيق الطابعة أو بوابة الشركاء في أي وقت.\n\nشكراً لتواصلكم معنا،\nهنقرستيشن";
+            c103.english_response = "Dear Valued Partner,\n\nBased on terminal logs review, here is the reason for branch closure on the app:\n\n- System Status: Please ensure check-in is completed, device is connected to the internet, and power supply is stable.\n- Reopening: You can reopen the branch directly via the terminal app or Partner Portal anytime.\n\nThank you,\nHungerStation.";
+        }
+
     try {
         // 1. Merge Custom Trained Cases into embeddedKB
         const customCasesStr = localStorage.getItem('hs_custom_cases');
@@ -3620,6 +3637,7 @@ function applyCustomTrainedKnowledge() {
     }
 }
 window.applyCustomTrainedKnowledge = applyCustomTrainedKnowledge;
+applyCustomTrainedKnowledge();
 
 async function loadKBData() {
             try {
@@ -5276,18 +5294,30 @@ function cleanArabicProcedure(text) {
                 const smTitle = ((sm.title_arabic || '') + ' ' + (sm.title_english || '')).toLowerCase();
                 const sId = String(sm.id || '').toLowerCase();
 
-                // High priority scenario intent keywords
-                if (q.includes('موافق') || q.includes('موافقة') || q.includes('اعتمد') || q.includes('agree') || q.includes('approved')) {
-                    if (smTitle.includes('موافق') || smTitle.includes('agree') || smTitle.includes('قبول')) score += 10;
+                // High priority scenario intent keywords (Covers all Arabic stems, plurals & colloquials)
+                const isApproval = /موافق|موافقة|موافقين|نوافق|أوافق|يوافق|اعتمد|اعتمدنا|تم الاعتماد|اخصم|اخصموا|اخصموها|من المستحقات|agree|agreed|approved|accept|accepted/i.test(q);
+                if (isApproval) {
+                    if (smTitle.includes('موافق') || smTitle.includes('agree') || smTitle.includes('قبول')) score += 12;
                 }
-                if (q.includes('رفض') || q.includes('رافض') || q.includes('ما اوافق') || q.includes('مش موافق') || q.includes('refuse') || q.includes('rejected')) {
-                    if (smTitle.includes('رفض') || smTitle.includes('refuse')) score += 10;
+
+                const isRejection = /رفض|رافض|رافضين|نرفض|أرفض|ما اوافق|مش موافق|ما نوافق|مش موافقين|لن ندفع|مش هدفع|غالية|كبيرة|غير موافق|refuse|refused|reject|rejected|decline/i.test(q);
+                if (isRejection) {
+                    if (smTitle.includes('رفض') || smTitle.includes('refuse')) score += 12;
                 }
-                if (q.includes('بعد') || q.includes('استلم') || q.includes('اخذ') || q.includes('طلع') || q.includes('خرج') || q.includes('after')) {
-                    if (smTitle.includes('بعد') || smTitle.includes('after') || sId.includes('after')) score += 10;
+
+                const isAfterArrival = /بعد|استلم|استلمه|اخذ|اخذه|طلع|خرج|وصل السائق|بعد وصول|تم التجهيز|في الطريق|سلمناه|سلمت|after|picked up|delivered|arrived/i.test(q);
+                if (isAfterArrival) {
+                    if (smTitle.includes('بعد') || smTitle.includes('after') || sId.includes('after')) score += 12;
                 }
-                if (q.includes('قبل') || q.includes('ما استلم') || q.includes('ما وصل') || q.includes('لسه') || q.includes('داخل المحل') || q.includes('before')) {
-                    if (smTitle.includes('قبل') || smTitle.includes('before') || sId.includes('before')) score += 10;
+
+                const isBeforeArrival = /قبل|ما استلم|ما وصل|لسه|داخل المحل|في المطبخ|قبل وصول|ما جاء|لم يحضر|ما استلمه|before|not arrived|preparing/i.test(q);
+                if (isBeforeArrival) {
+                    if (smTitle.includes('قبل') || smTitle.includes('before') || sId.includes('before')) score += 12;
+                }
+
+                const isStolenOrLost = /سرقة|اتسرق|مسروق|انسرق|ضاع|ضاعت|مفقود|مفقودة|محضر|تالف|مكسور|stolen|lost|broken|damaged/i.test(q);
+                if (isStolenOrLost) {
+                    if (smTitle.includes('سرقة') || smTitle.includes('مفقود') || smTitle.includes('stolen') || smTitle.includes('lost') || sId.includes('stolen')) score += 12;
                 }
 
                 if (sm.keywords && Array.isArray(sm.keywords)) {
@@ -9734,8 +9764,8 @@ function loadCaseForTraining() {
     if (titleInput) titleInput.value = target.case_title || '';
     if (kwInput) kwInput.value = Array.isArray(target.keywords) ? target.keywords.join(', ') : (target.keywords || '');
     if (procInput) procInput.value = target.procedure_arabic || target.full_content || '';
-    if (macroArInput) macroArInput.value = target.arabic_response || '';
-    if (macroEnInput) macroEnInput.value = target.english_response || '';
+    if (macroArInput) macroArInput.value = target.arabic_response || target.procedure_arabic || '';
+    if (macroEnInput) macroEnInput.value = target.english_response || target.procedure_english || '';
 }
 window.loadCaseForTraining = loadCaseForTraining;
 
@@ -10056,7 +10086,7 @@ function simulateVendorQueryMatching() {
 
     titleEl.textContent = `[كيس #${bestCase.id}] ${bestCase.case_title}`;
     badgeEl.textContent = subMacro ? `ماكرو: ${subMacro.title_arabic}` : 'الماكرو العام';
-    previewEl.textContent = subMacro ? subMacro.arabic_response : bestCase.arabic_response;
+    previewEl.textContent = subMacro ? (subMacro.macro_arabic || subMacro.arabic_response || '') : (bestCase.arabic_response || bestCase.procedure_arabic || '');
     resultBox.style.display = 'block';
 
     if (typeof showToast === 'function') {
