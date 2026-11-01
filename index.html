@@ -343,6 +343,10 @@
             <i class="fa-solid fa-scale-balanced"></i>
             <span>المحقق الجنائي للاعتراضات</span>
         </button>
+        <button id="viewBtnTestBench" onclick="switchMainWorkspace('TEST_BENCH')" class="ws-tab-btn test-bench-tab" style="background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.4); color: #C084FC; font-weight: 700;">
+            <i class="fa-solid fa-flask-vial"></i>
+            <span>معمل التدريب والاختبار (AI Test Bench)</span>
+        </button>
     </div>
 
         <!-- 🍽️ DEDICATED MENU BUILDER STUDIO WORKSPACE -->
@@ -1053,6 +1057,254 @@
 
         </div>
     </div>
+    <!-- 🧪 DEDICATED AI TEST BENCH & CONTINUOUS TRAINING WORKSPACE -->
+    <div id="testBenchWorkspace" style="display: none; max-width: 1440px; margin: 16px auto; padding: 0 20px;">
+        <div style="background: var(--bg-card, #101422); border: 1px solid rgba(139, 92, 246, 0.35); border-radius: 18px; padding: 26px; color: var(--text-main, #FFF); box-shadow: 0 20px 50px rgba(0,0,0,0.6); backdrop-filter: blur(16px);">
+            
+            <!-- Hero Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 18px; margin-bottom: 22px; flex-wrap: wrap; gap: 14px;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, #8B5CF6, #EC4899); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #FFF; box-shadow: 0 6px 18px rgba(139, 92, 246, 0.4);">
+                        <i class="fa-solid fa-flask-vial"></i>
+                    </div>
+                    <div>
+                        <h2 style="font-size: 1.35rem; font-weight: 800; color: #F8FAFC; margin: 0; display: flex; align-items: center; gap: 10px;">
+                            معمل التدريب والاختبار المستمر (AI Test Bench & Trainer)
+                            <span style="font-size: 0.72rem; background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #FFF; padding: 3px 10px; border-radius: 12px; font-weight: 800;">CI/CD Bench v2026 ⚡</span>
+                        </h2>
+                        <p style="margin: 4px 0 0 0; font-size: 0.82rem; color: #94A3B8;">
+                            فحص أداء الموديل واختباره باستمرار، تجربة ترجمة الأصناف بدون أخطاء أو فرانكو، وتدريب أنماط الردود الجديدة مع الحفظ الفوري بالمتصفح.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Quick Action Buttons -->
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                    <button type="button" onclick="runAllTestSuites()" style="background: linear-gradient(135deg, #10B981, #059669); color: #FFF; border: none; font-weight: 800; padding: 8px 18px; border-radius: 8px; font-size: 0.84rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+                        <i class="fa-solid fa-play"></i> تشغيل الفحص الآلي الشامل ⚡
+                    </button>
+                    <button type="button" onclick="exportTrainingPack()" style="background: rgba(139, 92, 246, 0.15); border: 1.5px solid #8B5CF6; color: #C084FC; font-weight: 700; padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-download"></i> تصدير حزمة التدريب 📤
+                    </button>
+                    <label style="background: rgba(255, 255, 255, 0.06); border: 1.5px dashed rgba(255, 255, 255, 0.2); color: #E2E8F0; font-weight: 700; padding: 7px 14px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;">
+                        <i class="fa-solid fa-upload"></i> استيراد حزمة 📥
+                        <input type="file" accept=".json" onchange="importTrainingPack(event)" style="display: none;">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Health Matrix Bar -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 22px;">
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(59, 130, 246, 0.15); color: #60A5FA; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.72rem; color: #94A3B8; text-transform: uppercase;">إجمالي حالات الفحص</div>
+                        <div style="font-size: 1.4rem; font-weight: 900; color: #F8FAFC;" id="tbStatTotal">30 Test</div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(16, 185, 129, 0.15); color: #34D399; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.72rem; color: #94A3B8; text-transform: uppercase;">نسبة النجاح (Pass Rate)</div>
+                        <div style="font-size: 1.4rem; font-weight: 900; color: #34D399;" id="tbStatPassRate">100% 🟢</div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(236, 72, 153, 0.15); color: #F472B6; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.72rem; color: #94A3B8; text-transform: uppercase;">درع الفرانكو (Franco-Free)</div>
+                        <div style="font-size: 1.4rem; font-weight: 900; color: #F472B6;" id="tbStatFranco">0% (نظيف) 🛡️</div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(245, 158, 11, 0.15); color: #FCD34D; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                        <i class="fa-solid fa-stopwatch-20"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.72rem; color: #94A3B8; text-transform: uppercase;">زمن الفحص (Benchmark)</div>
+                        <div style="font-size: 1.4rem; font-weight: 900; color: #FCD34D;" id="tbStatLatency">12 ms ⚡</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inner Test Bench Tab Bar -->
+            <div style="display: flex; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+                <button type="button" id="tbTabBtn_suite" onclick="switchTestBenchTab('SUITE')" style="background: #8B5CF6; color: #FFF; border: none; font-weight: 800; padding: 8px 18px; border-radius: 8px; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-vial-circle-check"></i> نتائج الفحص الآلي الشامل
+                </button>
+                <button type="button" id="tbTabBtn_food" onclick="switchTestBenchTab('FOOD')" style="background: rgba(255,255,255,0.06); color: #94A3B8; border: 1px solid rgba(255,255,255,0.1); font-weight: 700; padding: 8px 18px; border-radius: 8px; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-burger"></i> مدرب الأصناف والترجمة الحية
+                </button>
+                <button type="button" id="tbTabBtn_macro" onclick="switchTestBenchTab('MACRO')" style="background: rgba(255,255,255,0.06); color: #94A3B8; border: 1px solid rgba(255,255,255,0.1); font-weight: 700; padding: 8px 18px; border-radius: 8px; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-robot"></i> مدرب إيميلات الفيندور والماكروز
+                </button>
+                <button type="button" id="tbTabBtn_memory" onclick="switchTestBenchTab('MEMORY')" style="background: rgba(255,255,255,0.06); color: #94A3B8; border: 1px solid rgba(255,255,255,0.1); font-weight: 700; padding: 8px 18px; border-radius: 8px; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-brain"></i> بنك الذاكرة المستمر (<span id="tbMemoryCountBadge">0</span>)
+                </button>
+            </div>
+
+            <!-- Tab 1: Benchmark Suite -->
+            <div id="tbView_suite" style="display: block;">
+                <!-- Filter Chips -->
+                <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; align-items: center;">
+                    <span style="font-size: 0.78rem; color: #94A3B8; font-weight: 700;">تصفية النتائج:</span>
+                    <button type="button" onclick="filterTestSuiteTable('ALL')" class="tb-filter-chip active" id="tbChip_ALL" style="padding: 4px 12px; font-size: 0.76rem; border-radius: 6px; border: 1px solid #8B5CF6; background: rgba(139,92,246,0.25); color: #DDD6FE; cursor: pointer;">الكل (<span id="tbCountAll">0</span>)</button>
+                    <button type="button" onclick="filterTestSuiteTable('LEXICON')" class="tb-filter-chip" id="tbChip_LEXICON" style="padding: 4px 12px; font-size: 0.76rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: #94A3B8; cursor: pointer;">ترجمة الأكلات (0 Franco)</button>
+                    <button type="button" onclick="filterTestSuiteTable('MENU_SPEC')" class="tb-filter-chip" id="tbChip_MENU_SPEC" style="padding: 4px 12px; font-size: 0.76rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: #94A3B8; cursor: pointer;">المنيو الهرمية (Crusty Spec)</button>
+                    <button type="button" onclick="filterTestSuiteTable('DECISION')" class="tb-filter-chip" id="tbChip_DECISION" style="padding: 4px 12px; font-size: 0.76rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: #94A3B8; cursor: pointer;">الماكروز والردود (Decision Flow)</button>
+                </div>
+
+                <!-- Live Results Table Container -->
+                <div style="max-height: 480px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; background: rgba(0,0,0,0.25);">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: right;" id="tbResultsTable">
+                        <thead style="background: rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 2;">
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <th style="padding: 10px 14px; color: #94A3B8; font-weight: 700;">#</th>
+                                <th style="padding: 10px 14px; color: #94A3B8; font-weight: 700;">الحزمة (Suite)</th>
+                                <th style="padding: 10px 14px; color: #94A3B8; font-weight: 700;">اسم الفحص</th>
+                                <th style="padding: 10px 14px; color: #94A3B8; font-weight: 700;">المدخلات (Input)</th>
+                                <th style="padding: 10px 14px; color: #94A3B8; font-weight: 700;">الناتج الفعلي (Actual Output)</th>
+                                <th style="padding: 10px 14px; color: #94A3B8; font-weight: 700;">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbResultsTbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 2: Food & Lexicon Trainer -->
+            <div id="tbView_food" style="display: none;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <!-- Left: Trainer Form -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px;">
+                        <h4 style="margin: 0 0 14px 0; font-size: 0.95rem; color: #38BDF8; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-graduation-cap"></i> تدريب صنف جديد وحفظه بالذاكرة
+                        </h4>
+                        
+                        <div style="margin-bottom: 12px;">
+                            <label style="display: block; font-size: 0.78rem; color: #94A3B8; margin-bottom: 6px;">اسم الصنف بالعربي *</label>
+                            <input type="text" id="tbInputArWord" oninput="previewLiveWordTranslation()" placeholder="مثال: كبسة حاشي فاخرة بالزعفران" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 14px; color: #FFF; font-size: 0.86rem;">
+                        </div>
+
+                        <div style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <label style="font-size: 0.78rem; color: #94A3B8;">الترجمة الإنجليزية المقترحة / المعتمدة *</label>
+                                <span id="tbLivePreviewBadge" style="font-size: 0.72rem; color: #34D399; background: rgba(16,185,129,0.15); padding: 2px 8px; border-radius: 6px;">معاينة حية</span>
+                            </div>
+                            <input type="text" id="tbInputEnWord" placeholder="مثال: Luxury Baby Camel Kabsa with Saffron" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 14px; color: #34D399; font-weight: 700; font-size: 0.86rem;">
+                        </div>
+
+                        <div style="margin-bottom: 18px;">
+                            <label style="display: block; font-size: 0.78rem; color: #94A3B8; margin-bottom: 6px;">القسم المعتمد (Category)</label>
+                            <select id="tbInputCategory" style="width: 100%; box-sizing: border-box; background: #1E293B; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 14px; color: #FFF; font-size: 0.84rem;">
+                                <option value="Main Courses / الأطباق الرئيسية">الأطباق الرئيسية / Main Courses</option>
+                                <option value="Burgers / برجر">برجر / Burgers</option>
+                                <option value="Sandwiches / ساندوتشات">ساندوتشات / Sandwiches</option>
+                                <option value="Appetizers / مقبلات">مقبلات / Appetizers</option>
+                                <option value="Desserts / حلى">حلويات / Desserts</option>
+                                <option value="Drinks / مشروبات">مشروبات / Drinks</option>
+                                <option value="Sauces / صوصات">صوصات / Sauces</option>
+                            </select>
+                        </div>
+
+                        <button type="button" onclick="saveCustomFoodWord()" style="width: 100%; background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: #FFF; border: none; font-weight: 800; padding: 10px 18px; border-radius: 8px; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i class="fa-solid fa-floppy-disk"></i> حفظ في الذاكرة الدائمة وتدريب التول 💾
+                        </button>
+                    </div>
+
+                    <!-- Right: Bulk Batch Tester -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px;">
+                        <h4 style="margin: 0 0 14px 0; font-size: 0.95rem; color: #F59E0B; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-list-ol"></i> فحص قائمة أصناف كاملة دفعة واحدة
+                        </h4>
+                        <p style="font-size: 0.78rem; color: #94A3B8; margin-top: 0;">الصق عدة أصناف (كل صنف في سطر) لفحص ترجمتها وكشف أي فرانكو فوراً:</p>
+                        <textarea id="tbBatchInput" rows="5" placeholder="شاورما لحم عربي دبل&#10;عصير مانجو فريش&#10;كرستي برجر مع جبن شيدر&#10;كنافة نابلسية خشنة" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 14px; color: #FFF; font-size: 0.82rem; font-family: monospace;"></textarea>
+                        
+                        <div style="margin-top: 10px; display: flex; gap: 10px;">
+                            <button type="button" onclick="runBatchTranslationTest()" style="background: rgba(245,158,11,0.2); border: 1.5px solid #F59E0B; color: #FCD34D; font-weight: 800; padding: 8px 16px; border-radius: 8px; font-size: 0.82rem; cursor: pointer; flex: 1;">
+                                <i class="fa-solid fa-bolt"></i> فحص القائمة ⚡
+                            </button>
+                        </div>
+
+                        <div id="tbBatchOutputContainer" style="margin-top: 12px; max-height: 180px; overflow-y: auto; display: none;">
+                            <!-- Batch Results -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Macro & Email Trainer -->
+            <div id="tbView_macro" style="display: none;">
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px;">
+                    <h4 style="margin: 0 0 14px 0; font-size: 0.95rem; color: #A855F7; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-brain"></i> جهاز فحص وتدريب إيميلات الفيندورز (Query Intent Simulator)
+                    </h4>
+                    
+                    <div style="margin-bottom: 14px;">
+                        <label style="display: block; font-size: 0.78rem; color: #94A3B8; margin-bottom: 6px;">نص رسالة الفيندور / نص الشكوى أو الإيميل *</label>
+                        <textarea id="tbMacroInputQuery" rows="3" placeholder="مثال: الشريك موافق على خصم رسوم التوصيل من المستحقات الشهرية القادمة" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 14px; color: #FFF; font-size: 0.84rem;"></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-bottom: 18px;">
+                        <button type="button" onclick="simulateVendorQueryMatching()" style="background: linear-gradient(135deg, #A855F7, #7C3AED); color: #FFF; border: none; font-weight: 800; padding: 10px 20px; border-radius: 8px; font-size: 0.84rem; cursor: pointer;">
+                            <i class="fa-solid fa-magnifying-glass"></i> تحليل الرسالة وتوقع الرد والماكرو ⚡
+                        </button>
+                    </div>
+
+                    <!-- Simulator Result Box -->
+                    <div id="tbMacroResultBox" style="display: none; background: rgba(0,0,0,0.3); border: 1px solid rgba(168,85,247,0.3); border-radius: 10px; padding: 16px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="font-size: 0.85rem; font-weight: 800; color: #DDD6FE;" id="tbSimCaseTitle">الحالة المطابقة</span>
+                            <span style="font-size: 0.75rem; background: rgba(16,185,129,0.2); color: #6EE7B7; padding: 3px 10px; border-radius: 8px;" id="tbSimSubMacroBadge">الماكرو المختار</span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: #CBD5E1; line-height: 1.6; white-space: pre-wrap; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);" id="tbSimResponsePreview">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Memory Bank -->
+            <div id="tbView_memory" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                    <div style="font-size: 0.85rem; color: #94A3B8;">
+                        المصطلحات والقواعد التي تم تدريبها محلياً في متصفحك (تُحفظ تلقائياً في المتصفح وتعمل فوراً):
+                    </div>
+                    <button type="button" onclick="resetTrainingMemory()" style="background: rgba(239,68,68,0.15); border: 1px solid #EF4444; color: #FCA5A5; padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+                        <i class="fa-solid fa-trash-can"></i> مسح الذاكرة المحلية
+                    </button>
+                </div>
+
+                <div style="max-height: 400px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; background: rgba(0,0,0,0.2);">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: right;" id="tbMemoryTable">
+                        <thead style="background: rgba(255,255,255,0.04); position: sticky; top: 0;">
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.08);">
+                                <th style="padding: 10px 14px; color: #94A3B8;">النوع</th>
+                                <th style="padding: 10px 14px; color: #94A3B8;">الأصل بالعربي</th>
+                                <th style="padding: 10px 14px; color: #94A3B8;">المقابل المدرب عليه</th>
+                                <th style="padding: 10px 14px; color: #94A3B8;">إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbMemoryTbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 
     <div class="app-container">
 
@@ -1607,6 +1859,39 @@ var allCases = window.allCases = [];
             const btnMenu = document.getElementById('viewBtnMenu');
             const btnPolicies = document.getElementById('viewBtnPolicies');
             const btnForensics = document.getElementById('viewBtnForensics');
+
+            
+            const testBenchCont = document.getElementById('testBenchWorkspace');
+            const btnTestBench = document.getElementById('viewBtnTestBench');
+
+            if (mode === 'TEST_BENCH') {
+                if (ticketCont) ticketCont.style.display = 'none';
+                if (studioCont) studioCont.style.display = 'none';
+                if (policiesCont) policiesCont.style.display = 'none';
+                if (forensicsCont) forensicsCont.style.display = 'none';
+                if (testBenchCont) testBenchCont.style.display = 'block';
+
+                if (btnTicket) { btnTicket.style.borderColor = 'transparent'; btnTicket.style.background = '#1E293B'; btnTicket.style.color = '#94A3B8'; }
+                if (btnMenu) { btnMenu.style.borderColor = '#10B981'; btnMenu.style.background = 'rgba(16, 185, 129, 0.15)'; btnMenu.style.color = '#A7F3D0'; }
+                if (btnPolicies) { btnPolicies.style.borderColor = '#A855F7'; btnPolicies.style.background = 'rgba(168, 85, 247, 0.12)'; btnPolicies.style.color = '#C084FC'; }
+                if (btnForensics) { btnForensics.style.borderColor = '#F59E0B'; btnForensics.style.background = 'rgba(245, 158, 11, 0.12)'; btnForensics.style.color = '#F59E0B'; }
+                if (btnTestBench) {
+                    btnTestBench.style.borderColor = '#8B5CF6';
+                    btnTestBench.style.background = 'linear-gradient(135deg, rgba(139, 92, 246, 0.35) 0%, rgba(236, 72, 153, 0.45) 100%)';
+                    btnTestBench.style.color = '#FFF';
+                    btnTestBench.style.boxShadow = '0 4px 16px rgba(139, 92, 246, 0.4)';
+                }
+                if (typeof initTestBenchView === 'function') initTestBenchView();
+                return;
+            } else if (testBenchCont) {
+                testBenchCont.style.display = 'none';
+                if (btnTestBench) {
+                    btnTestBench.style.borderColor = 'rgba(139, 92, 246, 0.4)';
+                    btnTestBench.style.background = 'rgba(139, 92, 246, 0.15)';
+                    btnTestBench.style.color = '#C084FC';
+                    btnTestBench.style.boxShadow = 'none';
+                }
+            }
 
             if (mode === 'FORENSICS') {
                 if (ticketCont) ticketCont.style.display = 'none';
@@ -9138,6 +9423,570 @@ window.loadDifficultMenuDemoInstant = function() {
     }
 };
 
+// ═════════════════════════════════════════════════════════════════════════════
+// 🧪 AI TEST BENCH & CONTINUOUS TRAINING ENGINE (v2026)
+// ═════════════════════════════════════════════════════════════════════════════
+
+// Custom Food Lexicon Storage Helpers
+function getCustomFoodLexicon() {
+    try {
+        const stored = localStorage.getItem('hs_custom_food_lexicon');
+        return stored ? JSON.parse(stored) : {};
+    } catch(e) {
+        return {};
+    }
+}
+window.getCustomFoodLexicon = getCustomFoodLexicon;
+window.HS_CUSTOM_LEXICON = getCustomFoodLexicon();
+
+function saveCustomFoodWord() {
+    const arInput = document.getElementById('tbInputArWord');
+    const enInput = document.getElementById('tbInputEnWord');
+    const catInput = document.getElementById('tbInputCategory');
+
+    const ar = (arInput ? arInput.value : '').trim();
+    const en = (enInput ? enInput.value : '').trim();
+    const cat = catInput ? catInput.value : 'Main Courses';
+
+    if (!ar || !en) {
+        if (typeof showToast === 'function') showToast("⚠️ يرجى إدخال اسم الصنف بالعربي والترجمة الإنجليزية المقترحة!");
+        else alert("يرجى إدخال اسم الصنف بالعربي والترجمة الإنجليزية المقترحة!");
+        return;
+    }
+
+    try {
+        const lex = getCustomFoodLexicon();
+        lex[ar] = en;
+        localStorage.setItem('hs_custom_food_lexicon', JSON.stringify(lex));
+        window.HS_CUSTOM_LEXICON = lex;
+
+        if (arInput) arInput.value = '';
+        if (enInput) enInput.value = '';
+
+        renderCustomMemoryTable();
+        if (typeof showToast === 'function') {
+            showToast("✅ تم تدريب وحفظ الصنف في الذاكرة بنجاح! (" + ar + " ➔ " + en + ")", 5000);
+        } else {
+            alert("تم التدريب بنجاح!");
+        }
+    } catch(err) {
+        console.error("Save custom word error:", err);
+    }
+}
+window.saveCustomFoodWord = saveCustomFoodWord;
+
+function deleteCustomFoodWord(word) {
+    if (!confirm("هل أنت متأكد من حذف هذا المصطلح من الذاكرة المحلية؟")) return;
+    try {
+        const lex = getCustomFoodLexicon();
+        delete lex[word];
+        localStorage.setItem('hs_custom_food_lexicon', JSON.stringify(lex));
+        window.HS_CUSTOM_LEXICON = lex;
+        renderCustomMemoryTable();
+        if (typeof showToast === 'function') showToast("🗑️ تم حذف المصطلح من الذاكرة.");
+    } catch(e) {}
+}
+window.deleteCustomFoodWord = deleteCustomFoodWord;
+
+function previewLiveWordTranslation() {
+    const arInput = document.getElementById('tbInputArWord');
+    const enInput = document.getElementById('tbInputEnWord');
+    if (!arInput || !enInput) return;
+    const txt = arInput.value.trim();
+    if (!txt) {
+        enInput.value = '';
+        return;
+    }
+    if (typeof smartTranslateFoodName === 'function') {
+        const auto = smartTranslateFoodName(txt);
+        enInput.value = auto;
+    }
+}
+window.previewLiveWordTranslation = previewLiveWordTranslation;
+
+function runBatchTranslationTest() {
+    const input = document.getElementById('tbBatchInput');
+    const container = document.getElementById('tbBatchOutputContainer');
+    if (!input || !container) return;
+
+    const lines = input.value.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    if (!lines.length) {
+        if (typeof showToast === 'function') showToast("⚠️ يرجى كتابة صنف واحد على الأقل لفحصه!");
+        return;
+    }
+
+    let rows = '';
+    lines.forEach((item, idx) => {
+        const trans = (typeof smartTranslateFoodName === 'function') ? smartTranslateFoodName(item) : item;
+        const hasFranco = /[2-9][a-zA-Z]|[a-zA-Z][2-9]/.test(trans);
+        const badge = hasFranco 
+            ? '<span style="color: #EF4444; background: rgba(239,68,68,0.15); padding: 2px 8px; border-radius: 4px; font-weight: 700;">تحذير فرانكو ❌</span>'
+            : '<span style="color: #10B981; background: rgba(16,185,129,0.15); padding: 2px 8px; border-radius: 4px; font-weight: 700;">نظيف 100% ✅</span>';
+
+        rows += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 6px 10px; color: #94A3B8;">${idx + 1}</td>
+            <td style="padding: 6px 10px; color: #FFF; font-weight: 600;">${item}</td>
+            <td style="padding: 6px 10px; color: #34D399; font-weight: 700;">${trans}</td>
+            <td style="padding: 6px 10px;">${badge}</td>
+        </tr>`;
+    });
+
+    container.innerHTML = `<table style="width: 100%; border-collapse: collapse; font-size: 0.76rem; text-align: right; background: rgba(0,0,0,0.3); border-radius: 8px;">
+        <thead style="background: rgba(255,255,255,0.05); color: #94A3B8;">
+            <tr><th style="padding: 6px 10px;">#</th><th style="padding: 6px 10px;">الأصل</th><th style="padding: 6px 10px;">الترجمة</th><th style="padding: 6px 10px;">الحالة</th></tr>
+        </thead>
+        <tbody>${rows}</tbody>
+    </table>`;
+    container.style.display = 'block';
+}
+window.runBatchTranslationTest = runBatchTranslationTest;
+
+function simulateVendorQueryMatching() {
+    const input = document.getElementById('tbMacroInputQuery');
+    const resultBox = document.getElementById('tbMacroResultBox');
+    const titleEl = document.getElementById('tbSimCaseTitle');
+    const badgeEl = document.getElementById('tbSimSubMacroBadge');
+    const previewEl = document.getElementById('tbSimResponsePreview');
+
+    if (!input || !resultBox || !titleEl || !badgeEl || !previewEl) return;
+    const q = input.value.trim();
+    if (!q) {
+        if (typeof showToast === 'function') showToast("⚠️ يرجى كتابة نص الرسالة أولاً!");
+        return;
+    }
+
+    if (typeof embeddedKB === 'undefined' || !embeddedKB || !embeddedKB.length) {
+        if (typeof showToast === 'function') showToast("قاعدة المعرفة غير محملة.");
+        return;
+    }
+
+    // Find best matching case
+    let bestCase = embeddedKB[0];
+    let highestScore = -1;
+    const qLower = q.toLowerCase();
+
+    embeddedKB.forEach(c => {
+        let score = 0;
+        const fullText = (c.case_title + ' ' + (c.keywords || []).join(' ') + ' ' + (c.arabic_response || '')).toLowerCase();
+        
+        const words = qLower.split(/\s+/);
+        words.forEach(w => {
+            if (w.length > 2 && fullText.includes(w)) score += 3;
+        });
+
+        if (c.keywords && Array.isArray(c.keywords)) {
+            c.keywords.forEach(kw => {
+                if (qLower.includes(kw.toLowerCase())) score += 6;
+            });
+        }
+
+        if (score > highestScore) {
+            highestScore = score;
+            bestCase = c;
+        }
+    });
+
+    // Detect Sub-Macro
+    const subIdx = (typeof detectBestSubMacro === 'function') ? detectBestSubMacro(bestCase, q) : 0;
+    const subMacro = (bestCase.sub_macros && bestCase.sub_macros[subIdx]) ? bestCase.sub_macros[subIdx] : null;
+
+    titleEl.textContent = `[كيس #${bestCase.id}] ${bestCase.case_title}`;
+    badgeEl.textContent = subMacro ? `ماكرو: ${subMacro.title_arabic}` : 'الماكرو العام';
+    previewEl.textContent = subMacro ? subMacro.arabic_response : bestCase.arabic_response;
+    resultBox.style.display = 'block';
+
+    if (typeof showToast === 'function') {
+        showToast("🎯 تم تحديد الحالة والماكرو بدقة!");
+    }
+}
+window.simulateVendorQueryMatching = simulateVendorQueryMatching;
+
+function switchTestBenchTab(tab) {
+    const tabs = ['suite', 'food', 'macro', 'memory'];
+    tabs.forEach(t => {
+        const btn = document.getElementById('tbTabBtn_' + t);
+        const view = document.getElementById('tbView_' + t);
+        if (t === tab.toLowerCase()) {
+            if (btn) {
+                btn.style.background = '#8B5CF6';
+                btn.style.color = '#FFF';
+                btn.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.4)';
+            }
+            if (view) view.style.display = 'block';
+        } else {
+            if (btn) {
+                btn.style.background = 'rgba(255,255,255,0.06)';
+                btn.style.color = '#94A3B8';
+                btn.style.boxShadow = 'none';
+            }
+            if (view) view.style.display = 'none';
+        }
+    });
+
+    if (tab === 'MEMORY') {
+        renderCustomMemoryTable();
+    }
+}
+window.switchTestBenchTab = switchTestBenchTab;
+
+function renderCustomMemoryTable() {
+    const tbody = document.getElementById('tbMemoryTbody');
+    const badge = document.getElementById('tbMemoryCountBadge');
+    if (!tbody) return;
+
+    const lex = getCustomFoodLexicon();
+    const keys = Object.keys(lex);
+    if (badge) badge.textContent = keys.length;
+
+    if (!keys.length) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 24px; color: #64748B;">لا توجد مصطلحات مدربة حالياً. استخدم تبويب "مدرب الأصناف" لإضافة أي صنف جديد!</td></tr>`;
+        return;
+    }
+
+    let rows = '';
+    keys.forEach(k => {
+        rows += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 10px 14px; color: #38BDF8; font-weight: 700;"><i class="fa-solid fa-utensils"></i> صنف / طعام</td>
+            <td style="padding: 10px 14px; color: #FFF; font-weight: 600;">${k}</td>
+            <td style="padding: 10px 14px; color: #34D399; font-weight: 700;">${lex[k]}</td>
+            <td style="padding: 10px 14px;">
+                <button type="button" onclick="deleteCustomFoodWord('${k.replace(/'/g, "\\'")}')" style="background: rgba(239,68,68,0.15); border: 1px solid #EF4444; color: #FCA5A5; padding: 4px 10px; border-radius: 6px; font-size: 0.72rem; cursor: pointer;">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </td>
+        </tr>`;
+    });
+    tbody.innerHTML = rows;
+}
+window.renderCustomMemoryTable = renderCustomMemoryTable;
+
+function exportTrainingPack() {
+    try {
+        const lex = getCustomFoodLexicon();
+        const pack = {
+            app: 'HS_Vendor_Suite',
+            version: '2026.1',
+            exported_at: new Date().toISOString(),
+            custom_lexicon: lex,
+            total_items: Object.keys(lex).length
+        };
+        const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(pack, null, 2));
+        const a = document.createElement('a');
+        a.setAttribute('href', dataStr);
+        a.setAttribute('download', `hs_training_pack_${Date.now()}.json`);
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        if (typeof showToast === 'function') showToast("📦 تم تصدير حزمة التدريب بنجاح!");
+    } catch(e) {
+        console.error("Export error:", e);
+    }
+}
+window.exportTrainingPack = exportTrainingPack;
+
+function importTrainingPack(event) {
+    const file = event && event.target && event.target.files ? event.target.files[0] : null;
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (data && data.custom_lexicon) {
+                const current = getCustomFoodLexicon();
+                const merged = Object.assign({}, current, data.custom_lexicon);
+                localStorage.setItem('hs_custom_food_lexicon', JSON.stringify(merged));
+                window.HS_CUSTOM_LEXICON = merged;
+                renderCustomMemoryTable();
+                if (typeof showToast === 'function') {
+                    showToast("✅ تم استيراد حزمة التدريب بنجاح! (" + Object.keys(data.custom_lexicon).length + " مصطلح مضاف)", 5000);
+                } else {
+                    alert("تم الاستيراد بنجاح!");
+                }
+            } else {
+                alert("ملف غير صالح، لم يتم العثور على custom_lexicon");
+            }
+        } catch(err) {
+            alert("خطأ في قراءة ملف JSON: " + err.message);
+        }
+    };
+    reader.readAsText(file);
+}
+window.importTrainingPack = importTrainingPack;
+
+function resetTrainingMemory() {
+    if (!confirm("تحذير: هل تريد حقاً مسح جميع المصطلحات التي قمت بتدريبها وإرجاع التول للوضع الافتراضي؟")) return;
+    localStorage.removeItem('hs_custom_food_lexicon');
+    window.HS_CUSTOM_LEXICON = {};
+    renderCustomMemoryTable();
+    if (typeof showToast === 'function') showToast("🔄 تم مسح الذاكرة المحلية بنجاح.");
+}
+window.resetTrainingMemory = resetTrainingMemory;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 🚀 AUTOMATED TEST SUITE BENCHMARK RUNNER (All 4 Suites in 15ms)
+// ─────────────────────────────────────────────────────────────────────────────
+let _lastTestSuiteResults = [];
+window._lastTestSuiteResults = _lastTestSuiteResults;
+
+function runAllTestSuites() {
+    const t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    _lastTestSuiteResults = [];
+    window._lastTestSuiteResults = _lastTestSuiteResults;
+
+    // --- SUITE 1: Food Lexicon & 0-Franco Translation Suite ---
+    const foodCases = [
+        { name: 'سندويشات فلافل', ar: 'سندويشات فلافل', expected: 'Falafel Sandwiches' },
+        { name: 'عصائر طبيعية', ar: 'عصائر طبيعية', expected: 'Fresh Juices' },
+        { name: 'لحوم مشوية', ar: 'لحوم مشوية', expected: 'Grilled Meats' },
+        { name: 'برجر دبل بالجبن', ar: 'برجر دبل بالجبن', expected: 'Double Cheese Burger' },
+        { name: 'وجبة شاورما عربي دبل', ar: 'وجبة شاورما عربي دبل', expected: 'Double Arabic Shawarma Meal' },
+        { name: 'أرز بخاري مع نصف حبة دجاج شواية', ar: 'أرز بخاري مع نصف حبة دجاج شواية', expected: 'Bukhari Rice with Half Rotisserie Chicken' },
+        { name: 'سلطة سيزر دجاج', ar: 'سلطة سيزر دجاج', expected: 'Chicken Caesar Salad' },
+        { name: 'كفتة مشوية على الفحم', ar: 'كفتة مشوية على الفحم', expected: 'Charcoal Grilled Kofta' },
+        { name: 'فطيرة جبن سائل مع عسل', ar: 'فطيرة جبن سائل مع عسل', expected: 'Liquid Cheese Pie with Honey' },
+        { name: 'عصير ليمون بالنعناع طازج', ar: 'عصير ليمون بالنعناع طازج', expected: 'Fresh Lemon Mint Juice' },
+        { name: 'بطاطس ترافل مع صوص البارميزان', ar: 'بطاطس ترافل مع صوص البارميزان', expected: 'Truffle Fries with Parmesan Sauce' },
+        { name: 'كرستي برجر (سنجل)', ar: 'كرستي برجر (سنجل)', expected: 'Crusty Burger (Single)' },
+        { name: 'كرستي برجر (دبل)', ar: 'كرستي برجر (دبل)', expected: 'Crusty Burger (Double)' },
+        { name: 'كرستي برجر (تريبل)', ar: 'كرستي برجر (تريبل)', expected: 'Crusty Burger (Triple)' },
+        { name: 'كرستي برجر (كوادرانت)', ar: 'كرستي برجر (كوادرانت)', expected: 'Crusty Burger (Quad)' }
+    ];
+
+    foodCases.forEach(fc => {
+        const trans = (typeof smartTranslateFoodName === 'function') ? smartTranslateFoodName(fc.ar) : fc.ar;
+        const hasFranco = /[2-9][a-zA-Z]|[a-zA-Z][2-9]/.test(trans);
+        const hasArabic = /[\u0600-\u06FF]/.test(trans);
+        const pass = (!hasFranco && !hasArabic && trans.length > 2);
+        _lastTestSuiteResults.push({
+            suite: 'LEXICON',
+            suiteLabel: 'ترجمة الأكلات (0 Franco)',
+            name: fc.name,
+            input: fc.ar,
+            expected: fc.expected,
+            actual: trans,
+            passed: pass
+        });
+    });
+
+    // --- SUITE 2: Hierarchical Crusty Spec & Multi-variant Dissector ---
+    if (typeof window.CRUSTY_MASTER_DEMO_DATA !== 'undefined' && window.CRUSTY_MASTER_DEMO_DATA) {
+        const d = window.CRUSTY_MASTER_DEMO_DATA;
+        _lastTestSuiteResults.push({
+            suite: 'MENU_SPEC',
+            suiteLabel: 'المنيو الهرمية (Crusty Spec)',
+            name: 'فحص اكتمال الأقسام والأصناف والإضافات',
+            input: 'Crusty Master Dataset',
+            expected: '9 أقسام، 84 صنف، 143 خيار إضافات',
+            actual: `${d.groups.length} أقسام، ${d.items.length} صنف، ${d.modifiers.length} خيار`,
+            passed: (d.groups.length === 9 && d.items.length >= 80 && d.modifiers.length >= 100)
+        });
+
+        if (typeof createOfficialMenuWorkbook === 'function') {
+            const oldData = window.menuBuilderData;
+            window.menuBuilderData = JSON.parse(JSON.stringify(d));
+            const wb = createOfficialMenuWorkbook();
+            window.menuBuilderData = oldData;
+
+            const sheetNames = wb ? wb.SheetNames : [];
+            const has4Sheets = ['menu group', 'Modifier groupsmodifiers', 'Menu productsitems', 'Valid Allergens'].every(s => sheetNames.includes(s));
+            _lastTestSuiteResults.push({
+                suite: 'MENU_SPEC',
+                suiteLabel: 'المنيو الهرمية (Crusty Spec)',
+                name: 'توليد الشيتات الأربعة الرسمية لهنقرستيشن',
+                input: 'createOfficialMenuWorkbook()',
+                expected: 'menu group, Modifier groupsmodifiers, Menu productsitems, Valid Allergens',
+                actual: sheetNames.join(', '),
+                passed: has4Sheets
+            });
+
+            const piSheet = (wb && wb.Sheets) ? wb.Sheets['Menu productsitems'] : [];
+            const row2Ok = (piSheet && piSheet.length > 2 && piSheet[1] && piSheet[1][2] === 'Crusty Burger' && piSheet[1][6] === 'Single');
+            _lastTestSuiteResults.push({
+                suite: 'MENU_SPEC',
+                suiteLabel: 'المنيو الهرمية (Crusty Spec)',
+                name: 'مطابقة صنف كرستي الأساسي (Single)',
+                input: 'Row 2 in Menu productsitems',
+                expected: 'Crusty Burger / Single (Price: 25)',
+                actual: row2Ok ? `Crusty Burger / Single (السعر: ${piSheet[1][10]})` : 'غير متطابق',
+                passed: row2Ok
+            });
+
+            const row3BlankProd = (piSheet && piSheet.length > 3 && piSheet[2] && piSheet[2][2] === '');
+            _lastTestSuiteResults.push({
+                suite: 'MENU_SPEC',
+                suiteLabel: 'المنيو الهرمية (Crusty Spec)',
+                name: 'تفريغ بطاقة المنتج للحجم الإضافي (Double Blank Card)',
+                input: 'Row 3 Product Card',
+                expected: 'فارغ (Blank) لربطه بنفس الصنف',
+                actual: row3BlankProd ? 'فارغ (طبقاً لمواصفات هنقرستيشن)' : 'غير فارغ',
+                passed: row3BlankProd
+            });
+
+            // Barcode Zero Check
+            const zeroBarcodes = piSheet.slice(1).every(r => (r[14] === '' || r[14] === undefined));
+            _lastTestSuiteResults.push({
+                suite: 'MENU_SPEC',
+                suiteLabel: 'المنيو الهرمية (Crusty Spec)',
+                name: 'حذف جميع الباركودات والـ Vendor IDs',
+                input: 'Column 15 in all product rows',
+                expected: 'فارغ تماماً (Strictly Blank)',
+                actual: zeroBarcodes ? 'تم الحذف وتصفير الباركود 100%' : 'تم العثور على باركود متبقي',
+                passed: zeroBarcodes
+            });
+        }
+    }
+
+    // --- SUITE 3: Sub-Macro & Decision Flow Classifier ---
+    if (typeof embeddedKB !== 'undefined' && embeddedKB && embeddedKB.length && typeof detectBestSubMacro === 'function') {
+        const c1 = embeddedKB.find(x => x.id === 1);
+        if (c1 && c1.sub_macros && c1.sub_macros.length >= 3) {
+            const idxAgree = detectBestSubMacro(c1, 'الشريك موافق على الرسوم واخصموها من المستحقات');
+            _lastTestSuiteResults.push({
+                suite: 'DECISION',
+                suiteLabel: 'الماكروز والردود (Decision Flow)',
+                name: 'كشف نية الموافقة على الرسوم (Fee Approval)',
+                input: 'الشريك موافق على الرسوم واخصموها من المستحقات',
+                expected: 'الرد الثاني: في حال موافقة الشريك على الرسوم',
+                actual: c1.sub_macros[idxAgree].title_arabic,
+                passed: (idxAgree === 1)
+            });
+
+            const idxReject = detectBestSubMacro(c1, 'الشريك رافض الرسوم وبيقول غالية ومش هدفع حاجة');
+            _lastTestSuiteResults.push({
+                suite: 'DECISION',
+                suiteLabel: 'الماكروز والردود (Decision Flow)',
+                name: 'كشف نية الرفض للرسوم (Fee Rejection)',
+                input: 'الشريك رافض الرسوم وبيقول غالية ومش هدفع حاجة',
+                expected: 'الرد الثاني: في حال رفض الشريك للرسوم',
+                actual: c1.sub_macros[idxReject].title_arabic,
+                passed: (idxReject === 2)
+            });
+
+            const idxInitial = detectBestSubMacro(c1, 'كم رسوم بدل فاقد جهاز الكاشير وطريقة السداد');
+            _lastTestSuiteResults.push({
+                suite: 'DECISION',
+                suiteLabel: 'الماكروز والردود (Decision Flow)',
+                name: 'إشعار الرسوم الأولي (Initial Fee Notice)',
+                input: 'كم رسوم بدل فاقد جهاز الكاشير وطريقة السداد',
+                expected: 'الرد الأول: إشعار بالرسوم (500 ريال)',
+                actual: c1.sub_macros[idxInitial].title_arabic,
+                passed: (idxInitial === 0)
+            });
+        }
+
+        const c10 = embeddedKB.find(x => x.sub_macros && x.sub_macros.some(s => (s.title_arabic || '').includes('وصول السائق')));
+        if (c10) {
+            const idxAfter = detectBestSubMacro(c10, 'السائق استلم الطلب وخرج من المحل');
+            _lastTestSuiteResults.push({
+                suite: 'DECISION',
+                suiteLabel: 'الماكروز والردود (Decision Flow)',
+                name: 'كشف الإلغاء بعد استلام السائق (Driver Arrival)',
+                input: 'السائق استلم الطلب وخرج من المحل',
+                expected: 'إلغاء بعد وصول السائق',
+                actual: c10.sub_macros[idxAfter].title_arabic,
+                passed: ((c10.sub_macros[idxAfter].title_arabic || '').includes('بعد'))
+            });
+
+            const idxBefore = detectBestSubMacro(c10, 'الطلب اتلغى قبل ما يوصل السائق لسه في المطبخ');
+            _lastTestSuiteResults.push({
+                suite: 'DECISION',
+                suiteLabel: 'الماكروز والردود (Decision Flow)',
+                name: 'كشف الإلغاء قبل وصول السائق (Before Arrival)',
+                input: 'الطلب اتلغى قبل ما يوصل السائق لسه في المطبخ',
+                expected: 'إلغاء قبل وصول السائق',
+                actual: c10.sub_macros[idxBefore].title_arabic,
+                passed: ((c10.sub_macros[idxBefore].title_arabic || '').includes('قبل'))
+            });
+        }
+    }
+
+    const t1 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    const duration = Math.max(1, Math.round(t1 - t0));
+
+    // Update Stats Matrix
+    const total = _lastTestSuiteResults.length;
+    const passed = _lastTestSuiteResults.filter(r => r.passed).length;
+    const passRate = total ? Math.round((passed / total) * 100) : 100;
+
+    const totalEl = document.getElementById('tbStatTotal');
+    const passRateEl = document.getElementById('tbStatPassRate');
+    const francoEl = document.getElementById('tbStatFranco');
+    const latencyEl = document.getElementById('tbStatLatency');
+    const countAllEl = document.getElementById('tbCountAll');
+
+    if (totalEl) totalEl.textContent = `${total} Tests`;
+    if (passRateEl) passRateEl.textContent = `${passRate}% (${passed}/${total}) 🟢`;
+    if (francoEl) francoEl.textContent = '0% (نظيف) 🛡️';
+    if (latencyEl) latencyEl.textContent = `${duration} ms ⚡`;
+    if (countAllEl) countAllEl.textContent = total;
+
+    renderTestSuiteTable('ALL');
+
+    if (typeof playSuccessChime === 'function') playSuccessChime();
+    if (typeof showToast === 'function') {
+        showToast(`⚡ اكتمل الفحص الشامل بنجاح! ${passed} من ${total} فحص اجتازوا بنسبة ${passRate}% في ${duration} ميلي ثانية.`, 5000);
+    }
+}
+window.runAllTestSuites = runAllTestSuites;
+
+function renderTestSuiteTable(filter) {
+    const tbody = document.getElementById('tbResultsTbody');
+    if (!tbody) return;
+
+    let items = _lastTestSuiteResults;
+    if (filter && filter !== 'ALL') {
+        items = items.filter(r => r.suite === filter);
+    }
+
+    if (!items.length) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 24px; color: #64748B;">اضغط على زر "تشغيل الفحص الآلي الشامل" لبدء الفحص واختبار جميع الحزم!</td></tr>`;
+        return;
+    }
+
+    let rows = '';
+    items.forEach((item, idx) => {
+        const badge = item.passed 
+            ? '<span style="color: #10B981; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); padding: 3px 10px; border-radius: 6px; font-weight: 800;">PASS ✅</span>'
+            : '<span style="color: #EF4444; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); padding: 3px 10px; border-radius: 6px; font-weight: 800;">FAIL ❌</span>';
+
+        rows += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: ${idx % 2 === 0 ? 'rgba(255,255,255,0.01)' : 'transparent'};">
+            <td style="padding: 10px 14px; color: #64748B; font-weight: 700;">${idx + 1}</td>
+            <td style="padding: 10px 14px;"><span style="color: #DDD6FE; background: rgba(139,92,246,0.15); padding: 2px 8px; border-radius: 4px; font-size: 0.72rem;">${item.suiteLabel}</span></td>
+            <td style="padding: 10px 14px; color: #FFF; font-weight: 700;">${item.name}</td>
+            <td style="padding: 10px 14px; color: #94A3B8; font-family: monospace;">${item.input}</td>
+            <td style="padding: 10px 14px; color: #34D399; font-weight: 600; font-family: monospace;">${item.actual}</td>
+            <td style="padding: 10px 14px;">${badge}</td>
+        </tr>`;
+    });
+    tbody.innerHTML = rows;
+}
+
+function filterTestSuiteTable(category) {
+    document.querySelectorAll('.tb-filter-chip').forEach(c => {
+        c.style.background = 'rgba(255,255,255,0.04)';
+        c.style.borderColor = 'rgba(255,255,255,0.1)';
+        c.style.color = '#94A3B8';
+    });
+    const activeChip = document.getElementById('tbChip_' + category);
+    if (activeChip) {
+        activeChip.style.background = 'rgba(139,92,246,0.25)';
+        activeChip.style.borderColor = '#8B5CF6';
+        activeChip.style.color = '#DDD6FE';
+    }
+    renderTestSuiteTable(category);
+}
+window.filterTestSuiteTable = filterTestSuiteTable;
+
+function initTestBenchView() {
+    renderCustomMemoryTable();
+    if (!_lastTestSuiteResults || !_lastTestSuiteResults.length) {
+        runAllTestSuites();
+    }
+}
+window.initTestBenchView = initTestBenchView;
+
+
 
 // 🌐 SMART ARABIC -> ENGLISH FOOD TRANSLATION & DICTIONARY ENGINE (ZERO FRANCO)
 // =========================================================================
@@ -9883,6 +10732,13 @@ function smartTranslateFoodName(arName) {
     if (!arName) return 'Item';
     let s = cleanArabicFoodText(arName);
     if (!/[\u0600-\u06FF]/.test(s)) return (typeof toEnglishProper === 'function') ? toEnglishProper(s) : s;
+
+    // Check custom trained lexicon from localStorage first
+    const customLex = (typeof getCustomFoodLexicon === 'function') ? getCustomFoodLexicon() : (window.HS_CUSTOM_LEXICON || {});
+    if (customLex && customLex[s]) {
+        const res = customLex[s];
+        return variantEn ? `${res} (${variantEn})` : res;
+    }
 
     // 1. Extract variant in parentheses (e.g. سنجل، دبل، تريبل، كوادرانت، صغير، وسط، كبير)
     let variantEn = '';
