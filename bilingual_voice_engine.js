@@ -198,65 +198,58 @@ let bilingualSpeechRecognizer = null;
 let isBilingualRecording = false;
 let bilingualAccumulatedText = '';
 
-function toggleMainVoiceRecording() {
-    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRec) {
-        alert("متصفحك لا يدعم ميزة التعرف الصوتي المباشر. يرجى استخدام متصفح Google Chrome أو Microsoft Edge.");
-        return;
-    }
 
-    const btn = document.getElementById('mainMicBtn');
-    const btnText = document.getElementById('mainMicText');
-    const partnerMsg = document.getElementById('partnerMessage');
-    const hud = document.getElementById('liveBilingualSpeechHud');
-    const hudLiveText = document.getElementById('liveSpeechLiveText');
-    const hudIntentBox = document.getElementById('liveSpeechDetectedIntent');
-    const hudIntentText = document.getElementById('liveSpeechIntentText');
-
-    if (isBilingualRecording) {
-        // STOP RECORDING
-        if (bilingualSpeechRecognizer) {
-            try { bilingualSpeechRecognizer.stop(); } catch(e) {}
-        }
-        isBilingualRecording = false;
-        if (btn) {
-            btn.style.background = 'linear-gradient(135deg, #EC4899, #8B5CF6)';
-            btn.style.boxShadow = '0 4px 12px rgba(236, 72, 153, 0.4)';
-        }
-        if (btnText) btnText.innerText = 'تسجيل صوتي (AR+EN) 🎙️';
-        if (hud) hud.style.display = 'none';
-        showToast("🔴 تم إيقاف التسجيل الصوتي وتثبيت النص ثنائي اللغة.");
-        return;
-    }
-
-    // START RECORDING
+// ── Safe Lifecycle & Restart Handlers ─────────────────────────────────
+function createAndStartSpeechInstance() {
+    if (!isBilingualRecording) return;
     try {
+        if (bilingualSpeechRecognizer) {
+            try {
+                bilingualSpeechRecognizer.onend = null;
+                bilingualSpeechRecognizer.onerror = null;
+                bilingualSpeechRecognizer.onresult = null;
+                bilingualSpeechRecognizer.abort();
+            } catch(e) {}
+            bilingualSpeechRecognizer = null;
+        }
+
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRec) {
+            alert("متصفحك لا يدعم التعرف الصوتي المباشر. يرجى استخدام Google Chrome أو Safari!");
+            isBilingualRecording = false;
+            return;
+        }
+
         bilingualSpeechRecognizer = new SpeechRec();
-        
-        // Language determination
-        if (currentVoiceLanguageMode === 'en-US') {
+        bilingualSpeechRecognizer.continuous = true;
+        bilingualSpeechRecognizer.interimResults = true;
+        bilingualSpeechRecognizer.maxAlternatives = 1;
+
+        if (typeof currentVoiceLanguageMode !== 'undefined' && currentVoiceLanguageMode === 'en-US') {
             bilingualSpeechRecognizer.lang = 'en-US';
+        } else if (typeof currentVoiceLanguageMode !== 'undefined' && currentVoiceLanguageMode === 'ar-EG') {
+            bilingualSpeechRecognizer.lang = 'ar-EG';
         } else {
-            // 'ar-SA' with our bilingual phonetic processor captures both Arabic & English code-switching!
             bilingualSpeechRecognizer.lang = 'ar-SA';
         }
 
-        bilingualSpeechRecognizer.continuous = true;
-        bilingualSpeechRecognizer.interimResults = true;
-
-        bilingualAccumulatedText = partnerMsg && partnerMsg.value ? partnerMsg.value.trim() + ' ' : '';
+        const btn = document.getElementById('mainMicBtn');
+        const btnText = document.getElementById('mainMicText');
+        const partnerMsg = document.getElementById('partnerMessage');
+        const hud = document.getElementById('liveBilingualSpeechHud');
+        const hudLiveText = document.getElementById('liveSpeechLiveText');
+        const hudIntentBox = document.getElementById('liveSpeechDetectedIntent');
+        const hudIntentText = document.getElementById('liveSpeechIntentText');
 
         bilingualSpeechRecognizer.onstart = () => {
-            isBilingualRecording = true;
             if (btn) {
                 btn.style.background = '#EF4444';
                 btn.style.boxShadow = '0 0 20px rgba(239, 68, 68, 0.9)';
             }
-            if (btnText) btnText.innerText = 'جاري الاستماع... اضغط للإنهاء';
+            if (btnText) btnText.innerText = '🔴 جاري الاستماع... اضغط للإنهاء';
             if (hud) hud.style.display = 'block';
-            if (hudLiveText) hudLiveText.innerHTML = '<span style="color: #94A3B8;">جاري الاستماع... تحدث بالعربي أو English وسيتم التنسيق الفوري.</span>';
+            if (hudLiveText) hudLiveText.innerHTML = '<span style="color: #94A3B8;"><i class="fa-solid fa-microphone-lines fa-fade"></i> جاري الاستماع بصوتك الآن... تحدث بالعامية أو الإنجليزية وسيتم التقاطه وتصحيحه فورياً.</span>';
             if (hudIntentBox) hudIntentBox.style.display = 'none';
-            showToast("🎙️ المساعد الصوتي يستمع بالعربي والـ English معاً...");
         };
 
         bilingualSpeechRecognizer.onresult = (event) => {
@@ -276,50 +269,101 @@ function toggleMainVoiceRecording() {
             }
 
             const rawCombined = bilingualAccumulatedText + interimTranscript;
-            const cleanedBilingual = cleanAndFormatBilingualSpeech(rawCombined);
+            let cleanedBilingual = rawCombined;
+            try {
+                if (typeof cleanAndFormatBilingualSpeech === 'function') {
+                    cleanedBilingual = cleanAndFormatBilingualSpeech(rawCombined);
+                }
+            } catch(e) {
+                cleanedBilingual = rawCombined;
+            }
 
-            // Update main textarea
             if (partnerMsg) {
-                partnerMsg.value = cleanedBilingual;
+                partnerMsg.value = cleanedBilingual || rawCombined;
                 partnerMsg.scrollTop = partnerMsg.scrollHeight;
                 if (typeof updateInputStats === 'function') updateInputStats();
             }
 
-            // Update live HUD display with styled bilingual token tags
             if (hudLiveText) {
-                hudLiveText.innerHTML = highlightBilingualTokensHtml(cleanedBilingual);
+                hudLiveText.innerHTML = (typeof highlightBilingualTokensHtml === 'function') ? highlightBilingualTokensHtml(cleanedBilingual) : cleanedBilingual;
             }
 
-            // Live Knowledge Intent Recognition
-            const matched = matchBilingualKnowledgeIntent(cleanedBilingual);
-            if (matched && hudIntentBox && hudIntentText) {
-                hudIntentBox.style.display = 'flex';
-                hudIntentText.innerHTML = `تم استيعاب الحالة: <strong style="color: #38BDF8;">#${matched.id} - ${matched.case_title}</strong> (${matched.title_arabic || matched.case_title})`;
-            }
+            try {
+                if (typeof matchBilingualKnowledgeIntent === 'function') {
+                    const matched = matchBilingualKnowledgeIntent(cleanedBilingual);
+                    if (matched && hudIntentBox && hudIntentText) {
+                        hudIntentBox.style.display = 'flex';
+                        hudIntentText.innerHTML = `تم استيعاب الحالة: <strong style="color: #38BDF8;">#${matched.id} - ${matched.case_title}</strong> (${matched.title_arabic || matched.case_title})`;
+                    }
+                }
+            } catch(e) {}
         };
 
         bilingualSpeechRecognizer.onerror = (event) => {
-            console.warn("Bilingual Speech Warning:", event.error);
-            if (event.error !== 'no-speech' && event.error !== 'aborted') {
-                showToast("⚠️ تنبيه صوتي: " + event.error);
+            console.warn("Bilingual Speech Notice:", event.error);
+            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                isBilingualRecording = false;
+                if (btn) { btn.style.background = 'linear-gradient(135deg, #EC4899, #8B5CF6)'; }
+                if (btnText) btnText.innerText = 'تسجيل صوتي (AR+EN) 🎙️';
+                if (hud) hud.style.display = 'none';
+                alert('⚠️ المتصفح يمنع استخدام المايك! اضغط على أيقونة الإعدادات أو القفل 🔒 بجانب رابط الموقع في شريط العنوان، واضبط Microphone على السماح (Allow).');
             }
         };
 
         bilingualSpeechRecognizer.onend = () => {
-            // Auto restart if user didn't intentionally stop
             if (isBilingualRecording) {
-                try { bilingualSpeechRecognizer.start(); } catch(e) {}
+                clearTimeout(window._bilingualRestartTimeout);
+                window._bilingualRestartTimeout = setTimeout(() => {
+                    if (isBilingualRecording) {
+                        createAndStartSpeechInstance();
+                    }
+                }, 200);
             }
         };
 
         bilingualSpeechRecognizer.start();
     } catch(err) {
-        console.error("Failed to start bilingual speech recognition:", err);
-        showToast("⚠️ تعذر بدء التسجيل الصوتي في المتصفح.");
+        console.error("Speech instance startup error:", err);
+        isBilingualRecording = false;
     }
 }
 
-// ── 5. Finish Speech & Instantly Generate Approved Macro ───────────────
+// ── Toggle Speech Function ──────────────────────────────────────────
+function toggleMainVoiceRecording() {
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRec) {
+        alert("متصفحك لا يدعم ميزة التعرف الصوتي المباشر. يرجى استخدام متصفح Google Chrome للحصول على أفضل تجربة صوتية!");
+        return;
+    }
+
+    const btn = document.getElementById('mainMicBtn');
+    const btnText = document.getElementById('mainMicText');
+    const partnerMsg = document.getElementById('partnerMessage');
+    const hud = document.getElementById('liveBilingualSpeechHud');
+
+    if (isBilingualRecording) {
+        // STOP RECORDING
+        isBilingualRecording = false;
+        if (bilingualSpeechRecognizer) {
+            try { bilingualSpeechRecognizer.stop(); } catch(e) {}
+        }
+        if (btn) {
+            btn.style.background = 'linear-gradient(135deg, #EC4899, #8B5CF6)';
+            btn.style.boxShadow = '0 4px 12px rgba(236, 72, 153, 0.4)';
+        }
+        if (btnText) btnText.innerText = 'تسجيل صوتي (AR+EN) 🎙️';
+        if (hud) hud.style.display = 'none';
+        showToast("🔴 تم إيقاف التسجيل الصوتي وتثبيت النص.");
+        return;
+    }
+
+    // START RECORDING ENGINE
+    isBilingualRecording = true;
+    bilingualAccumulatedText = partnerMsg && partnerMsg.value ? partnerMsg.value.trim() + ' ' : '';
+    showToast("🎙️ المساعد الصوتي يستمع الآن... اتكلم وهيظهر كلامك على الشاشة!");
+    createAndStartSpeechInstance();
+}
+
 function stopAndGenerateFromSpeech() {
     if (isBilingualRecording) {
         toggleMainVoiceRecording();
@@ -336,7 +380,7 @@ function stopAndGenerateFromSpeech() {
     }
 }
 
-// Expose globally
+// Global Exports
 if (typeof window !== 'undefined') {
     window.cleanAndFormatBilingualSpeech = cleanAndFormatBilingualSpeech;
     window.matchBilingualKnowledgeIntent = matchBilingualKnowledgeIntent;
