@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hs-vendor-suite-v40-audit-verified';
+const CACHE_NAME = 'hs-vendor-suite-v41-autonomous-solver';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
