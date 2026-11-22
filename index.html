@@ -203,7 +203,7 @@
                 <h1>Hungerstation Vendor Support Suite</h1>
                 <p>المنصة التشغيلية المعتمدة لعمليات الدعم والمنيو وحالات الشركاء</p>
             </div>
-            <span class="version-badge">Production v24</span>
+            <span class="version-badge">Production v25 (Audit Verified)</span>
         </div>
 
         <div class="header-controls">
@@ -1944,7 +1944,7 @@ window.renderStudioMenuPreviewTables = function() {
 
 window.renderMenuPreviewTables = window.renderStudioMenuPreviewTables;
 function renderMenuPreviewTables() { window.renderStudioMenuPreviewTables(); }
-function renderStudioMenuPreviewTables() { window.renderStudioMenuPreviewTables(); }
+// unified in studio engine
 
 
         try {
@@ -3831,7 +3831,7 @@ async function loadKBData() {
         }
 
         function saveLearnedCorrection() {
-            const currentArText = document.getElementById('arMacroText').innerText;
+            const currentArText = (document.getElementById('arMacroText') || document.getElementById('arabicMacroText') || {}).innerText;
             const promptRule = prompt("أدخل الكلمات المفتاحية لتخصيص وتدريب هذا الرد الذاتي (مثال: تعويض، خصم، فاتورة):", currentActiveQuery || "عام");
             if (!promptRule) return;
 
@@ -4217,9 +4217,9 @@ async function loadKBData() {
             let arProc = (sm && sm.macro_arabic) ? sm.macro_arabic : (c.procedure_arabic || "");
             let enProc = (sm && sm.macro_english) ? sm.macro_english : (c.procedure_english || "");
 
-            const orderId = (document.getElementById('liveVarOrderId') ? document.getElementById('liveVarOrderId').value.trim() : '');
-            const storeName = (document.getElementById('liveVarStoreName') ? document.getElementById('liveVarStoreName').value.trim() : '');
-            const amount = (document.getElementById('liveVarAmount') ? document.getElementById('liveVarAmount').value.trim() : '');
+            const orderId = (document.getElementById('liveVarOrderId') ? (document.getElementById('liveVarOrderId') || {}).value.trim() : '');
+            const storeName = (document.getElementById('liveVarStoreName') ? (document.getElementById('liveVarStoreName') || {}).value.trim() : '');
+            const amount = (document.getElementById('liveVarAmount') ? (document.getElementById('liveVarAmount') || {}).value.trim() : '');
 
             if (orderId) { arProc = arProc.replace(/\[رقم الطلب\]|#?\b\d{7,10}\b/g, orderId); enProc = enProc.replace(/\[Order ID\]|#?\b\d{7,10}\b/g, orderId); }
             if (storeName) { arProc = arProc.replace(/\[اسم المتجر\]|\[اسم الشريك\]/g, storeName); enProc = enProc.replace(/\[Store Name\]|\[Partner Name\]/g, storeName); }
@@ -7901,8 +7901,8 @@ ${arAgentName}
                     <div style="margin-bottom: 10px; color: #CBD5E1;">${introText}</div>
                     <div id="latestVoiceMacroBox" style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; border-right: 3px solid #8B5CF6; white-space: pre-wrap; font-family: monospace; font-size: 0.83rem; color: #E2E8F0; max-height: 200px; overflow-y: auto;">${macroBody}</div>
                     <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button onclick="navigator.clipboard.writeText(document.getElementById('latestVoiceMacroBox').innerText); showToast('📋 تم نسخ الماكرو بنجاح!');" style="background: #2563EB; color: #FFF; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;"><i class="fa-solid fa-copy"></i> نسخ الماكرو</button>
-                        <button onclick="speakText(document.getElementById('latestVoiceMacroBox').innerText)" style="background: #7C3AED; color: #FFF; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;"><i class="fa-solid fa-volume-high"></i> نطق الرد</button>
+                        <button onclick="navigator.clipboard.writeText((document.getElementById('latestVoiceMacroBox') || {}).innerText); showToast('📋 تم نسخ الماكرو بنجاح!');" style="background: #2563EB; color: #FFF; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;"><i class="fa-solid fa-copy"></i> نسخ الماكرو</button>
+                        <button onclick="speakText((document.getElementById('latestVoiceMacroBox') || {}).innerText)" style="background: #7C3AED; color: #FFF; border: none; padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer;"><i class="fa-solid fa-volume-high"></i> نطق الرد</button>
                     </div>
                 </div>
             `;
@@ -15384,10 +15384,10 @@ function checkLegalComplianceShield() {
 
         // ── ⚡ 2. SMART VARIABLE FILLERS (LIVE PLACEHOLDER REPLACEMENT) ──
         function updateLiveMacroVariables() {
-            const orderId = (document.getElementById('liveVarOrderId') ? document.getElementById('liveVarOrderId').value.trim() : '');
-            const storeName = (document.getElementById('liveVarStoreName') ? document.getElementById('liveVarStoreName').value.trim() : '');
-            const amount = (document.getElementById('liveVarAmount') ? document.getElementById('liveVarAmount').value.trim() : '');
-            const customerName = (document.getElementById('liveVarCustomer') ? document.getElementById('liveVarCustomer').value.trim() : '');
+            const orderId = (document.getElementById('liveVarOrderId') ? (document.getElementById('liveVarOrderId') || {}).value.trim() : '');
+            const storeName = (document.getElementById('liveVarStoreName') ? (document.getElementById('liveVarStoreName') || {}).value.trim() : '');
+            const amount = (document.getElementById('liveVarAmount') ? (document.getElementById('liveVarAmount') || {}).value.trim() : '');
+            const customerName = (document.getElementById('liveVarCustomer') ? (document.getElementById('liveVarCustomer') || {}).value.trim() : '');
 
             window.currentActiveDetectedEntities = {
                 orderId: orderId,
@@ -17791,7 +17791,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=39')
+        navigator.serviceWorker.register('./sw.js?v=40')
             .then(() => console.log('✓ Service Worker Registered successfully.'))
             .catch(err => console.log('SW registration error:', err));
     });
@@ -19316,7 +19316,7 @@ ${policiesContext}`
                                 <h3 style="margin:0; font-size:1.25rem; display:flex; align-items:center; gap:10px; color:#C084FC;">
                                     <i class="fa-solid fa-graduation-cap"></i> مستشار السياسات بالذكاء الاصطناعي (Bite Hub AI Advisor)
                                 </h3>
-                                <button onclick="document.getElementById('aiPolicyAdvisorModal').style.display='none'" style="background:rgba(239,68,68,0.2); color:#EF4444; border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:6px 14px; cursor:pointer; font-weight:700;">✕ إغلاق</button>
+                                <button onclick="(document.getElementById('aiPolicyAdvisorModal') || {}).style?.display='none'" style="background:rgba(239,68,68,0.2); color:#EF4444; border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:6px 14px; cursor:pointer; font-weight:700;">✕ إغلاق</button>
                             </div>
                             <div style="background:rgba(168,85,247,0.1); border:1px solid rgba(168,85,247,0.25); border-radius:10px; padding:12px 16px; margin-bottom:16px; font-size:0.88rem; color:#E9D5FF;">
                                 <strong>سؤالك:</strong> ${userPrompt}
