@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hs-vendor-suite-v42-ultra-luxury';
+const CACHE_NAME = 'hs-vendor-suite-v43-extension-suite';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
